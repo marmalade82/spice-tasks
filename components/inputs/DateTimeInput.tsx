@@ -11,7 +11,8 @@ interface Props {
 
 interface State {
     dateTime: Date,
-    showModal: boolean
+    showModal: boolean,
+    modalDateTime: Date,
 }
 
 const localStyle = StyleSheet.create({
@@ -35,18 +36,31 @@ const localStyle = StyleSheet.create({
 });
 
 export default class DateTimeInput extends React.Component<Props,State> {
+    modalInput: React.RefObject<ModalInput>
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
             dateTime: new Date(),
-            showModal: false
+            showModal: false,
+            modalDateTime: new Date(),
         }
+
+        this.modalInput = React.createRef();
     }
 
     onChange = (date: Date) => {
+        this.setState({
+            modalDateTime: date
+        })
+    }
 
+    saveInput = () => {
+        this.setState({
+            dateTime: this.state.modalDateTime
+        });
+        this.modalInput.current.hideModal(); 
     }
 
     render = () => {
@@ -55,6 +69,7 @@ export default class DateTimeInput extends React.Component<Props,State> {
                 title={"When?"}
                 animationType={"fade"}
                 screenType={"grey"}
+                ref={this.modalInput}
             >
                 <View style={[Style.modalContainer, { backgroundColor: "white"}]}>
                     <DateTimePicker
@@ -64,7 +79,7 @@ export default class DateTimeInput extends React.Component<Props,State> {
                     </DateTimePicker>
                     <Button
                         title="Save"
-                        onPress={() => {}}
+                        onPress={this.saveInput}
                     >
                     </Button>
                 </View>
