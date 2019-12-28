@@ -1,14 +1,17 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, View, Button, } from "react-native";
 import Style from "../../styles/Style";
 import { ChoiceInput, DateTimeInput } from "../inputs/Inputs";
 
 interface Props {
-
+    onDataChange?: (data: Data) => void;
+    data?: Data
+    onSave: (data: Data) => void;
 }
 
 interface State {
-    recurs: string
+    recurs: string;
+    date: Date;
 }
 
 const recur_types = [
@@ -32,15 +35,49 @@ const recur_types = [
     , value: "monthly"
     , key: "4"
     }
-
 ];
+
+interface Data {
+    recurs: string;
+    date: Date;
+}
 
 export default class RecurringForm extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            recurs: "never"
+            recurs: this.props.data.recurs ? this.props.data.recurs : "never",
+            date: this.props.data.date ? this.props.data.date : new Date(),
+        }
+    }
+
+    data: () => Data = () => {
+        return {
+            recurs: this.state.recurs,
+            date: this.state.date,
+        }
+    }
+
+    onRepeatChange = (value: string) => {
+        this.setState({
+            recurs: value
+        });
+
+        this.dataChanged();
+    }
+
+    onDateChange = (date: Date) => {
+        this.setState({
+            date: date
+        });
+
+        this.dataChanged();
+    }
+
+    dataChanged = () => {
+        if(this.props.onDataChange) {
+            this.props.onDataChange(this.data());
         }
     }
 
@@ -51,14 +88,21 @@ export default class RecurringForm extends React.Component<Props, State> {
                     title={"Repeats"}
                     choices={recur_types}
                     selectedValue={this.state.recurs}
-                    onValueChange={(value) => {this.setState({ recurs: value })}}
+                    onValueChange={ this.onRepeatChange }
                 >
 
                 </ChoiceInput>
                 <DateTimeInput
                     title={"When?"}
+                    type={"date"}
+                    onValueChange={this.onDateChange}
+                    value={this.state.date}
                 >
                 </DateTimeInput>
+                <Button title="Save"
+                    onPress={() => {this.props.onSave(this.data())}}
+                >
+                </Button>
             </View>
         )
     }

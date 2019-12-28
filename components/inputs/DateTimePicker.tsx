@@ -7,7 +7,8 @@ import Style from "../../styles/Style";
 
 interface Props {
     onChange: (dateTime: Date) => void
-    dateTime: Date
+    dateTime: Date // initial date time
+    type: "date" | "time" | "both"
 }
 
 interface State {
@@ -95,25 +96,45 @@ export default class DateTimePicker extends React.Component<Props, State> {
         );
     }
 
+    renderDatePicker = () => {
+        if(this.props.type === "time") {
+            return <View></View>;
+        }
+
+        return (
+            <View style={[localStyle.container, Style.maxInputHeight]}>
+                <View style={[localStyle.text, Style.yellowBg]}>
+                    <Text>Date</Text>
+                </View>
+                <View style={[localStyle.date, Style.whiteBg]}>
+                    <Text onPress={this.onPress}>{this.state.date.toDateString()}</Text>
+                </View>
+            </View>
+        );
+    }
+
+    renderTimePicker = () => {
+        if(this.props.type === "date") {
+            return <View></View>;
+        }
+
+        return (
+            <View style={[localStyle.container, Style.maxInputHeight]}>
+                <View style={[localStyle.text, Style.yellowBg]}>
+                    <Text>Time</Text>
+                </View>
+                <View style={[localStyle.date, Style.whiteBg]}>
+                    <Text onPress={this.onPressTimeAndroid}>{this.state.time.toTimeString()}</Text>
+                </View>
+            </View>
+        );
+    }
+
     render = () => {
         return ( 
             <View style={[Style.container]}>
-                <View style={[localStyle.container, Style.maxInputHeight]}>
-                    <View style={[localStyle.text, Style.yellowBg]}>
-                        <Text>Date</Text>
-                    </View>
-                    <View style={[localStyle.date, Style.whiteBg]}>
-                        <Text onPress={this.onPress}>{this.state.date.toDateString()}</Text>
-                    </View>
-                </View>
-                <View style={[localStyle.container, Style.maxInputHeight]}>
-                    <View style={[localStyle.text, Style.yellowBg]}>
-                        <Text>Time</Text>
-                    </View>
-                    <View style={[localStyle.date, Style.whiteBg]}>
-                        <Text onPress={this.onPressTimeAndroid}>{this.state.time.toTimeString()}</Text>
-                    </View>
-                </View>
+                { this.renderDatePicker() }
+                { this.renderTimePicker() }
             </View>
         );
     }

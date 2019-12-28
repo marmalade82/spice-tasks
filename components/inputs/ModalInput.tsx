@@ -7,6 +7,7 @@ interface Props {
     title: string
     animationType: "none" | "fade" | "slide"
     screenType: "full" | "transparent" | "grey" 
+    value: string
     onOpen?: () => void
     onClose?: () => void
 }
@@ -32,8 +33,13 @@ const localStyle = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
+    val: {
+        flex: 1.6,
+        justifyContent: "center",
+        alignItems: "center",
+    },
     button: {
-        flex: 2,
+        flex: 0.4,
         justifyContent: "center",
         alignItems: "stretch",
     },
@@ -80,88 +86,6 @@ export default class ModalInput extends React.Component<Props, State>{
         })
     }
 
-    renderFullScreen = () => {
-        return (
-            <View style={[localStyle.container, Style.maxInputHeight]}>
-                <View style={[Style.yellowBg, localStyle.text]}>
-                    <Text>{this.props.title}</Text>
-                </View>
-                <View style={[Style.whiteBg, localStyle.button]}>
-                    <Button
-                        title={"Edit"}
-                        onPress={() => { this.showModal() }}
-                    >
-                    </Button>
-                </View>
-                <Modal
-                    visible={this.state.showModal}
-                    transparent={false}
-                    onRequestClose={ () => { this.hideModal() } }
-                    animationType={ this.props.animationType }
-                >
-                    <View style={[localStyle.modalBgFull]}>
-                        {this.props.children}
-                    </View>
-                </Modal>
-            </View>
-        );
-    }
-
-    renderGrey = () => {
-        return (
-            <View style={[localStyle.container, Style.maxInputHeight]}>
-                <View style={[Style.yellowBg, localStyle.text]}>
-                    <Text>{this.props.title}</Text>
-                </View>
-                <View style={[Style.whiteBg, localStyle.button]}>
-                    <Button
-                        title={"Edit"}
-                        onPress={() => { this.showModal() }}
-                    >
-                    </Button>
-                </View>
-                <Modal
-                    visible={this.state.showModal}
-                    transparent={true}
-                    onRequestClose={ () => { this.hideModal() } }
-                    animationType={ this.props.animationType }
-                >
-                    <View style={[localStyle.modalBgGrey]}>
-                        {this.props.children}
-                    </View>
-                </Modal>
-            </View>
-        );
-    }
-
-    renderTransparent = () => {
-        return (
-            <View style={[localStyle.container, Style.maxInputHeight]}>
-                <View style={[Style.yellowBg, localStyle.text]}>
-                    <Text>{this.props.title}</Text>
-                </View>
-                <View style={[Style.whiteBg, localStyle.button]}>
-                    <Button
-                        title={"Edit"}
-                        onPress={() => { this.showModal() }}
-                    >
-                    </Button>
-                </View>
-                <Modal
-                    visible={this.state.showModal}
-                    transparent={true}
-                    onRequestClose={ () => { this.hideModal() } }
-                    animationType={ this.props.animationType }
-                >
-                    <View style={[localStyle.modalBgTransparent]}>
-                            {this.props.children}
-                    </View>
-                </Modal>
-            </View>
-
-        );
-    }
-
     modalStyle = () => {
         if(this.props.screenType === "full") {
             return localStyle.modalBgFull;
@@ -196,6 +120,9 @@ export default class ModalInput extends React.Component<Props, State>{
             <View style={[localStyle.container, Style.maxInputHeight]}>
                 <View style={[Style.yellowBg, localStyle.text]}>
                     <Text>{this.props.title}</Text>
+                </View>
+                <View style={[Style.whiteBg, localStyle.val]}>
+                    <Text>{this.props.value}</Text>
                 </View>
                 <View style={[Style.whiteBg, localStyle.button]}>
                     <Button

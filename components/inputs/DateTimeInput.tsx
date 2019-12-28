@@ -7,6 +7,9 @@ import Style from "../../styles/Style";
 
 interface Props {
     title: string;
+    type: "date" | "time" | "both"
+    value: Date
+    onValueChange: (date: Date) => void;
 }
 
 interface State {
@@ -42,7 +45,7 @@ export default class DateTimeInput extends React.Component<Props,State> {
         super(props);
 
         this.state = {
-            dateTime: new Date(),
+            dateTime: this.props.value,
             showModal: false,
             modalDateTime: new Date(),
         }
@@ -61,20 +64,38 @@ export default class DateTimeInput extends React.Component<Props,State> {
             dateTime: this.state.modalDateTime
         });
         this.modalInput.current.hideModal(); 
+        this.props.onValueChange(this.state.modalDateTime);
+    }
+
+    renderDateTime = (date: Date) => {
+        const dateStr = date.toDateString();
+        const timeStr = date.toTimeString().split(" ")[0];
+
+        if(this.props.type === "date") {
+            return dateStr;
+        }
+
+        if(this.props.type === "time") {
+            return timeStr;
+        }
+
+        return dateStr + " at " + timeStr;
     }
 
     render = () => {
         return (
             <ModalInput
-                title={"When?"}
+                title={this.props.title}
                 animationType={"fade"}
                 screenType={"grey"}
+                value={this.renderDateTime(this.state.dateTime)}
                 ref={this.modalInput}
             >
                 <View style={[Style.modalContainer, { backgroundColor: "white"}]}>
                     <DateTimePicker
                         onChange={this.onChange}
                         dateTime={this.state.dateTime}
+                        type={this.props.type}
                     >
                     </DateTimePicker>
                     <Button

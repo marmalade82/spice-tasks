@@ -4,7 +4,8 @@ import { Text, TextInput, View, Picker } from "react-native";
 import {
     ChoiceInput,
     StringInput,
-    ModalInput,
+    SaveModalInput,
+    ModalInput
 } from "../inputs/Inputs";
 import RecurringForm from "./RecurringForm";
 import Style from "../../styles/Style";
@@ -19,6 +20,7 @@ interface State {
     due_date: Date
     reward: Reward
     penalty: Penalty
+    recurData: RecurringData
 }
 
 interface Navigator {
@@ -60,8 +62,14 @@ const penalties: LabelValue[] = [
     return parseInt(a.value) - parseInt(b.value);
 });
 
+interface RecurringData {
+    recurs: string
+    date: Date
+}
+
 
 export default class AddGoalForm extends React.Component<Props, State> {
+    recurForm: React.RefObject<ModalInput>
     constructor(props: Props) {
         super(props);
 
@@ -71,7 +79,12 @@ export default class AddGoalForm extends React.Component<Props, State> {
             due_date: new Date(),
             reward: Reward.DICE,
             penalty: Penalty.NONE,
+            recurData: {
+                recurs: "never",
+                date: new Date(),
+            }
         }
+        this.recurForm = React.createRef();
     }
 
     onChangeText = (text: string) => {
@@ -88,7 +101,16 @@ export default class AddGoalForm extends React.Component<Props, State> {
         })
     }
 
+    renderRecurData = () => {
+        return this.state.recurData.recurs + " " + this.state.recurData.date.toDateString();
+    }
 
+    onRecurSave = (data: RecurringData) => {
+        this.setState({
+            recurData: data,
+        });
+        this.recurForm.current.hideModal();
+    }
 
     render = () => {
         return (
@@ -126,9 +148,15 @@ export default class AddGoalForm extends React.Component<Props, State> {
                     title={"Recurring?"} 
                     animationType={"fade"}
                     screenType={"grey"}
+                    value={this.renderRecurData()}
+                    ref={this.recurForm}
                 >
                     <View style={[Style.modalContainer, {backgroundColor: "white"}]}>
-                        <RecurringForm></RecurringForm>
+                        <RecurringForm
+                            data={this.state.recurData}
+                            onSave={this.onRecurSave}
+                        >
+                        </RecurringForm>
                     </View>
                 </ModalInput>
             </View>

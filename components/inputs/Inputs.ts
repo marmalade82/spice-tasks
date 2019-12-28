@@ -4,6 +4,7 @@ import StringInput from "./StringInput";
 import ModalInput from "./ModalInput";
 import ModalInputFullScreen from "./ModalInputFullScreen";
 import DateTimeInput from "./DateTimeInput";
+import SaveModalInput from "./SaveModalInput";
 import DateTimePicker from "./DateTimePicker";
 
 
@@ -14,4 +15,5 @@ export {
     ModalInputFullScreen,
     DateTimePicker,
     DateTimeInput,
+    SaveModalInput,
 }
