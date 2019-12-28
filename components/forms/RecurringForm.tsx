@@ -47,13 +47,44 @@ interface Data {
     date: Date;
 }
 
+const weekChoices = [
+    { label: "M"
+    , value: "monday"
+    , key: "0"
+    },
+    { label: "T"
+    , value: "tuesday"
+    , key: "1"
+    },
+    { label: "W"
+    , value: "wednesday"
+    , key: "2"
+    },
+    { label: "R"
+    , value: "thursday"
+    , key: "3"
+    },
+    { label: "F"
+    , value: "friday"
+    , key: "4"
+    },
+    { label: "S"
+    , value: "saturday"
+    , key: "5"
+    },
+    { label: "Su"
+    , value: "sunday"
+    , key: "6"
+    },
+]
+
 export default class RecurringForm extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            recurs: this.props.data.recurs ? this.props.data.recurs : "never",
-            date: this.props.data.date ? this.props.data.date : new Date(),
+            recurs: this.props.data ? this.props.data.recurs : "never",
+            date: this.props.data ? this.props.data.date : new Date(),
             time: new Date(),
             weeks: 1,
             days_of_week: 0,
@@ -113,13 +144,7 @@ export default class RecurringForm extends React.Component<Props, State> {
                 {this.renderIfNever()}
                 {this.renderIfOnce()}
                 {this.renderIfDaily()}
-                <DateTimeInput
-                    title={"When?"}
-                    type={"date"}
-                    onValueChange={this.onDateChange}
-                    value={this.state.date}
-                >
-                </DateTimeInput>
+                {this.renderIfWeekly()}
                 <Button title="Save"
                     onPress={() => {this.props.onSave(this.data())}}
                 >
@@ -130,9 +155,6 @@ export default class RecurringForm extends React.Component<Props, State> {
 
     renderIfNever = () => {
         if(this.state.recurs === "never") {
-            return (
-                <View></View>
-            );
         }
     }
 
@@ -170,7 +192,7 @@ export default class RecurringForm extends React.Component<Props, State> {
             return (
                 <MultipleInput
                     title={"Days of Week"}
-                    choices={[]}
+                    choices={weekChoices}
                 >
 
                 </MultipleInput>

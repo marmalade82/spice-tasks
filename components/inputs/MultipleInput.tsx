@@ -1,7 +1,7 @@
 import React from "react";
-import { View , Text } from "react-native";
-import { number } from "prop-types";
+import { View , Text, StyleSheet } from "react-native";
 import MultipleInputChoice from "./MultipleInputChoice";
+import Style from "../../styles/Style";
 
 
 
@@ -20,6 +20,29 @@ interface LabelValue {
     key: string;
 }
 
+const localStyle = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: "row",
+        alignItems: "stretch",
+        borderColor: "grey",
+        borderWidth: 1,
+    },
+
+    text: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+
+    choices: {
+        flex: 2,
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+    },
+});
+
 export default class MultipleInput extends React.Component<Props,State> {
     constructor(props: Props) {
         super(props);
@@ -37,13 +60,26 @@ export default class MultipleInput extends React.Component<Props,State> {
 
     }
 
+    inputChoiceStyle = () => {
+        if(this.props.choices.length) {
+            return { 
+                maxWidth: (90 / this.props.choices.length).toString() + "%",
+            }
+        } else {
+            return {};
+        }
+
+    }
+
     renderChoices = () => {
-        this.props.choices.map((lv, index) => {
+        return this.props.choices.map((lv, index) => {
             return (
                 <MultipleInputChoice
                     title={lv.label} 
                     checked={this.getChecked(this.state.selected, index)}
                     onCheck={(val: boolean) => { this.check(index, val)}}
+                    style={ this.inputChoiceStyle() }
+                    key={lv.key}
                 >
                 </MultipleInputChoice>
             );
@@ -52,12 +88,12 @@ export default class MultipleInput extends React.Component<Props,State> {
 
     render = () => {
         return (
-            <View>
-                <View>
+            <View style={[localStyle.container, Style.maxInputHeight]}>
+                <View style={[localStyle.text, Style.yellowBg]}>
                     <Text>{this.props.title}</Text>
                 </View>
-                <View>
-                    {this.renderChoices}
+                <View style={[localStyle.choices, Style.redBg]}>
+                    {this.renderChoices()}
                 </View>
             </View>
         );
