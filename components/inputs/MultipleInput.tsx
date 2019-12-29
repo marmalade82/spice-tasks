@@ -52,13 +52,31 @@ export default class MultipleInput extends React.Component<Props,State> {
         }
     }
 
-    getChecked = (bitmap: number, index: number) => {
-        return true;
+    getChecked = (index: number) => {
+        // Returns true if bitmap is 1 at index; else returns false
+        return ((this.state.selected >> index) & 1) === 1;
     }
 
-    check = (index: number, val: boolean) => {
+    check = (index: number) => {
+        // flips the bit of the bitmap at the index.
 
+        this.setState((prev, props) => {
+            const newVal = (1 << index) ^ prev.selected
+            return {
+                selected: newVal
+
+            }
+        });
     }
+
+    /*
+
+       X   0   1   =   NOT     0   1   = 
+       0   0   1        0      1   0
+
+       1   1   0        1      0   1
+
+    */
 
     inputChoiceStyle = () => {
         if(this.props.choices.length) {
@@ -76,8 +94,8 @@ export default class MultipleInput extends React.Component<Props,State> {
             return (
                 <MultipleInputChoice
                     title={lv.label} 
-                    checked={this.getChecked(this.state.selected, index)}
-                    onCheck={(val: boolean) => { this.check(index, val)}}
+                    checked={this.getChecked(index)}
+                    onCheck={() => { this.check(index)}}
                     style={ this.inputChoiceStyle() }
                     key={lv.key}
                 >
@@ -90,7 +108,7 @@ export default class MultipleInput extends React.Component<Props,State> {
         return (
             <View style={[localStyle.container, Style.maxInputHeight]}>
                 <View style={[localStyle.text, Style.yellowBg]}>
-                    <Text>{this.props.title}</Text>
+                    <Text>{ this.props.title }</Text>
                 </View>
                 <View style={[localStyle.choices, Style.redBg]}>
                     {this.renderChoices()}

@@ -1,13 +1,14 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import Style from "../../styles/Style";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 
 
 interface Props {
     title: string
     checked: boolean
-    onCheck: (val: boolean) => void;
+    onCheck: () => void;
     style: any;
     key: string;
 }
@@ -22,29 +23,51 @@ export default class MultipleInputChoice extends React.Component<Props, State> {
         super(props);
 
         this.localStyle = {
-            container: {
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                borderColor: "grey",
-                borderWidth: 1,
-                aspectRatio: 1,
-                borderRadius: 50,
-            },
             text: {
 
             },
         }
     }
 
+    containerStyle: () => StyleProp<ViewStyle> = () => {
+        return {
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            borderColor: this.props.checked ? "green" : "grey",
+            borderWidth: 1,
+            aspectRatio: 1,
+            borderRadius: 50,
+        };
+    }
 
+    touchableStyle: () => StyleProp<ViewStyle> = () => {
+        return {
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            aspectRatio: 1,
+            borderRadius: 50,
+            backgroundColor: this.props.checked ? "lightyellow" : "lightblue",
+        };
+    }
+
+    onPress = () => {
+        this.props.onCheck();
+    }
 
     render = () => {
         return (
             <View 
-                style={[this.localStyle.container, Style.greenBg, this.props.style]}
+                style={[this.containerStyle(), Style.greenBg, this.props.style]}
             >
-                <Text>{this.props.title}</Text>
+                <TouchableHighlight
+                    style={[this.touchableStyle()]}
+                    underlayColor={'white'}
+                    onPress={ this.onPress }
+                >
+                    <Text>{this.props.title}</Text>
+                </TouchableHighlight>
             </View>
 
         );
