@@ -5,9 +5,13 @@ import {
     ChoiceInput,
     StringInput,
     SaveModalInput,
-    ModalInput
+    ModalInput,
+    DateTimeInput,
+    MultipleInput,
+    NumberInput,
 } from "../inputs/Inputs";
 import RecurringForm from "./RecurringForm";
+import StreakForm from "./AddGoalForm/StreakForm";
 import Style from "../../styles/Style";
 
 interface Props {
@@ -17,10 +21,21 @@ interface Props {
 interface State {
     title: string
     recurring: boolean
-    due_date: Date
+    start_date: Date
+    due_date: Date;
     reward: Reward
     penalty: Penalty
     recurData: RecurringData
+    type: "streak" | "normal"
+    streakData: StreakData
+}
+
+interface StreakData {
+    minimum: number
+    type: "daily" | "weekly" | "monthly"
+    day_start: Date
+    week_start: number;
+    month_start: number;
 }
 
 interface Navigator {
@@ -75,13 +90,22 @@ export default class AddGoalForm extends React.Component<Props, State> {
 
         this.state = {
             title: "",
+            type: "normal",
             recurring: false,
-            due_date: new Date(),
+            start_date: new Date(),
+            due_date: null,
             reward: Reward.DICE,
             penalty: Penalty.NONE,
             recurData: {
                 recurs: "never",
                 date: new Date(),
+            },
+            streakData: {
+                minimum: 2,
+                type: "daily",
+                day_start: new Date(),
+                week_start: 0,
+                month_start: 1,
             }
         }
         this.recurForm = React.createRef();
@@ -112,6 +136,42 @@ export default class AddGoalForm extends React.Component<Props, State> {
         this.recurForm.current.hideModal();
     }
 
+    onChangeStartDate = (date: Date) => {
+        this.setState({
+            start_date: date
+        });
+    }
+
+    onChangeDueDate = (date: Date) => {
+        this.setState({
+            due_date: date
+        });
+    }
+
+    onChangeType = (type: string) => {
+        if(type === "streak" || type === "normal") {
+            this.setState({
+                type: type
+            });
+        } else {
+            this.setState({
+                type: "normal"
+            });
+        }
+    }
+
+    onChangeMinimum = (type: number) => {
+
+    }
+
+    renderStreak = () => {
+        if(this.state.type === "streak") {
+            <StreakForm>
+
+            </StreakForm>
+        }
+    };
+
     render = () => {
         return (
             <View style={[Style.container, Style.blueBg]}>
@@ -120,8 +180,29 @@ export default class AddGoalForm extends React.Component<Props, State> {
                     value={this.state.title}
                     placeholder={"What do you want to achieve?"}
                     onChangeText={this.onChangeText}
-                >
-                </StringInput>
+                />
+
+                <ChoiceInput
+                    title={"Type"}
+                    selectedValue={this.state.type}
+                    choices={[]}
+                    onValueChange={this.onChangeType}
+                />
+
+
+                <DateTimeInput
+                    title={"Starts on"}
+                    type={"date"}
+                    value={ this.state.start_date }
+                    onValueChange={ this.onChangeStartDate }
+                />
+
+                <DateTimeInput
+                    title={"Due on"} 
+                    type={"date"}
+                    value={ this.state.due_date }
+                    onValueChange={ this.onChangeDueDate }
+                />
 
                 <ChoiceInput
                     title={"Reward"}
@@ -130,9 +211,7 @@ export default class AddGoalForm extends React.Component<Props, State> {
                         this.setState({reward: parseInt(itemValue)})  
                     }}
                     choices={rewards}
-                >
-
-                </ChoiceInput>
+                />
 
                 <ChoiceInput
                     title={"Penalty"}
@@ -141,8 +220,7 @@ export default class AddGoalForm extends React.Component<Props, State> {
                         this.setState({penalty: parseInt(itemValue)})  
                     }}
                     choices={penalties}
-                >
-                </ChoiceInput>
+                />
 
                 <ModalInput
                     title={"Recurring?"} 
@@ -163,5 +241,3 @@ export default class AddGoalForm extends React.Component<Props, State> {
         )
     }
 }
-                /*<Text>Add Goal!</Text>
-                <DateTimePicker></DateTimePicker>*/

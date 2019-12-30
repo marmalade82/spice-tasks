@@ -7,7 +7,7 @@ import DateTimeInput from "./DateTimeInput";
 import SaveModalInput from "./SaveModalInput";
 import DateTimePicker from "./DateTimePicker";
 import MultipleInput from "./MultipleInput";
-
+import NumberInput from "./NumberInput";
 
 export {
     ChoiceInput,
@@ -18,4 +18,5 @@ export {
     DateTimeInput,
     SaveModalInput,
     MultipleInput,
+    NumberInput,
 }
