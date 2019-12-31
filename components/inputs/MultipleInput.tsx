@@ -8,6 +8,8 @@ import Style from "../../styles/Style";
 interface Props {
     title: string
     choices: LabelValue[]
+    values: string[]
+    onValueChange: (val: string[]) => void // comma separated list of chosen values
 }
 
 interface State {
@@ -47,36 +49,39 @@ export default class MultipleInput extends React.Component<Props,State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = {
-            selected: 0
-        }
     }
 
     getChecked = (index: number) => {
-        // Returns true if bitmap is 1 at index; else returns false
-        return ((this.state.selected >> index) & 1) === 1;
+        let item = this.props.values.find((val) => {
+            return val === this.props.choices[index].value;
+        });
+
+        return item !== undefined;
     }
 
     check = (index: number) => {
-        // flips the bit of the bitmap at the index.
-
-        this.setState((prev, props) => {
-            const newVal = (1 << index) ^ prev.selected
-            return {
-                selected: newVal
-
-            }
-        });
+        let values = this.newValues(this.props.choices[index].value);
+        this.props.onValueChange(values)
     }
 
-    /*
+    newValues = (choice: string) => {
+        let values = [];
+        const oldValues = this.props.values;
+        let wasOld = false
+        for(let i = 0; i < oldValues.length; i++) {
+            if(oldValues[i] !== choice) {
+                values.push(oldValues[i]);
+            } else {
+                wasOld = true;
+            }
+        }
 
-       X   0   1   =   NOT     0   1   = 
-       0   0   1        0      1   0
+        if(!wasOld) {
+            values.push(choice);
+        }
 
-       1   1   0        1      0   1
-
-    */
+        return values;
+    }
 
     inputChoiceStyle = () => {
         if(this.props.choices.length) {

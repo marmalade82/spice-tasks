@@ -14,7 +14,7 @@ interface State {
     date: Date;
     time: Date;
     weeks: number
-    days_of_week: number; // bitmap of first 7 bits in a number.
+    days_of_week: string[]; // bitmap of first 7 bits in a number.
     months: number;
     days_of_month: number; // bitmap of first 12 bits in a number
 }
@@ -87,7 +87,7 @@ export default class RecurringForm extends React.Component<Props, State> {
             date: this.props.data ? this.props.data.date : new Date(),
             time: new Date(),
             weeks: 1,
-            days_of_week: 0,
+            days_of_week: ["sunday"],
             months: 1,
             days_of_month: 0,
         }
@@ -128,6 +128,12 @@ export default class RecurringForm extends React.Component<Props, State> {
         if(this.props.onDataChange) {
             this.props.onDataChange(this.data());
         }
+    }
+
+    onChangeDaysOfWeek = (values: string[]) => {
+        this.setState({
+            days_of_week: values
+        });
     }
 
     render = () => {
@@ -193,9 +199,9 @@ export default class RecurringForm extends React.Component<Props, State> {
                 <MultipleInput
                     title={"Days of Week"}
                     choices={weekChoices}
-                >
-
-                </MultipleInput>
+                    values={this.state.days_of_week}
+                    onValueChange={this.onChangeDaysOfWeek}
+                />
             );
         }
     }

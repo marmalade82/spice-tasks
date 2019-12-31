@@ -28,6 +28,7 @@ export default class MenuScreen extends React.Component<Props, State> {
                 <Button title="Add Goal" onPress={() => {this.navigate('AddGoal')}}></Button>
                 <Button title="Goal" onPress={() => {this.navigate('Goal')}}></Button>
                 <Button title="Recurring" onPress={() => {this.navigate('Recurring')}}></Button>
+                <Button title="Streak" onPress={() => {this.navigate('Streak')}}></Button>
             </View>
         )
     }

@@ -93,7 +93,7 @@ export default class AddGoalForm extends React.Component<Props, State> {
             type: "normal",
             recurring: false,
             start_date: new Date(),
-            due_date: null,
+            due_date: new Date(),
             reward: Reward.DICE,
             penalty: Penalty.NONE,
             recurData: {
@@ -185,7 +185,7 @@ export default class AddGoalForm extends React.Component<Props, State> {
                 <ChoiceInput
                     title={"Type"}
                     selectedValue={this.state.type}
-                    choices={[]}
+                    choices={typeChoices}
                     onValueChange={this.onChangeType}
                 />
 
@@ -241,3 +241,14 @@ export default class AddGoalForm extends React.Component<Props, State> {
         )
     }
 }
+
+const typeChoices = [
+    { label: "Normal"
+    , value: "normal"
+    , key: "1"
+    },
+    { label: "Streak"
+    , value: "streak"
+    , key: "0"
+    },
+]

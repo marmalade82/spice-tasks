@@ -1,8 +1,8 @@
-import AddGoalForm from "./form/AddGoalForm";
+import AddGoalForm from "./forms/AddGoalForm";
 import GoalList from "./GoalList";
 import Home from "./Home";
 import Rewards from "./Rewards";
-import RecurringForm from "./form/RecurringForm";
+import RecurringForm from "./forms/RecurringForm";
 
 export {
     RecurringForm,

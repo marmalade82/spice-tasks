@@ -1,5 +1,8 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { 
+    View, Text, TextInput, StyleSheet, 
+    Alert, KeyboardAvoidingView,
+} from "react-native";
 import Style from "../../styles/Style";
 
 interface Props {
@@ -13,7 +16,7 @@ interface Props {
 }
 
 interface State {
-    number: number
+    //number: number
 }
 
 const localStyle = StyleSheet.create({
@@ -41,12 +44,41 @@ export default class NumberInput extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            number: this.props.value
+     //       number: this.props.value
         }
     }
 
     onChangeText = (number: string) => {
         // TODO: Write way to validate the number string to be only for numbers 
+
+        const n = parseInt(number)
+        this.props.onValueChange(n);
+
+    }
+
+    onEndEditing = () => {
+        if (this.props.maximum !== undefined && this.props.maximum < this.props.value) {
+            Alert.alert("Maximum exceeded",
+                    "Please enter a number less than " + this.props.maximum.toString());
+        }
+        
+        if (this.props.minimum !== undefined && this.props.minimum > this.props.value) {
+            Alert.alert("Minimum not met", 
+                    "Please enter a number greater than " + this.props.minimum.toString());
+
+        }
+    }
+
+    onBlur = () => {
+        Alert.alert("hello", "hello");
+    }
+
+    value = () => {
+        if(isNaN(this.props.value)) {
+            return '';
+        }
+
+        return this.props.value.toString()
     }
 
     render = () => {
@@ -57,10 +89,11 @@ export default class NumberInput extends React.Component<Props, State> {
                 </View>
                 <View style={[Style.whiteBg, localStyle.input]}>
                     <TextInput
-                        value={this.props.value.toString()} 
+                        value={this.value()} 
                         onChangeText={this.onChangeText}
-                    >
-                    </TextInput>
+                        keyboardType={"number-pad"}
+                        onEndEditing={this.onEndEditing}
+                    />
                 </View>
             </View>
         );
