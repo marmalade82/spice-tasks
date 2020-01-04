@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Button } from "react-native";
-import Style from "../styles/Style";
+import Style from "../../styles/Style";
 
 interface Props {
     navigation: any;

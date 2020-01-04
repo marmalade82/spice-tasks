@@ -1,7 +1,8 @@
 import React from "react";
 import {View, Button, Text, StyleSheet } from "react-native";
-import GoalList from "../components/GoalList";
-import Style from "../styles/Style";
+//import GoalList from "../components/GoalList";
+import GoalList from "../../components/lists/GoalList/GoalList";
+import Style from "../../styles/Style";
 
 interface Props {
     navigation: any
@@ -25,7 +26,11 @@ export default class GoalListScreen extends React.Component<Props> {
     render = () => {
         return (
             <View style={[Style.container, Style.yellowBg]}>
-                <GoalList style={[Style.blueBg]}></GoalList>
+                <GoalList 
+                    registerChild={() => {return () => {}}}
+                    initialData={{title: "hi"}}
+                >
+                </GoalList>
                 <View style={style.button}>
                     <Button
                         title={"add"}

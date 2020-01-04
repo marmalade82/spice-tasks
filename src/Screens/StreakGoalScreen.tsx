@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
-import Style from "../styles/Style";
-import StreakForm from "../components/forms/AddGoalForm/StreakForm";
+import Style from "../../styles/Style";
+import StreakForm from "../../components/forms/AddGoalForm/StreakForm";
 
 
 export default class StreakGoalScreen extends React.Component {

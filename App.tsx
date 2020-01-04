@@ -1,5 +1,5 @@
 import React from 'react';
-import * as Screens from "./screens/Screens";
+import * as Screens from "src/Screens";
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Button } from "react-native";

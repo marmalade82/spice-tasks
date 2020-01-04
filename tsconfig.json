@@ -8,6 +8,10 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "strictNullChecks": true,
-    "strictPropertyInitialization": true
+    "strictPropertyInitialization": true,
+    "baseUrl": ".",
+    "paths": {
+      "src/*": ["src/*"]
+    },
   }
 }

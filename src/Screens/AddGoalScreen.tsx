@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
-import { AddGoalForm} from "../components/Components";
-import Style from "../styles/Style";
+import { AddGoalForm} from "../../components/Components";
+import Style from "../../styles/Style";
 import { StyleSheet } from "react-native";
 
 interface Props {
