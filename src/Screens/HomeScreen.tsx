@@ -1,7 +1,7 @@
 import React from "react";
-import Home from "../../components/Home";
+import Home from "src/Home";
 import { View, Button } from "react-native";
-import Style from "../../styles/Style";
+import Style from "src/Style/Style";
 
 interface Props {
     navigation: any;

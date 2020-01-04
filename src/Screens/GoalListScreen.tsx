@@ -1,8 +1,8 @@
 import React from "react";
 import {View, Button, Text, StyleSheet } from "react-native";
 //import GoalList from "../components/GoalList";
-import GoalList from "../../components/lists/GoalList/GoalList";
-import Style from "../../styles/Style";
+import GoalList from "src/Components/Lists/GoalList";
+import Style from "src/Style/Style";
 
 interface Props {
     navigation: any

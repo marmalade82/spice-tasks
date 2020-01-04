@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import Style from "../../styles/Style";
-import { RecurringForm } from "../../components/Components";
+import Style from "src/Style/Style";
+import { RecurringForm } from "src/Components";
 
 interface Props {
 
