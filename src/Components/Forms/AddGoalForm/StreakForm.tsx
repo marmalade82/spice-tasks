@@ -8,20 +8,18 @@ import {
 } from "src/Inputs";
 import { number } from "prop-types";
 import Style from "src/Style/Style";
-import {
-    StreakFormController,
-    Data, Day,
-} from "./StreakFormController";
-import {
-    ControllerInstance, Controller,
-    Child
-} from "../../../../controllers/Controller";
+import { DayOfWeek } from "lib/recurrence";
 
 interface Props {
-    registerChild?: (child: Child<Data>) => void
+
 }
 
-interface State extends Data {
+interface State {
+    minimum: number,
+    type: "daily" | "weekly" | "monthly"
+    daily_start: Date,
+    weekly_start: string,
+    monthly_start: number,
 }
 
 const localStyle = StyleSheet.create({
@@ -31,7 +29,6 @@ const localStyle = StyleSheet.create({
 })
 
 export default class StreakForm extends React.Component<Props, State> {
-    controller: ControllerInstance<Data>
     constructor(props: Props) {
         super(props);
         const initialState: State = {
@@ -41,22 +38,18 @@ export default class StreakForm extends React.Component<Props, State> {
             weekly_start: "sunday",
             monthly_start: 1,
         }
-        this.controller = new StreakFormController(initialState);
-        this.controller.subscribe(this);
-        if(this.props.registerChild) {
-            this.props.registerChild(this.controller);
-        }
+
         this.state = initialState;
     }
 
 
     onChangeMinimum = (val: number) => {
-        this.controller.commit({
+        this.setState({
             minimum: val
         });
     }
 
-    data: () => Data = () => {
+    data: () => State = () => {
         return {
             minimum: this.state.minimum,
             type: this.state.type,
@@ -69,34 +62,34 @@ export default class StreakForm extends React.Component<Props, State> {
 
     onChangeType = (val: string) => {
         if(val === "daily" || val === "weekly" || val === "monthly") {
-            this.controller.commit({
+            this.setState({
                 type: val
             });
         } else {
-            this.controller.commit({
+            this.setState({
                 type: "daily"
             })
         }
     }
 
     onChangeDailyStart = (val: Date) => {
-        this.controller.commit({
+        this.setState({
             daily_start: val
         });
     }
 
     onChangeWeeklyStart = (vals: string[]) => {
         if(vals.length > 0) {
-            this.controller.commit({
-                weekly_start: vals[vals.length - 1] as Day
+            this.setState({
+                weekly_start: vals[vals.length - 1]
             });
         } else {
-            this.controller.commit({});
+            this.setState({});
         }
     }
 
     onChangeMonthlyStart = (val: number) => {
-        this.controller.commit({
+        this.setState({
             monthly_start: val
         });
     }

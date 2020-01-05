@@ -10,13 +10,6 @@ import {
     MultipleInput,
     NumberInput,
 } from "src/Inputs";
-import {
-    AddGoalFormController,
-    Data
-} from "../../../components/forms/AddGoalFormController";
-import {
-    ControllerInstance
-} from "../../../controllers/Controller";
 import RecurringForm from "src/Components/Forms/RecurringForm";
 import StreakForm from "src/Components/Forms/AddGoalForm/StreakForm";
 import Style from "src/Style/Style";
@@ -25,7 +18,12 @@ interface Props {
     navigation: Navigator
 }
 
-interface State extends Data {
+interface State {
+    title: string;
+    type: "normal" | "streak";
+    recurring: boolean;
+    start_date: Date;
+    due_date: Date;
     reward: Reward
     penalty: Penalty
     recurData: RecurringData
@@ -87,7 +85,6 @@ interface RecurringData {
 
 export default class AddGoalForm extends React.Component<Props, State> {
     recurForm: React.RefObject<ModalInput>
-    controller: ControllerInstance<Data>
     constructor(props: Props) {
         super(props);
 
@@ -113,15 +110,12 @@ export default class AddGoalForm extends React.Component<Props, State> {
         }
 
         this.state = initialState;
-        this.controller = new AddGoalFormController(initialState);
-        this.controller.subscribe(this);
         this.recurForm = React.createRef();
     }
 
-    onChangeText = (text: string) => {
-        this.controller.commit({
-            title: text,
-            recurring: false,
+    onChangeTitle = (text: string) => {
+        this.setState({
+            title: text
         });
     }
 
@@ -148,24 +142,25 @@ export default class AddGoalForm extends React.Component<Props, State> {
     }
 
     onChangeStartDate = (date: Date) => {
-        this.controller.commit({
+
+        this.setState({
             start_date: date
         });
     }
 
     onChangeDueDate = (date: Date) => {
-        this.controller.commit({
+        this.setState({
             due_date: date
         });
     }
 
     onChangeType = (type: string) => {
         if(type === "streak" || type === "normal") {
-            this.controller.commit({
+            this.setState({
                 type: type
             });
         } else {
-            this.controller.commit({
+            this.setState({
                 type: "normal"
             });
         }
@@ -190,7 +185,7 @@ export default class AddGoalForm extends React.Component<Props, State> {
                     title={"Summary"}
                     value={this.state.title}
                     placeholder={"What do you want to achieve?"}
-                    onChangeText={this.onChangeText}
+                    onChangeText={this.onChangeTitle}
                 />
 
                 <ChoiceInput

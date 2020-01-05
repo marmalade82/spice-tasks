@@ -1,6 +1,5 @@
 import React from "react";
 import {View, Button, Text, StyleSheet } from "react-native";
-//import GoalList from "../components/GoalList";
 import GoalList from "src/Components/Lists/GoalList";
 import Style from "src/Style/Style";
 
@@ -27,8 +26,6 @@ export default class GoalListScreen extends React.Component<Props> {
         return (
             <View style={[Style.container, Style.yellowBg]}>
                 <GoalList 
-                    registerChild={() => {return () => {}}}
-                    initialData={{title: "hi"}}
                 >
                 </GoalList>
                 <View style={style.button}>
