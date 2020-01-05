@@ -1,5 +1,5 @@
 import React from "react";
-import Home from "src/Home";
+import Home from "src/Components/Home";
 import { View, Button } from "react-native";
 import Style from "src/Style/Style";
 

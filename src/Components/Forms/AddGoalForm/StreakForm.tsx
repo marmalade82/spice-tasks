@@ -5,7 +5,7 @@ import {
 import { 
     NumberInput, ChoiceInput, DateTimeInput,
     MultipleInput
-} from "src/Inputs";
+} from "src/Components/Inputs";
 import { number } from "prop-types";
 import Style from "src/Style/Style";
 import { DayOfWeek } from "lib/recurrence";

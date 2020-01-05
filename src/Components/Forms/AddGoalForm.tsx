@@ -9,7 +9,7 @@ import {
     DateTimeInput,
     MultipleInput,
     NumberInput,
-} from "src/Inputs";
+} from "src/Components/Inputs";
 import RecurringForm from "src/Components/Forms/RecurringForm";
 import StreakForm from "src/Components/Forms/AddGoalForm/StreakForm";
 import Style from "src/Style/Style";

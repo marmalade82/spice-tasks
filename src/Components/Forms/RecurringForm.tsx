@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, Button, } from "react-native";
 import Style from "src/Style/Style";
-import { ChoiceInput, DateTimeInput, MultipleInput } from "src/Inputs";
+import { ChoiceInput, DateTimeInput, MultipleInput } from "src/Components/Inputs";
 
 interface Props {
     onDataChange?: (data: Data) => void;

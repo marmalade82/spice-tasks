@@ -4,7 +4,7 @@ import {
     StringInput,
     DateTimeInput,
 
-} from "src/Inputs";
+} from "src/Components/Inputs";
 import { View } from "react-native";
 
 interface Props {

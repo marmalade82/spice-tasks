@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View } from 'react-native';
-import Rewards from "src/Rewards";
+import Rewards from "src/Components/Lists/Rewards";
 import Style from "src/Style/Style";
 
 
