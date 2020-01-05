@@ -17,4 +17,23 @@ interface DataProps<Data> {
 export default abstract class DataComponent<Props, State extends Data, Data> 
                                             extends React.Component<Props & DataProps<Data>, State> {
 
+    constructor(props: Props & DataProps<Data>) {
+        super(props);
+    }
+
+    
+    reviseState = <K extends keyof Data>(p: Pick<State, K>) => {
+        let state = Object.assign({}, this.state) as Data;
+        Object.assign(state, p) as Data;
+
+        return state;
+    }
+
+    setData = <K extends keyof Data>(d: Pick<State, K>) => {
+        if(this.props.data === undefined) {
+            this.setState(d);
+        }
+
+        this.props.onDataChange(this.reviseState(d));
+    }
 }

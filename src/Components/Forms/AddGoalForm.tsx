@@ -1,4 +1,5 @@
 import React from "react";
+import DataComponent from "src/Components/base/DataComponent";
 
 import { Text, TextInput, View, Picker } from "react-native";
 import {
@@ -16,6 +17,7 @@ import Style from "src/Style/Style";
 
 interface Props {
     navigation: Navigator
+    onDataChange: (d: State) => void;
 }
 
 interface State {
@@ -83,7 +85,7 @@ interface RecurringData {
 }
 
 
-export default class AddGoalForm extends React.Component<Props, State> {
+export default class AddGoalForm extends DataComponent<Props, State, State> {
     recurForm: React.RefObject<ModalInput>
     constructor(props: Props) {
         super(props);
@@ -114,25 +116,14 @@ export default class AddGoalForm extends React.Component<Props, State> {
     }
 
     onChangeTitle = (text: string) => {
-        this.setState({
+        this.setData({
             title: text
-        });
-    }
-
-    renderChoices = (choices: LabelValue[]) => {
-        return choices.map((choice: LabelValue) => {
-            return (
-                <Picker.Item label={choice.label} value={choice.value}/>
-            );
         })
     }
 
-    renderRecurData = () => {
-        return this.state.recurData.recurs + " " + this.state.recurData.date.toDateString();
-    }
 
     onRecurSave = (data: RecurringData) => {
-        this.setState({
+        this.setData({
             recurData: data,
         });
 
@@ -142,25 +133,24 @@ export default class AddGoalForm extends React.Component<Props, State> {
     }
 
     onChangeStartDate = (date: Date) => {
-
-        this.setState({
+        this.setData({
             start_date: date
         });
     }
 
     onChangeDueDate = (date: Date) => {
-        this.setState({
+        this.setData({
             due_date: date
         });
     }
 
     onChangeType = (type: string) => {
         if(type === "streak" || type === "normal") {
-            this.setState({
+            this.setData({
                 type: type
             });
         } else {
-            this.setState({
+            this.setData({
                 type: "normal"
             });
         }
@@ -170,13 +160,6 @@ export default class AddGoalForm extends React.Component<Props, State> {
 
     }
 
-    renderStreak = () => {
-        if(this.state.type === "streak") {
-            <StreakForm>
-
-            </StreakForm>
-        }
-    };
 
     render = () => {
         return (
@@ -214,7 +197,7 @@ export default class AddGoalForm extends React.Component<Props, State> {
                     title={"Reward"}
                     selectedValue={this.state.reward.toString()}
                     onValueChange={(itemValue, itemIndex) => {
-                        this.setState({reward: parseInt(itemValue)})  
+                        this.setData({reward: parseInt(itemValue)})  
                     }}
                     choices={rewards}
                 />
@@ -223,7 +206,7 @@ export default class AddGoalForm extends React.Component<Props, State> {
                     title={"Penalty"}
                     selectedValue={this.state.penalty.toString()}
                     onValueChange={(itemValue, itemIndex) => {
-                        this.setState({penalty: parseInt(itemValue)})  
+                        this.setData({penalty: parseInt(itemValue)})  
                     }}
                     choices={penalties}
                 />
@@ -246,7 +229,29 @@ export default class AddGoalForm extends React.Component<Props, State> {
             </View>
         )
     }
+
+    renderStreak = () => {
+        if(this.state.type === "streak") {
+            <StreakForm>
+
+            </StreakForm>
+        }
+    };
+
+    renderChoices = (choices: LabelValue[]) => {
+        return choices.map((choice: LabelValue) => {
+            return (
+                <Picker.Item label={choice.label} value={choice.value}/>
+            );
+        })
+    }
+
+    renderRecurData = () => {
+        return this.state.recurData.recurs + " " + this.state.recurData.date.toDateString();
+    }
 }
+
+
 
 const typeChoices = [
     { label: "Normal"
@@ -258,3 +263,10 @@ const typeChoices = [
     , key: "0"
     },
 ]
+
+class EventHandler<Props, State extends Data, Data> {
+    dataComponent: DataComponent<Props, State, Data>
+    constructor(d: DataComponent<Props, State, Data>) {
+        this.dataComponent = d;
+    }
+}
