@@ -10,6 +10,7 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "baseUrl": ".",
+    "target":"ES6",
     "paths": {
       "src/*": ["src/*"]
     },
