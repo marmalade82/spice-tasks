@@ -11,6 +11,7 @@
     "strictPropertyInitialization": true,
     "baseUrl": ".",
     "target":"ES6",
+    "experimentalDecorators": true,
     "paths": {
       "src/*": ["src/*"]
     },

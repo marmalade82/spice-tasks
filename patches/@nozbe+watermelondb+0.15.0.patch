@@ -1,0 +1,23 @@
+diff --git a/node_modules/@nozbe/watermelondb/utils/common/makeDecorator/index.d.ts b/node_modules/@nozbe/watermelondb/utils/common/makeDecorator/index.d.ts
+index 0919cf0..ef8f468 100644
+--- a/node_modules/@nozbe/watermelondb/utils/common/makeDecorator/index.d.ts
++++ b/node_modules/@nozbe/watermelondb/utils/common/makeDecorator/index.d.ts
+@@ -1,7 +1,7 @@
+ declare module '@nozbe/watermelondb/utils/common/makeDecorator' {
+   import { ReplaceReturn } from '@nozbe/watermelondb/utils/common'
+ 
+-  export type Descriptor = Object
++  export type Descriptor = any;
+   export type RawDecorator = (target: Object, key: string, descriptor: Descriptor) => Descriptor
+   export type RawDecoratorFactory<T extends any[]> = (...any: T) => RawDecorator
+ 
+@@ -9,7 +9,8 @@ declare module '@nozbe/watermelondb/utils/common/makeDecorator' {
+     Args extends any[],
+     Factory extends RawDecoratorFactory<Args>
+     // TODO: fix
+-  > = ReplaceReturn<Args, Descriptor | RawDecorator, Factory>
++  > = any;
++  //> = ReplaceReturn<Args, Descriptor | RawDecorator, Factory>
+ 
+   export default function makeDecorator<
+     Args extends any[],
