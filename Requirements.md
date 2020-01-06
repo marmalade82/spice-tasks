@@ -3,10 +3,15 @@
 This document outlines the user and business requirements for the Spice project.
 
 **Table of Contents**
-1. [Goals](#Goals)
+- [Tasks](#Tasks)
+- [Goals](#Goals)
     - [Adding a Goal](#Adding-a-Goal)
-2. [Rewards](#Rewards)
-3. [Penalties](#Penalties)
+- [Rewards](#Rewards)
+- [Penalties](#Penalties)
+
+## Tasks
+
+As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenever something needs to be done, a Task contains the details about _what_ needs to be done.
 
 ## Goals
 
