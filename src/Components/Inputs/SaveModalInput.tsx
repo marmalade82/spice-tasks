@@ -43,13 +43,17 @@ export default function createSaveModalInput
         , FormProps
         , FormState extends FormData
         , FormData
-        > (DataComponent: new (props: FormProps & DataProps<FormData>) => T) {
+        > (DataComponent: new (props: FormProps & DataProps<FormData>) => T, Default: FormData) {
 
     return (
         class SaveModalInput
-                                 extends React.Component<Props<FormProps, FormData>, State<FormData>> {
+                extends React.Component<Props<FormProps, FormData>, State<FormData>> {
             constructor(props: Props<FormProps, FormData>) {
                 super(props);
+
+                this.state = {
+                    formData: Default
+                }
             }
 
             onPress = () => {

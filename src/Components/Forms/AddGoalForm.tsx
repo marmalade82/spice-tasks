@@ -84,7 +84,7 @@ const Default: State = {
 }
 
 export default class AddGoalForm extends DataComponent<Props, State, State> {
-    RecurModalForm = createSaveModalInput(RecurringForm);
+    RecurModalForm = createSaveModalInput(RecurringForm, RecurringDefault);
     constructor(props: Props) {
         super(props);
 

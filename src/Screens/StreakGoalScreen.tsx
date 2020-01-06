@@ -14,7 +14,11 @@ export default class StreakGoalScreen extends React.Component {
     render = () => {
         return (
             <View style={[Style.container, Style.yellowBg]}>
-                <StreakForm></StreakForm>
+                <StreakForm
+                    onDataChange={() => {}}
+                >
+
+                </StreakForm>
             </View>
         );
     }

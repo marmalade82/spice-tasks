@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Button } from "react-native";
 import { AddGoalForm} from "src/Components";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
@@ -34,6 +34,10 @@ export default class AddGoalScreen extends React.Component<Props> {
                 <AddGoalForm 
                     navigation={this.props.navigation}
                     onDataChange={()=>{}}
+                />
+                <Button
+                    title={"Save"}
+                    onPress={() => {}}
                 />
 
             </View>
