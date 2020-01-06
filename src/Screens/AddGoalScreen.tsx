@@ -31,7 +31,10 @@ export default class AddGoalScreen extends React.Component<Props> {
     render = () => {
         return (
             <View style={[Style.container, Style.greenBg, localStyle.container]}>
-                <AddGoalForm navigation={this.props.navigation}></AddGoalForm>
+                <AddGoalForm 
+                    navigation={this.props.navigation}
+                    onDataChange={()=>{}}
+                />
 
             </View>
         );

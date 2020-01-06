@@ -2,14 +2,16 @@ import React from "react";
 import { Text, View, Button, } from "react-native";
 import Style from "src/Style/Style";
 import { ChoiceInput, DateTimeInput, MultipleInput } from "src/Components/Inputs";
+import DataComponent from "src/Components/base/DataComponent";
 
 interface Props {
-    onDataChange?: (data: Data) => void;
-    data?: Data
-    onSave: (data: Data) => void;
+    onDataChange: (data: Data) => void;
 }
 
-interface State {
+interface State extends Data {
+}
+
+interface Data {
     recurs: string;
     date: Date;
     time: Date;
@@ -42,10 +44,6 @@ const recur_types = [
     }
 ];
 
-interface Data {
-    recurs: string;
-    date: Date;
-}
 
 const weekChoices = [
     { label: "M"
@@ -78,60 +76,44 @@ const weekChoices = [
     },
 ]
 
-export default class RecurringForm extends React.Component<Props, State> {
+const Default = {
+    recurs: "never",
+    date: new Date(),
+    time: new Date(),
+    weeks: 1,
+    days_of_week: ["sunday"],
+    months: 1,
+    days_of_month: 0,
+}
+
+export default class RecurringForm extends DataComponent<Props, State, Data> {
     constructor(props: Props) {
         super(props);
 
-        this.state = {
-            recurs: this.props.data ? this.props.data.recurs : "never",
-            date: this.props.data ? this.props.data.date : new Date(),
-            time: new Date(),
-            weeks: 1,
-            days_of_week: ["sunday"],
-            months: 1,
-            days_of_month: 0,
-        }
-    }
-
-    data: () => Data = () => {
-        return {
-            recurs: this.state.recurs,
-            date: this.state.date,
-        }
+        this.state = Default;
     }
 
     onRepeatChange = (value: string) => {
-        this.setState({
+        this.setData({
             recurs: value
         });
-
-        this.dataChanged();
     }
 
     onDateChange = (date: Date) => {
-        this.setState({
+        this.setData({
             date: date
         });
 
-        this.dataChanged();
     }
 
     onTimeChange = (time: Date) => {
-        this.setState({
+        this.setData({
             time: time
         })
-
-        this.dataChanged();
-    }
-
-    dataChanged = () => {
-        if(this.props.onDataChange) {
-            this.props.onDataChange(this.data());
-        }
     }
 
     onChangeDaysOfWeek = (values: string[]) => {
-        this.setState({
+        this.setData({
             days_of_week: values
         });
     }
@@ -142,7 +124,7 @@ export default class RecurringForm extends React.Component<Props, State> {
                 <ChoiceInput
                     title={"Repeats"}
                     choices={recur_types}
-                    selectedValue={this.state.recurs}
+                    selectedValue={ this.data().recurs}
                     onValueChange={ this.onRepeatChange }
                 >
                 </ChoiceInput>
@@ -151,27 +133,23 @@ export default class RecurringForm extends React.Component<Props, State> {
                 {this.renderIfOnce()}
                 {this.renderIfDaily()}
                 {this.renderIfWeekly()}
-                <Button title="Save"
-                    onPress={() => {this.props.onSave(this.data())}}
-                >
-                </Button>
             </View>
         )
     }
 
     renderIfNever = () => {
-        if(this.state.recurs === "never") {
+        if(this.data().recurs === "never") {
         }
     }
 
     renderIfOnce = () => {
-        if(this.state.recurs === "once") {
+        if(this.data().recurs === "once") {
             return (
                 <DateTimeInput
                     title={"When?"}
                     type={"date"}
                     onValueChange={this.onDateChange}
-                    value={this.state.date}
+                    value={this.data().date}
                 >
                 </DateTimeInput>
             );
@@ -179,13 +157,13 @@ export default class RecurringForm extends React.Component<Props, State> {
     }
 
     renderIfDaily = () => {
-        if(this.state.recurs === "daily") {
+        if(this.data().recurs === "daily") {
             return (
                 <DateTimeInput
                     title={"When?"}
                     type={"time"}
                     onValueChange={this.onTimeChange}
-                    value={this.state.time}
+                    value={this.data().time}
                 >
 
                 </DateTimeInput>
@@ -194,15 +172,22 @@ export default class RecurringForm extends React.Component<Props, State> {
     }
 
     renderIfWeekly = () => {
-        if(this.state.recurs === "weekly") {
+        if(this.data().recurs === "weekly") {
             return (
                 <MultipleInput
                     title={"Days of Week"}
                     choices={weekChoices}
-                    values={this.state.days_of_week}
+                    values={this.data().days_of_week}
                     onValueChange={this.onChangeDaysOfWeek}
                 />
             );
         }
     }
+}
+
+
+export {
+    RecurringForm,
+    Data as RecurringData,
+    Default as RecurringDefault,
 }

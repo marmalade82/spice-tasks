@@ -4,7 +4,7 @@ import React from "react";
 
 interface DataProps<Data> {
     data?: Data
-    onDataChange: (d: Data) => void;
+    onDataChange: (d: Readonly<Data>) => void;
 }
 
 /** Classes that extend this component are responsible for containing data. They may manage it internally with state,
@@ -16,11 +16,17 @@ interface DataProps<Data> {
 */
 export default abstract class DataComponent<Props, State extends Data, Data> 
                                             extends React.Component<Props & DataProps<Data>, State> {
-
     constructor(props: Props & DataProps<Data>) {
         super(props);
     }
 
+    data = (): Data => {
+        if(this.props.data !== undefined) {
+            return this.props.data as Data;
+        }
+
+        return this.state;
+    }
     
     reviseState = <K extends keyof Data>(p: Pick<State, K>) => {
         let state = Object.assign({}, this.state) as Data;
@@ -36,4 +42,9 @@ export default abstract class DataComponent<Props, State extends Data, Data>
 
         this.props.onDataChange(this.reviseState(d));
     }
+}
+
+export {
+    DataComponent,
+    DataProps,
 }

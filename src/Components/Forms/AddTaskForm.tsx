@@ -6,9 +6,10 @@ import {
 
 } from "src/Components/Inputs";
 import { View } from "react-native";
+import DataComponent from "src/Components/base/DataComponent";
 
 interface Props {
-
+    onDataChange: (d: State) => void;
 }
 
 interface State {
@@ -18,38 +19,40 @@ interface State {
     due_date: Date
 }
 
-export default class AddTaskForm extends React.Component<Props, State> {
+const Default: State = {
+    name: "Bob",
+    description: "I am a description",
+    start_date: new Date(),
+    due_date: new Date(),
+}
+
+export default class AddTaskForm extends DataComponent<Props, State, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = {
-            name: "Bob",
-            description: "I am a description",
-            start_date: new Date(),
-            due_date: new Date(),
-        }
+        this.state = Default;
     }
 
     onChangeName = (name: string) => {
-        this.setState({
+        this.setData({
             name: name
         });
     }
 
     onChangeDescription = (desc: string) => {
-        this.setState({
+        this.setData({
             description: desc
         });
     }
 
     onChangeStart = (date: Date) => {
-        this.setState({
+        this.setData({
             start_date: date
         });
     }
 
     onChangeDue = (date: Date) => {
-        this.setState({
+        this.setData({
             due_date: date
         });
     }
@@ -59,14 +62,14 @@ export default class AddTaskForm extends React.Component<Props, State> {
             <View>
                 <StringInput
                     title={"Name"} 
-                    value={this.state.name}
+                    value={this.data().name}
                     placeholder={"Name of this task"}
                     onChangeText={this.onChangeName}
                 />
 
                 <StringInput
                     title={"Description"}
-                    value={this.state.description}
+                    value={this.data().description}
                     placeholder={"Description of this task"}
                     onChangeText={this.onChangeDescription}
                 />
@@ -74,18 +77,24 @@ export default class AddTaskForm extends React.Component<Props, State> {
                 <DateTimeInput
                     title={"Starts on"}
                     type={"date"}
-                    value={this.state.start_date}
+                    value={this.data().start_date}
                     onValueChange={this.onChangeStart}
                 />
 
                 <DateTimeInput
                     title={"Due on"}
                     type={"date"} 
-                    value={this.state.due_date}
+                    value={this.data().due_date}
                     onValueChange={ this.onChangeDue }
                 />
 
             </View>
         );
     }
+}
+
+export {
+    AddTaskForm,
+    State as AddTaskData,
+    Default as AddTaskDefault,
 }

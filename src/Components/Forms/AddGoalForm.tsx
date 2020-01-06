@@ -5,14 +5,14 @@ import { Text, TextInput, View, Picker } from "react-native";
 import {
     ChoiceInput,
     StringInput,
-    SaveModalInput,
+    createSaveModalInput,
     ModalInput,
     DateTimeInput,
     MultipleInput,
     NumberInput,
 } from "src/Components/Inputs";
-import RecurringForm from "src/Components/Forms/RecurringForm";
-import StreakForm from "src/Components/Forms/AddGoalForm/StreakForm";
+import { RecurringForm, RecurringData, RecurringDefault} from "src/Components/Forms/RecurringForm";
+import { StreakForm, StreakDefault, StreakData }from "src/Components/Forms/AddGoalForm/StreakForm";
 import Style from "src/Style/Style";
 
 interface Props {
@@ -30,14 +30,6 @@ interface State {
     penalty: Penalty
     recurData: RecurringData
     streakData: StreakData
-}
-
-interface StreakData {
-    minimum: number
-    type: "daily" | "weekly" | "monthly"
-    day_start: Date
-    week_start: number;
-    month_start: number;
 }
 
 interface Navigator {
@@ -79,40 +71,24 @@ const penalties: LabelValue[] = [
     return parseInt(a.value) - parseInt(b.value);
 });
 
-interface RecurringData {
-    recurs: string
-    date: Date
+const Default: State = {
+    title: "",
+    type: "normal",
+    recurring: false,
+    start_date: new Date(),
+    due_date: new Date(),
+    reward: Reward.DICE,
+    penalty: Penalty.NONE,
+    recurData: RecurringDefault,
+    streakData: StreakDefault,
 }
 
-
 export default class AddGoalForm extends DataComponent<Props, State, State> {
-    recurForm: React.RefObject<ModalInput>
+    RecurModalForm = createSaveModalInput(RecurringForm);
     constructor(props: Props) {
         super(props);
 
-        const initialState: State = {
-            title: "",
-            type: "normal",
-            recurring: false,
-            start_date: new Date(),
-            due_date: new Date(),
-            reward: Reward.DICE,
-            penalty: Penalty.NONE,
-            recurData: {
-                recurs: "never",
-                date: new Date(),
-            },
-            streakData: {
-                minimum: 2,
-                type: "daily",
-                day_start: new Date(),
-                week_start: 0,
-                month_start: 1,
-            }
-        }
-
-        this.state = initialState;
-        this.recurForm = React.createRef();
+        this.state = Default;
     }
 
     onChangeTitle = (text: string) => {
@@ -121,15 +97,16 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         })
     }
 
-
     onRecurSave = (data: RecurringData) => {
         this.setData({
             recurData: data,
         });
+    }
 
-        if(this.recurForm.current !== null) {
-            this.recurForm.current.hideModal();
-        }
+    onChangeStreak = (data: StreakData ) => {
+        this.setData({
+            streakData: data
+        });
     }
 
     onChangeStartDate = (date: Date) => {
@@ -166,14 +143,14 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
             <View style={[Style.container, Style.blueBg]}>
                 <StringInput
                     title={"Summary"}
-                    value={this.state.title}
+                    value={this.data().title}
                     placeholder={"What do you want to achieve?"}
                     onChangeText={this.onChangeTitle}
                 />
 
                 <ChoiceInput
                     title={"Type"}
-                    selectedValue={this.state.type}
+                    selectedValue={this.data().type}
                     choices={typeChoices}
                     onValueChange={this.onChangeType}
                 />
@@ -182,20 +159,20 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                 <DateTimeInput
                     title={"Starts on"}
                     type={"date"}
-                    value={ this.state.start_date }
+                    value={ this.data().start_date }
                     onValueChange={ this.onChangeStartDate }
                 />
 
                 <DateTimeInput
                     title={"Due on"} 
                     type={"date"}
-                    value={ this.state.due_date }
+                    value={ this.data().due_date }
                     onValueChange={ this.onChangeDueDate }
                 />
 
                 <ChoiceInput
                     title={"Reward"}
-                    selectedValue={this.state.reward.toString()}
+                    selectedValue={this.data().reward.toString()}
                     onValueChange={(itemValue, itemIndex) => {
                         this.setData({reward: parseInt(itemValue)})  
                     }}
@@ -204,37 +181,34 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
                 <ChoiceInput
                     title={"Penalty"}
-                    selectedValue={this.state.penalty.toString()}
+                    selectedValue={this.data().penalty.toString()}
                     onValueChange={(itemValue, itemIndex) => {
                         this.setData({penalty: parseInt(itemValue)})  
                     }}
                     choices={penalties}
                 />
 
-                <ModalInput
+                <this.RecurModalForm
                     title={"Recurring?"} 
                     animationType={"fade"}
                     screenType={"grey"}
-                    value={this.renderRecurData()}
-                    ref={this.recurForm}
-                >
-                    <View style={[Style.modalContainer, {backgroundColor: "white"}]}>
-                        <RecurringForm
-                            data={this.state.recurData}
-                            onSave={this.onRecurSave}
-                        >
-                        </RecurringForm>
-                    </View>
-                </ModalInput>
+                    onSave={this.onRecurSave}
+                    formProps={{
+                        onDataChange: () => {} // this is overwritten
+                    }}
+                    renderData={(d: RecurringData) => {
+                        return "hi there, please impement data renderer";
+                    }}
+                />
             </View>
         )
     }
 
     renderStreak = () => {
-        if(this.state.type === "streak") {
-            <StreakForm>
-
-            </StreakForm>
+        if(this.data().type === "streak") {
+            <StreakForm
+                onDataChange={this.onChangeStreak}
+            />
         }
     };
 
@@ -247,7 +221,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
     }
 
     renderRecurData = () => {
-        return this.state.recurData.recurs + " " + this.state.recurData.date.toDateString();
+        return this.data().recurData.recurs + " " + this.data().recurData.date.toDateString();
     }
 }
 
@@ -264,9 +238,8 @@ const typeChoices = [
     },
 ]
 
-class EventHandler<Props, State extends Data, Data> {
-    dataComponent: DataComponent<Props, State, Data>
-    constructor(d: DataComponent<Props, State, Data>) {
-        this.dataComponent = d;
-    }
+export {
+    AddGoalForm,
+    Default as AddGoalDefault,
+    State as AddGoalData,
 }

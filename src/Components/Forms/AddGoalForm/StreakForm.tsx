@@ -6,12 +6,12 @@ import {
     NumberInput, ChoiceInput, DateTimeInput,
     MultipleInput
 } from "src/Components/Inputs";
-import { number } from "prop-types";
+import DataComponent from "src/Components/base/DataComponent";
 import Style from "src/Style/Style";
 import { DayOfWeek } from "lib/recurrence";
 
 interface Props {
-
+    onDataChange: (d: State) => void;
 }
 
 interface State {
@@ -28,106 +28,60 @@ const localStyle = StyleSheet.create({
     }
 })
 
-export default class StreakForm extends React.Component<Props, State> {
+const Default: State = {
+    minimum: 2,
+    type: "daily",
+    daily_start: new Date(),
+    weekly_start: "sunday",
+    monthly_start: 1,
+}
+
+export default class StreakForm extends DataComponent<Props, State, State> {
     constructor(props: Props) {
         super(props);
-        const initialState: State = {
-            minimum: 2,
-            type: "daily",
-            daily_start: new Date(),
-            weekly_start: "sunday",
-            monthly_start: 1,
-        }
 
-        this.state = initialState;
+        this.state = Default;
     }
 
 
     onChangeMinimum = (val: number) => {
-        this.setState({
+        this.setData({
             minimum: val
         });
     }
 
-    data: () => State = () => {
-        return {
-            minimum: this.state.minimum,
-            type: this.state.type,
-            daily_start: this.state.daily_start,
-            weekly_start: this.state.weekly_start,
-            monthly_start: this.state.monthly_start,
-
-        };
-    }
-
     onChangeType = (val: string) => {
         if(val === "daily" || val === "weekly" || val === "monthly") {
-            this.setState({
+            this.setData({
                 type: val
             });
         } else {
-            this.setState({
+            this.setData({
                 type: "daily"
             })
         }
     }
 
     onChangeDailyStart = (val: Date) => {
-        this.setState({
+        this.setData({
             daily_start: val
         });
     }
 
     onChangeWeeklyStart = (vals: string[]) => {
         if(vals.length > 0) {
-            this.setState({
+            this.setData({
                 weekly_start: vals[vals.length - 1]
             });
         } else {
-            this.setState({});
+            this.setData({});
         }
     }
 
     onChangeMonthlyStart = (val: number) => {
-        this.setState({
+        this.setData({
             monthly_start: val
         });
-    }
-
-    renderByType = () => {
-        if(this.state.type === "daily") {
-            return (
-                <DateTimeInput
-                    title={"Time"}
-                    value={this.state.daily_start}
-                    type={"time"}
-                    onValueChange={this.onChangeDailyStart}
-                />
-            );
-        } else if (this.state.type === "weekly") {
-            return (
-                <MultipleInput
-                    title={"Week Start"}
-                    values={[this.state.weekly_start]}
-                    choices={week_start_choices} 
-                    onValueChange={this.onChangeWeeklyStart}
-                />
-            );
-
-        } else if (this.state.type === "monthly") {
-            return (
-                <NumberInput
-                    title={"Month Start"}
-                    value={this.state.monthly_start}
-                    type={"integer"}
-                    minimum={1}
-                    maximum={31}
-                    onValueChange={this.onChangeMonthlyStart}
-                />
-            );
-        } else {
-
-        }
     }
 
     render = () => {
@@ -138,7 +92,7 @@ export default class StreakForm extends React.Component<Props, State> {
             >
                 <NumberInput
                     title={"Minimum"}
-                    value={this.state.minimum}
+                    value={this.data().minimum}
                     type={"integer"}
                     minimum={2}
                     precision={0}
@@ -146,7 +100,7 @@ export default class StreakForm extends React.Component<Props, State> {
                 />
                 <ChoiceInput
                     title={"Streak Type"}
-                    selectedValue={this.state.type} 
+                    selectedValue={this.data().type} 
                     choices={streak_choices}
                     onValueChange={this.onChangeType}
                 />
@@ -155,6 +109,42 @@ export default class StreakForm extends React.Component<Props, State> {
             </KeyboardAvoidingView>
 
         );
+    }
+
+    renderByType = () => {
+        if(this.data().type === "daily") {
+            return (
+                <DateTimeInput
+                    title={"Time"}
+                    value={this.data().daily_start}
+                    type={"time"}
+                    onValueChange={this.onChangeDailyStart}
+                />
+            );
+        } else if (this.data().type === "weekly") {
+            return (
+                <MultipleInput
+                    title={"Week Start"}
+                    values={[this.data().weekly_start]}
+                    choices={week_start_choices} 
+                    onValueChange={this.onChangeWeeklyStart}
+                />
+            );
+
+        } else if (this.data().type === "monthly") {
+            return (
+                <NumberInput
+                    title={"Month Start"}
+                    value={this.data().monthly_start}
+                    type={"integer"}
+                    minimum={1}
+                    maximum={31}
+                    onValueChange={this.onChangeMonthlyStart}
+                />
+            );
+        } else {
+
+        }
     }
 }
 
@@ -203,3 +193,9 @@ const week_start_choices = [
     , key: "6"
     },
 ];
+
+export {
+    StreakForm,
+    State as StreakData,
+    Default as StreakDefault,
+}
