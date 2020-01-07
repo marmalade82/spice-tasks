@@ -25,6 +25,8 @@ class DB {
     }
 }
 
+export default DB;
+
 export {
-    DB as Database
+    DB
 }

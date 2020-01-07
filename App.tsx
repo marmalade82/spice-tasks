@@ -3,6 +3,8 @@ import * as Screens from "src/Screens";
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Button } from "react-native";
+import DB from "src/Models/Database";
+
 
 const ScreenNavigator = createStackNavigator(
   { Home: {

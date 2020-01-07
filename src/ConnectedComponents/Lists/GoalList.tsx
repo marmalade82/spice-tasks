@@ -8,6 +8,8 @@ import {
 import Goal from "src/Models/Goal/Goal";
 import withObservables from "@nozbe/with-observables";
 
+import GoalQuery from "src/Models/Goal/GoalQuery";
+
 interface Props {
     goals: Goal[]
 }
@@ -30,17 +32,17 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
 }
 
 interface InputProps {
-    goals: any
+    
 }
 
 /**
- * This function isn't done. I want this list to be able to take any query and render the resulting list of goals.
- * To do so, the props should take a query
+ * This function ensures that the enhanced component will always take its goals from the full list of goals. We may want to change this in the 
+ * future based on props
  */
 
-const enhance = withObservables(['goals'], (props: InputProps) => {
+const enhance = withObservables([], (_props: InputProps) => {
     return {
-        goals: props.goals.observe(),
+        goals: GoalQuery.queryAll().observe()
     }
 });
 

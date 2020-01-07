@@ -1,6 +1,6 @@
 import React from "react";
 import {View, Button, Text, StyleSheet } from "react-native";
-import GoalList from "src/Components/Lists/GoalList";
+import { ConnectedGoalList } from "src/ConnectedComponents/Lists/GoalList";
 import Style from "src/Style/Style";
 
 interface Props {
@@ -25,9 +25,9 @@ export default class GoalListScreen extends React.Component<Props> {
     render = () => {
         return (
             <View style={[Style.container, Style.yellowBg]}>
-                <GoalList 
+                <ConnectedGoalList 
                 >
-                </GoalList>
+                </ConnectedGoalList>
                 <View style={style.button}>
                     <Button
                         title={"add"}
