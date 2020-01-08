@@ -1,0 +1,13 @@
+diff --git a/node_modules/@nozbe/with-observables/dist/with-observables.cjs.js b/node_modules/@nozbe/with-observables/dist/with-observables.cjs.js
+index 1d31a76..79f2958 100644
+--- a/node_modules/@nozbe/with-observables/dist/with-observables.cjs.js
++++ b/node_modules/@nozbe/with-observables/dist/with-observables.cjs.js
+@@ -4,7 +4,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
+ 
+ var react = require('react');
+ var hoistNonReactStatic = _interopDefault(require('hoist-non-react-statics'));
+-var from = require('rxjs/observable/from');
++var from = require('rxjs');
+ var combineLatest = require('rxjs/observable/combineLatest');
+ var map = require('rxjs/operators/map');
+ 
