@@ -10,3 +10,6 @@ if (Platform.OS === 'web') {
 }
 
 DB.get();
+(async () => {
+  await DB.loadDummyData();
+})();

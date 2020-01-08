@@ -31,7 +31,12 @@ export default class GoalListScreen extends React.Component<Props> {
                 <View style={style.button}>
                     <Button
                         title={"add"}
-                        onPress={() => {this.props.navigation.navigate('AddGoal')}}
+                        onPress={() => {
+                            const params = {
+                                id: ""
+                            };
+                            this.props.navigation.navigate('AddGoal', params);
+                        }}
                     />
                 </View>
             </View>

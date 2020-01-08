@@ -23,6 +23,21 @@ class DB {
             return DB.database;
         }
     }
+
+    static loadDummyData = async () => {
+        DB.clearDB();
+        const db = DB.get();
+        const goalsCollection = db.collections.get('goals');
+        await db.action(async() => {
+            await goalsCollection.create((goal: Goal) => {
+                goal.title = 'hello world';
+            })
+        })
+    }
+
+    static clearDB = () => {
+
+    }
 }
 
 export default DB;

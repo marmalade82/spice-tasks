@@ -31,7 +31,7 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
     - [ ] User should be able to fill out data about recurrence of the goal.
     - [ ] User should be able to fill out data about whether the goal is a streak.
     - [X] User should be able to click "Save"
-    - [ ] After "Save" is clicked, the new Goal should available in the GoalList.
+    - [X] After "Save" is clicked, the new Goal should available in the GoalList.
     - [ ] User should be able to scroll through the form's fields when they overrun the page.
 
 - [ ] User should be able to edit an existing Goal through a form
@@ -54,6 +54,11 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
         - [ ] End date
         - [ ] Start date
         - [ ] Tier
+- [ ] Users should be able to delete one or more goals
+    - [ ] Deleting goals should delete associated subtasks and subgoals
+    - [ ] User should be able to toggle a Delete Mode
+    - [ ] User should be able to mark multiple goals for deletion
+    - [ ] User should be prompted to confirm deletes
 
 ## Rewards
 
