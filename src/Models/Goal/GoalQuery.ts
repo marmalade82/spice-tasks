@@ -36,16 +36,21 @@ class GoalQuery {
             streakWeeklyStart: 'sunday',
             streakMonthlyStart: 1,
         };
-        try {
-            DB.get().action(async () => {
-                GoalQuery.goals().create((goal: Goal) => {
-                    Object.assign(goal, Default);
-                    Object.assign(goal, props);
-                });
-            });
-        } catch {
 
-        }
+        DB.get().action(async () => {
+            GoalQuery.goals().create((goal: Goal) => {
+                Object.assign(goal, Default);
+                Object.assign(goal, props);
+            });
+        });
+    }
+
+    static update = async(goal: Goal, props: Partial<IGoal>) => {
+        DB.get().action(async () => {
+            goal.update((goal: Goal) => {
+                Object.assign(goal, props);
+            });
+        });
     }
 
 }

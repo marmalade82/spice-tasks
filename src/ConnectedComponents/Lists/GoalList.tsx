@@ -5,15 +5,48 @@ import {
     IGoal,
 } from "src/Components/Lists/GoalList";
 
+import {
+    ConnectedGoalListItem
+} from "src/ConnectedComponents/Lists/Items/GoalListItem";
+
 import Goal from "src/Models/Goal/Goal";
 import withObservables from "@nozbe/with-observables";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 
 import GoalQuery from "src/Models/Goal/GoalQuery";
+import List from "src/Components/Lists/base/List";
 
 interface Props {
     goals: Goal[];
     navigation: any;
 }
+
+const localStyle = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "lightblue",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "95%",
+    },
+    row: {
+        flex: 1,
+        backgroundColor: "pink",
+        width: "100%",
+    },
+    list: {
+        flex: 1,
+        backgroundColor: "lightgreen",
+        width: "95%",
+    },
+    title: {
+
+    },
+    details: {
+
+    },
+});
 
 const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
     const mappedGoals: IGoal[] = props.goals.map((goal: Goal) => {
@@ -26,13 +59,33 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
 
         return g;
     });
+    
+    const renderGoal = (item: Goal) => {
+        return (
+            <View style={[localStyle.row]}>
+                <TouchableOpacity 
+                    style={[localStyle.row]}
+                    onPress={() => {
+                        props.navigation.navigate('AddGoal', {
+                            id: item.id
+                        });
+                    }}
+                >
+                    <ConnectedGoalListItem
+                        goal={item}
+                    ></ConnectedGoalListItem>
+                </TouchableOpacity>
+            </View>
+        )
+    }
 
     return (
-        <GoalList
-            navigation={props.navigation}
-            goals={mappedGoals} 
-        ></GoalList>
-    );
+        <List
+            items={props.goals} 
+            renderItem={renderGoal}
+        >
+        </List>
+    )
 }
 
 interface InputProps {

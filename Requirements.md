@@ -32,14 +32,15 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
     - [X] User should be able to fill out data about whether the goal is a streak.
     - [X] User should be able to click "Save"
     - [X] After "Save" is clicked, the new Goal should available in the GoalList.
-    - [ ] After "Save" is clicked, all fields of the Goal should be saved to the database.
+    - [X] After "Save" is clicked, all fields of the Goal should be saved to the database as a new goal.
     - [ ] User should be able to scroll through the form's fields when they overrun the page.
 
 - [ ] User should be able to edit an existing Goal through a form
     - [ ] User should be able to edit data about recurrence of the goal.
     - [ ] User should be able to edit data about whether the goal is a streak.
     - [X] User should be able to click "Save"
-    - [ ] After "Save" is clicked, the edited Goal, with all changes, should available after navigating back to the GoalList.
+    - [X] Saving should actually update the Goal in the database.
+    - [X] After "Save" is clicked, the edited Goal, with all changes, should available after navigating back to the GoalList.
     - [ ] User should be able to scroll through the form's fields when they overrun the page
 
 - [ ] User should be able to delete a Goal while in the Goal's form
@@ -47,19 +48,37 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
 
 ### User Stories - Viewing Goals
 
-- [ ] Users should be able to view all existing goals
-    - [ ] User should be able to see basic information on the goal
-        - [ ] Title
+- [X] Users should be able to view all existing goals
+    - [X] User should be able to see basic information on the goal
+        - [X] Title
+        - [X] Due Date
+        - [X] Type (for example, some goals are streaks)
+        - [ ] Start Date (so they can know what's coming).
     - [ ] User should be able to scroll through goals when they overrun the page.
-    - [ ] User should be able to sort goals by
-        - [ ] End date
-        - [ ] Start date
-        - [ ] Tier
+- [ ] Users should be able to sort on
+    - [ ] Title
+    - [ ] Due Date
+    - [ ] Type
+- [ ] Users should be able to filter on
+    - [ ] Title
+    - [ ] Due Date
+    - [ ] Type
 - [ ] Users should be able to delete one or more goals
     - [ ] Deleting goals should delete associated subtasks and subgoals
     - [ ] User should be able to toggle a Delete Mode
     - [ ] User should be able to mark multiple goals for deletion
     - [ ] User should be prompted to confirm deletes
+
+### User Stories - Viewing Tasks on Goals
+
+- [ ] Users should be able to view an existing goal with 
+    - [ ] A summary of the goal and its tasks at the top
+    - [ ] A list of the tasks below with
+        - [ ] Title
+        - [ ] Start Date
+        - [ ] Due Date
+- [ ] Users should be able to re-order tasks within a goal by drag-and-drop.
+- [ ] Users should be able to click on a task to view it, and its sub-tasks, in more detail.
 
 ## Rewards
 

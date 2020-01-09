@@ -98,6 +98,33 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             );
         }
     }
+
+    onSave = () => {
+        const data = this.state.data;
+        const streak = data.streakData;
+        const goalData = {
+            title: data.title,
+            goalType: data.type,
+            startDate: data.start_date,
+            dueDate: data.due_date,
+            streakMinimum: streak.minimum,
+            streakType: streak.type,
+            streakDailyStart: streak.daily_start,
+            streakWeeklyStart: streak.weekly_start,
+            streakMonthlyStart: streak.monthly_start,
+        };
+        if(this.state.goal) {
+            GoalQuery.update(this.state.goal, goalData)
+            .catch((reason) => {
+                console.log("Failed to update existing goal with reason: " + reason);
+            });
+        } else {
+            GoalQuery.create(goalData)
+            .catch((reason) => {
+                console.log("Failed to create goal with reason: " + reason);
+            });  
+        }
+    }
  
 
     render = () => {
@@ -106,24 +133,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 { this.renderGoalForm() }
                 <Button
                     title={"SAVE"}
-                    onPress={() => {
-                        const data = this.state.data;
-                        const streak = data.streakData;
-                        GoalQuery.create({
-                            title: data.title,
-                            goalType: data.type,
-                            startDate: data.start_date,
-                            dueDate: data.due_date,
-                            streakMinimum: streak.minimum,
-                            streakType: streak.type,
-                            streakDailyStart: streak.daily_start,
-                            streakWeeklyStart: streak.weekly_start,
-                            streakMonthlyStart: streak.monthly_start,
-                        })
-                        .catch((reason) => {
-                            console.log("FAILED: " + reason)
-                        });  // Nothing to do if create fail -- since it should never fail
-                    }}
+                    onPress={this.onSave}
                 />
 
             </SafeAreaView>

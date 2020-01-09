@@ -5,7 +5,11 @@ import {
     View, StyleSheet, TextInput, 
     FlatList, Text, TouchableOpacity,
 } from "react-native";
-import { isTemplateElement } from "@babel/types";
+import {
+    GoalListItem,
+    Goal,
+} from "src/Components/Lists/Items/GoalListItem";
+import List from "src/Components/Lists/base/List";
 
 
 interface Props {
@@ -16,14 +20,6 @@ interface Props {
 interface State {
     title: string;
 }
-
-interface Goal {
-    id: string;
-    title: string;
-    due_date: Date;
-    type: string;
-}
-
 
 const localStyle = StyleSheet.create({
     container: {
@@ -65,48 +61,34 @@ export default class GoalList extends React.Component<Props, State> {
     }
 
 
-    renderGoal = (row: { item: Goal}) => {
+    renderGoal = (item: Goal) => {
         return (
             <View style={[localStyle.row]}>
                 <TouchableOpacity 
                     style={[localStyle.row]}
                     onPress={() => {
                         this.props.navigation.navigate('AddGoal', {
-                            id: row.item.id
+                            id: item.id
                         });
                     }}
                 >
-                    <View style={localStyle.title}>
-                        <Text>{row.item.title}</Text>
-                    </View>
-                    <View style={localStyle.details}>
-                        <Text>{row.item.due_date.toString()}</Text>
-                        <Text>{row.item.type}</Text>
-                    </View>
+                    <GoalListItem
+                        item={item}
+                    ></GoalListItem>
                 </TouchableOpacity>
             </View>
         )
     }
 
-
     render = () => {
         return (
-            <View style={[localStyle.container]}>
-                <FlatList
-                    data={ this.props.goals }
-                    renderItem={this.renderGoal}
-                    keyExtractor={(goal) => { return goal.id }}
-                ></FlatList>
-                <View style={[localStyle.list]}>
-                </View>
-            </View>
+            <List
+                items={this.props.goals}
+                renderItem={this.renderGoal}
+            ></List>
         );
     }
 }
-
-/**
- * 
- */
 
 export {
     GoalList,
