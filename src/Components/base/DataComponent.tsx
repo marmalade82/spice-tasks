@@ -5,6 +5,7 @@ import React from "react";
 interface DataProps<Data> {
     data: Data | false;
     onDataChange: (d: Readonly<Data>) => void;
+    init?: Data;
 }
 
 /** Classes that extend this component are responsible for containing data. They may manage it internally with state,
@@ -21,7 +22,7 @@ export default abstract class DataComponent<Props, State extends Data, Data>
     }
 
     data = (): Data => {
-        if(this.props.data !== undefined) {
+        if(this.props.data) {
             return this.props.data as Data;
         }
 

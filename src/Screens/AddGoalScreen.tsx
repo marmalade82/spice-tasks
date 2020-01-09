@@ -59,6 +59,11 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 <ConnectedAddGoalForm
                     goal={this.state.goal}
                     navigation={this.props.navigation}
+                    onDataChange={(data: AddGoalData) => {
+                        this.setState({
+                            data: data
+                        })
+                    }}
                 ></ConnectedAddGoalForm>
             );
         } else {

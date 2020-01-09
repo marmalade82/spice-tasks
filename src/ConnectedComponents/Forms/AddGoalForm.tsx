@@ -7,6 +7,7 @@ import withObservables from "@nozbe/with-observables";
 interface Props {
     goal: Goal
     navigation: any
+    onDataChange: (d: AddGoalData) => void;
 }
 
 const AdaptedAddGoalForm: React.FunctionComponent<Props> = (props: Props) => {
@@ -33,8 +34,9 @@ const AdaptedAddGoalForm: React.FunctionComponent<Props> = (props: Props) => {
     return (
         <AddGoalForm
             navigation={props.navigation}
-            onDataChange={() => {}}
-            data={ data }
+            onDataChange={props.onDataChange}
+            data={ false }
+            init={ data }
         
         ></AddGoalForm>
     )

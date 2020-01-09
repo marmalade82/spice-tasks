@@ -91,7 +91,11 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = Default();
+        const state = Object.assign({}, Default());
+        if(this.props.init !== undefined) {
+            Object.assign(state, this.props.init);
+        }
+        this.state = state
     }
 
     onChangeTitle = (text: string) => {
