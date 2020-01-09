@@ -63,7 +63,7 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
     - [ ] Title
     - [ ] Due Date
     - [ ] Type
-- [ ] Users should be able to delete one or more goals
+- [ ] Users should be able to delete one or more goals from the full list
     - [ ] Deleting goals should delete associated subtasks and subgoals
     - [ ] User should be able to toggle a Delete Mode
     - [ ] User should be able to mark multiple goals for deletion

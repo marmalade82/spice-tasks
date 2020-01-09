@@ -1,5 +1,6 @@
-import { appSchema, tableSchema, ColumnSchema, ColumnType, ColumnName } from '@nozbe/watermelondb';
+import { appSchema, tableSchema, ColumnSchema, ColumnType, ColumnName, TableSchema } from '@nozbe/watermelondb';
 import GoalSchema from "src/Models/Goal/GoalSchema";
+import TaskSchema from 'src/Models/Task/TaskSchema';
 
 const Schema = appSchema({
     version: 9,
@@ -8,6 +9,7 @@ const Schema = appSchema({
             name: GoalSchema.table,
             columns: convertToColumns(GoalSchema.name, GoalSchema.type)
         }),
+        generateTableSchema(TaskSchema),
     ]
 });
 
@@ -25,6 +27,19 @@ function convertToColumns<T>(names: T, types: Record<keyof T, ColumnType> ) {
         );
     });
     return columns;
+}
+
+type CustomSchema<T> =  {
+    table: string,
+    name: T,
+    type: Record<keyof T, ColumnType>,
+};
+
+function generateTableSchema<T>(schema: CustomSchema<T>): TableSchema {
+    return tableSchema({
+        name: schema.table,
+        columns: convertToColumns(schema.name, schema.type),
+    });
 }
 
 export {
