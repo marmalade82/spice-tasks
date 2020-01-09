@@ -1,16 +1,20 @@
 import React from "react";
-import { View, Button } from "react-native";
-import { AddGoalForm} from "src/Components";
+import { View, ScrollView, SafeAreaView, Button } from "react-native";
+import { AddGoalForm, AddGoalData, AddGoalDefault } from "src/Components/Forms/AddGoalForm";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { GoalQuery, Goal } from "src/Models/Goal/GoalQuery";
 import { ConnectedAddGoalForm } from "src/ConnectedComponents/Forms/AddGoalForm";
+import { AddGoal } from "src/Screens";
 
 interface Props {
     navigation: any;
 }
 
-interface State { }
+interface State { 
+    data: AddGoalData
+    goal?: Goal
+}
 
 const localStyle = StyleSheet.create({
     container: {
@@ -22,32 +26,38 @@ const localStyle = StyleSheet.create({
 });
 
 
-export default class AddGoalScreen extends React.Component<Props> {
-    goal?: Goal
+export default class AddGoalScreen extends React.Component<Props, State> {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: AddGoalDefault(),
+        }
+    }
     static navigationOptions = ({navigation}) => {
         return {
             title: 'New Goal',
         }
     }
 
-    onComponentDidMount = async () => {
+    componentDidMount = async () => {
         const id = this.props.navigation.getParam('id', '');
-
-        /*  If we received a valid string as an id,
-            then we'll find it with the query.
-            Otherwise we must try to create a new goal
-        */
         const goal = await GoalQuery.get(id); 
         if(goal) {
-            this.goal = goal;
+            this.setState({
+                goal: goal
+            })
+        } else {
+            this.setState({
+                goal: undefined
+            })
         }
     }
 
     renderGoalForm = () => {
-        if(this.goal) {
+        if(this.state.goal) {
             return (
                 <ConnectedAddGoalForm
-                    goal={this.goal}
+                    goal={this.state.goal}
                     navigation={this.props.navigation}
                 ></ConnectedAddGoalForm>
             );
@@ -55,7 +65,12 @@ export default class AddGoalScreen extends React.Component<Props> {
             return (
                 <AddGoalForm 
                     navigation={this.props.navigation}
-                    onDataChange={()=>{}}
+                    data={this.state.data}
+                    onDataChange={(data: AddGoalData)=>{
+                        this.setState({
+                            data: data
+                        });
+                    }}
                 />
             );
         }
@@ -64,19 +79,31 @@ export default class AddGoalScreen extends React.Component<Props> {
 
     render = () => {
         return (
-            <View style={[Style.container, Style.greenBg, localStyle.container]}>
+            <SafeAreaView style={[Style.container, Style.greenBg, localStyle.container]}>
                 { this.renderGoalForm() }
                 <Button
                     title={"SAVE"}
                     onPress={() => {
+                        const data = this.state.data;
+                        const streak = data.streakData;
                         GoalQuery.create({
-                            title: "done",
+                            title: data.title,
+                            goalType: data.type,
+                            startDate: data.start_date,
+                            dueDate: data.due_date,
+                            streakMinimum: streak.minimum,
+                            streakType: streak.type,
+                            streakDailyStart: streak.daily_start,
+                            streakWeeklyStart: streak.weekly_start,
+                            streakMonthlyStart: streak.monthly_start,
                         })
-                        .catch();  // Nothing to do if create fail -- since it should never fail
+                        .catch((reason) => {
+                            console.log("FAILED: " + reason)
+                        });  // Nothing to do if create fail -- since it should never fail
                     }}
                 />
 
-            </View>
+            </SafeAreaView>
         );
     }
 }

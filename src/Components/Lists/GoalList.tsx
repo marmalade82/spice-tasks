@@ -1,11 +1,16 @@
 
 
 import React from "react";
-import { View, StyleSheet, TextInput, FlatList, Text } from "react-native";
+import { 
+    View, StyleSheet, TextInput, 
+    FlatList, Text, TouchableOpacity,
+} from "react-native";
+import { isTemplateElement } from "@babel/types";
 
 
 interface Props {
     goals: Goal[]
+    navigation: any
 }
 
 interface State {
@@ -63,13 +68,22 @@ export default class GoalList extends React.Component<Props, State> {
     renderGoal = (row: { item: Goal}) => {
         return (
             <View style={[localStyle.row]}>
-                <View style={localStyle.title}>
-                    <Text>{row.item.title}</Text>
-                </View>
-                <View style={localStyle.details}>
-                    <Text>{row.item.due_date}</Text>
-                    <Text>{row.item.type}</Text>
-                </View>
+                <TouchableOpacity 
+                    style={[localStyle.row]}
+                    onPress={() => {
+                        this.props.navigation.navigate('AddGoal', {
+                            id: row.item.id
+                        });
+                    }}
+                >
+                    <View style={localStyle.title}>
+                        <Text>{row.item.title}</Text>
+                    </View>
+                    <View style={localStyle.details}>
+                        <Text>{row.item.due_date.toString()}</Text>
+                        <Text>{row.item.type}</Text>
+                    </View>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -78,18 +92,21 @@ export default class GoalList extends React.Component<Props, State> {
     render = () => {
         return (
             <View style={[localStyle.container]}>
-
+                <FlatList
+                    data={ this.props.goals }
+                    renderItem={this.renderGoal}
+                    keyExtractor={(goal) => { return goal.id }}
+                ></FlatList>
                 <View style={[localStyle.list]}>
-                    <FlatList
-                        data={ this.props.goals }
-                        renderItem={this.renderGoal}
-                        keyExtractor={(goal) => { return goal.id }}
-                    ></FlatList>
                 </View>
             </View>
         );
     }
 }
+
+/**
+ * 
+ */
 
 export {
     GoalList,

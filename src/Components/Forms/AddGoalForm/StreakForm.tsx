@@ -1,6 +1,6 @@
 import React from "react";
 import { 
-    View, StyleSheet, KeyboardAvoidingView
+    View, StyleSheet, KeyboardAvoidingView, StyleProp, ViewStyle
 } from "react-native";
 import { 
     NumberInput, ChoiceInput, DateTimeInput,
@@ -12,6 +12,7 @@ import { DayOfWeek } from "lib/recurrence";
 
 interface Props {
     onDataChange: (d: State) => void;
+    containerStyle?: StyleProp<ViewStyle>;
 }
 
 interface State {
@@ -87,7 +88,7 @@ export default class StreakForm extends DataComponent<Props, State, State> {
     render = () => {
         return (
             <KeyboardAvoidingView 
-                style={[Style.container, localStyle.container, Style.greenBg]}
+                style={[Style.container, localStyle.container, Style.greenBg, this.props.containerStyle]}
                 behavior={"padding"}
             >
                 <NumberInput

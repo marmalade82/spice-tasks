@@ -2,11 +2,11 @@ import { appSchema, tableSchema, ColumnSchema, ColumnType, ColumnName } from '@n
 import GoalSchema from "src/Models/Goal/GoalSchema";
 
 const Schema = appSchema({
-    version: 2,
+    version: 8,
     tables: [
         tableSchema({
-            name: 'goals',
-            columns: convertToColumns(GoalSchema.name, GoalSchema.type),
+            name: GoalSchema.table,
+            columns: convertToColumns(GoalSchema.name, GoalSchema.type)
         }),
     ]
 });

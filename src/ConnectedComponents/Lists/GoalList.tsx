@@ -11,28 +11,32 @@ import withObservables from "@nozbe/with-observables";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 
 interface Props {
-    goals: Goal[]
+    goals: Goal[];
+    navigation: any;
 }
 
 const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
     const mappedGoals: IGoal[] = props.goals.map((goal: Goal) => {
-        return {
+        const g: IGoal = {
             id: goal.id,
             title: goal.title,
             due_date: goal.dueDate,
-            type: goal.type, 
+            type: goal.goalType, 
         };
+
+        return g;
     });
 
     return (
         <GoalList
+            navigation={props.navigation}
             goals={mappedGoals} 
         ></GoalList>
     );
 }
 
 interface InputProps {
-    
+    navigation: any
 }
 
 /**

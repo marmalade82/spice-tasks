@@ -28,19 +28,28 @@ export default abstract class DataComponent<Props, State extends Data, Data>
         return this.state;
     }
     
-    reviseState = <K extends keyof Data>(p: Pick<State, K>) => {
-        let state = Object.assign({}, this.state) as Data;
-        Object.assign(state, p) as Data;
+    reviseState = <K extends keyof Data>(p: Pick<State, K>, data: Data) => {
+        let newData = Object.assign({}, data) as Data;
+        Object.assign(newData, p) as Data;
 
-        return state;
+        return newData;
+    }
+
+    reviseData = <K extends keyof Data>(p: Pick<Data, K>) => {
+        let newData = Object.assign({}, this.props.data) as Data;
+        Object.assign(newData, p) as Data;
+
+        return newData;
     }
 
     setData = <K extends keyof Data>(d: Pick<State, K>) => {
+        this.setState(d);
         if(this.props.data === undefined) {
-            this.setState(d);
+            this.props.onDataChange(this.reviseState(d, this.state));
+        } else {
+            this.props.onDataChange(this.reviseData(d));
         }
 
-        this.props.onDataChange(this.reviseState(d));
     }
 }
 

@@ -42,7 +42,7 @@ const Style = StyleSheet.create({
     },
 
     maxInputHeight: {
-        maxHeight: "12%",
+        maxHeight: "100%",
     },
 
     modalContainer: {

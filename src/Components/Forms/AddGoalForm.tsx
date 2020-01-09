@@ -71,16 +71,18 @@ const penalties: LabelValue[] = [
     return parseInt(a.value) - parseInt(b.value);
 });
 
-const Default: State = {
-    title: "",
-    type: "normal",
-    recurring: false,
-    start_date: new Date(),
-    due_date: new Date(),
-    reward: Reward.DICE,
-    penalty: Penalty.NONE,
-    recurData: RecurringDefault,
-    streakData: StreakDefault,
+function Default(): State {
+    return {
+        title: "",
+        type: "normal",
+        recurring: false,
+        start_date: new Date(),
+        due_date: new Date(),
+        reward: Reward.DICE,
+        penalty: Penalty.NONE,
+        recurData: RecurringDefault,
+        streakData: StreakDefault,
+    }
 }
 
 export default class AddGoalForm extends DataComponent<Props, State, State> {
@@ -88,7 +90,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = Default;
+        this.state = Default();
     }
 
     onChangeTitle = (text: string) => {
@@ -155,6 +157,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     onValueChange={this.onChangeType}
                 />
 
+                { this.renderStreakForm() }
 
                 <DateTimeInput
                     title={"Starts on"}
@@ -204,11 +207,17 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         )
     }
 
-    renderStreak = () => {
+    renderStreakForm = () => {
         if(this.data().type === "streak") {
-            <StreakForm
-                onDataChange={this.onChangeStreak}
-            />
+            return (
+                <StreakForm
+                    onDataChange={this.onChangeStreak}
+                    containerStyle={{
+                        flex: 3
+                    }}
+                />
+            );
+        } else {
         }
     };
 

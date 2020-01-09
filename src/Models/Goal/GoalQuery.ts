@@ -25,9 +25,21 @@ class GoalQuery {
     }
 
     static create = async (props: Partial<IGoal>) => {
+        const Default: Partial<IGoal> = {
+            title: 'Default Goal',
+            goalType: 'normal',
+            startDate: new Date(),
+            dueDate: new Date(),
+            streakMinimum: 2,
+            streakType: 'weekly',
+            streakDailyStart: new Date(),
+            streakWeeklyStart: 'sunday',
+            streakMonthlyStart: 1,
+        };
         try {
             DB.get().action(async () => {
                 GoalQuery.goals().create((goal: Goal) => {
+                    Object.assign(goal, Default);
                     Object.assign(goal, props);
                 });
             });

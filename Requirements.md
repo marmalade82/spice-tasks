@@ -29,16 +29,17 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
 
 - [ ] User should be able fill out and submit a form with data about goals
     - [ ] User should be able to fill out data about recurrence of the goal.
-    - [ ] User should be able to fill out data about whether the goal is a streak.
+    - [X] User should be able to fill out data about whether the goal is a streak.
     - [X] User should be able to click "Save"
     - [X] After "Save" is clicked, the new Goal should available in the GoalList.
+    - [ ] After "Save" is clicked, all fields of the Goal should be saved to the database.
     - [ ] User should be able to scroll through the form's fields when they overrun the page.
 
 - [ ] User should be able to edit an existing Goal through a form
     - [ ] User should be able to edit data about recurrence of the goal.
     - [ ] User should be able to edit data about whether the goal is a streak.
     - [X] User should be able to click "Save"
-    - [ ] After "Save" is clicked, the edited Goal should available after navigating back to the GoalList.
+    - [ ] After "Save" is clicked, the edited Goal, with all changes, should available after navigating back to the GoalList.
     - [ ] User should be able to scroll through the form's fields when they overrun the page
 
 - [ ] User should be able to delete a Goal while in the Goal's form
