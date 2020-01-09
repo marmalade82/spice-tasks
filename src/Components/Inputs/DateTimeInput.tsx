@@ -13,7 +13,6 @@ interface Props {
 }
 
 interface State {
-    dateTime: Date,
     showModal: boolean,
     modalDateTime: Date,
 }
@@ -45,9 +44,8 @@ export default class DateTimeInput extends React.Component<Props,State> {
         super(props);
 
         this.state = {
-            dateTime: this.props.value,
             showModal: false,
-            modalDateTime: new Date(),
+            modalDateTime: this.props.value,
         }
 
         this.modalInput = React.createRef();
@@ -60,10 +58,6 @@ export default class DateTimeInput extends React.Component<Props,State> {
     }
 
     saveInput = () => {
-        this.setState({
-            dateTime: this.state.modalDateTime
-        });
-
         if(this.modalInput.current) {
             this.modalInput.current.hideModal(); 
         }
@@ -91,13 +85,13 @@ export default class DateTimeInput extends React.Component<Props,State> {
                 title={this.props.title}
                 animationType={"fade"}
                 screenType={"grey"}
-                value={this.renderDateTime(this.state.dateTime)}
+                value={this.renderDateTime(this.props.value)}
                 ref={this.modalInput}
             >
                 <View style={[Style.modalContainer, { backgroundColor: "white"}]}>
                     <DateTimePicker
                         onChange={this.onChange}
-                        dateTime={this.state.dateTime}
+                        dateTime={this.props.value}
                         type={this.props.type}
                     >
                     </DateTimePicker>

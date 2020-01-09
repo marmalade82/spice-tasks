@@ -55,7 +55,7 @@ export default class DateTimePicker extends React.Component<Props, State> {
 
     onPressDateAndroid = async() => {
         const dateOpts = await DatePickerAndroid.open({
-            date: new Date(),
+            date: this.state.date,
             mode: 'default',
         });
 
