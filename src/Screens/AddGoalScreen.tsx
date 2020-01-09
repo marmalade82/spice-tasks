@@ -43,8 +43,26 @@ export default class AddGoalScreen extends React.Component<Props, State> {
         const id = this.props.navigation.getParam('id', '');
         const goal = await GoalQuery.get(id); 
         if(goal) {
+            let data: AddGoalData = {
+                title : goal.title,
+                type : goal.goalType,
+                start_date : goal.startDate,
+                due_date : goal.dueDate,
+                recurring: AddGoalDefault().recurring,
+                recurData: AddGoalDefault().recurData,
+                reward: AddGoalDefault().reward,
+                penalty: AddGoalDefault().penalty,
+                streakData: {
+                    minimum: goal.streakMinimum,
+                    type: goal.streakType,
+                    daily_start: goal.streakDailyStart,
+                    weekly_start: goal.streakWeeklyStart,
+                    monthly_start: goal.streakMonthlyStart,
+                }
+            }
             this.setState({
-                goal: goal
+                goal: goal,
+                data: data,
             })
         } else {
             this.setState({
@@ -56,15 +74,15 @@ export default class AddGoalScreen extends React.Component<Props, State> {
     renderGoalForm = () => {
         if(this.state.goal) {
             return (
-                <ConnectedAddGoalForm
-                    goal={this.state.goal}
+                <AddGoalForm
                     navigation={this.props.navigation}
                     onDataChange={(data: AddGoalData) => {
                         this.setState({
                             data: data
                         })
                     }}
-                ></ConnectedAddGoalForm>
+                    data={this.state.data}
+                ></AddGoalForm>
             );
         } else {
             return (

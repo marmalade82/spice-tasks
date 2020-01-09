@@ -217,7 +217,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         if(this.data().type === "streak") {
             return (
                 <StreakForm
-                    data={this.state.streakData}
+                    data={this.data().streakData}
                     onDataChange={this.onChangeStreak}
                     containerStyle={{
                         flex: 3

@@ -2,7 +2,7 @@ import { appSchema, tableSchema, ColumnSchema, ColumnType, ColumnName } from '@n
 import GoalSchema from "src/Models/Goal/GoalSchema";
 
 const Schema = appSchema({
-    version: 8,
+    version: 9,
     tables: [
         tableSchema({
             name: GoalSchema.table,
