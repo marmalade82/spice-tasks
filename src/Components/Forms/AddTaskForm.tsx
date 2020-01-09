@@ -9,6 +9,7 @@ import { View } from "react-native";
 import DataComponent from "src/Components/base/DataComponent";
 
 interface Props {
+    data: State | false
     onDataChange: (d: State) => void;
 }
 

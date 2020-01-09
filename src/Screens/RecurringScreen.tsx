@@ -25,6 +25,7 @@ export default class RecurringScreen extends React.Component<Props, State> {
         return (
             <View style={[Style.container, Style.greenBg, localStyle.container]}>
                 <RecurringForm
+                    data={false}
                     onDataChange={()=>{}}
                 ></RecurringForm>
             </View>

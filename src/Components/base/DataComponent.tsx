@@ -3,7 +3,7 @@
 import React from "react";
 
 interface DataProps<Data> {
-    data?: Data
+    data: Data | false;
     onDataChange: (d: Readonly<Data>) => void;
 }
 
@@ -44,7 +44,7 @@ export default abstract class DataComponent<Props, State extends Data, Data>
 
     setData = <K extends keyof Data>(d: Pick<State, K>) => {
         this.setState(d);
-        if(this.props.data === undefined) {
+        if(!this.props.data) {
             this.props.onDataChange(this.reviseState(d, this.state));
         } else {
             this.props.onDataChange(this.reviseData(d));

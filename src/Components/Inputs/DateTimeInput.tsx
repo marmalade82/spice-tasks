@@ -91,7 +91,7 @@ export default class DateTimeInput extends React.Component<Props,State> {
                 title={this.props.title}
                 animationType={"fade"}
                 screenType={"grey"}
-                value={this.renderDateTime(new Date())}
+                value={this.renderDateTime(this.state.dateTime)}
                 ref={this.modalInput}
             >
                 <View style={[Style.modalContainer, { backgroundColor: "white"}]}>

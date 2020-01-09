@@ -5,6 +5,7 @@ import { ChoiceInput, DateTimeInput, MultipleInput } from "src/Components/Inputs
 import DataComponent from "src/Components/base/DataComponent";
 
 interface Props {
+    data: Data | false
     onDataChange: (data: Data) => void;
 }
 

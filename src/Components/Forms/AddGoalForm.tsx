@@ -18,6 +18,7 @@ import Style from "src/Style/Style";
 interface Props {
     navigation: Navigator
     onDataChange: (d: State) => void;
+    data: State | false;
 }
 
 interface State {
@@ -197,6 +198,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     screenType={"grey"}
                     onSave={this.onRecurSave}
                     formProps={{
+                        data: false,
                         onDataChange: () => {} // this is overwritten
                     }}
                     renderData={(d: RecurringData) => {
@@ -211,6 +213,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         if(this.data().type === "streak") {
             return (
                 <StreakForm
+                    data={this.state.streakData}
                     onDataChange={this.onChangeStreak}
                     containerStyle={{
                         flex: 3

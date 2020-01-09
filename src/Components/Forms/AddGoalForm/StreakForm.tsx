@@ -11,6 +11,7 @@ import Style from "src/Style/Style";
 import { DayOfWeek } from "lib/recurrence";
 
 interface Props {
+    data: State | false
     onDataChange: (d: State) => void;
     containerStyle?: StyleProp<ViewStyle>;
 }
