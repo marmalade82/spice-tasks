@@ -36,8 +36,6 @@ const AdaptedAddGoalForm: React.FunctionComponent<Props> = (props: Props) => {
             navigation={props.navigation}
             onDataChange={props.onDataChange}
             data={ false }
-            init={ data }
-        
         ></AddGoalForm>
     )
 }
