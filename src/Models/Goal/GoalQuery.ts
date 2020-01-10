@@ -1,10 +1,10 @@
 import DB from "src/Models/Database";
 import { Goal, IGoal} from "src/Models/Goal/Goal";
-
+import GoalSchema from "src/Models/Goal/GoalSchema";
 
 class GoalQuery {
     static goals = () => {
-        return DB.get().collections.get('goals');
+        return DB.get().collections.get(GoalSchema.table);
     }
 
     static queryAll = () => {

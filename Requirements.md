@@ -26,10 +26,17 @@ As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenev
         - [ ] By dragging and dropping a task onto a goal
     - [ ] User should be able to click "Save"
     - [ ] After "Save" is clicked, the Task should be available
-        - [ ] In the list of all Tasks.
+        - [X] In the list of all Tasks.
         - [ ] In the list of tasks for the associated Goal, if there is one.
     - [ ] User shoudl be able to scroll through the form's fields when they overrun the page.
 
+### User Stories - Viewing Tasks
+
+- [X] User should be able to view all tasks
+- [X] User should be able to see attributes on tasks:
+    - [X] Title
+    - [X] Start date
+    - [X] Due date
 
 ## Goals
 

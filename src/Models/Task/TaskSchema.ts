@@ -17,7 +17,7 @@ const TaskType: Record<keyof typeof TaskName, ColumnType> = {
 }
 
 export const TaskSchema = {
-    table: 'tasks',
+    table: 'tasks' as 'tasks',
     name: TaskName,
     type: TaskType,
 }

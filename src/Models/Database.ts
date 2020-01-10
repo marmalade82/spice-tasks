@@ -2,6 +2,7 @@ import { Database } from "@nozbe/watermelondb";
 import { Schema } from "src/Models/Schema";
 import SQLiteAdapter from "@nozbe/watermelondb/adapters/sqlite";
 import Goal from "src/Models/Goal/Goal";
+import Task from "src/Models/Task/Task";
 
 class DB {
     static database: Database | undefined;
@@ -16,7 +17,7 @@ class DB {
 
             DB.database = new Database({
                 adapter: adapter,
-                modelClasses: [Goal],
+                modelClasses: [Goal, Task],
                 actionsEnabled: true,
             });
 

@@ -3,7 +3,7 @@ import GoalSchema from "src/Models/Goal/GoalSchema";
 import TaskSchema from 'src/Models/Task/TaskSchema';
 
 const Schema = appSchema({
-    version: 10,
+    version: 5,
     tables: [
         tableSchema({
             name: GoalSchema.table,

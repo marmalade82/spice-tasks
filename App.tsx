@@ -18,6 +18,7 @@ const ScreenNavigator = createStackNavigator(
   , Recurring: Screens.Recurring
   , Streak: Screens.Streak
   , AddTask: Screens.AddTask
+  , Tasks: Screens.TaskList
   },
   { initialRouteName: 'Home'
   , defaultNavigationOptions: ({navigation}) => {

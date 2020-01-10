@@ -1,6 +1,6 @@
 import React from "react";
 import {View, Button, Text, StyleSheet } from "react-native";
-import { ConnectedGoalList } from "src/ConnectedComponents/Lists/GoalList";
+import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import GoalList from "src/Components/Lists/GoalList";
 import Style from "src/Style/Style";
 

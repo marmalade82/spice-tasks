@@ -17,8 +17,8 @@ export default class Task extends Model implements ITask {
     static table = TaskSchema.table
 
     @field(name.TITLE) title
-    @field(name.STARTS_ON) startDate
-    @field(name.DUE_ON) dueDate 
+    @date(name.STARTS_ON) startDate
+    @date(name.DUE_ON) dueDate 
     @field(name.INSTRUCTIONS) instructions
 }
 

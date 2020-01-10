@@ -24,8 +24,8 @@ interface State {
 
 function Default(): State {
     return {
-        name: "Bob",
-        description: "I am a description",
+        name: "",
+        description: "",
         start_date: new Date(),
         due_date: new Date(),
     };

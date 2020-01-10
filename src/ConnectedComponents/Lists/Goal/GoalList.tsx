@@ -1,13 +1,8 @@
 import React from "react";
 
 import {
-    GoalList,
-    IGoal,
-} from "src/Components/Lists/GoalList";
-
-import {
     ConnectedGoalListItem
-} from "src/ConnectedComponents/Lists/Items/GoalListItem";
+} from "src/ConnectedComponents/Lists/Goal/GoalListItem";
 
 import Goal from "src/Models/Goal/Goal";
 import withObservables from "@nozbe/with-observables";
@@ -35,30 +30,9 @@ const localStyle = StyleSheet.create({
         backgroundColor: "pink",
         width: "100%",
     },
-    list: {
-        flex: 1,
-        backgroundColor: "lightgreen",
-        width: "95%",
-    },
-    title: {
-
-    },
-    details: {
-
-    },
 });
 
 const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
-    const mappedGoals: IGoal[] = props.goals.map((goal: Goal) => {
-        const g: IGoal = {
-            id: goal.id,
-            title: goal.title,
-            due_date: goal.dueDate,
-            type: goal.goalType, 
-        };
-
-        return g;
-    });
     
     const renderGoal = (item: Goal) => {
         return (

@@ -27,7 +27,7 @@ const GoalType: Record<keyof typeof GoalName, ColumnType> = {
 const GoalSchema = {
     name: GoalName,
     type: GoalType,
-    table: 'goals',
+    table: 'goals' as 'goals',
 }
 
 export default GoalSchema;

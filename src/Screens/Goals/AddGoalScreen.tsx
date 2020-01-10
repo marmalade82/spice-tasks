@@ -70,31 +70,17 @@ export default class AddGoalScreen extends React.Component<Props, State> {
     }
 
     renderGoalForm = () => {
-        if(this.state.goal) {
-            return (
-                <AddGoalForm
-                    navigation={this.props.navigation}
-                    onDataChange={(data: AddGoalData) => {
-                        this.setState({
-                            data: data
-                        })
-                    }}
-                    data={this.state.data}
-                ></AddGoalForm>
-            );
-        } else {
-            return (
-                <AddGoalForm 
-                    navigation={this.props.navigation}
-                    data={this.state.data}
-                    onDataChange={(data: AddGoalData)=>{
-                        this.setState({
-                            data: data
-                        });
-                    }}
-                />
-            );
-        }
+        return (
+            <AddGoalForm
+                navigation={this.props.navigation}
+                onDataChange={(data: AddGoalData) => {
+                    this.setState({
+                        data: data
+                    })
+                }}
+                data={this.state.data}
+            ></AddGoalForm>
+        );
     }
 
     onSave = () => {
