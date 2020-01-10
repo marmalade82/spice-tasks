@@ -5,12 +5,14 @@ import {
     DateTimeInput,
 
 } from "src/Components/Inputs";
-import { View } from "react-native";
+import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import DataComponent from "src/Components/base/DataComponent";
+import Style from "src/Style/Style"
 
 interface Props {
     data: State | false
     onDataChange: (d: State) => void;
+    style: StyleProp<ViewStyle>;
 }
 
 interface State {
@@ -20,18 +22,27 @@ interface State {
     due_date: Date
 }
 
-const Default: State = {
-    name: "Bob",
-    description: "I am a description",
-    start_date: new Date(),
-    due_date: new Date(),
+function Default(): State {
+    return {
+        name: "Bob",
+        description: "I am a description",
+        start_date: new Date(),
+        due_date: new Date(),
+    };
 }
+
+const localStyle = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "flex-start"
+    }
+})
 
 export default class AddTaskForm extends DataComponent<Props, State, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = Default;
+        this.state = Default();
     }
 
     onChangeName = (name: string) => {
@@ -60,7 +71,7 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
 
     render = () => {
         return (
-            <View>
+            <View style={[Style.container, localStyle.container, this.props.style]}>
                 <StringInput
                     title={"Name"} 
                     value={this.data().name}

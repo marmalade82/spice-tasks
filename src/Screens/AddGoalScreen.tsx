@@ -4,8 +4,6 @@ import { AddGoalForm, AddGoalData, AddGoalDefault } from "src/Components/Forms/A
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { GoalQuery, Goal } from "src/Models/Goal/GoalQuery";
-import { ConnectedAddGoalForm } from "src/ConnectedComponents/Forms/AddGoalForm";
-import { AddGoal } from "src/Screens";
 
 interface Props {
     navigation: any;
@@ -35,7 +33,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
     }
     static navigationOptions = ({navigation}) => {
         return {
-            title: 'New Goal',
+            title: 'Goal',
         }
     }
 

@@ -11,7 +11,25 @@ This document outlines the user and business requirements for the Spice project.
 
 ## Tasks
 
-As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenever something needs to be done, a Task contains the details about _what_ needs to be done.
+As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenever something needs to be done, a Task contains the details about _what_ needs to be done. Thus, it typically includes the following data:
+
+- Title of the task
+- Instructions on how to complete the task
+- Date the task should start
+- Date the task should have been completed
+
+### User Stories - Adding a Task
+
+- [ ] User should be able to fill out and submit a form with data about a task.
+    - [ ] User should be able to associate the created task with a goal
+        - [ ] By adding thet task from the goal
+        - [ ] By dragging and dropping a task onto a goal
+    - [ ] User should be able to click "Save"
+    - [ ] After "Save" is clicked, the Task should be available
+        - [ ] In the list of all Tasks.
+        - [ ] In the list of tasks for the associated Goal, if there is one.
+    - [ ] User shoudl be able to scroll through the form's fields when they overrun the page.
+
 
 ## Goals
 
