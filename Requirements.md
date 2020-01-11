@@ -20,7 +20,7 @@ As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenev
 
 ### User Stories - Adding a Task
 
-- [ ] User should be able to fill out and submit a form with data about a task.
+- [ ] User should be able to fill out and submit a form with data about a new task.
     - [ ] User should be able to associate the created task with a goal
         - [ ] By adding thet task from the goal
         - [ ] By dragging and dropping a task onto a goal
@@ -28,7 +28,12 @@ As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenev
     - [ ] After "Save" is clicked, the Task should be available
         - [X] In the list of all Tasks.
         - [ ] In the list of tasks for the associated Goal, if there is one.
-    - [ ] User shoudl be able to scroll through the form's fields when they overrun the page.
+    - [ ] User should be able to scroll through the form's fields when they overrun the page.
+
+- [ ] User should be able to edit an existing task in a form
+    - [ ] User should be ablet o click "Save"
+    - [X] After "Save" is clicked, changes should be persisted to the database.
+    - [ ] User should be able to scroll through form's fields.
 
 ### User Stories - Viewing Tasks
 

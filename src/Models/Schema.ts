@@ -1,15 +1,14 @@
 import { appSchema, tableSchema, ColumnSchema, ColumnType, ColumnName, TableSchema } from '@nozbe/watermelondb';
 import GoalSchema from "src/Models/Goal/GoalSchema";
 import TaskSchema from 'src/Models/Task/TaskSchema';
+import RewardSchema from 'src/Models/Reward/RewardSchema';
 
 const Schema = appSchema({
-    version: 5,
+    version: 7,
     tables: [
-        tableSchema({
-            name: GoalSchema.table,
-            columns: convertToColumns(GoalSchema.name, GoalSchema.type)
-        }),
+        generateTableSchema(GoalSchema),
         generateTableSchema(TaskSchema),
+        generateTableSchema(RewardSchema),
     ]
 });
 
