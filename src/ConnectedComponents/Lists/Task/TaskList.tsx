@@ -5,9 +5,7 @@ import {
     ConnectedTaskListItem
 } from "src/ConnectedComponents/Lists/Task/TaskListItem";
 
-import Goal from "src/Models/Goal/Goal";
 import withObservables from "@nozbe/with-observables";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
 import {
     Task
 } from "src/Models/Task/Task";

@@ -32,6 +32,11 @@ export default class HomeScreen extends React.Component<Props> {
                     title="Tasks"
                     onPress={() => this.props.navigation.navigate('Tasks')}
                 ></Button>
+                <Button
+                    title="Rewards"
+                    onPress={() => this.props.navigation.navigate('Rewards')}
+                >
+                </Button>
             </View>
         )
     }

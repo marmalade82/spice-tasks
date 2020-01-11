@@ -6,51 +6,32 @@ import {
 
 import Goal from "src/Models/Goal/Goal";
 import withObservables from "@nozbe/with-observables";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
 
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import List from "src/Components/Lists/base/List";
+import ClickNavigation from "src/Components/Navigation/ClickNavigation";
 
 interface Props {
     goals: Goal[];
     navigation: any;
 }
 
-const localStyle = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "lightblue",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "95%",
-    },
-    row: {
-        flex: 1,
-        backgroundColor: "pink",
-        width: "100%",
-    },
-});
-
 const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
     
     const renderGoal = (item: Goal) => {
         return (
-            <View style={[localStyle.row]}>
-                <TouchableOpacity 
-                    style={[localStyle.row]}
-                    onPress={() => {
-                        props.navigation.navigate('AddGoal', {
-                            id: item.id
-                        });
-                    }}
-                >
+            <ClickNavigation
+                navigation={props.navigation}
+                parameters={{
+                    id: item.id
+                }}
+                destination={"AddGoal"}
+            >
                     <ConnectedGoalListItem
                         goal={item}
                     ></ConnectedGoalListItem>
-                </TouchableOpacity>
-            </View>
-        )
+            </ClickNavigation>
+        );
     }
 
     return (

@@ -1,6 +1,7 @@
+
 import React from "react";
 import {View, Button, Text, StyleSheet } from "react-native";
-import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
+import { ConnectedRewardList } from "src/ConnectedComponents/Lists/Reward/RewardList";
 import Style from "src/Style/Style";
 
 interface Props {
@@ -16,20 +17,20 @@ const style = StyleSheet.create({
 });
 
 
-export default class GoalListScreen extends React.Component<Props> {
+export default class RewardListScreen extends React.Component<Props> {
     static navigationOptions = ({navigation}) => {
         return {
-            title: 'Goals',
+            title: 'Rewards',
         }
     }
 
     render = () => {
         return (
             <View style={[Style.container, Style.yellowBg]}>
-                <ConnectedGoalList 
+                <ConnectedRewardList 
                     navigation={this.props.navigation}
                 >
-                </ConnectedGoalList>
+                </ConnectedRewardList>
                 <View style={style.button}>
                     <Button
                         title={"add"}
@@ -37,7 +38,7 @@ export default class GoalListScreen extends React.Component<Props> {
                             const params = {
                                 id: ""
                             };
-                            this.props.navigation.navigate('AddGoal', params);
+                            this.props.navigation.navigate('AddReward', params);
                         }}
                     />
                 </View>

@@ -131,6 +131,26 @@ Rewards typically come with the following data items:
 - Tier of the reward, since some rewards are more fitting for certain goal tiers.
 - Points - points will typically be automatically calculated (formula to be determined), but they provide you with a way to view your efforts over time.
 
+### User Stories - Adding Rewards
+
+- [ ] User should be able to fill out form with details about new Reward.
+    - [ ] User should be able to click "Save" button
+    - [ ] After clicking "Save", changes should persist to database
+    - [ ] Form should be scrollable
+
+- [ ] User should be able to edit existing Reward in a form.
+    - [ ] User should be able to click "Save" button
+    - [ ] After clicking "Save", changes should persist to database
+    - [ ] Form should be scrollable.
+
+
+### User Stories - Viewing Rewards
+
+- [ ] User should be able to view all rewards
+- [ ] User should be able to view the following reward attributes at a glance
+    - [ ] Title
+    - [ ] Expiration Date
+
 ## Penalties
 
 Penalties are part of what makes Spice different from the usual task planner application. They are intended to be constructive, not punitive. Here are several example penalties:
