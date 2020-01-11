@@ -1,6 +1,7 @@
 
 import DB from "src/Models/Database";
 import { Model as M } from "@nozbe/watermelondb";
+import { Exact } from "src/common/types";
 
 export default abstract class ModelQuery<Model extends M & IModel, IModel> {
     table: string;
@@ -33,7 +34,7 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> {
 
     abstract default(): IModel
 
-    create = async (props: Partial<IModel>) => {
+    create = async <A> (props: Exact<Partial<IModel>>) => {
         const Default = this.default();
 
         return DB.get().action(async () => {
@@ -44,7 +45,7 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> {
         });
     }
 
-    update = async (model: Model, props: Partial<IModel>) => {
+    update = async <A> (model: Model, props: Exact<Partial<IModel>>) => {
         return DB.get().action(async () => {
             model.update((m: Model) => {
                 Object.assign(m, props);
