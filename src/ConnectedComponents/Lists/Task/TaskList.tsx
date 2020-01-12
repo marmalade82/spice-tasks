@@ -49,8 +49,7 @@ interface InputProps {
 }
 
 /**
- * This function ensures that the enhanced component will always take its goals from the full list of goals. We may want to change this in the 
- * future based on props
+ * This function ensures that the component is connected to the database
  */
 
 const enhance = withObservables([], (_props: InputProps) => {

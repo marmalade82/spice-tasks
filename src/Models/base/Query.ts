@@ -3,7 +3,17 @@ import DB from "src/Models/Database";
 import { Model as M } from "@nozbe/watermelondb";
 import { Exact } from "src/common/types";
 
-export default abstract class ModelQuery<Model extends M & IModel, IModel> {
+interface IModelQuery<Model extends M & IModel, IModel> {
+    store: () => any;
+    queryAll: () => any;
+    all: () => any;
+    get: (id: string) => any;
+    default: () => IModel;
+    create: (p: Exact<Partial<IModel>>) => any;
+    update: (m: Model, p: Exact<Partial<IModel>>) => any;
+}
+
+export default abstract class ModelQuery<Model extends M & IModel, IModel> implements IModelQuery<Model, IModel> {
     table: string;
     constructor(t: string) {
         this.table = t;
@@ -52,4 +62,9 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> {
             });
         });
     }
+}
+
+export {
+    ModelQuery,
+    IModelQuery,
 }
