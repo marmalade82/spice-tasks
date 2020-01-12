@@ -2,6 +2,9 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Style from "src/Style/Style";
+import {
+    ColumnView, RowView,
+} from "src/Components/Basic/Basic";
 
 interface Props {
     goal: Goal
@@ -43,19 +46,19 @@ export default class GoalSummary extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <View
-                style={ [Style.container, localStyle.container, Style.yellowBg] }
+            <ColumnView
+                style={ [Style.yellowBg] }
             >
-                <View style={[localStyle.row]}>
-                    <View style={[localStyle.title]}>
+                <RowView style={[localStyle.row]}>
+                    <ColumnView style={[localStyle.title]}>
                         <Text>{this.props.goal.title}</Text>
-                    </View>
-                    <View style={[localStyle.space]}>
+                    </ColumnView>
+                    <ColumnView style={[localStyle.space]}>
                         <Text>{this.props.goal.due_date.toString()}</Text>
-                    </View>
-                </View>
+                    </ColumnView>
+                </RowView>
 
-            </View>
+            </ColumnView>
         );
     }
 }

@@ -6,7 +6,6 @@ import withObservables from "@nozbe/with-observables";
 import {
     Goal
 } from "src/Models/Goal/Goal";
-import GoalQuery from "src/Models/Goal/GoalQuery";
 import GoalSummary from "src/Components/Summaries/GoalSummary";
 
 interface Props {
