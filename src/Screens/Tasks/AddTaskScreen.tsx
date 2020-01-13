@@ -55,20 +55,24 @@ export default class AddTaskScreen extends React.Component<Props, State> {
     }
 
     onSave = () => {
+        // Parent id only changes if task does not already have a parent id.
+        const parentId = this.state.task ? this.state.task.parentId : this.props.navigation.getParam('parent_id', '');
         const data = this.state.data;
         const taskData = {
             title: data.name,
             dueDate: data.due_date,
             startDate: data.start_date,
             instructions: data.description,
+            parentId: parentId,
         };
 
-        debugger;
         if(this.state.task) {
             (new TaskQuery().update(this.state.task, taskData)).catch();        
         } else {
             new TaskQuery().create(taskData).catch();
         }
+
+        this.props.navigation.goBack();
     }
 
     render = () => {

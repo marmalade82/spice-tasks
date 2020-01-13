@@ -9,6 +9,7 @@ interface ITask {
     startDate: Date;
     dueDate: Date;
     instructions: string;
+    parentId: string;
 }
 
 const name = TaskSchema.name
@@ -20,6 +21,7 @@ export default class Task extends Model implements ITask {
     @date(name.STARTS_ON) startDate
     @date(name.DUE_ON) dueDate 
     @field(name.INSTRUCTIONS) instructions
+    @field(name.PARENT) parentId
 }
 
 export {

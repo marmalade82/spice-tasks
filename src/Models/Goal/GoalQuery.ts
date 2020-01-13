@@ -25,7 +25,7 @@ class GoalQuery {
     }
 
     static create = async (props: Partial<IGoal>) => {
-        const Default: Partial<IGoal> = {
+        const Default: IGoal = {
             title: 'Default Goal',
             goalType: 'normal',
             startDate: new Date(),
@@ -35,6 +35,7 @@ class GoalQuery {
             streakDailyStart: new Date(),
             streakWeeklyStart: 'sunday',
             streakMonthlyStart: 1,
+            parentId: "",
         };
 
         DB.get().action(async () => {

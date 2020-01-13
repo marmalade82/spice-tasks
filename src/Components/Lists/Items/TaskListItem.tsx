@@ -57,7 +57,7 @@ export default class TaskListItem extends Item<Props, State, Task> {
         return (
             <View style={[localStyle.container]}>
                 <View style={localStyle.title}>
-                    <Text>{item.title}</Text>
+                    <Text>{item.title + " : " + item.id}</Text>
                 </View>
                 <View style={localStyle.details}>
                     <Text>{item.start_date.toString()}</Text>

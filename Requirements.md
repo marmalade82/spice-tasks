@@ -24,7 +24,7 @@ As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenev
     - [ ] User should be able to associate the created task with a goal
         - [ ] By adding thet task from the goal
         - [ ] By dragging and dropping a task onto a goal
-    - [ ] User should be able to click "Save"
+    - [ ] User should be able to click "Save" and return to previous screen
     - [ ] After "Save" is clicked, the Task should be available
         - [X] In the list of all Tasks.
         - [ ] In the list of tasks for the associated Goal, if there is one.
@@ -60,7 +60,7 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
 - [ ] User should be able fill out and submit a form with data about goals
     - [ ] User should be able to fill out data about recurrence of the goal.
     - [X] User should be able to fill out data about whether the goal is a streak.
-    - [X] User should be able to click "Save"
+    - [X] User should be able to click "Save" and return to previous screen
     - [X] After "Save" is clicked, the new Goal should available in the GoalList.
     - [X] After "Save" is clicked, all fields of the Goal should be saved to the database as a new goal.
     - [ ] User should be able to scroll through the form's fields when they overrun the page.
@@ -103,10 +103,18 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
 
 - [ ] Users should be able to view an existing goal with 
     - [ ] A summary of the goal and its tasks at the top
+        - [X] Title
+        - [ ] Due date
+        - [ ] Task count
     - [ ] A list of the tasks below with
-        - [ ] Title
-        - [ ] Start Date
-        - [ ] Due Date
+        - [ ] Only the tasks that belong to the goal
+        - [X] Title
+        - [X] Start Date
+        - [X] Due Date
+    - [X] User should be able to edit the goal by clicking a button to go to the edit screen.
+    - [X] User should be able to click a button to go to a screen for adding a new task to the goal
+        - [X] Clicking the button takes the user to the Add Task screen.
+        - [X] Using the Add Task Screen adds the task to the goal within the database
 - [ ] Users should be able to re-order tasks within a goal by drag-and-drop.
 - [ ] Users should be able to click on a task to view it, and its sub-tasks, in more detail.
 
@@ -134,22 +142,22 @@ Rewards typically come with the following data items:
 ### User Stories - Adding Rewards
 
 - [ ] User should be able to fill out form with details about new Reward.
-    - [ ] User should be able to click "Save" button
-    - [ ] After clicking "Save", changes should persist to database
+    - [ ] User should be able to click "Save" button and go back to previous page.
+    - [X] After clicking "Save", changes should persist to database
     - [ ] Form should be scrollable
 
 - [ ] User should be able to edit existing Reward in a form.
-    - [ ] User should be able to click "Save" button
-    - [ ] After clicking "Save", changes should persist to database
+    - [ ] User should be able to click "Save" button and go back to previous page.
+    - [X] After clicking "Save", changes should persist to database
     - [ ] Form should be scrollable.
 
 
 ### User Stories - Viewing Rewards
 
-- [ ] User should be able to view all rewards
-- [ ] User should be able to view the following reward attributes at a glance
-    - [ ] Title
-    - [ ] Expiration Date
+- [X] User should be able to view all rewards
+- [X] User should be able to view the following reward attributes at a glance
+    - [X] Title
+    - [X] Expiration Date
 
 ## Penalties
 
@@ -160,7 +168,7 @@ Penalties are part of what makes Spice different from the usual task planner app
 - Confronting one of your fears
 - Asking for some change at work
 
-Penalties should be things that are ultimately good for you, but unpleasant enough that you put them off. They range from minor things like spring cleaning and exercising to large things like confronting your fears. They should also be things that you can afford to put off -- don't avoid filing your taxes on time because you didn't get Penalized while using Spice! (Make filing your taxes early a Goal instead)
+Penalties should be things that are ultimately good for you, but unpleasant enough that you put them off. They range from minor things like spring cleaning and exercising to large things like confronting your fears. They should also be things that you can afford to put off -- don't forget to file your taxes on time because you didn't get Penalized while using Spice! (Make filing your taxes early a Goal instead)
 
 Penalties may be incurred for several reasons:
 

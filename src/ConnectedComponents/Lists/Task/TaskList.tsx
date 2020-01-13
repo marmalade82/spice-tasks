@@ -45,16 +45,23 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
 
 
 interface InputProps {
-    navigation: any
+    navigation: any;
+    parentId: string;  // shows all tasks that have this parent
 }
 
 /**
  * This function ensures that the component is connected to the database
  */
 
-const enhance = withObservables([], (_props: InputProps) => {
-    return {
-        tasks: new TaskQuery().queryAll().observe()
+const enhance = withObservables([], (props: InputProps) => {
+    if(props.parentId) {
+        return {
+            tasks: new TaskQuery().queryHasParent(props.parentId).observe(),
+        }
+    } else {
+        return {
+            tasks: new TaskQuery().queryAll().observe(),
+        }
     }
 });
 

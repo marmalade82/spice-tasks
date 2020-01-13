@@ -40,6 +40,7 @@ export default class TaskListScreen extends React.Component<Props, State> {
             <View style={[Style.container, localStyle.container]}>
                 <ConnectedTaskList
                     navigation={this.props.navigation}
+                    parentId={""}
                 ></ConnectedTaskList>
                 <View style={[localStyle.button]}>
                     <Button

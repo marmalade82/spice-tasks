@@ -55,7 +55,7 @@ export default class RewardListItem extends Item<Props, State, Reward> {
         return (
             <View style={[localStyle.container]}>
                 <View style={localStyle.title}>
-                    <Text>{item.title}</Text>
+                    <Text>{item.title + " : " + item.id}</Text>
                 </View>
                 <View style={localStyle.details}>
                     <Text>{item.expire_date.toString()}</Text>

@@ -11,6 +11,7 @@ interface IGoal extends IStreak{
     goalType: string;
     startDate: Date;
     dueDate: Date;
+    parentId: string;
 }
 
 interface IStreak {
@@ -34,6 +35,7 @@ export default class Goal extends Model implements IGoal {
     @date(name.STREAK_DAILY_START) streakDailyStart
     @field(name.STREAK_WEEKLY_START) streakWeeklyStart
     @field(name.STREAK_MONTHLY_START) streakMonthlyStart
+    @field(name.PARENT) parentId
 }
 
 export {

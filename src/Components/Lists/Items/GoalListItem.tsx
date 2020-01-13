@@ -56,7 +56,7 @@ export default class GoalListItem extends Item<Props, State, Goal> {
         return (
             <View style={[localStyle.container]}>
                 <View style={localStyle.title}>
-                    <Text>{item.title}</Text>
+                    <Text>{item.title + " : " + item.id}</Text>
                 </View>
                 <View style={localStyle.details}>
                     <Text>{item.due_date.toString()}</Text>

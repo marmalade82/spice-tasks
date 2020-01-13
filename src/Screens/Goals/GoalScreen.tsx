@@ -103,8 +103,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                             navigation={this.props.navigation}
                             parameters={{
                                 id: "", // The task is new, so no id.
-                                goal_id: this.props.navigation.getParam("id", ""), // the goal this task is associated with.
-                                // But is this a parent or what?
+                                parent_id: this.props.navigation.getParam("id", ""), // id of the goal, since it is this task's parent.
                             }}
                             destination={'AddTask'}
                         ></NavigationButton>
@@ -119,6 +118,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                 <ColumnView style={[Style.container, localStyle.list]}>
                     <ConnectedTaskList
                         navigation={this.props.navigation}
+                        parentId={this.props.navigation.getParam('id', '')}
                     ></ConnectedTaskList>
                 </ColumnView>
                 <RowView style={[localStyle.button]}>

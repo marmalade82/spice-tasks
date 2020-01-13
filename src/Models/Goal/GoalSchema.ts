@@ -1,4 +1,5 @@
 import { ColumnType } from "@nozbe/watermelondb"
+import { ChildSchema, Schema } from "src/Models/base/SharedSchema"
 
 const GoalName = {
     TITLE: 'title',
@@ -10,6 +11,7 @@ const GoalName = {
     STREAK_DAILY_START: 'streak_daily_start',
     STREAK_WEEKLY_START: 'streak_weekly_start',
     STREAK_MONTHLY_START: 'streak_monthly_start',
+    PARENT: 'parent_id' as "parent_id",
 }
 
 const GoalType: Record<keyof typeof GoalName, ColumnType> = {
@@ -22,12 +24,13 @@ const GoalType: Record<keyof typeof GoalName, ColumnType> = {
     STREAK_DAILY_START: 'number',
     STREAK_WEEKLY_START: 'string',
     STREAK_MONTHLY_START: 'number',
+    PARENT: 'string',
 }
 
-const GoalSchema = {
+const GoalSchema: ChildSchema & Schema<typeof GoalName, 'goals'> = {
     name: GoalName,
     type: GoalType,
-    table: 'goals' as 'goals',
+    table: 'goals',
 }
 
 export default GoalSchema;
