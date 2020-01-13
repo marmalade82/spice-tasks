@@ -4,6 +4,7 @@ import { AddGoalForm, AddGoalData, AddGoalDefault } from "src/Components/Forms/A
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { GoalQuery, Goal } from "src/Models/Goal/GoalQuery";
+import { ColumnView } from "src/Components/Basic/Basic";
 
 interface Props {
     navigation: any;
@@ -102,25 +103,28 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             .catch((reason) => {
                 console.log("Failed to update existing goal with reason: " + reason);
             });
+
+            this.props.navigation.goBack();
         } else {
             GoalQuery.create(goalData)
             .catch((reason) => {
                 console.log("Failed to create goal with reason: " + reason);
             });  
+
+            this.props.navigation.goBack();
         }
     }
  
 
     render = () => {
         return (
-            <SafeAreaView style={[Style.container, Style.greenBg, localStyle.container]}>
+            <ColumnView style={[Style.greenBg, localStyle.container]}>
                 { this.renderGoalForm() }
                 <Button
                     title={"SAVE"}
                     onPress={this.onSave}
                 />
-
-            </SafeAreaView>
+            </ColumnView>
         );
     }
 }

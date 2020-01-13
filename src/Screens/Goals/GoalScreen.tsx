@@ -5,6 +5,10 @@ import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList"
 import { ConnectedGoalSummary } from "src/ConnectedComponents/Summaries/GoalSummary";
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery from "src/Models/Goal/GoalQuery";
+import {
+    ColumnView, RowView,
+} from "src/Components/Basic/Basic";
+import NavigationButton from "src/Components/Navigation/NavigationButton";
 
 
 interface Props {
@@ -17,18 +21,23 @@ interface State {
 
 const localStyle = StyleSheet.create({
     container: {
-
     },
     summary: {
         flex: 1,
     },
+    actionHeader: {
+        flex: 0.3,
+    },
+    actionItem: {
+        backgroundColor: "lightyellow"
+    },
     list: {
-        flex: 2.5,
+        flex: 2.7,
     },
     button: {
         position: 'absolute',
         right: 25,
-        bottom: 25,
+        top: 25,
     }
 });
 
@@ -64,34 +73,66 @@ export default class GoalScreen extends React.Component<Props, State> {
         }
     }
 
-    onClick = () => {
+    onEditGoal = () => {
         const params = {
             id: this.props.navigation.getParam('id', ''),
         };
         this.props.navigation.navigate('AddGoal', params);
     }
 
+    onAddTask = () => {
+        const params = {
+
+        };
+    }
+
     render = () => {
         return (
-            <View style={[Style.container, Style.redBg]}>
-                <View
-                    style={[Style.container, localStyle.summary, Style.yellowBg]}
+            <ColumnView style={[localStyle.container, Style.redBg]}>
+                <ColumnView
+                    style={[localStyle.summary, Style.yellowBg]}
                 >
                     {this.renderSummary()}
-                </View>
-                <View style={[Style.container, localStyle.list]}>
+                </ColumnView>
+                <RowView style={[localStyle.actionHeader, Style.greenBg]}>
+                    <ColumnView style={[localStyle.actionItem]}>
+                    </ColumnView>
+                    <ColumnView style={[localStyle.actionItem]}>
+                        <NavigationButton
+                            title={"+"}
+                            navigation={this.props.navigation}
+                            parameters={{
+                                id: "", // The task is new, so no id.
+                                goal_id: this.props.navigation.getParam("id", ""), // the goal this task is associated with.
+                                // But is this a parent or what?
+                            }}
+                            destination={'AddTask'}
+                        ></NavigationButton>
+                    </ColumnView>
+                    <ColumnView style={[localStyle.actionItem]}>
+                        <Button
+                            title={"..."}
+                            onPress={() => {}}
+                        />
+                    </ColumnView>
+                </RowView>
+                <ColumnView style={[Style.container, localStyle.list]}>
                     <ConnectedTaskList
                         navigation={this.props.navigation}
                     ></ConnectedTaskList>
-                </View>
-                <View style={[localStyle.button]}>
-                    <Button
-                        title={"edit"}
-                        onPress={this.onClick}
-                        color="purple"
-                    />
-                </View>
-            </View>
+                </ColumnView>
+                <RowView style={[localStyle.button]}>
+                    <NavigationButton
+                        title={"edit"} 
+                        navigation={this.props.navigation}
+                        parameters={{
+                            id: this.props.navigation.getParam('id', ''),
+                        }}
+                        color={"purple"}
+                        destination={"AddGoal"}
+                    ></NavigationButton>
+                </RowView>
+            </ColumnView>
         );
     }
 

@@ -21,8 +21,10 @@ const localStyle = StyleSheet.create({
     },
     row: {
         flex: 1,
+        flexDirection: "column",
         backgroundColor: "pink",
-        width: "100%",
+        justifyContent: "center",
+        alignItems: "stretch",
     },
 });
 
@@ -34,7 +36,6 @@ export default class ClickNavigation extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <View style={[localStyle.row]}>
                 <TouchableOpacity 
                     style={[localStyle.row]}
                     onPress={() => {
@@ -43,7 +44,6 @@ export default class ClickNavigation extends React.Component<Props, State> {
                 >
                     {this.props.children}
                 </TouchableOpacity>
-            </View>
         );
     }
 }

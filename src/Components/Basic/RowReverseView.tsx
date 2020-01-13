@@ -13,14 +13,14 @@ interface State {
 const localStyle = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: 'row-reverse',
         backgroundColor: '#FFF',
         alignItems: 'stretch',
         justifyContent: 'center',
     }
 });
 
-export default class RowView extends React.Component<Props, State> {
+export default class RowReverseView extends React.Component<Props, State> {
 
     style = () => {
         let styles = [localStyle.container, this.props.style];

@@ -42,6 +42,7 @@ class GoalQuery {
                 Object.assign(goal, Default);
                 Object.assign(goal, props);
             });
+
         });
     }
 

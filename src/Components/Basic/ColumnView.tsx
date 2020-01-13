@@ -15,7 +15,7 @@ const localStyle = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         backgroundColor: '#FFF',
-        alignItems: 'center',
+        alignItems: 'stretch',
         justifyContent: 'center',
     }
 });
