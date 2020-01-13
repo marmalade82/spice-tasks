@@ -117,6 +117,10 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
         - [X] Using the Add Task Screen adds the task to the goal within the database
 - [ ] Users should be able to re-order tasks within a goal by drag-and-drop.
 - [ ] Users should be able to click on a task to view it, and its sub-tasks, in more detail.
+- [ ] Users should be able to sort the tasks by
+    - [ ] Order
+    - [ ] Start Date
+    - [ ] Due Date
 
 ## Rewards
 

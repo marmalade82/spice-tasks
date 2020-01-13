@@ -1,8 +1,9 @@
 
 
 import { Model } from "@nozbe/watermelondb";
-import { field, date } from "@nozbe/watermelondb/decorators";
+import { field, date, children, relation } from "@nozbe/watermelondb/decorators";
 import GoalSchema from "src/Models/Goal/GoalSchema";
+import TaskSchema from "src/Models/Task/TaskSchema";
 
 type GoalType = "normal" | "streak"
 
@@ -26,6 +27,16 @@ const name = GoalSchema.name;
 
 export default class Goal extends Model implements IGoal {
     static table = GoalSchema.table;
+    static associations = {
+        [TaskSchema.table]: {
+            type: "has_many",
+            foreignKey: TaskSchema.name.PARENT,
+        } as const,
+        [GoalSchema.table]: {
+            type: "belongs_to",
+            key: name.PARENT,
+        } as const,
+    }
     @field(name.TITLE) title
     @field(name.TYPE) goalType
     @date(name.STARTS_AT) startDate 
@@ -36,6 +47,10 @@ export default class Goal extends Model implements IGoal {
     @field(name.STREAK_WEEKLY_START) streakWeeklyStart
     @field(name.STREAK_MONTHLY_START) streakMonthlyStart
     @field(name.PARENT) parentId
+
+    /*Relations*/
+    @children(TaskSchema.table) tasks
+    @relation(GoalSchema.table, name.PARENT) parentGoal
 }
 
 export {
