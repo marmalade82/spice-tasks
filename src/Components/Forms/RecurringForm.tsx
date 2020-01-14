@@ -152,6 +152,7 @@ export default class RecurringForm extends DataComponent<Props, State, Data> {
                     type={"date"}
                     onValueChange={this.onDateChange}
                     value={this.data().date}
+                    accessibilityLabel={"recurring-once-date"}
                 >
                 </DateTimeInput>
             );
@@ -166,6 +167,7 @@ export default class RecurringForm extends DataComponent<Props, State, Data> {
                     type={"time"}
                     onValueChange={this.onTimeChange}
                     value={this.data().time}
+                    accessibilityLabel={"recurring-daily-date"}
                 >
 
                 </DateTimeInput>

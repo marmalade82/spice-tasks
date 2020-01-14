@@ -83,6 +83,7 @@ export default class AddRewardForm extends DataComponent<Props, State, State> {
                     type={"date"}
                     value={this.data().expire_date}
                     onValueChange={this.onChangeExpire}
+                    accessibilityLabel={"reward-expire-date"}
                 />
             </View>
         );

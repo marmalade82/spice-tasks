@@ -12,6 +12,7 @@ interface Props<FormProps, FormData> {
     onSave: (data: Readonly<FormData>) => void // detects whether the user clicked the "save" button
     formProps: FormProps & DataProps<FormData>
     renderData: (data: Readonly<FormData>) => string
+    accessibilityLabel: string;
 }
 
 interface State<FormData> {
@@ -70,6 +71,7 @@ export default function createSaveModalInput
                         animationType={this.props.animationType}
                         screenType={this.props.screenType}
                         value={this.props.renderData(this.state.formData)}
+                        accessibilityLabel={this.props.accessibilityLabel}
                     >
                         <View style={[Style.modalContainer, Style.whiteBg, localStyle.modalContainer]}>
                             <View style={[Style.maxInputHeight, Style.yellowBg, localStyle.saveContainer]}>

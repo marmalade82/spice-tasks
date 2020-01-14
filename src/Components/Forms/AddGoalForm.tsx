@@ -14,6 +14,7 @@ import {
 import { RecurringForm, RecurringData, RecurringDefault} from "src/Components/Forms/RecurringForm";
 import { StreakForm, StreakDefault, StreakData }from "src/Components/Forms/AddGoalForm/StreakForm";
 import Style from "src/Style/Style";
+import { ColumnView } from "../Basic/Basic";
 
 interface Props {
     navigation: Navigator
@@ -143,7 +144,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
     render = () => {
         return (
-            <View style={[Style.container, Style.blueBg]}>
+            <ColumnView style={[Style.blueBg]}>
                 <StringInput
                     title={"Summary"}
                     value={this.data().title}
@@ -167,6 +168,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     type={"date"}
                     value={ this.data().start_date }
                     onValueChange={ this.onChangeStartDate }
+                    accessibilityLabel={ "goal-start-date" }
                 />
 
                 <DateTimeInput
@@ -174,6 +176,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     type={"date"}
                     value={ this.data().due_date }
                     onValueChange={ this.onChangeDueDate }
+                    accessibilityLabel = { "goal-end-date" }
                 />
 
                 <ChoiceInput
@@ -208,8 +211,9 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     renderData={(d: RecurringData) => {
                         return "hi there, please impement data renderer";
                     }}
+                    accessibilityLabel={"goal-recurring"}
                 />
-            </View>
+            </ColumnView>
         )
     }
 

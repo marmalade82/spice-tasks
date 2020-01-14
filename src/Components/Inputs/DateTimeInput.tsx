@@ -10,6 +10,7 @@ interface Props {
     type: "date" | "time" | "both"
     value: Date
     onValueChange: (date: Date) => void;
+    accessibilityLabel: string;
 }
 
 interface State {
@@ -87,6 +88,7 @@ export default class DateTimeInput extends React.Component<Props,State> {
                 screenType={"grey"}
                 value={this.renderDateTime(this.props.value)}
                 ref={this.modalInput}
+                accessibilityLabel={this.props.accessibilityLabel}
             >
                 <View style={[Style.modalContainer, { backgroundColor: "white"}]}>
                     <DateTimePicker

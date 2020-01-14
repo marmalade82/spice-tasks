@@ -8,6 +8,7 @@ interface Props {
     animationType: "none" | "fade" | "slide"
     screenType: "full" | "transparent" | "grey" 
     value: string
+    accessibilityLabel: string;
     onOpen?: () => void
     onClose?: () => void
 }
@@ -122,7 +123,9 @@ export default class ModalInput extends React.Component<Props, State>{
                     <Text>{this.props.title}</Text>
                 </View>
                 <View style={[Style.whiteBg, localStyle.val]}>
-                    <Text>{this.props.value}</Text>
+                    <Text
+                        accessibilityLabel={"modal-" + this.props.accessibilityLabel}
+                    >{this.props.value}</Text>
                 </View>
                 <View style={[Style.whiteBg, localStyle.button]}>
                     <Button

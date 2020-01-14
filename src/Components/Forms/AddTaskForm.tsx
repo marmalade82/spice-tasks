@@ -93,6 +93,7 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                     type={"date"}
                     value={this.data().start_date}
                     onValueChange={this.onChangeStart}
+                    accessibilityLabel={"task-start-date"}
                 />
 
                 <DateTimeInput
@@ -100,6 +101,7 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                     type={"date"} 
                     value={this.data().due_date}
                     onValueChange={ this.onChangeDue }
+                    accessibilityLabel={"task-due-date"}
                 />
 
             </View>
