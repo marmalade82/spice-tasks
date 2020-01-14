@@ -12,6 +12,7 @@ interface ITask {
     instructions: string;
     parentId: string;
     active: boolean;
+    state: 'open' | 'in_progress' | 'complete' | 'cancelled';
 }
 
 const name = TaskSchema.name
@@ -35,6 +36,7 @@ export default class Task extends Model implements ITask {
     @field(name.INSTRUCTIONS) instructions
     @field(name.PARENT) parentId
     @field(name.ACTIVE) active
+    @field(name.STATE) state
 
     /* Relations */
     @relation(GoalSchema.table, name.PARENT) parentGoal

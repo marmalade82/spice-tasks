@@ -1,6 +1,9 @@
 
 import { ColumnType } from "@nozbe/watermelondb"
-import { ActiveSchema, ChildSchema, Schema, } from "src/Models/base/SharedSchema"
+import { 
+    ActiveSchema, ChildSchema, Schema, 
+    StateSchema,
+} from "src/Models/base/SharedSchema"
 
 
 const TaskName = {
@@ -10,6 +13,7 @@ const TaskName = {
     INSTRUCTIONS: 'instructions',
     PARENT: 'parent_id',
     ACTIVE: 'is_active',
+    STATE: 'state',
 } as const;
 
 const TaskType = {
@@ -19,9 +23,10 @@ const TaskType = {
     INSTRUCTIONS: 'string',
     PARENT: 'string',
     ACTIVE: 'boolean',
+    STATE: 'string',
 } as const
 
-export const TaskSchema: ChildSchema & ActiveSchema & Schema<typeof TaskName> = {
+export const TaskSchema: ChildSchema & StateSchema & ActiveSchema & Schema<typeof TaskName> = {
     table: 'tasks',
     name: TaskName,
     type: TaskType,

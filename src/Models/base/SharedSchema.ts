@@ -33,3 +33,16 @@ export interface ActiveSchema {
     name: ActiveName,
     type: ActiveType,
 }
+
+interface StateName {
+    STATE: 'state'
+}
+
+interface StateType {
+    STATE: 'string'
+}
+
+export interface StateSchema {
+    name: StateName,
+    type: StateType,
+}
