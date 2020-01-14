@@ -22,26 +22,40 @@ As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenev
 
 - [ ] User should be able to fill out and submit a form with data about a new task.
     - [ ] User should be able to associate the created task with a goal
-        - [ ] By adding thet task from the goal
+        - [X] By adding the new task from the goal
         - [ ] By dragging and dropping a task onto a goal
     - [ ] User should be able to click "Save" and return to previous screen
-    - [ ] After "Save" is clicked, the Task should be available
+    - [X] After "Save" is clicked, the Task should be available
         - [X] In the list of all Tasks.
-        - [ ] In the list of tasks for the associated Goal, if there is one.
+        - [X] In the list of tasks for the associated Goal, if there is one.
+        - [X] In the list of tasks for the associated Task, if there is one.
     - [ ] User should be able to scroll through the form's fields when they overrun the page.
 
 - [ ] User should be able to edit an existing task in a form
-    - [ ] User should be ablet o click "Save"
-    - [X] After "Save" is clicked, changes should be persisted to the database.
+    - [X] User should be ablet to click "Save"
+    - [X] After "Save" is clicked, changes should be persisted to the database, and available
+        - [X] In the list of all Tasks.
+        - [X] In the list of tasks for the associated Goal, if there is one.
+        - [X] In the list of tasks for the associated Task, if there is one.
     - [ ] User should be able to scroll through form's fields.
 
 ### User Stories - Viewing Tasks
 
-- [X] User should be able to view all tasks
-- [X] User should be able to see attributes on tasks:
-    - [X] Title
-    - [X] Start date
-    - [X] Due date
+- [ ] User should be able to view a list of tasks
+    - [X] At minimum, all tasks
+    - [X] User should be able to see attributes on tasks:
+        - [X] Title
+        - [X] Start date
+        - [X] Due date
+    - [ ] Users should be able to delete one or more goals from the full list
+        - [ ] Deleting goals should delete associated subtasks and subgoals
+        - [ ] User should be able to toggle a Delete Mode
+        - [ ] User should be able to mark multiple goals for deletion
+        - [ ] User should be prompted to confirm deletes
+
+- [X] User should be able to view specific Task
+    - [X] In its own screen
+    - [X] With a list of associated tasks (its children)
 
 ## Goals
 
@@ -99,18 +113,24 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
     - [ ] User should be able to mark multiple goals for deletion
     - [ ] User should be prompted to confirm deletes
 
-### User Stories - Viewing Tasks on Goals
-
+- [X] User should be able to view specific Task
+    - [X] In its own screen
 - [ ] Users should be able to view an existing goal with 
+    - [X] In its own screen
     - [ ] A summary of the goal and its tasks at the top
         - [X] Title
         - [ ] Due date
         - [ ] Task count
-    - [ ] A list of the tasks below with
-        - [ ] Only the tasks that belong to the goal
+    - [X] A list of the child tasks below with
+        - [X] Only the tasks that belong to the goal
         - [X] Title
         - [X] Start Date
         - [X] Due Date
+    - [ ] A list of the child goals below with
+        - [ ] Only the goals that belong to the parent goal
+        - [ ] Title
+        - [ ] Start Date
+        - [ ] Due Date
     - [X] User should be able to edit the goal by clicking a button to go to the edit screen.
     - [X] User should be able to click a button to go to a screen for adding a new task to the goal
         - [X] Clicking the button takes the user to the Add Task screen.

@@ -2,9 +2,9 @@ import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import Style from "src/Style/Style";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList"
-import { ConnectedGoalSummary } from "src/ConnectedComponents/Summaries/GoalSummary";
-import Goal from "src/Models/Goal/Goal";
-import GoalQuery from "src/Models/Goal/GoalQuery";
+import { ConnectedTaskSummary } from "src/ConnectedComponents/Summaries/TaskSummary";
+import Task from "src/Models/Task/Task";
+import TaskQuery from "src/Models/Task/TaskQuery";
 import {
     ColumnView, RowView,
 } from "src/Components/Basic/Basic";
@@ -16,7 +16,7 @@ interface Props {
 }
 
 interface State {
-    goal?: Goal;
+    task?: Task;
 }
 
 const localStyle = StyleSheet.create({
@@ -42,42 +42,35 @@ const localStyle = StyleSheet.create({
 });
 
 
-export default class GoalScreen extends React.Component<Props, State> {
+export default class TaskScreen extends React.Component<Props, State> {
 
     static navigationOptions = ({navigation}) => {
         return {
-            title: 'Goal',
+            title: 'Task',
         }
     }
 
     constructor(props: Props) {
         super(props);
         this.state = {
-            goal: undefined
+            task: undefined
         }
     }
 
     componentDidMount = async () => {
         const id = this.props.navigation.getParam('id', '');
-        const goal = await GoalQuery.get(id); 
+        const task = await new TaskQuery().get(id); 
 
-        if(goal) {
+        if(task) {
             this.setState({
-                goal: goal
+                task: task
             })
 
         } else {
             this.setState({
-                goal: undefined
+                task: undefined
             });
         }
-    }
-
-    onEditGoal = () => {
-        const params = {
-            id: this.props.navigation.getParam('id', ''),
-        };
-        this.props.navigation.navigate('AddGoal', params);
     }
 
     render = () => {
@@ -97,7 +90,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                             navigation={this.props.navigation}
                             parameters={{
                                 id: "", // The task is new, so no id.
-                                parent_id: this.props.navigation.getParam("id", ""), // id of the goal, since it is this task's parent.
+                                parent_id: this.props.navigation.getParam("id", ""), // id of the task, since it is this task's parent.
                             }}
                             destination={'AddTask'}
                         ></NavigationButton>
@@ -123,7 +116,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                             id: this.props.navigation.getParam('id', ''),
                         }}
                         color={"purple"}
-                        destination={"AddGoal"}
+                        destination={"AddTask"}
                     ></NavigationButton>
                 </RowView>
             </ColumnView>
@@ -131,11 +124,11 @@ export default class GoalScreen extends React.Component<Props, State> {
     }
 
     renderSummary = () => {
-        if(this.state.goal) {
+        if(this.state.task) {
             return (
-                    <ConnectedGoalSummary
-                        goal={this.state.goal} 
-                    ></ConnectedGoalSummary>
+                    <ConnectedTaskSummary
+                        task={this.state.task} 
+                    ></ConnectedTaskSummary>
             );
         }
     }

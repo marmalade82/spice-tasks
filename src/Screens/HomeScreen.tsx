@@ -7,6 +7,10 @@ interface Props {
     navigation: any;
 }
 
+interface State {
+    screens: string[]
+}
+
 const localStyle = StyleSheet.create({
     container: {
         justifyContent: "space-evenly",
@@ -14,29 +18,38 @@ const localStyle = StyleSheet.create({
     }
 });
 
-export default class HomeScreen extends React.Component<Props> {
+export default class HomeScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
             title: 'Home!',
         }
     }
 
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            screens: [
+                'Goal', "Tasks", "Task", "Rewards",
+            ]
+        }
+    }
+
+    renderScreenButtons = () => {
+        return this.state.screens.map((screenName: string) => {
+            return (
+                <Button 
+                    title={screenName}
+                    onPress={() => this.props.navigation.navigate(screenName)}
+                ></Button>
+            );
+        });
+    }
+
     render = () => {
         return (
             <View style={[Style.container, localStyle.container]}>
-                <Button 
-                    title="Goal" 
-                    onPress={() => this.props.navigation.navigate('Goal')}
-                ></Button>
-                <Button
-                    title="Tasks"
-                    onPress={() => this.props.navigation.navigate('Tasks')}
-                ></Button>
-                <Button
-                    title="Rewards"
-                    onPress={() => this.props.navigation.navigate('Rewards')}
-                >
-                </Button>
+                {this.renderScreenButtons()}
             </View>
         )
     }

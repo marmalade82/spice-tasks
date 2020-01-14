@@ -28,7 +28,7 @@ const name = GoalSchema.name;
 export default class Goal extends Model implements IGoal {
     static table = GoalSchema.table;
     static associations = {
-        [TaskSchema.table]: {
+        tasks: {
             type: "has_many",
             foreignKey: TaskSchema.name.PARENT,
         } as const,
@@ -49,7 +49,7 @@ export default class Goal extends Model implements IGoal {
     @field(name.PARENT) parentId
 
     /*Relations*/
-    @children(TaskSchema.table) tasks
+    @children('tasks') tasks
     @relation(GoalSchema.table, name.PARENT) parentGoal
 }
 

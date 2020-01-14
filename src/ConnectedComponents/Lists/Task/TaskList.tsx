@@ -12,6 +12,7 @@ import {
 import TaskQuery from "src/Models/Task/TaskQuery";
 import List from "src/Components/Lists/base/List";
 import ClickNavigation from "src/Components/Navigation/ClickNavigation";
+import { Query } from "@nozbe/watermelondb";
 
 interface Props {
     tasks: Task[];
@@ -25,7 +26,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
             <ClickNavigation
                 navigation={props.navigation}
                 parameters={{id: item.id}}            
-                destination={'AddTask'}
+                destination={'Task'}
             >
                     <ConnectedTaskListItem
                         task={item}
@@ -46,7 +47,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
 
 interface InputProps {
     navigation: any;
-    parentId: string;  // shows all tasks that have this parent
+    parentId: string | false;  // shows all tasks that have this parent
 }
 
 /**
