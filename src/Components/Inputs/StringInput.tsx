@@ -2,13 +2,14 @@
 import React from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import Style from "src/Style/Style";
-
+import Input from "src/Components/Inputs/base/Input";
 
 interface Props {
     title: string;
     value: string;
     placeholder: string;
     onChangeText: (text: string) => void;
+    accessibilityLabel: string;
 }
 
 interface State {
@@ -35,7 +36,7 @@ const localStyle = StyleSheet.create({
     },
 });
 
-export default class StringInput extends React.Component<Props, State> {
+export default class StringInput extends Input<Props, State> {
     constructor(props: Props) {
         super(props);
     }
@@ -51,6 +52,7 @@ export default class StringInput extends React.Component<Props, State> {
                         value={this.props.value} 
                         placeholder={this.props.placeholder}
                         onChangeText={this.props.onChangeText}
+                        accessibilityLabel={"input-" + this.props.accessibilityLabel}
                     >
                     </TextInput>
                 </View>

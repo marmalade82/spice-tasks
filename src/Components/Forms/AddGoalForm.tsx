@@ -149,6 +149,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     value={this.data().title}
                     placeholder={"What do you want to achieve?"}
                     onChangeText={this.onChangeTitle}
+                    accessibilityLabel={"goal-summary"}
                 />
 
                 <ChoiceInput
@@ -156,6 +157,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     selectedValue={this.data().type}
                     choices={typeChoices}
                     onValueChange={this.onChangeType}
+                    accessibilityLabel={"goal-type"}
                 />
 
                 { this.renderStreakForm() }
@@ -181,6 +183,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         this.setData({reward: parseInt(itemValue)})  
                     }}
                     choices={rewards}
+                    accessibilityLabel={"goal-reward"}
                 />
 
                 <ChoiceInput
@@ -190,6 +193,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         this.setData({penalty: parseInt(itemValue)})  
                     }}
                     choices={penalties}
+                    accessibilityLabel={"goal-penalty"}
                 />
 
                 <this.RecurModalForm

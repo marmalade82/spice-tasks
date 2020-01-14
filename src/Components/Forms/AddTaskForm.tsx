@@ -77,6 +77,7 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                     value={this.data().name}
                     placeholder={"Name of this task"}
                     onChangeText={this.onChangeName}
+                    accessibilityLabel={"task-name"}
                 />
 
                 <StringInput
@@ -84,6 +85,7 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                     value={this.data().description}
                     placeholder={"Description of this task"}
                     onChangeText={this.onChangeDescription}
+                    accessibilityLabel={"task-description"}
                 />
 
                 <DateTimeInput

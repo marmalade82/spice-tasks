@@ -127,6 +127,7 @@ export default class RecurringForm extends DataComponent<Props, State, Data> {
                     choices={recur_types}
                     selectedValue={ this.data().recurs}
                     onValueChange={ this.onRepeatChange }
+                    accessibilityLabel={"recurring-repeat"}
                 >
                 </ChoiceInput>
 

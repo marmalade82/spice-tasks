@@ -67,6 +67,7 @@ export default class AddRewardForm extends DataComponent<Props, State, State> {
                     value={this.data().name}
                     placeholder={"Name of this reward"}
                     onChangeText={this.onChangeName}
+                    accessibilityLabel={"reward-name"}
                 />
 
                 <StringInput
@@ -74,6 +75,7 @@ export default class AddRewardForm extends DataComponent<Props, State, State> {
                     value={this.data().details}
                     placeholder={"Description of this reward"}
                     onChangeText={this.onChangeDetails}
+                    accessibilityLabel={"reward-description"}
                 />
 
                 <DateTimeInput

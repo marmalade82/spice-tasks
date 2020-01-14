@@ -105,6 +105,7 @@ export default class StreakForm extends DataComponent<Props, State, State> {
                     selectedValue={this.data().type} 
                     choices={streak_choices}
                     onValueChange={this.onChangeType}
+                    accessibilityLabel={"streak-type"}
                 />
 
                 {this.renderByType()}

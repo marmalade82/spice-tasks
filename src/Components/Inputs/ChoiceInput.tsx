@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Picker, StyleSheet } from "react-native";
 import Style from "src/Style/Style";
+import Input from "src/Components/Inputs/base/Input";
 
 
 interface LabelValue {
@@ -14,6 +15,7 @@ interface Props {
     selectedValue: string;
     choices: LabelValue[]
     onValueChange: (itemValue: string, itemPosition: number) => void
+    accessibilityLabel: string;
 }
 
 interface State {
@@ -40,7 +42,7 @@ const localStyle = StyleSheet.create({
     },
 });
 
-export default class ChoiceInput extends React.Component<Props, State> {
+export default class ChoiceInput extends Input<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -56,6 +58,7 @@ export default class ChoiceInput extends React.Component<Props, State> {
                     <Picker
                         selectedValue={this.props.selectedValue}
                         onValueChange={this.props.onValueChange}
+                        accessibilityLabel={"input-" + this.props.accessibilityLabel}
                     >
                         {this.renderChoices(this.props.choices)}
                     </Picker>

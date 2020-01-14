@@ -72,8 +72,15 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
 ### User Stories - Adding a Goal
 
 - [ ] User should be able fill out and submit a form with data about goals
+    - [ ] Normal goal fields:
+        - [D] Summary
+        - [ ] Start Date
+        - [ ] Due Date
     - [ ] User should be able to fill out data about recurrence of the goal.
     - [X] User should be able to fill out data about whether the goal is a streak.
+        - [D] Minimum streak count
+        - [ ] Streak type (daily, weekly, monthly)
+        - [ ] Time for next week's task (daily, weekly, monthly)
     - [X] User should be able to click "Save" and return to previous screen
     - [X] After "Save" is clicked, the new Goal should available in the GoalList.
     - [X] After "Save" is clicked, all fields of the Goal should be saved to the database as a new goal.
