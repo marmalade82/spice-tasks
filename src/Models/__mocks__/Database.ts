@@ -1,7 +1,7 @@
 
 import { Database } from "@nozbe/watermelondb";
 import { Schema } from "src/Models/Schema";
-import LokiJSAdapter from "@nozbe/watermelondb/adapters/sqlite";
+import LokiJSAdapter from "@nozbe/watermelondb/adapters/lokijs";
 import Goal from "src/Models/Goal/Goal";
 import Task from "src/Models/Task/Task";
 import Reward from "src/Models/Reward/Reward";
