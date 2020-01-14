@@ -38,6 +38,11 @@ const localStyle = StyleSheet.create({
         position: 'absolute',
         right: 25,
         top: 25,
+    },
+    completeButton: {
+        position: 'absolute',
+        right: 25,
+        bottom: 25,
     }
 });
 
@@ -71,6 +76,10 @@ export default class TaskScreen extends React.Component<Props, State> {
                 task: undefined
             });
         }
+    }
+
+    onCompleteTask = () => {
+
     }
 
     render = () => {
@@ -118,6 +127,13 @@ export default class TaskScreen extends React.Component<Props, State> {
                         color={"purple"}
                         destination={"AddTask"}
                     ></NavigationButton>
+                </RowView>
+                <RowView style={[localStyle.completeButton]}>
+                    <Button
+                        title={"Complete"}
+                        onPress={() => {}}
+                        accessibilityLabel={"button-task-complete"}
+                    ></Button>
                 </RowView>
             </ColumnView>
         );

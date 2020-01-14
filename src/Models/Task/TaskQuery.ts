@@ -20,7 +20,8 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
             dueDate: new Date(),
             parentId: "",
             active: true,
-        }
+            state: 'open',
+        } as const;
     }
 
     queryHasParent = (parentId: string) => {
