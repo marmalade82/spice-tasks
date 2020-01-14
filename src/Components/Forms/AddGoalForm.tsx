@@ -176,7 +176,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     type={"date"}
                     value={ this.data().due_date }
                     onValueChange={ this.onChangeDueDate }
-                    accessibilityLabel = { "goal-end-date" }
+                    accessibilityLabel = { "goal-due-date" }
                 />
 
                 <ChoiceInput

@@ -122,7 +122,7 @@ export default class StreakForm extends DataComponent<Props, State, State> {
                     value={this.data().daily_start}
                     type={"time"}
                     onValueChange={this.onChangeDailyStart}
-                    accessibilityLabel={"streak-type"}
+                    accessibilityLabel={"streak-time"}
                 />
             );
         } else if (this.data().type === "weekly") {
