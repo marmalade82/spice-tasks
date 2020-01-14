@@ -11,10 +11,10 @@ const GoalName = {
     STREAK_DAILY_START: 'streak_daily_start',
     STREAK_WEEKLY_START: 'streak_weekly_start',
     STREAK_MONTHLY_START: 'streak_monthly_start',
-    PARENT: 'parent_id' as "parent_id",
-}
+    PARENT: 'parent_id',
+} as const;
 
-const GoalType: Record<keyof typeof GoalName, ColumnType> = {
+const GoalType = {
     TITLE: 'string',
     TYPE: 'string',
     STARTS_AT: 'number',
@@ -25,12 +25,12 @@ const GoalType: Record<keyof typeof GoalName, ColumnType> = {
     STREAK_WEEKLY_START: 'string',
     STREAK_MONTHLY_START: 'number',
     PARENT: 'string',
-}
+} as const;
 
-const GoalSchema: ChildSchema & Schema<typeof GoalName, 'goals'> = {
+const GoalSchema: ChildSchema & Schema<typeof GoalName> = {
     name: GoalName,
     type: GoalType,
     table: 'goals',
-}
+} as const;
 
 export default GoalSchema;

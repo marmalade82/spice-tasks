@@ -21,6 +21,9 @@ As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenev
 ### User Stories - Adding a Task
 
 - [ ] User should be able to fill out and submit a form with data about a new task.
+    - [ ] Mandatory fields
+        - [ ] Indicate
+        - [ ] Enforce
     - [ ] User should be able to associate the created task with a goal
         - [X] By adding the new task from the goal
         - [ ] By dragging and dropping a task onto a goal
@@ -32,6 +35,9 @@ As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenev
     - [ ] User should be able to scroll through the form's fields when they overrun the page.
 
 - [ ] User should be able to edit an existing task in a form
+    - [ ] Mandatory fields
+        - [ ] Indicate
+        - [ ] Enforce
     - [X] User should be ablet to click "Save"
     - [X] After "Save" is clicked, changes should be persisted to the database, and available
         - [X] In the list of all Tasks.
@@ -56,6 +62,10 @@ As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenev
 - [X] User should be able to view specific Task
     - [X] In its own screen
     - [X] With a list of associated tasks (its children)
+    - [ ] User should be able to mark task as complete
+        - [ ] Complete button should be available
+        - [ ] When clicked, Complete button should mark task as Complete and Inactive
+        - [ ] When clicked, Complete button should mark subtasks as Complete and Inactive
 
 ## Goals
 
@@ -72,6 +82,9 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
 ### User Stories - Adding a Goal
 
 - [ ] User should be able fill out and submit a form with data about goals
+    - [ ] Mandatory fields
+        - [ ] Indicate
+        - [ ] Enforce
     - [T] Normal goal fields:
         - [T] Summary
         - [T] Goal Type
@@ -93,6 +106,9 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
     - [ ] User should be able to scroll through the form's fields when they overrun the page.
 
 - [ ] User should be able to edit an existing Goal through a form
+    - [ ] Mandatory fields
+        - [ ] Indicate
+        - [ ] Enforce
     - [ ] User should be able to edit data about recurrence of the goal.
     - [ ] User should be able to edit data about whether the goal is a streak.
     - [X] User should be able to click "Save"
@@ -179,11 +195,17 @@ Rewards typically come with the following data items:
 ### User Stories - Adding Rewards
 
 - [ ] User should be able to fill out form with details about new Reward.
+    - [ ] Mandatory fields
+        - [ ] Indicate
+        - [ ] Enforce
     - [ ] User should be able to click "Save" button and go back to previous page.
     - [X] After clicking "Save", changes should persist to database
     - [ ] Form should be scrollable
 
 - [ ] User should be able to edit existing Reward in a form.
+    - [ ] Mandatory fields
+        - [ ] Indicate
+        - [ ] Enforce
     - [ ] User should be able to click "Save" button and go back to previous page.
     - [X] After clicking "Save", changes should persist to database
     - [ ] Form should be scrollable.

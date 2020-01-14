@@ -30,19 +30,21 @@ const localStyle = StyleSheet.create({
     }
 })
 
-const Default: State = {
-    minimum: 2,
-    type: "daily",
-    daily_start: new Date(),
-    weekly_start: "sunday",
-    monthly_start: 1,
+function Default(): State {
+    return {
+        minimum: 2,
+        type: "daily",
+        daily_start: new Date(),
+        weekly_start: "sunday",
+        monthly_start: 1,
+    }
 }
 
 export default class StreakForm extends DataComponent<Props, State, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = Default;
+        this.state = Default();
     }
 
 

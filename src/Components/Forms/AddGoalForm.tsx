@@ -82,13 +82,13 @@ function Default(): State {
         due_date: new Date(),
         reward: Reward.DICE,
         penalty: Penalty.NONE,
-        recurData: RecurringDefault,
-        streakData: StreakDefault,
+        recurData: RecurringDefault(),
+        streakData: StreakDefault(),
     }
 }
 
 export default class AddGoalForm extends DataComponent<Props, State, State> {
-    RecurModalForm = createSaveModalInput(RecurringForm, RecurringDefault);
+    RecurModalForm = createSaveModalInput(RecurringForm, RecurringDefault());
     constructor(props: Props) {
         super(props);
 

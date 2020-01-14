@@ -6,7 +6,7 @@ interface ChildName {
 }
 
 interface ChildType {
-    PARENT: string;
+    PARENT: 'string';
 }
 
 
@@ -15,8 +15,21 @@ export interface ChildSchema {
     type: ChildType,
 }
 
-export interface Schema<T extends ChildName, Table extends string> {
-    name: T,
-    type: Record<keyof T, ColumnType>,
-    table: Table,
+export interface Schema<S> {
+    name: S,
+    type: Record<keyof S, ColumnType>,
+    table: string,
+}
+
+interface ActiveName {
+    ACTIVE: 'is_active';
+}
+
+interface ActiveType {
+    ACTIVE: 'boolean';
+}
+
+export interface ActiveSchema {
+    name: ActiveName,
+    type: ActiveType,
 }

@@ -11,6 +11,7 @@ interface ITask {
     dueDate: Date;
     instructions: string;
     parentId: string;
+    active: boolean;
 }
 
 const name = TaskSchema.name
@@ -33,6 +34,7 @@ export default class Task extends Model implements ITask {
     @date(name.DUE_ON) dueDate 
     @field(name.INSTRUCTIONS) instructions
     @field(name.PARENT) parentId
+    @field(name.ACTIVE) active
 
     /* Relations */
     @relation(GoalSchema.table, name.PARENT) parentGoal

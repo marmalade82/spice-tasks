@@ -77,21 +77,23 @@ const weekChoices = [
     },
 ]
 
-const Default = {
-    recurs: "never",
-    date: new Date(),
-    time: new Date(),
-    weeks: 1,
-    days_of_week: ["sunday"],
-    months: 1,
-    days_of_month: 0,
+function Default(): Data {
+    return {
+        recurs: "never",
+        date: new Date(),
+        time: new Date(),
+        weeks: 1,
+        days_of_week: ["sunday"],
+        months: 1,
+        days_of_month: 0,
+    }
 }
 
 export default class RecurringForm extends DataComponent<Props, State, Data> {
     constructor(props: Props) {
         super(props);
 
-        this.state = Default;
+        this.state = Default();
     }
 
     onRepeatChange = (value: string) => {

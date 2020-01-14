@@ -19,6 +19,7 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
             startDate: new Date(),
             dueDate: new Date(),
             parentId: "",
+            active: true,
         }
     }
 
