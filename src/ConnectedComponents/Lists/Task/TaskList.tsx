@@ -58,7 +58,7 @@ interface InputProps {
 const enhance = withObservables(['type'], (props: InputProps) => {
     if(props.type === "active") {
         return {
-            tasks: new TaskQuery().queryActiveTasks()
+            tasks: new TaskQuery().queryActiveTasks().observe()
         }
     } else if(props.type === "parent-active" && props.parentId) {
         return {

@@ -62,10 +62,10 @@ As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenev
 - [X] User should be able to view specific Task
     - [X] In its own screen
     - [X] With a list of associated tasks (its children)
-    - [ ] User should be able to mark task as complete
+    - [D] User should be able to mark task as complete
         - [D] Complete button should be available
-        - [ ] When clicked, Complete button should mark task as Complete and Inactive
-        - [ ] When clicked, Complete button should mark subtasks as Complete and Inactive
+        - [D] When clicked, Complete button should mark task as Complete and Inactive
+        - [D] When clicked, Complete button should mark subtasks as Complete and Inactive
 
 ## Goals
 

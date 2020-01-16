@@ -56,7 +56,9 @@ export default class TaskListItem extends Item<Props, State, Task> {
         const item = this.props.item
 
         return (
-            <View style={[localStyle.container]}>
+            <View style={[localStyle.container]}
+                accessibilityLabel={this.props.accessibilityLabel}
+            >
                 <View style={localStyle.title}>
                     <Text>{item.title + " : " + item.id}</Text>
                 </View>

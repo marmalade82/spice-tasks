@@ -5,6 +5,7 @@ import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cle
 import { makeNavigation } from "src/common/test-utils";
 import TaskScreen from "src/Screens/Tasks/TaskScreen";
 import { TaskQuery, Task, ITask } from "src/Models/Task/TaskQuery";
+import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 import DB from "src/Models/Database";
 
 
@@ -64,6 +65,21 @@ test("User can mark a task as Complete/Inactive in the database", async () => {
     expect(activeTasks.length).toEqual(2);
 
     {
+        const { queryAllByLabelText } = render(
+            <ConnectedTaskList
+                navigation={makeNavigation({})}
+                parentId={false}
+                type={"active"}
+            ></ConnectedTaskList>
+        );
+
+        await wait(async() => {
+            const items = queryAllByLabelText("task-list-item");
+            expect(items.length).toEqual(2);
+        })
+    }
+
+    {
         const { getByLabelText } = render(
             <TaskScreen navigation={makeNavigation({id: opts.parentId})}></TaskScreen>
         );
@@ -82,6 +98,21 @@ test("User can mark a task as Complete/Inactive in the database", async () => {
         activeTasks = await new TaskQuery().activeTasks();
         expect(activeTasks.length).toEqual(0);
     })
+
+    {
+        const { queryAllByLabelText } = render(
+            <ConnectedTaskList
+                navigation={makeNavigation({})}
+                parentId={false}
+                type={"active"}
+            ></ConnectedTaskList>
+        );
+
+        await wait(async() => {
+            const items = queryAllByLabelText("task-list-item");
+            expect(items.length).toEqual(0);
+        })
+    }
 
     await teardown();
 }, 20000);
