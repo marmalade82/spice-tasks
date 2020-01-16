@@ -47,6 +47,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
 
 interface InputProps {
     navigation: any;
+    type: "all" | "parent-active" | "parent-all" | "active";
     parentId: string | false;  // shows all tasks that have this parent
 }
 
@@ -54,19 +55,20 @@ interface InputProps {
  * This function ensures that the component is connected to the database
  */
 
-const enhance = withObservables([], (props: InputProps) => {
-    return {
-        tasks: new TaskQuery().queryActiveTasks()
-    }
-    /*if(props.parentId) {
+const enhance = withObservables(['type'], (props: InputProps) => {
+    if(props.type === "active") {
         return {
-            tasks: new TaskQuery().queryHasParent(props.parentId).observe(),
+            tasks: new TaskQuery().queryActiveTasks()
+        }
+    } else if(props.type === "parent-active" && props.parentId) {
+        return {
+            tasks: new TaskQuery().queryActiveHasParent(props.parentId).observe(),
         }
     } else {
         return {
             tasks: new TaskQuery().queryAll().observe(),
         }
-    }*/
+    }
 });
 
 export const ConnectedTaskList = enhance(AdaptedTaskList);

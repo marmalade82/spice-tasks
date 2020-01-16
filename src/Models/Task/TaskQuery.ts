@@ -35,6 +35,13 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
         );
     }
 
+    queryActiveHasParent = (parentId: string) => {
+        return this.store().query(
+            Q.where('is_active', true),
+            Q.where('parent_id', parentId)
+        );
+    }
+
     queryInactive = () => {
         return this.store().query(
             Q.where('is_active', false)

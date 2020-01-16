@@ -41,6 +41,7 @@ export default class TaskListScreen extends React.Component<Props, State> {
                 <ConnectedTaskList
                     navigation={this.props.navigation}
                     parentId={false}
+                    type={"all"}
                 ></ConnectedTaskList>
                 <View style={[localStyle.button]}>
                     <Button

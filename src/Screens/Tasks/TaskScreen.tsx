@@ -118,6 +118,7 @@ export default class TaskScreen extends React.Component<Props, State> {
                     <ConnectedTaskList
                         navigation={this.props.navigation}
                         parentId={this.props.navigation.getParam('id', '')}
+                        type={"parent-active"}
                     ></ConnectedTaskList>
                 </ColumnView>
                 <RowView style={[localStyle.button]}>
