@@ -62,10 +62,10 @@ As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenev
 - [X] User should be able to view specific Task
     - [X] In its own screen
     - [X] With a list of associated tasks (its children)
-    - [D] User should be able to mark task as complete
-        - [D] Complete button should be available
-        - [D] When clicked, Complete button should mark task as Complete and Inactive
-        - [D] When clicked, Complete button should mark subtasks as Complete and Inactive
+    - [T] User should be able to mark task as complete
+        - [T] Complete button should be available
+        - [T] When clicked, Complete button should mark task as Complete and Inactive
+        - [T] When clicked, Complete button should mark subtasks as Complete and Inactive
 
 ## Goals
 
@@ -142,8 +142,6 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
     - [ ] User should be able to mark multiple goals for deletion
     - [ ] User should be prompted to confirm deletes
 
-- [X] User should be able to view specific Task
-    - [X] In its own screen
 - [ ] Users should be able to view an existing goal with 
     - [X] In its own screen
     - [ ] A summary of the goal and its tasks at the top
@@ -164,6 +162,10 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
     - [X] User should be able to click a button to go to a screen for adding a new task to the goal
         - [X] Clicking the button takes the user to the Add Task screen.
         - [X] Using the Add Task Screen adds the task to the goal within the database
+    - [T] User should be able to mark task as complete
+        - [T] Complete button should be available
+        - [T] When clicked, Complete button should mark task as Complete and Inactive
+        - [T] When clicked, Complete button should mark subtasks as Complete and Inactive
 - [ ] Users should be able to re-order tasks within a goal by drag-and-drop.
 - [ ] Users should be able to click on a task to view it, and its sub-tasks, in more detail.
 - [ ] Users should be able to sort the tasks by

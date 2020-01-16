@@ -40,7 +40,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
 
     componentDidMount = async () => {
         const id = this.props.navigation.getParam('id', '');
-        const goal = await GoalQuery.get(id); 
+        const goal = await new GoalQuery().get(id); 
         if(goal) {
             let data: AddGoalData = {
                 title : goal.title,
@@ -99,14 +99,14 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             streakMonthlyStart: streak.monthly_start,
         };
         if(this.state.goal) {
-            GoalQuery.update(this.state.goal, goalData)
+            new GoalQuery().update(this.state.goal, goalData)
             .catch((reason) => {
                 console.log("Failed to update existing goal with reason: " + reason);
             });
 
             this.props.navigation.goBack();
         } else {
-            GoalQuery.create(goalData)
+            new GoalQuery().create(goalData)
             .catch((reason) => {
                 console.log("Failed to create goal with reason: " + reason);
             });  

@@ -13,6 +13,8 @@ interface IGoal extends IStreak{
     startDate: Date;
     dueDate: Date;
     parentId: string;
+    state: "open" | "in progress" | "complete" | "cancelled"
+    active: boolean;
 }
 
 interface IStreak {
@@ -47,6 +49,8 @@ export default class Goal extends Model implements IGoal {
     @field(name.STREAK_WEEKLY_START) streakWeeklyStart
     @field(name.STREAK_MONTHLY_START) streakMonthlyStart
     @field(name.PARENT) parentId
+    @field(name.STATE) state
+    @field(name.ACTIVE) active
 
     /*Relations*/
     @children('tasks') tasks

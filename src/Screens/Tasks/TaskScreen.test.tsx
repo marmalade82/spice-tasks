@@ -51,14 +51,12 @@ async function teardown() {
     });
 }
 
-
-
 test("User has access to the complete button", async() => {
     const { getByLabelText, queryByLabelText, getByText, queryByText } = render(<TaskScreen navigation={makeNavigation({})}></TaskScreen>)
     const completeButton = getByLabelText("input-task-complete-button");
 });
 
-test("User can mark a task as Complete/Inactive in the database", async () => {
+test("User can mark a task (and its children) as Complete/Inactive in the database", async () => {
     const opts = await setup();
 
     let activeTasks: Task[] = await new TaskQuery().activeTasks();

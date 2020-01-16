@@ -54,7 +54,7 @@ interface InputProps {
 
 const enhance = withObservables([], (_props: InputProps) => {
     return {
-        goals: GoalQuery.queryAll().observe()
+        goals: new GoalQuery().queryAll().observe()
     }
 });
 

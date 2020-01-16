@@ -1,4 +1,8 @@
 
+jest.mock("src/Models/Database");
+import DB from "src/Models/Database";
+import { Model } from "@nozbe/watermelondb";
+
 function makeNavigation(params: {}) {
     const navigation = {
         navigate: jest.fn(),
@@ -14,6 +18,21 @@ function makeNavigation(params: {}) {
     return navigation;
 }
 
+async function destroyAllIn(table: string) {
+    let models = await DB.get().collections.get(table).query().fetch();
+
+    await DB.get().action(async() => {
+        models.forEach(async (model: Model) => {
+            await model.destroyPermanently();
+        });
+    });
+
+    models = await DB.get().collections.get(table).query().fetch();
+
+    expect(models.length).toEqual(0);
+}
+
 export {
-    makeNavigation
+    makeNavigation,
+    destroyAllIn,
 }

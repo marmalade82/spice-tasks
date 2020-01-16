@@ -72,7 +72,6 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
             } catch (e) {
                 console.log(e);
                 throw e;
-                // if parent doesn't exist, that's fine. We just do nothing in that case
             }
         }
     }

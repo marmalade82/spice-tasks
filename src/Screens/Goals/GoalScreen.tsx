@@ -6,7 +6,7 @@ import { ConnectedGoalSummary } from "src/ConnectedComponents/Summaries/GoalSumm
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import {
-    ColumnView, RowView,
+    ColumnView, RowView, Button as MyButton
 } from "src/Components/Basic/Basic";
 import NavigationButton from "src/Components/Navigation/NavigationButton";
 
@@ -38,6 +38,11 @@ const localStyle = StyleSheet.create({
         position: 'absolute',
         right: 25,
         top: 25,
+    },
+    completeButton: {
+        position: 'absolute',
+        right: 25,
+        bottom: 25,
     }
 });
 
@@ -59,7 +64,7 @@ export default class GoalScreen extends React.Component<Props, State> {
 
     componentDidMount = async () => {
         const id = this.props.navigation.getParam('id', '');
-        const goal = await GoalQuery.get(id); 
+        const goal = await new GoalQuery().get(id); 
 
         if(goal) {
             this.setState({
@@ -78,6 +83,12 @@ export default class GoalScreen extends React.Component<Props, State> {
             id: this.props.navigation.getParam('id', ''),
         };
         this.props.navigation.navigate('AddGoal', params);
+    }
+
+    onCompleteGoal = () => {
+        new GoalQuery().completeGoalAndDescendants({
+            id: this.props.navigation.getParam("id", "")
+        });
     }
 
     render = () => {
@@ -126,6 +137,14 @@ export default class GoalScreen extends React.Component<Props, State> {
                         color={"purple"}
                         destination={"AddGoal"}
                     ></NavigationButton>
+                </RowView>
+                <RowView style={[localStyle.completeButton]}>
+                    <MyButton
+                        title={"Complete"}
+                        accessibilityLabel={"goal-complete-button"}
+                        onPress={this.onCompleteGoal}
+                        color={"purple"}
+                    ></MyButton>
                 </RowView>
             </ColumnView>
         );
