@@ -55,7 +55,10 @@ interface InputProps {
  */
 
 const enhance = withObservables([], (props: InputProps) => {
-    if(props.parentId) {
+    return {
+        tasks: new TaskQuery().queryActiveTasks()
+    }
+    /*if(props.parentId) {
         return {
             tasks: new TaskQuery().queryHasParent(props.parentId).observe(),
         }
@@ -63,7 +66,7 @@ const enhance = withObservables([], (props: InputProps) => {
         return {
             tasks: new TaskQuery().queryAll().observe(),
         }
-    }
+    }*/
 });
 
 export const ConnectedTaskList = enhance(AdaptedTaskList);

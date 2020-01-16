@@ -2,11 +2,11 @@
 import React from "react";
 import { fireEvent, render, wait, waitForElement } from '@testing-library/react-native';
 import AddGoalScreen from "src/Screens/Goals/AddGoalScreen";
-import { navigation } from "src/common/test-utils";
+import { makeNavigation } from "src/common/test-utils";
 
 
 test('User can fill out form as a normal goal', async () => {
-    const { getByLabelText, queryByLabelText, getByText, queryByText } = render(<AddGoalScreen navigation={navigation}></AddGoalScreen>)
+    const { getByLabelText, queryByLabelText, getByText, queryByText } = render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
 
     const summaryInput = getByLabelText("input-goal-summary");
 
@@ -24,7 +24,7 @@ test('User can fill out form as a normal goal', async () => {
 });
 
 test('User can set type of goal to streak if desired', async () => {
-    const { getByLabelText, queryByText, getByText } = render(<AddGoalScreen navigation={navigation}></AddGoalScreen>)
+    const { getByLabelText, queryByText, getByText } = render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
 
     expect(queryByText("Minimum")).toEqual(null);
     const goalTypeInput = getByLabelText("input-goal-type");

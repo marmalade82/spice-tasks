@@ -25,6 +25,7 @@ const AdaptedGoalListItem: React.FunctionComponent<Props> = function(props: Prop
     return (
         <GoalListItem
             item={mappedGoal}
+            accessibilityLabel={"goal-list-item"}
         ></GoalListItem>
     );
 }

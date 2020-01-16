@@ -25,6 +25,7 @@ const AdaptedTaskListItem: React.FunctionComponent<Props> = function(props: Prop
     return (
         <TaskListItem
             item={mappedTask}
+            accessibilityLabel={"task-list-item"}
         ></TaskListItem>
     );
 }

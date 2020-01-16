@@ -24,6 +24,7 @@ const AdaptedRewardListItem: React.FunctionComponent<Props> = function(props: Pr
     return (
         <RewardListItem
             item={mappedReward}
+            accessibilityLabel={"reward-list-item"}
         ></RewardListItem>
     );
 }

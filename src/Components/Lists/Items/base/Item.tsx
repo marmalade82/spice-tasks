@@ -2,6 +2,7 @@ import React from "react"
 
 interface ItemProps<Item> {
     item: Item
+    accessibilityLabel: string;
 }
 
 interface State {

@@ -4,6 +4,7 @@ import Item from "src/Components/Lists/Items/base/Item";
 
 interface Props {
     item: Goal
+    accessibilityLabel: string
 }
 
 interface State {

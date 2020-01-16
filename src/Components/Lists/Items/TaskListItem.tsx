@@ -5,6 +5,7 @@ import Item from "src/Components/Lists/Items/base/Item";
 
 interface Props {
     item: Task
+    accessibilityLabel: string
 }
 
 interface State {

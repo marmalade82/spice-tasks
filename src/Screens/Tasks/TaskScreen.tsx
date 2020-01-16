@@ -6,7 +6,7 @@ import { ConnectedTaskSummary } from "src/ConnectedComponents/Summaries/TaskSumm
 import Task from "src/Models/Task/Task";
 import TaskQuery from "src/Models/Task/TaskQuery";
 import {
-    ColumnView, RowView,
+    ColumnView, RowView, Button as MyButton
 } from "src/Components/Basic/Basic";
 import NavigationButton from "src/Components/Navigation/NavigationButton";
 
@@ -79,7 +79,10 @@ export default class TaskScreen extends React.Component<Props, State> {
     }
 
     onCompleteTask = () => {
-
+        // asynchronously complete task and descendants
+        new TaskQuery().completeTaskAndDescendants({
+            id: this.props.navigation.getParam("id", "")
+        });
     }
 
     render = () => {
@@ -129,11 +132,12 @@ export default class TaskScreen extends React.Component<Props, State> {
                     ></NavigationButton>
                 </RowView>
                 <RowView style={[localStyle.completeButton]}>
-                    <Button
+                    <MyButton
                         title={"Complete"}
-                        onPress={() => {}}
-                        accessibilityLabel={"button-task-complete"}
-                    ></Button>
+                        onPress={this.onCompleteTask}
+                        accessibilityLabel={"task-complete-button"}
+                        color={"orange"}
+                    ></MyButton>
                 </RowView>
             </ColumnView>
         );

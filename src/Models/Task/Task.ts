@@ -1,6 +1,6 @@
 
 import { Model } from "@nozbe/watermelondb";
-import { field, date, relation} from "@nozbe/watermelondb/decorators";
+import { field, date, relation, action} from "@nozbe/watermelondb/decorators";
 import TaskSchema from "src/Models/Task/TaskSchema";
 import GoalSchema from "src/Models/Goal/GoalSchema";
 
@@ -41,6 +41,14 @@ export default class Task extends Model implements ITask {
     /* Relations */
     @relation(GoalSchema.table, name.PARENT) parentGoal
     @relation(TaskSchema.table, name.PARENT) parentTask
+
+    /* Actions */
+    @action async createChild(child: ITask) {
+        this.collections.get(Task.table).create((task: Task) => {
+            Object.assign(task, child);
+            task.parentId = this.id;
+        });
+    }
 }
 
 export {
