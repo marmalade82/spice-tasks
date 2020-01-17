@@ -12,6 +12,13 @@ function inactiveConditions() {
     ]
 }
 
+function inactiveChildConditions(parent_id: string) {
+    return [
+        inactiveConditions(),
+        childConditions(parent_id),
+    ].flat()
+}
+
 function activeConditions() {
     return [
         Q.where(name.ACTIVE, true)
@@ -48,6 +55,7 @@ export const Conditions = {
     activeChild: activeChildConditions,
     child: childConditions,
     inactive: inactiveConditions,
+    inactiveChild: inactiveChildConditions,
     open: openConditions,
     complete: completeConditions,
 }

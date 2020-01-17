@@ -27,6 +27,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                 navigation={props.navigation}
                 parameters={{id: item.id}}            
                 destination={'Task'}
+                navType={"push"}
             >
                     <ConnectedTaskListItem
                         task={item}
@@ -47,7 +48,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
 
 interface InputProps {
     navigation: any;
-    type: "all" | "parent-active" | "parent-all" | "active";
+    type: "all" | "parent-active" | "parent-inactive" | "parent-all" | "active";
     parentId: string | false;  // shows all tasks that have this parent
 }
 
@@ -63,6 +64,10 @@ const enhance = withObservables(['type'], (props: InputProps) => {
     } else if(props.type === "parent-active" && props.parentId) {
         return {
             tasks: new TaskQuery().queryActiveHasParent(props.parentId).observe(),
+        }
+    } else if(props.type === "parent-inactive" && props.parentId) {
+        return {
+            tasks: new TaskQuery().queryInactiveHasParent(props.parentId).observe(),
         }
     } else {
         return {

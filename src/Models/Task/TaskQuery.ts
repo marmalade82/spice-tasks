@@ -4,6 +4,7 @@ import {
 } from "src/Models/Task/Task";
 import TaskSchema from "src/Models/Task/TaskSchema";
 import { Q, Database, Model } from "@nozbe/watermelondb";
+import { Conditions } from "src/Models/common/queryUtils"
 import DB from "src/Models/Database";
 
 export default class TaskQuery extends ModelQuery<Task, ITask> {
@@ -45,6 +46,12 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
     queryInactive = () => {
         return this.store().query(
             Q.where('is_active', false)
+        );
+    }
+
+    queryInactiveHasParent = (parentId: string) => {
+        return this.store().query(
+            ...Conditions.inactiveChild(parentId)
         );
     }
 

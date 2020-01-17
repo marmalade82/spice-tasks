@@ -6,6 +6,7 @@ interface Props {
     navigation: any;
     parameters: object;
     destination: string;
+    navType: "navigate" | "push";
 }
 
 interface State {}
@@ -39,7 +40,11 @@ export default class ClickNavigation extends React.Component<Props, State> {
                 <TouchableOpacity 
                     style={[localStyle.row]}
                     onPress={() => {
-                        this.props.navigation.navigate(this.props.destination, this.props.parameters);
+                        if(this.props.navType === "push") {
+                            this.props.navigation.push(this.props.destination, this.props.parameters);
+                        } else {
+                            this.props.navigation.navigate(this.props.destination, this.props.parameters);
+                        }
                     }}
                 >
                     {this.props.children}

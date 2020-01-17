@@ -26,6 +26,7 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
                     id: item.id
                 }}
                 destination={"Goal"}
+                navType={"push"}
             >
                     <ConnectedGoalListItem
                         goal={item}

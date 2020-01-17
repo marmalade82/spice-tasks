@@ -12,6 +12,7 @@ import TaskListScreen from "src/Screens/Tasks/TaskListScreen";
 import RewardListScreen from "src/Screens/Rewards/RewardListScreen";
 import AddRewardScreen from "src/Screens/Rewards/AddRewardScreen";
 import TaskScreen from "src/Screens/Tasks/TaskScreen";
+import TestScreen from "src/Screens/TestScreen";
 
 export {
     HomeScreen as Home,
@@ -26,4 +27,5 @@ export {
     RewardListScreen as RewardList,
     AddRewardScreen as AddReward,
     TaskScreen as Task,
+    TestScreen as Test,
 }

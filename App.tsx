@@ -22,6 +22,7 @@ const ScreenNavigator = createStackNavigator(
   , Rewards: Screens.RewardList
   , AddReward: Screens.AddReward
   , Task: Screens.Task
+  , Test: Screens.Test
   },
   { initialRouteName: 'Home'
   , defaultNavigationOptions: ({navigation}) => {
