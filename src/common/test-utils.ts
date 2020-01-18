@@ -2,6 +2,8 @@
 jest.mock("src/Models/Database");
 import DB from "src/Models/Database";
 import { Model } from "@nozbe/watermelondb";
+import { Task, ITask } from "src/Models/Task/Task";
+import { Goal, IGoal } from "src/Models/Goal/Goal";
 
 function makeNavigation(params: {}) {
     const navigation = {
@@ -32,7 +34,34 @@ async function destroyAllIn(table: string) {
     expect(models.length).toEqual(0);
 }
 
+async function _create(table: string, data: any ) {
+    return await DB.get().collections.get(table).create((target: Model) => {
+        Object.assign(target, data);
+    });
+}
+
+async function createTasks(data: Partial<ITask>, count: number) {
+    let tasks: Task[] = [];
+    for(let i = 0; i < count; i++) {
+        let task = await _create('tasks', data) as Task;        
+        tasks.push(task);
+    }
+
+    return tasks;
+}
+
+async function createGoals(data: Partial<IGoal>, count: number) {
+    let goals: Goal[] = [];
+    for(let i = 0; i < count; i++) {
+        let goal = await _create('goals', data) as Goal;
+        goals.push(goal);
+    }
+    return goals;
+}
+
 export {
     makeNavigation,
     destroyAllIn,
+    createTasks,
+    createGoals,
 }

@@ -4,7 +4,7 @@ import TaskSchema from 'src/Models/Task/TaskSchema';
 import RewardSchema from 'src/Models/Reward/RewardSchema';
 
 const Schema = appSchema({
-    version: 2,
+    version: 3,
     tables: [
         generateTableSchema(GoalSchema),
         generateTableSchema(TaskSchema),

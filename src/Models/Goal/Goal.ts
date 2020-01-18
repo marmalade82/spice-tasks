@@ -13,7 +13,7 @@ interface IGoal extends IStreak{
     startDate: Date;
     dueDate: Date;
     parentId: string;
-    state: "open" | "in progress" | "complete" | "cancelled"
+    state: "open" | "in_progress" | "complete" | "cancelled"
     active: boolean;
 }
 

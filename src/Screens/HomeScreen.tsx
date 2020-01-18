@@ -30,7 +30,7 @@ export default class HomeScreen extends React.Component<Props, State> {
 
         this.state = {
             screens: [
-                'Goal', "Tasks", "Task", "Rewards", "Test",
+                'Dashboard', 'Goal', "Tasks", "Task", "Rewards", "Test",
             ]
         }
     }

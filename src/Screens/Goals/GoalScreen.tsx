@@ -6,7 +6,7 @@ import { ConnectedGoalSummary } from "src/ConnectedComponents/Summaries/GoalSumm
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import {
-    ColumnView, RowView, Button as MyButton
+    ColumnView, RowView, Button as MyButton, ViewPicker,
 } from "src/Components/Basic/Basic";
 import NavigationButton from "src/Components/Navigation/NavigationButton";
 
@@ -120,12 +120,14 @@ export default class GoalScreen extends React.Component<Props, State> {
                         />
                     </ColumnView>
                 </RowView>
-                <ColumnView style={[Style.container, localStyle.list]}>
-                    <ConnectedTaskList
-                        navigation={this.props.navigation}
-                        parentId={this.props.navigation.getParam('id', '')}
-                        type={"parent-active"}
-                    ></ConnectedTaskList>
+                <ColumnView style={[localStyle.list]}>
+                    <ViewPicker
+                        data={false}
+                        onDataChange={() => {}}
+                        accessibilityLabel={"tasks"}
+                        pickerHeight={60}
+                        views={[...this.renderTaskLists()]}
+                    ></ViewPicker>
                 </ColumnView>
                 <RowView style={[localStyle.button]}>
                     <NavigationButton
@@ -158,5 +160,32 @@ export default class GoalScreen extends React.Component<Props, State> {
                     ></ConnectedGoalSummary>
             );
         }
+    }
+
+    renderTaskLists = () => {
+        return [
+            {   title: "Active"
+            ,   render: () => {
+                    return (
+                        <ConnectedTaskList
+                            navigation={this.props.navigation}
+                            parentId={this.props.navigation.getParam('id', '')}
+                            type={"parent-active"}
+                        ></ConnectedTaskList>
+                    );
+                }
+            },
+            {   title: "Inactive"
+            ,   render: () => {
+                    return (
+                        <ConnectedTaskList
+                            navigation={this.props.navigation}
+                            parentId={this.props.navigation.getParam('id', '')}
+                            type={"parent-inactive"}
+                        ></ConnectedTaskList>
+                    );
+                }
+            }
+        ]
     }
 }

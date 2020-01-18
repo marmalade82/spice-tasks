@@ -9,7 +9,7 @@ import {
 const TaskName = {
     TITLE: 'title',
     STARTS_ON: 'starts_at',
-    DUE_ON: 'due_on',
+    DUE_ON: 'due_at',
     INSTRUCTIONS: 'instructions',
     PARENT: 'parent_id',
     ACTIVE: 'is_active',

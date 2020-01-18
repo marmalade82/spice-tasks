@@ -3,6 +3,7 @@ import { Q, Database, Model } from "@nozbe/watermelondb";
 import { ChildSchema, ActiveSchema, StateSchema } from "src/Models/base/SharedSchema";
 import { TaskSchema } from "src/Models/Task/TaskSchema";
 import DB from "src/Models/Database";
+import MyDate from "src/common/Date";
 
 const name = TaskSchema.name;
 
@@ -50,6 +51,13 @@ function completeConditions() {
     ]
 }
 
+function dueTodayConditions() {
+    return [
+        Q.where(name.DUE_ON, Q.lt(new MyDate().nextMidnight().toDate().valueOf())),
+        Q.where(name.DUE_ON, Q.gte(new MyDate().prevMidnight().toDate().valueOf())),
+    ]
+}
+
 export const Conditions = {
     active: activeConditions,
     activeChild: activeChildConditions,
@@ -58,6 +66,7 @@ export const Conditions = {
     inactiveChild: inactiveChildConditions,
     open: openConditions,
     complete: completeConditions,
+    dueToday: dueTodayConditions,
 }
 
 

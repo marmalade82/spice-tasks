@@ -36,7 +36,7 @@ interface InputProps {
 
 const enhance = withObservables(['goal'], (props: InputProps) => {
     return {
-        goal: props.goal
+        goal: props.goal.observe()
     }
 });
 

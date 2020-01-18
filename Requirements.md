@@ -9,6 +9,27 @@ This document outlines the user and business requirements for the Spice project.
 - [Rewards](#Rewards)
 - [Penalties](#Penalties)
 
+## Dashboard
+
+The dashboard is key because, to a first approximation, it allows users to quickly view and access the highly relevant information about their goals, tasks, etc. Thus, it is focused on sharing information that the user should know for now and the near future:
+
+- [ ] Tasks for Today, which is composed of
+    - [ ] Active In Progress tasks that are actually due today
+    - [ ] Active In Progress goals that are actually due today
+    - [ ] The tasks are stored under the goals if the relationship exists
+    - [ ] Overdue active tasks
+        - [ ] Icon should mark these as overdue
+        - [ ] Titles should be highlighted in red
+- [ ] Active Tasks, which is composed of
+    - [ ] Active In Progress tasks (where the start has passed, but the due date has not)
+    - [ ] Active In Progress goals (where the start has passed, but the due date has not)
+    - [ ] The tasks are stored under the goals if the relationships exists
+- [ ] Menu that provides access to other lists that could be helpful
+    - [ ] Upcoming tasks, which is composed of 
+        - [ ] Active Open tasks (where the start has not yet passed)
+        - [ ] Active Open goals (where the start has not yet passed)
+        - [ ] The tasks are stored under the goals if the relationship exists
+
 ## Tasks
 
 As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenever something needs to be done, a Task contains the details about _what_ needs to be done. Thus, it typically includes the following data:
@@ -169,9 +190,9 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
         - [T] Complete button should be available
         - [T] When clicked, Complete button should mark task as Complete and Inactive
         - [T] When clicked, Complete button should mark subtasks as Complete and Inactive
-    - [ ] User should be able to see the past, the present, and the future of the goal:
-        - [ ] User should be able to view currently active tasks in their own view
-        - [ ] User should be able to view inactive tasks in their own view
+    - [T] User should be able to see the past, the present, and the future of the goal:
+        - [T] User should be able to view currently active tasks in their own view
+        - [T] User should be able to view inactive tasks in their own view
 - [ ] Users should be able to re-order tasks within a goal by drag-and-drop.
 - [ ] Users should be able to click on a task to view it, and its sub-tasks, in more detail.
 - [ ] Users should be able to sort the tasks by

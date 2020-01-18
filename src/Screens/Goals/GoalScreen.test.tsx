@@ -6,7 +6,10 @@ import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cle
 import { Goal, GoalQuery, IGoal } from "src/Models/Goal/GoalQuery";
 import { TaskQuery, Task, ITask } from "src/Models/Task/TaskQuery";
 import GoalScreen from "src/Screens/Goals/GoalScreen";
-import { makeNavigation, destroyAllIn } from "src/common/test-utils";
+import { 
+    makeNavigation, destroyAllIn,
+    createGoals, createTasks,
+} from "src/common/test-utils";
 
 afterEach(cleanup)
 
@@ -79,5 +82,79 @@ test("By pressing Complete button, user can mark the goal and its tasks as Compl
 
     async function teardown() {
         await destroyAllIn("goals");
+    }
+}, 20000)
+
+test("User can view active and inactive tasks", async () => {
+    const opts = await setup()
+
+    const { getByLabelText, queryAllByLabelText } = render(
+        <GoalScreen
+            navigation={makeNavigation({id: opts.parentId})}
+        ></GoalScreen>
+    );
+
+    {
+        await wait(() => {
+            const active = queryAllByLabelText("task-list-item");
+            expect(active.length).toEqual(3);
+        })
+    }
+
+    {
+        const viewTwo = getByLabelText("input-view-2-tasks");
+        fireEvent.press(viewTwo);
+        await wait(() => {
+            const inactive = queryAllByLabelText("task-list-item");
+            expect(inactive.length).toEqual(2);
+        })
+    }
+
+    {
+        const viewOne = getByLabelText("input-view-1-tasks");
+        fireEvent.press(viewOne);
+        await wait(() => {
+            const active = queryAllByLabelText("task-list-item");
+            expect(active.length).toEqual(3);
+        });
+    }
+
+    await teardown()
+
+    async function setup() {
+        const opts = {
+            parentId: ""
+        }
+
+        await DB.get().action(async () => {
+            const parent = (await createGoals({
+                active: true,
+                title: "Parent",
+                state: "open",
+            }, 1))[0];
+
+            opts.parentId = parent.id;
+
+            const activeChildren = await createTasks({
+                parentId: parent.id,
+                active: true,
+                title: "Active Child",
+                state: "open",
+            }, 3);
+
+            const inactiveChildren = await createTasks({
+                parentId: parent.id,
+                active: false,
+                title: "Inactive Child",
+                state: "open",
+            }, 2);
+        });
+
+        return opts
+    }
+
+    async function teardown() {
+        await destroyAllIn('tasks');
+        await destroyAllIn('goals');
     }
 }, 20000)
