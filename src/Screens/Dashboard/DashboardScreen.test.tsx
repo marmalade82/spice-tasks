@@ -105,3 +105,30 @@ test("Initially user can see all active overdue tasks", async () => {
         await destroyAllIn('tasks');
     }
 });
+
+test.skip("User can switch views to see all active tasks that aren't due yet", async() => {
+
+});
+
+test("User can switch views to see a list of other less-commonly-used options", async () => {
+    await setup()
+
+    const { getByLabelText, queryAllByLabelText } = render(
+        <DashboardScreen navigation={makeNavigation({})}></DashboardScreen>
+    );
+
+    const viewThree = getByLabelText("input-view-3-lists");
+    fireEvent.press(viewThree)
+    await wait(() => {
+        const rewardListButton = getByLabelText("input-reward-list-button");
+        const penaltyListButton = getByLabelText("input-penalty-list-button");
+        const upcomingTasksButton = getByLabelText("input-upcoming-tasks-button");
+    });
+
+
+    await teardown() 
+
+    async function setup() {}
+
+    async function teardown() {}
+})

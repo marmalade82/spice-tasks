@@ -106,6 +106,7 @@ export default class TaskScreen extends React.Component<Props, State> {
                                 parent_id: this.props.navigation.getParam("id", ""), // id of the task, since it is this task's parent.
                             }}
                             destination={'AddTask'}
+                            accessibilityLabel={"add-task-button"}
                         ></NavigationButton>
                     </ColumnView>
                     <ColumnView style={[localStyle.actionItem]}>
@@ -133,6 +134,7 @@ export default class TaskScreen extends React.Component<Props, State> {
                         }}
                         color={"purple"}
                         destination={"AddTask"}
+                        accessibilityLabel={"edit-task-button"}
                     ></NavigationButton>
                 </RowView>
                 <RowView style={[localStyle.completeButton]}>

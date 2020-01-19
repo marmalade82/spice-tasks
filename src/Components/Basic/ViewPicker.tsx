@@ -110,5 +110,6 @@ export default class ViewPicker extends DataComponent<Props, State, State> {
 
 export {
     ViewPicker,
+    ViewProps,
     Default,
 }

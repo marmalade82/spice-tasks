@@ -21,7 +21,7 @@ The dashboard is key because, to a first approximation, it allows users to quick
         - [ ] Titles should be highlighted in red
     - [ ] Active goals that are actually due today
     - [ ] The tasks are stored under the parent goals/tasks if the relationship exists
-- [ ] Active Tasks, which is composed of
+- [ ] In Progress Tasks, which is composed of
     - [ ] Active In Progress tasks (where the start has passed, but the due date has not)
     - [ ] Active In Progress goals (where the start has passed, but the due date has not)
     - [ ] The tasks are stored under the parent goals/tasks if the relationships exists
@@ -30,6 +30,8 @@ The dashboard is key because, to a first approximation, it allows users to quick
         - [ ] Active Open tasks (where the start has not yet passed)
         - [ ] Active Open goals (where the start has not yet passed)
         - [ ] The tasks are stored under the parent goals/tasks if the relationship exists
+    - [ ] List of rewards
+    - [ ] List of penalties
 
 ## Tasks
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "react-native";
 
-interface Empty {
+type Empty = {
 
 }
 
@@ -11,6 +11,11 @@ interface Props {
     color?: string;
     parameters: Empty;
     destination: string;
+    accessibilityLabel: string;
+}
+
+interface Navigator {
+    navigate: (dest: string, params: Empty) => void;
 }
 
 interface State { }
@@ -28,6 +33,7 @@ export default class NavigationButton extends React.Component<Props, State> {
                 title={this.props.title}
                 color={this.props.color}
                 onPress={this.onPress}
+                accessibilityLabel={"input-" + this.props.accessibilityLabel}
             ></Button>   
         );
     }

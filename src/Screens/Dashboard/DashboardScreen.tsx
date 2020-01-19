@@ -1,6 +1,7 @@
 import React from "react";
-import { ColumnView } from "src/Components/Basic/Basic";
+import { ColumnView, ViewPicker } from "src/Components/Basic/Basic";
 import { ConnectedGoalTaskList } from "src/ConnectedComponents/Lists/Composite/GoalTaskList";
+import NavigationButton from "src/Components/Navigation/NavigationButton";
 
 
 
@@ -25,13 +26,72 @@ export default class DashboardScreen extends React.Component<Props, State> {
         super(props);
     }
 
+    renderListViews = () => {
+        return [
+            {   title: "Due",
+                render: () => {
+                    return (
+                        <ConnectedGoalTaskList
+                            navigation={this.props.navigation}
+                        >
+                        </ConnectedGoalTaskList>
+                    );
+                }
+            },
+            {   title: "In Progress",
+                render: () => {
+                    return (
+                        <ConnectedGoalTaskList
+                            navigation={this.props.navigation}
+                        >
+                        </ConnectedGoalTaskList>
+                    );
+                }
+            },
+            {   title: "Menu",
+                render: () => {
+                    return (
+                        <ColumnView style={[{justifyContent: "flex-start"}]}>
+                            <NavigationButton
+                                navigation={this.props.navigation}
+                                title={"Upcoming"}
+                                parameters={{}}
+                                destination={"Upcoming"}
+                                accessibilityLabel={"upcoming-tasks-button"}
+                            ></NavigationButton>
+                            <NavigationButton
+                                navigation={this.props.navigation}
+                                title={"Rewards"}
+                                parameters={{}}
+                                destination={"Rewards"}
+                                accessibilityLabel={"reward-list-button"}
+                            ></NavigationButton>
+                            <NavigationButton
+                                navigation={this.props.navigation}
+                                title={"Penalties"}
+                                parameters={{}}
+                                destination={"Penalties"}
+                                accessibilityLabel={"penalty-list-button"}
+                            ></NavigationButton>
+                        </ColumnView>
+                    )
+                }
+            }
+        ]
+    }
+
     render = () => {
         return (
             <ColumnView style={[]}>
-                <ConnectedGoalTaskList
-                    navigation={this.props.navigation}
+                <ViewPicker
+                    data={false}
+                    onDataChange={() => {}}
+                    accessibilityLabel={"lists"}
+                    views={this.renderListViews()}
+                    pickerHeight={60}
                 >
-                </ConnectedGoalTaskList>
+
+                </ViewPicker>
             </ColumnView>
         );
     }
