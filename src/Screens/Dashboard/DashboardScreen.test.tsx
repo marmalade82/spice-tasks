@@ -13,7 +13,7 @@ import MyDate from "src/common/Date";
 import DashboardScreen from "src/Screens/Dashboard/DashboardScreen";
 import TaskQuery from "src/Models/Task/TaskQuery";
 
-describe("First view", async () => {
+describe("First view: Due", async () => {
     test("Initially user can see all active tasks due today", async () => {
         await setup();
 
@@ -171,53 +171,130 @@ describe("First view", async () => {
     });
 });
 
-test("User can switch views to Second View and see all active tasks that aren't due yet", async() => {
-    await setup();
+describe("Second view: In Progress", async () => {
+    test("User can switch views to Second View and see all active tasks that aren't due yet", async() => {
+        await setup();
 
-    const { getByLabelText, queryAllByLabelText } = render(
-        <DashboardScreen navigation={makeNavigation({})}></DashboardScreen>
-    );
-    
-    const tasks = await new TaskQuery().queryActiveAndStartedButNotDue().fetch();
-    debugger;
+        const { getByLabelText, queryAllByLabelText } = render(
+            <DashboardScreen navigation={makeNavigation({})}></DashboardScreen>
+        );
+        
+        const tasks = await new TaskQuery().queryActiveAndStartedButNotDue().fetch();
+        debugger;
 
-    const viewTwo = getByLabelText("input-view-2-lists");
-    fireEvent.press(viewTwo)
+        const viewTwo = getByLabelText("input-view-2-lists");
+        fireEvent.press(viewTwo)
 
-    await wait(() => {
-        const activeTasks = queryAllByLabelText("task-list-item");
-        expect(activeTasks.length).toEqual(3);
+        await wait(() => {
+            const activeTasks = queryAllByLabelText("task-list-item");
+            expect(activeTasks.length).toEqual(3);
+        });
+
+        await teardown();
+
+        async function setup() {
+            await DB.get().action(async () => {
+                await createTasks({
+                    active: true,
+                    title: "Active but not due",
+                    dueDate: new MyDate().add(2, "days").toDate(),
+                    startDate: new MyDate().subtract(1, "hours").toDate(),
+                }, 3);
+
+                await createTasks({
+                    active: true,
+                    title: "Active but due",
+                    dueDate: new MyDate().toDate(),
+                    startDate: new MyDate().subtract(1, "hours").toDate(),
+                }, 1)
+
+                await createTasks({
+                    active: false,
+                    title: "Inactive",
+                    dueDate: new MyDate().toDate(),
+                    startDate: new MyDate().subtract(1, "hours").toDate(),
+                }, 2);
+            });
+        }
+
+        async function teardown() {
+            await destroyAllIn('tasks');
+        }
     });
 
-    await teardown();
+    test("User can switch to Second View and see all goals that aren't due yet", async () => {
+        await setup();
 
-    async function setup() {
-        await DB.get().action(async () => {
-            await createTasks({
-                active: true,
-                title: "Active but not due",
-                dueDate: new MyDate().add(2, "days").toDate(),
-                startDate: new MyDate().subtract(1, "hours").toDate(),
-            }, 3);
+        const { getByLabelText, queryAllByLabelText } = render(
+            <DashboardScreen navigation={makeNavigation({})}></DashboardScreen>
+        );
+        
+        const viewTwo = getByLabelText("input-view-2-lists");
+        fireEvent.press(viewTwo)
 
-            await createTasks({
-                active: true,
-                title: "Active but due",
-                dueDate: new MyDate().toDate(),
-                startDate: new MyDate().subtract(1, "hours").toDate(),
-            }, 1)
-
-            await createTasks({
-                active: false,
-                title: "Inactive"
-            }, 2);
+        await wait(() => {
+            const goals = queryAllByLabelText("goal-list-item");
+            expect(goals.length).toEqual(1);
+            const tasks = queryAllByLabelText("task-list-item");
+            expect(tasks.length).toEqual(7);
         });
-    }
 
-    async function teardown() {
-        await destroyAllIn('tasks');
-    }
-});
+        await teardown();
+
+        async function setup() {
+            await DB.get().action(async () => {
+                await createGoals({
+                    active: true,
+                    title: "Not due goal",
+                    startDate: new MyDate().subtract(1, "days").toDate(),
+                    dueDate: new MyDate().add(1, "days").toDate(),
+                }, 1)[0];
+
+                await createGoals({
+                    active: true,
+                    title: "Due today goal",
+                    startDate: new MyDate().subtract(1, "days").toDate(),
+                    dueDate: new MyDate().nextMidnight().subtract(1, "minutes").toDate(),
+                }, 3)[0];
+
+                await createGoals({
+                    active: true,
+                    title: "Overdue goal",
+                    startDate: new MyDate().subtract(2, "days").toDate(),
+                    dueDate: new MyDate().subtract(1, "days").toDate()
+                }, 2)[0];
+
+                await createTasks({
+                    active: true,
+                    title: "Not due task",
+                    startDate: new MyDate().subtract(1, "days").toDate(),
+                    dueDate: new MyDate().add(1, "days").toDate(),
+                }, 7)
+
+                await createTasks({
+                    active: true,
+                    title: "Overdue task",
+                    startDate: new MyDate().subtract(2, "days").toDate(),
+                    dueDate: new MyDate().subtract(1, "days").toDate()
+                }, 1);
+
+                await createTasks({
+                    active: true,
+                    title: "Due today task",
+                    startDate: new MyDate().subtract(2, "days").toDate(),
+                    dueDate: new MyDate().nextMidnight().subtract(1, "minutes").toDate(),
+                }, 2);
+
+            })
+        }
+
+        async function teardown() {
+            await destroyAllIn('goals');
+            await destroyAllIn('tasks');
+        }
+    }, 20000);
+
+})
 
 test("User can switch views to Third View and see a list of other less-commonly-used options", async () => {
     await setup()

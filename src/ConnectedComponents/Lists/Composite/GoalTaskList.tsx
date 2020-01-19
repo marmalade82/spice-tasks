@@ -93,7 +93,7 @@ const enhance = withObservables(['type'], (props: InputProps) => {
     } else if(props.type === "startedButNotDueActive") {
         return {
             tasks: new TaskQuery().queryActiveAndStartedButNotDue().observe(),
-            goals: new GoalQuery().queryAll().observe(),
+            goals: new GoalQuery().queryActiveAndStartedButNotDue().observe(),
         }
     } else {
         return {

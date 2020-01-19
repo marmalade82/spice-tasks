@@ -18,6 +18,7 @@ The dashboard is key because, to a first approximation, it allows users to quick
     - [ ] Start dates should be initialized to 12:00 AM of the date they are started on.
     - [ ] bug in DueToday query -- due today should start at 12:00 AM of the day and end at the Due On time.
     - [ ] How can we make this timezone agnostic? If you change timezone so that you gain 3 hours extra, the due stuff should reflect that.
+    - [ ] Prevent start date from being after due date
 - [ ] Tasks for Today, which is composed of
     - [T] Active tasks that are actually due today
     - [ ] Overdue active tasks
@@ -32,7 +33,7 @@ The dashboard is key because, to a first approximation, it allows users to quick
     - [ ] Goals should be easily distinguishable from tasks
 - [ ] In Progress Tasks, which is composed of
     - [T] Active In Progress tasks (where the start has passed, but the due date is after today)
-    - [ ] Active In Progress goals (where the start has passed, but the due date is after today)
+    - [T] Active In Progress goals (where the start has passed, but the due date is after today)
     - [ ] The tasks are stored under the parent goals/tasks if the relationships exists
     - [ ] Group not just by goal, but also by date, since a given day could have a ton of tasks that make this list way too long.
 - [ ] Menu that provides access to other lists that are necessary for application domain functionality. Links to the following:
