@@ -5,6 +5,7 @@ import TaskSchema from "src/Models/Task/TaskSchema";
 import { Task, ITask } from "src/Models/Task/Task";
 import ModelQuery from "src/Models/base/Query";
 import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils";
+import { Q, Database, Model } from "@nozbe/watermelondb";
 
 class GoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
@@ -27,6 +28,25 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
             state: "open",
         } as const;
         return Default;
+    }
+
+    queryActiveAndDue = () => {
+        return this.store().query(
+            Q.or(
+                Q.and(
+                    ...[...Conditions.active(), ...Conditions.overdue()]
+                ),
+                Q.and(
+                    ...[...Conditions.active(), ...Conditions.dueToday()]
+                )
+            )
+        )
+    }
+
+    queryActiveAndDueToday = () => {
+        return this.store().query(
+            ...[...Conditions.active(), ...Conditions.dueToday()]
+        );
     }
 
     queryActive = () => {

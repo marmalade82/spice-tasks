@@ -24,12 +24,17 @@ The dashboard is key because, to a first approximation, it allows users to quick
         - [T] Should appear in list
         - [ ] Icon should mark these as overdue
         - [ ] Titles should be highlighted in red
-    - [ ] Active goals that are actually due today
+    - [T] Active goals that are due today or overdue
+    - [ ] Overdue goals
+        - [ ] Icon should mark these as overdue
+        - [ ] Titles should be highlighted in red
     - [ ] The tasks are stored under the parent goals/tasks if the relationship exists
+    - [ ] Goals should be easily distinguishable from tasks
 - [ ] In Progress Tasks, which is composed of
     - [T] Active In Progress tasks (where the start has passed, but the due date is after today)
     - [ ] Active In Progress goals (where the start has passed, but the due date is after today)
     - [ ] The tasks are stored under the parent goals/tasks if the relationships exists
+    - [ ] Group not just by goal, but also by date, since a given day could have a ton of tasks that make this list way too long.
 - [ ] Menu that provides access to other lists that are necessary for application domain functionality. Links to the following:
     - [T] Upcoming tasks
     - [T] List of rewards

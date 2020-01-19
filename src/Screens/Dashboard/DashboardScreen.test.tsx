@@ -13,7 +13,7 @@ import MyDate from "src/common/Date";
 import DashboardScreen from "src/Screens/Dashboard/DashboardScreen";
 import TaskQuery from "src/Models/Task/TaskQuery";
 
-describe("first view", async () => {
+describe("First view", async () => {
     test("Initially user can see all active tasks due today", async () => {
         await setup();
 
@@ -105,7 +105,7 @@ describe("first view", async () => {
         }
     });
 
-    test.skip("User can see all active goals due today, along with any active due/overdue child tasks", async () => {
+    test("User can see all active goals due today or overdue, along with any active due/overdue non-child tasks", async () => {
         await setup();
 
         const { queryAllByLabelText } = render(
@@ -115,9 +115,9 @@ describe("first view", async () => {
         {
             await wait(() => {
                 const dueGoals = queryAllByLabelText("goal-list-item");
-                expect(dueGoals.length).toEqual(1);
+                expect(dueGoals.length).toEqual(5);
 
-                const childTasks = queryAllByLabelText("child-task-list-item");
+                const childTasks = queryAllByLabelText("task-list-item");
                 expect(childTasks.length).toEqual(3)
             });
         }
@@ -126,30 +126,41 @@ describe("first view", async () => {
         
         async function setup() {
             await DB.get().action(async () => {
-                const dueGoal = await createGoals({
+                await createGoals({
                     active: true,
                     title: "Due goal",
                     dueDate: new MyDate().prevMidnight().add(1, "hours").toDate(),
+                }, 3)[0];
+
+                await createGoals({
+                    active: true,
+                    title: "Overdue goal",
+                    dueDate: new MyDate().subtract(1, "days").toDate()
+                }, 2)[0];
+
+                await createGoals({
+                    active: true,
+                    title: "Not due goal",
+                    dueDate: new MyDate().add(1, "days").toDate()
                 }, 1)[0];
 
                 await createTasks({
-                    parentId: dueGoal.id,
                     active: true,
-                    title: "Overdue child",
+                    title: "Overdue task",
                     dueDate: new MyDate().subtract(1, "days").toDate()
                 }, 1);
 
                 await createTasks({
-                    parentId: dueGoal.id,
                     active: true,
-                    title: "Due child",
+                    title: "Due task",
                     dueDate: new MyDate().prevMidnight().add(1, "minutes").toDate(),
                 }, 2);
 
-                const overdueGoal = await createGoals({
+                await createTasks({
                     active: true,
-                    dueDate: new MyDate().subtract(1, "days").toDate()
-                }, 1)
+                    title: "Not due task",
+                    dueDate: new MyDate().add(1, "days").toDate(),
+                }, 7)
             })
         }
 
@@ -159,31 +170,6 @@ describe("first view", async () => {
         }
     });
 });
-
-
-
-test("User can switch views to Third View and see a list of other less-commonly-used options", async () => {
-    await setup()
-
-    const { getByLabelText } = render(
-        <DashboardScreen navigation={makeNavigation({})}></DashboardScreen>
-    );
-
-    const viewThree = getByLabelText("input-view-3-lists");
-    fireEvent.press(viewThree)
-    await wait(() => {
-        const rewardListButton = getByLabelText("input-reward-list-button");
-        const penaltyListButton = getByLabelText("input-penalty-list-button");
-        const upcomingTasksButton = getByLabelText("input-upcoming-tasks-button");
-    });
-
-
-    await teardown() 
-
-    async function setup() {}
-
-    async function teardown() {}
-})
 
 test("User can switch views to Second View and see all active tasks that aren't due yet", async() => {
     await setup();
@@ -232,3 +218,26 @@ test("User can switch views to Second View and see all active tasks that aren't 
         await destroyAllIn('tasks');
     }
 });
+
+test("User can switch views to Third View and see a list of other less-commonly-used options", async () => {
+    await setup()
+
+    const { getByLabelText } = render(
+        <DashboardScreen navigation={makeNavigation({})}></DashboardScreen>
+    );
+
+    const viewThree = getByLabelText("input-view-3-lists");
+    fireEvent.press(viewThree)
+    await wait(() => {
+        const rewardListButton = getByLabelText("input-reward-list-button");
+        const penaltyListButton = getByLabelText("input-penalty-list-button");
+        const upcomingTasksButton = getByLabelText("input-upcoming-tasks-button");
+    });
+
+
+    await teardown() 
+
+    async function setup() {}
+
+    async function teardown() {}
+})

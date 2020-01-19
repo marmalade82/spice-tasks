@@ -8,10 +8,12 @@ import withObservables from "@nozbe/with-observables";
 import TaskQuery from "src/Models/Task/TaskQuery";
 import { ConnectedGoalTaskItem} from "src/ConnectedComponents/Lists/Composite/GoalTaskItem";
 import { merge } from "rxjs";
+import GoalQuery from "src/Models/Goal/GoalQuery";
 
 interface Props {
     navigation: any
     tasks: Task[]
+    goals: Goal[]
 }
 
 type Item = {
@@ -51,12 +53,21 @@ const AdaptedGoalTaskList: React.FunctionComponent<Props> = function(props: Prop
     }
 
     const makeItems = () => {
-        return props.tasks.map((task: Task) => {
+        const tasks: Item[] = props.tasks.map((task: Task) => {
             return {
                 id: task.id,
                 model: task,
             }
         });
+
+        const goals: Item[] = props.goals.map((goal: Goal) => {
+            return {
+                id: goal.id,
+                model: goal,
+            }
+        });
+
+        return tasks.concat(goals);
     }
 
     return (
@@ -76,15 +87,18 @@ interface InputProps {
 const enhance = withObservables(['type'], (props: InputProps) => {
     if(props.type === "dueAndOverdueActive") {
         return {
-            tasks: new TaskQuery().queryActiveAndDue().observe()
+            tasks: new TaskQuery().queryActiveAndDue().observe(),
+            goals: new GoalQuery().queryActiveAndDue().observe(),
         }
     } else if(props.type === "startedButNotDueActive") {
         return {
-            tasks: new TaskQuery().queryActiveAndStartedButNotDue().observe()
+            tasks: new TaskQuery().queryActiveAndStartedButNotDue().observe(),
+            goals: new GoalQuery().queryAll().observe(),
         }
     } else {
         return {
-            tasks: new TaskQuery().queryAll().observe()
+            tasks: new TaskQuery().queryAll().observe(),
+            goals: new GoalQuery().queryAll().observe(),
         }
     }
 });
