@@ -11,6 +11,7 @@ import {
 import MyDate from "src/common/Date";
 
 import DashboardScreen from "src/Screens/Dashboard/DashboardScreen";
+import TaskQuery from "src/Models/Task/TaskQuery";
 
 test("Initially user can see all active tasks due today", async () => {
     await setup();
@@ -21,14 +22,16 @@ test("Initially user can see all active tasks due today", async () => {
 
     {
         await wait(() => {
-            const overdueTasks = queryAllByLabelText("task-list-item");
-            expect(overdueTasks.length).toEqual(3)
+            const dueTasks = queryAllByLabelText("task-list-item");
+            expect(dueTasks.length).toEqual(4)
         });
     }
 
 
 
     await teardown();
+
+    // TIME TO USE DEBUGGER FOR THESE TESTS! OR JUST IN THE BROWSER, SINCE THIS IS HAPPENING THERE TOO
 
     async function setup() {
         await DB.get().action(async () => {
@@ -39,10 +42,16 @@ test("Initially user can see all active tasks due today", async () => {
             }, 3)
 
             await createTasks({
+                active: true,
+                dueDate: new MyDate().add(1, "hours").toDate(),
+                state: "in_progress"
+            }, 1)
+
+            await createTasks({
                 active: false,
                 dueDate: new MyDate().toDate(),
                 state: "in_progress",
-            }, 1)
+            }, 2)
         });
     }
 
@@ -52,7 +61,7 @@ test("Initially user can see all active tasks due today", async () => {
 
 })
 
-test.skip("Initially user can see all active overdue tasks", async () => {
+test("Initially user can see all active overdue tasks", async () => {
     await setup();
 
     const { queryAllByLabelText } = render(
@@ -62,7 +71,7 @@ test.skip("Initially user can see all active overdue tasks", async () => {
     {
         await wait(() => {
             const overdueTasks = queryAllByLabelText("task-list-item");
-            expect(overdueTasks.length).toEqual(3)
+            expect(overdueTasks.length).toEqual(4)
         });
     }
 
@@ -79,10 +88,16 @@ test.skip("Initially user can see all active overdue tasks", async () => {
             }, 3)
 
             await createTasks({
+                active: true,
+                dueDate: new MyDate().subtract(2, "days").toDate(),
+                state: "in_progress",
+            }, 1)
+
+            await createTasks({
                 active: false,
                 dueDate: new MyDate().subtract(1, "days").toDate(),
                 state: "in_progress",
-            }, 1)
+            }, 2)
         });
     }
 

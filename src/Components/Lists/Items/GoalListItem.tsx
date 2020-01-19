@@ -55,7 +55,7 @@ export default class GoalListItem extends Item<Props, State, Goal> {
         const item = this.props.item
 
         return (
-            <View style={[localStyle.container]}>
+            <View style={[localStyle.container]} accessibilityLabel={this.props.accessibilityLabel}>
                 <View style={localStyle.title}>
                     <Text>{item.title + " : " + item.id}</Text>
                 </View>

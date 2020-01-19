@@ -14,21 +14,22 @@ This document outlines the user and business requirements for the Spice project.
 The dashboard is key because, to a first approximation, it allows users to quickly view and access the highly relevant information about their goals, tasks, etc. Thus, it is focused on sharing information that the user should know for now and the near future:
 
 - [ ] Tasks for Today, which is composed of
-    - [ ] Active In Progress tasks that are actually due today
-    - [ ] Active In Progress goals that are actually due today
-    - [ ] The tasks are stored under the goals if the relationship exists
+    - [T] Active tasks that are actually due today
     - [ ] Overdue active tasks
+        - [T] Should appear in list
         - [ ] Icon should mark these as overdue
         - [ ] Titles should be highlighted in red
+    - [ ] Active goals that are actually due today
+    - [ ] The tasks are stored under the parent goals/tasks if the relationship exists
 - [ ] Active Tasks, which is composed of
     - [ ] Active In Progress tasks (where the start has passed, but the due date has not)
     - [ ] Active In Progress goals (where the start has passed, but the due date has not)
-    - [ ] The tasks are stored under the goals if the relationships exists
+    - [ ] The tasks are stored under the parent goals/tasks if the relationships exists
 - [ ] Menu that provides access to other lists that could be helpful
     - [ ] Upcoming tasks, which is composed of 
         - [ ] Active Open tasks (where the start has not yet passed)
         - [ ] Active Open goals (where the start has not yet passed)
-        - [ ] The tasks are stored under the goals if the relationship exists
+        - [ ] The tasks are stored under the parent goals/tasks if the relationship exists
 
 ## Tasks
 
@@ -74,10 +75,20 @@ As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenev
         - [X] Title
         - [X] Start date
         - [X] Due date
-    - [ ] Users should be able to delete one or more goals from the full list
-        - [ ] Deleting goals should delete associated subtasks and subgoals
+    - [ ] User should have several modes available for interacting with the list.
+        - [ ] View mode. In this mode, clicking on a task item takes you to the task itself.
+        - [ ] Grab mode. In this mode, pressing and holding on a task item will pick it up. It can be moved up and down.
+        - [ ] Select mode.
+            - [ ] In this mode, clicking on a task item will select it. One or more can be selected.
+            - [ ] A menu appears with options for what to do with the selected items.
+                - [ ] Deselect all
+                - [ ] Select all
+                - [ ] Delete selected
+                - [ ] Move selected
+    - [ ] Users should be able to delete one or more tasks from the full list
+        - [ ] Deleting goals should delete associated subtasks
         - [ ] User should be able to toggle a Delete Mode
-        - [ ] User should be able to mark multiple goals for deletion
+        - [ ] User should be able to mark multiple tasks for deletion
         - [ ] User should be prompted to confirm deletes
 
 - [X] User should be able to view specific Task
@@ -146,6 +157,7 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
 ### User Stories - Viewing Goals
 
 - [X] Users should be able to view all existing goals
+    - [ ] Goals should be organized according to parent/child relationships.
     - [X] User should be able to see basic information on the goal
         - [X] Title
         - [X] Due Date
@@ -155,8 +167,8 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
 - [ ] Users should be able to sort on
     - [ ] Title
     - [ ] Due Date
-    - [ ] Type
-- [ ] Users should be able to filter on
+    - [ ] Start Date
+- BACKLOG [ ] Users should be able to filter on
     - [ ] Title
     - [ ] Due Date
     - [ ] Type
@@ -243,9 +255,47 @@ Rewards typically come with the following data items:
 ### User Stories - Viewing Rewards
 
 - [X] User should be able to view all rewards
-- [X] User should be able to view the following reward attributes at a glance
-    - [X] Title
-    - [X] Expiration Date
+    - [X] User should be able to view the following reward attributes at a glance
+        - [X] Title
+        - [X] Expiration Date
+    - [ ] Rewards should filterable
+        - [ ] Active rewards
+        - [ ] Inactive rewards
+    - [ ] Rewards should be sortable by
+        - [ ] Title
+        - [ ] Start date
+        - [ ] Expiration date
+
+- [ ] User should be able to view an existing reward
+    - [ ] Summary should be available at top
+    - [ ] Edit button should be available if user wants to make edits
+    - [ ] If Active, Retire button should be available if user wants to retire the reward.
+    - [ ] If Inactive, Unretire button should be available if user wants to unretire the reward.
+
+## Earned Rewards (ER for short)
+
+When a goal is completed, the associated Reward is earned, if any. The user can then choose to claim these at any time. Ideally, these earned Rewards would have an attached expiration date, so that the user would be forced to take advantage of one of these. But this would be somewhat complicated to make into a good user experience -- most users will want to have complete freedom when it comes to what they've earned. So for now, no implementation of expiration for Earned Rewards will be implemented.
+
+### User Stories - Viewing ER
+
+- [ ] User should be able to view all ER
+    - [ ] The following attributes should be available at a glance:
+        - [ ] Title
+        - [ ] Tier
+    - [ ] ER should be filterable
+        - [ ] Unclaimed (that is, not yet used)
+        - [ ] Claimed
+
+- [ ] User should be able to view one particular ER
+    - [ ] The following details should be available:
+        - [ ] Title
+        - [ ] Tier
+        - [ ] Details
+        - [ ] Goal it was earned from
+
+### User Stories - Adding ER
+
+The only way to create ER is to complete a goal that is associated with a reward. Once an ER is earned, there is no way to edit it, except perhaps by setting an expiration date (no plans to implement this, however).
 
 ## Penalties
 

@@ -49,6 +49,28 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
         );
     }
 
+    queryActiveAndOverdue = () => {
+        return this.store().query(
+            ...[...Conditions.active(), ...Conditions.overdue()]
+        );
+    }
+
+    /**
+     * Query for tasks that are active, and due either today, or in the past (overdue).
+     */
+    queryActiveAndDue = () => {
+        return this.store().query(
+            Q.or(
+                Q.and(
+                    ...[...Conditions.active(), ...Conditions.overdue()]
+                ),
+                Q.and(
+                    ...[...Conditions.active(), ...Conditions.dueToday()]
+                )
+            )
+        )
+    }
+
     queryInactive = () => {
         return this.store().query(
             Q.where('is_active', false)

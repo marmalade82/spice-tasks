@@ -14,7 +14,7 @@ interface State {
 
 }
 
-export default class DefaultScreen extends React.Component<Props, State> {
+export default class DashboardScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
             title: 'Dashboard',

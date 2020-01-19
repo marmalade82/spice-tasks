@@ -11,7 +11,13 @@ export default class MyDate {
 
 
     subtract = (n: number, val: "days"): this => {
-        this.m.subtract(n, val);
+        this.m = this.m.subtract(n, val);
+
+        return this;
+    }
+
+    add = (n: number, val: "hours"): this => {
+        this.m = this.m.add(n, val);
 
         return this;
     }
@@ -21,13 +27,13 @@ export default class MyDate {
     }
 
     nextMidnight = (): this => {
-        this.m.endOf('day');
+        this.m = this.m.endOf('day');
 
         return this;
     }
 
     prevMidnight = (): this => {
-        this.m.startOf('day');
+        this.m = this.m.startOf('day');
 
         return this;
     }

@@ -7,6 +7,7 @@ import { Model } from "@nozbe/watermelondb";
 import withObservables from "@nozbe/with-observables";
 import TaskQuery from "src/Models/Task/TaskQuery";
 import { ConnectedGoalTaskItem} from "src/ConnectedComponents/Lists/Composite/GoalTaskItem";
+import { merge } from "rxjs";
 
 interface Props {
     navigation: any
@@ -73,7 +74,7 @@ interface InputProps {
 
 const enhance = withObservables([], (_props: InputProps) => {
     return {
-        tasks: new TaskQuery().queryActiveAndDueToday().observe()
+        tasks: new TaskQuery().queryActiveAndDue()
     }
 });
 
