@@ -60,8 +60,20 @@ function dueTodayConditions() {
 
 function overdueConditions() {
     return [
-        Q.where(name.DUE_ON, Q.lt(new MyDate().toDate().valueOf()))
+        Q.where(name.DUE_ON, Q.lt(new MyDate().toDate().valueOf())),
     ];
+}
+
+function startedConditions() {
+    return [
+        Q.where(name.STARTS_ON, Q.lte(new MyDate().toDate().valueOf())),
+    ]
+}
+
+function notDueConditions() {
+    return [
+        Q.where(name.DUE_ON, Q.gte(new MyDate().nextMidnight().toDate().valueOf()))
+    ]
 }
 
 export const Conditions = {
@@ -74,6 +86,8 @@ export const Conditions = {
     complete: completeConditions,
     dueToday: dueTodayConditions,
     overdue: overdueConditions,
+    started: startedConditions,
+    notDue: notDueConditions,
 }
 
 

@@ -13,6 +13,11 @@ This document outlines the user and business requirements for the Spice project.
 
 The dashboard is key because, to a first approximation, it allows users to quickly view and access the highly relevant information about their goals, tasks, etc. Thus, it is focused on sharing information that the user should know for now and the near future:
 
+- [ ] Check that dates are initialized with time to the correct value, if the user **is not allowed** to choose them. Should be midnight.
+    - [ ] Due dates should be initialized to 11:59 PM of the date they are started on.
+    - [ ] Start dates should be initialized to 12:00 AM of the date they are started on.
+    - [ ] bug in DueToday query -- due today should start at 12:00 AM of the day and end at the Due On time.
+    - [ ] How can we make this timezone agnostic? If you change timezone so that you gain 3 hours extra, the due stuff should reflect that.
 - [ ] Tasks for Today, which is composed of
     - [T] Active tasks that are actually due today
     - [ ] Overdue active tasks
@@ -22,20 +27,22 @@ The dashboard is key because, to a first approximation, it allows users to quick
     - [ ] Active goals that are actually due today
     - [ ] The tasks are stored under the parent goals/tasks if the relationship exists
 - [ ] In Progress Tasks, which is composed of
-    - [ ] Active In Progress tasks (where the start has passed, but the due date has not)
-    - [ ] Active In Progress goals (where the start has passed, but the due date has not)
+    - [T] Active In Progress tasks (where the start has passed, but the due date is after today)
+    - [ ] Active In Progress goals (where the start has passed, but the due date is after today)
     - [ ] The tasks are stored under the parent goals/tasks if the relationships exists
-- [ ] Menu that provides access to other lists that could be helpful
-    - [ ] Upcoming tasks, which is composed of 
-        - [ ] Active Open tasks (where the start has not yet passed)
-        - [ ] Active Open goals (where the start has not yet passed)
-        - [ ] The tasks are stored under the parent goals/tasks if the relationship exists
-    - [ ] List of rewards
-    - [ ] List of penalties
+- [ ] Menu that provides access to other lists that are necessary for application domain functionality. Links to the following:
+    - [T] Upcoming tasks
+    - [T] List of rewards
+    - [T] List of penalties
+    - [ ] List of earned rewards
+    - [ ] List of earned penalties
+- [ ] Reporting
+    - [ ] User can see progress over last month?
+    - [ ] User can add/subtract widgets?
 
 ## Tasks
 
-As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenever something needs to be done, a Task contains the details about _what_ needs to be done. Thus, it typically includes the following data:
+As you would expect with any Todo app, Tasks are ubiquitous within Spice. Whenever something needs to be done, a Task contains the details about _what_ needs to be done. Thus, it typically includes the following data:
 
 - Title of the task
 - Instructions on how to complete the task
@@ -103,6 +110,11 @@ As you would expect with any ToDo app, Tasks are ubiquitous within Spice. Whenev
     - [T] User should be able to see the past, the present, and the future of the task:
         - [T] User should be able to view currently active tasks in their own view
         - [T] User should be able to view inactive tasks in their own view
+
+- [ ] User should have screen to view the list of upcoming tasks:
+        - [ ] Active Open tasks (where the start has not yet passed)
+        - [ ] Active Open goals (where the start has not yet passed)
+        - [ ] The tasks are stored under the parent goals/tasks if the relationship exists
 
 ## Goals
 

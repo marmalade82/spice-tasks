@@ -3,6 +3,8 @@ import moment from "moment";
 import { Moment } from "moment";
 
 
+type timeUnit = "seconds" | "minutes" | "hours" | "days" | "weeks";
+
 export default class MyDate {
     m: Moment;
     constructor() {
@@ -10,13 +12,13 @@ export default class MyDate {
     }
 
 
-    subtract = (n: number, val: "days"): this => {
+    subtract = (n: number, val: timeUnit): this => {
         this.m = this.m.subtract(n, val);
 
         return this;
     }
 
-    add = (n: number, val: "hours"): this => {
+    add = (n: number, val: timeUnit): this => {
         this.m = this.m.add(n, val);
 
         return this;

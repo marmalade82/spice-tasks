@@ -71,6 +71,12 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
         )
     }
 
+    queryActiveAndStartedButNotDue = () => {
+        return this.store().query(
+            ...[...Conditions.active(), ...Conditions.started(), ...Conditions.notDue()]
+        )
+    }
+
     queryInactive = () => {
         return this.store().query(
             Q.where('is_active', false)

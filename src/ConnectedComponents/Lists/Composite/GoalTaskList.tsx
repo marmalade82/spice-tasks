@@ -70,11 +70,22 @@ const AdaptedGoalTaskList: React.FunctionComponent<Props> = function(props: Prop
 
 interface InputProps {
     navigation: any
+    type: "dueAndOverdueActive" | "startedButNotDueActive"
 }
 
-const enhance = withObservables([], (_props: InputProps) => {
-    return {
-        tasks: new TaskQuery().queryActiveAndDue()
+const enhance = withObservables(['type'], (props: InputProps) => {
+    if(props.type === "dueAndOverdueActive") {
+        return {
+            tasks: new TaskQuery().queryActiveAndDue().observe()
+        }
+    } else if(props.type === "startedButNotDueActive") {
+        return {
+            tasks: new TaskQuery().queryActiveAndStartedButNotDue().observe()
+        }
+    } else {
+        return {
+            tasks: new TaskQuery().queryAll().observe()
+        }
     }
 });
 

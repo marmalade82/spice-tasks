@@ -33,6 +33,7 @@ export default class DashboardScreen extends React.Component<Props, State> {
                     return (
                         <ConnectedGoalTaskList
                             navigation={this.props.navigation}
+                            type={"dueAndOverdueActive"}
                         >
                         </ConnectedGoalTaskList>
                     );
@@ -43,6 +44,7 @@ export default class DashboardScreen extends React.Component<Props, State> {
                     return (
                         <ConnectedGoalTaskList
                             navigation={this.props.navigation}
+                            type={"startedButNotDueActive"}
                         >
                         </ConnectedGoalTaskList>
                     );
