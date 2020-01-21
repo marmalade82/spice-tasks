@@ -11,6 +11,7 @@ import { GoalListItem, Goal as IGoal} from "src/Components/Lists/Items/GoalListI
 interface Props {
     id: string;
     model: Goal | Task;
+    accessibilityLabel?: string;
 }
 
 
@@ -26,7 +27,7 @@ const AdaptedGoalTaskItem: React.FunctionComponent<Props> = function(props: Prop
         return (
             <TaskListItem
                 item={mappedTask}
-                accessibilityLabel={"task-list-item"}
+                accessibilityLabel={props.accessibilityLabel ? props.accessibilityLabel : "task-list-item"}
             >
 
             </TaskListItem>
@@ -43,7 +44,7 @@ const AdaptedGoalTaskItem: React.FunctionComponent<Props> = function(props: Prop
         return (
             <GoalListItem
                 item={mappedGoal}
-                accessibilityLabel={"goal-list-item"}
+                accessibilityLabel={props.accessibilityLabel ? props.accessibilityLabel : "goal-list-item"}
             >
 
             </GoalListItem>
@@ -55,6 +56,7 @@ const AdaptedGoalTaskItem: React.FunctionComponent<Props> = function(props: Prop
 interface InputProps {
     id: string;
     model: Goal | Task
+    accessibilityLabel?: string;
 }
 
 const enhance = withObservables(['id', 'model'], (props: InputProps) => {

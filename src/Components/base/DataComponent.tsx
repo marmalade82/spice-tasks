@@ -43,15 +43,16 @@ export default abstract class DataComponent<Props, State extends Data, Data>
     }
 
     setData = <K extends keyof Data>(d: Pick<State, K>) => {
-        this.setState(d);
         if(!this.props.data) {
             this.props.onDataChange(this.reviseState(d, this.state));
         } else {
             this.props.onDataChange(this.reviseData(d));
         }
-
+        this.setState(d);
     }
 }
+
+type DataFn<S, P, D> = <K extends keyof D>(s: S, p: P & DataProps<D>) => Pick<D, K>;
 
 export {
     DataComponent,

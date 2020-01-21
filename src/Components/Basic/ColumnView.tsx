@@ -4,6 +4,7 @@ import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 
 interface Props {
     style: StyleProp<ViewStyle>
+    accessibilityLabel?: string;
 }
 
 interface State {
@@ -29,7 +30,10 @@ export default class ColumnView extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <View style={this.style()}>
+            <View 
+                style={this.style()}
+                accessibilityLabel={this.props.accessibilityLabel} 
+            >
                 {this.props.children}
             </View>
         );

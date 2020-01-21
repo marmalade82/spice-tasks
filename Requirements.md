@@ -16,25 +16,25 @@ The dashboard is key because, to a first approximation, it allows users to quick
 - [ ] Check that dates are initialized with time to the correct value, if the user **is not allowed** to choose them. Should be midnight.
     - [ ] Due dates should be initialized to 11:59 PM of the date they are started on.
     - [ ] Start dates should be initialized to 12:00 AM of the date they are started on.
-    - [ ] bug in DueToday query -- due today should start at 12:00 AM of the day and end at the Due On time.
     - [ ] How can we make this timezone agnostic? If you change timezone so that you gain 3 hours extra, the due stuff should reflect that.
     - [ ] Prevent start date from being after due date
 - [ ] Tasks for Today, which is composed of
-    - [T] Active tasks that are actually due today
+    - [T] Active tasks that are actually due today or overdue
+        - [ ] if the parent is also due today or overdue, then the child does not show
     - [ ] Overdue active tasks
         - [T] Should appear in list
         - [ ] Icon should mark these as overdue
         - [ ] Titles should be highlighted in red
     - [T] Active goals that are due today or overdue
+        - [T] If the parent is also due today or overdue, then the child does not show
     - [ ] Overdue goals
         - [ ] Icon should mark these as overdue
         - [ ] Titles should be highlighted in red
-    - [ ] The tasks are stored under the parent goals/tasks if the relationship exists
-    - [ ] Goals should be easily distinguishable from tasks
+    - [ ] **Goals should be easily distinguishable from tasks**. Goals should have a greater dignity to them.
 - [ ] In Progress Tasks, which is composed of
     - [T] Active In Progress tasks (where the start has passed, but the due date is after today)
     - [T] Active In Progress goals (where the start has passed, but the due date is after today)
-    - [ ] The tasks are stored under the parent goals/tasks if the relationships exists
+    - [T] If the parent task/goal is also in the list, then the child does not show.
     - [ ] Group not just by goal, but also by date, since a given day could have a ton of tasks that make this list way too long.
 - [ ] Menu that provides access to other lists that are necessary for application domain functionality. Links to the following:
     - [T] Upcoming tasks
@@ -90,6 +90,7 @@ As you would expect with any Todo app, Tasks are ubiquitous within Spice. Whenev
         - [X] Title
         - [X] Start date
         - [X] Due date
+        - [ ] Percentage or fraction of completed subtasks.
     - [ ] User should have several modes available for interacting with the list.
         - [ ] View mode. In this mode, clicking on a task item takes you to the task itself.
         - [ ] Grab mode. In this mode, pressing and holding on a task item will pick it up. It can be moved up and down.
@@ -183,6 +184,7 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
         - [X] Due Date
         - [X] Type (for example, some goals are streaks)
         - [ ] Start Date (so they can know what's coming).
+        - [ ] Percentage or fraction of completed tasks or subgoals
     - [ ] User should be able to scroll through goals when they overrun the page.
 - [ ] Users should be able to sort on
     - [ ] Title

@@ -4,6 +4,7 @@ import ColumnReverseView from "src/Components/Basic/ColumnReverseView";
 import RowReverseView from "src/Components/Basic/RowReverseView";
 import Button from "src/Components/Basic/Button";
 import ViewPicker from "src/Components/Basic/ViewPicker";
+import AccordionList from "src/Components/Basic/AccordionList";
 
 export {
     ColumnView,
@@ -12,4 +13,5 @@ export {
     RowReverseView,
     Button,
     ViewPicker,
+    AccordionList,
 }

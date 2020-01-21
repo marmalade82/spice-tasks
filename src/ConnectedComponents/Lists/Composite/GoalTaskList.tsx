@@ -8,6 +8,7 @@ import withObservables from "@nozbe/with-observables";
 import TaskQuery from "src/Models/Task/TaskQuery";
 import { ConnectedGoalTaskItem} from "src/ConnectedComponents/Lists/Composite/GoalTaskItem";
 import { merge } from "rxjs";
+import { AccordionList } from "src/Components/Basic/Basic";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 
 interface Props {
@@ -19,7 +20,10 @@ interface Props {
 type Item = {
     id: string;
     model: Goal | Task;
+    children: (Goal | Task) []
 }
+
+type Segregated = { roots: (Goal | Task)[], rootsMap: {}, children: (Goal | Task)[], childrenMap: {}};
 
 /**
  * This list is responsible for rendering both tasks and goals together, organized as parent/children where possible
@@ -35,11 +39,11 @@ const AdaptedGoalTaskList: React.FunctionComponent<Props> = function(props: Prop
                 }}
                 destination={getDestination(item.model)}
                 navType={"push"}
-            >
-                    <ConnectedGoalTaskItem
-                        id={item.id}
-                        model={item.model}
-                    ></ConnectedGoalTaskItem>
+            > 
+                {   _renderItem(item)
+
+
+                }
             </ClickNavigation>
         );
 
@@ -50,24 +54,65 @@ const AdaptedGoalTaskList: React.FunctionComponent<Props> = function(props: Prop
                 return "Task";
             }
         }
+
+        function _renderItem(item: Item) {
+            return (
+                <ConnectedGoalTaskItem
+                    id={item.id}
+                    model={item.model}
+                ></ConnectedGoalTaskItem>
+            )
+        }
     }
 
     const makeItems = () => {
-        const tasks: Item[] = props.tasks.map((task: Task) => {
+
+        // Separate into models with no parents, and those with parents (children).
+        // We want to show all models with no parents, and all children whose parents aren't in the list.
+        const segregated: Segregated = (props.goals as (Goal | Task)[]).concat(props.tasks).reduce(segregate, { roots: [], rootsMap: {}, children: [], childrenMap: {}});
+        const validChildren = segregated.children.filter((child: Goal | Task) => {
+            return segregated.rootsMap[child.parentId] === undefined && segregated.childrenMap[child.parentId] === undefined;
+        });
+        const models: (Goal | Task)[] = [...segregated.roots, ...validChildren];
+
+        const items = models.map((model: Goal | Task) => {
             return {
-                id: task.id,
-                model: task,
+                id: model.id,
+                model: model,
+                children: [],
             }
         });
 
-        const goals: Item[] = props.goals.map((goal: Goal) => {
-            return {
-                id: goal.id,
-                model: goal,
-            }
-        });
+        return items;
 
-        return tasks.concat(goals);
+        function segregate(acc: Segregated, el: Goal | Task) {
+            if(el.parentId) {
+                // then it was a child
+                const newVal = {
+                    roots: acc.roots,
+                    rootsMap: acc.rootsMap,
+                    children: [...acc.children, el],
+                    childrenMap: {
+                        [el.id]: el,
+                        ...acc.childrenMap,
+                    }
+                }
+
+                return newVal;
+            } else {
+                // then it was a parent
+                const newVal = {
+                    roots: [...acc.roots, el],
+                    rootsMap: {
+                        [el.id]: el,
+                        ...acc.rootsMap,
+                    },
+                    children: acc.children,
+                    childrenMap: acc.childrenMap
+                }
+                return newVal;
+            }
+        }
     }
 
     return (
