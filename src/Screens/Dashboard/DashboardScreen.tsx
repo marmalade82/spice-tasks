@@ -50,32 +50,14 @@ export default class DashboardScreen extends React.Component<Props, State> {
                     );
                 }
             },
-            {   title: "Menu",
+            {   title: "Upcoming",
                 render: () => {
                     return (
-                        <ColumnView style={[{justifyContent: "flex-start"}]}>
-                            <NavigationButton
-                                navigation={this.props.navigation}
-                                title={"Upcoming"}
-                                parameters={{}}
-                                destination={"Upcoming"}
-                                accessibilityLabel={"upcoming-tasks-button"}
-                            ></NavigationButton>
-                            <NavigationButton
-                                navigation={this.props.navigation}
-                                title={"Rewards"}
-                                parameters={{}}
-                                destination={"Rewards"}
-                                accessibilityLabel={"reward-list-button"}
-                            ></NavigationButton>
-                            <NavigationButton
-                                navigation={this.props.navigation}
-                                title={"Penalties"}
-                                parameters={{}}
-                                destination={"Penalties"}
-                                accessibilityLabel={"penalty-list-button"}
-                            ></NavigationButton>
-                        </ColumnView>
+                        <ConnectedGoalTaskList
+                            navigation={this.props.navigation}
+                            type={"notStartedActive"}
+                        >
+                        </ConnectedGoalTaskList>
                     )
                 }
             }
@@ -84,16 +66,51 @@ export default class DashboardScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
+            // Layout here approximates golden ratio 1.6 when comparing the list to the header + tabs
             <ColumnView style={[]}>
-                <ViewPicker
-                    data={false}
-                    onDataChange={() => {}}
-                    accessibilityLabel={"lists"}
-                    views={this.renderListViews()}
-                    pickerHeight={60}
-                >
+                <ColumnView style={{
+                    flex: 3.7,
+                    backgroundColor: "lightyellow",
+                    justifyContent: "flex-start",
+                }}>
+                    <NavigationButton
+                        navigation={this.props.navigation}
+                        title={"Upcoming"}
+                        parameters={{}}
+                        destination={"Upcoming"}
+                        accessibilityLabel={"upcoming-tasks-button"}
+                    ></NavigationButton>
+                    <NavigationButton
+                        navigation={this.props.navigation}
+                        title={"Rewards"}
+                        parameters={{}}
+                        destination={"Rewards"}
+                        accessibilityLabel={"reward-list-button"}
+                    ></NavigationButton>
+                    <NavigationButton
+                        navigation={this.props.navigation}
+                        title={"Penalties"}
+                        parameters={{}}
+                        destination={"Penalties"}
+                        accessibilityLabel={"penalty-list-button"}
+                    ></NavigationButton>
+                </ColumnView>
 
-                </ViewPicker>
+                <ColumnView style={{
+                    flex: 9.3,
+                    backgroundColor: "lightgreen",
+                }}>
+                    <ViewPicker
+                        data={false}
+                        onDataChange={() => {}}
+                        accessibilityLabel={"lists"}
+                        views={this.renderListViews()}
+                        pickerFlex={1.3}
+                        bodyFlex={8}
+                    >
+
+                    </ViewPicker>
+                </ColumnView>
             </ColumnView>
         );
     }

@@ -40,10 +40,7 @@ const AdaptedGoalTaskList: React.FunctionComponent<Props> = function(props: Prop
                 destination={getDestination(item.model)}
                 navType={"push"}
             > 
-                {   _renderItem(item)
-
-
-                }
+                {   _renderItem(item)  }
             </ClickNavigation>
         );
 
@@ -126,7 +123,7 @@ const AdaptedGoalTaskList: React.FunctionComponent<Props> = function(props: Prop
 
 interface InputProps {
     navigation: any
-    type: "dueAndOverdueActive" | "startedButNotDueActive"
+    type: "dueAndOverdueActive" | "startedButNotDueActive" | "notStartedActive"
 }
 
 const enhance = withObservables(['type'], (props: InputProps) => {
@@ -139,6 +136,11 @@ const enhance = withObservables(['type'], (props: InputProps) => {
         return {
             tasks: new TaskQuery().queryActiveAndStartedButNotDue().observe(),
             goals: new GoalQuery().queryActiveAndStartedButNotDue().observe(),
+        }
+    } else if (props.type === "notStartedActive") {
+        return {
+            tasks: new TaskQuery().queryActiveButNotStarted().observe(),
+            goals: new GoalQuery().queryActiveButNotStarted().observe(),
         }
     } else {
         return {

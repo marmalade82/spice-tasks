@@ -55,6 +55,12 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
         )
     }
 
+    queryActiveButNotStarted = () => {
+        return this.store().query(
+            ...[...Conditions.active(), ...Conditions.notStarted()]
+        );
+    }
+
     queryActive = () => {
         return this.store().query(
             ...Conditions.active()

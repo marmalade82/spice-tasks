@@ -2,7 +2,7 @@ import React from "react";
 
 import ColumnView from "src/Components/Basic/ColumnView";
 import RowView from "src/Components/Basic/RowView";
-import { Text, TouchableHighlight, TextStyle, StyleProp } from "react-native";
+import { Text, TouchableHighlight, TextStyle, StyleProp, ViewStyle } from "react-native";
 import DataComponent from "src/Components/base/DataComponent";
 import Style from "src/Style/Style";
 import { bindCallback } from "rxjs";
@@ -10,6 +10,8 @@ import { bindCallback } from "rxjs";
 interface Props {
     views: ViewProps[]
     pickerHeight?: number | string;
+    pickerFlex?: number;
+    bodyFlex?: number;
     data: State | false
     onDataChange: (d: State) => void;
     accessibilityLabel: string;
@@ -41,10 +43,22 @@ export default class ViewPicker extends DataComponent<Props, State, State> {
     }
 
     pickerStyle = () => {
-        if(this.props.pickerHeight) {
+        if(this.props.pickerFlex) {
+            return {
+                flex: this.props.pickerFlex
+            }
+        } else if(this.props.pickerHeight) {
             return {
                 flex: 0,
                 height: this.props.pickerHeight,
+            }
+        }
+    }
+
+    bodyStyle = () => {
+        if(this.props.bodyFlex) {
+            return {
+                flex: this.props.bodyFlex
             }
         }
     }
@@ -63,6 +77,16 @@ export default class ViewPicker extends DataComponent<Props, State, State> {
 
     }
 
+    titleContainerStyle = (index: number): StyleProp<ViewStyle> => {
+        if(index === this.data().currentView) {
+            return {
+                backgroundColor: "lightgray"
+            };
+        } else {
+        }
+
+    }
+
     render = () => {
         return (
             <ColumnView style={{}}
@@ -71,7 +95,7 @@ export default class ViewPicker extends DataComponent<Props, State, State> {
                 <RowView style={[ Style.redBg, this.pickerStyle()]}>
                     {this.renderPicker()}
                 </RowView>
-                <RowView style={{}}>
+                <RowView style={this.bodyStyle()}>
                     {this.renderInjectedViews()}
                 </RowView>
             </ColumnView>
@@ -91,7 +115,7 @@ export default class ViewPicker extends DataComponent<Props, State, State> {
                     style={{flex: 1}}
                     key={index}
                 >
-                    <ColumnView style={[ { alignItems: "center" }]}>
+                    <ColumnView style={[ { alignItems: "center" }, this.titleContainerStyle(index)]}>
                         <Text style={[this.titleStyle(index)]}>{viewProps.title}</Text>
                     </ColumnView>
                 </TouchableHighlight>

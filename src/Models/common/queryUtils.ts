@@ -76,6 +76,12 @@ function notDueConditions() {
     ]
 }
 
+function notStartedConditions() {
+    return [
+        Q.where(name.STARTS_ON, Q.gt(new MyDate().toDate().valueOf())),
+    ]
+}
+
 export const Conditions = {
     active: activeConditions,
     activeChild: activeChildConditions,
@@ -88,6 +94,7 @@ export const Conditions = {
     overdue: overdueConditions,
     started: startedConditions,
     notDue: notDueConditions,
+    notStarted: notStartedConditions,
 }
 
 

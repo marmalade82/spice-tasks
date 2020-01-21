@@ -639,9 +639,88 @@ describe("Second view: In Progress", () => {
     })
 })
 
-test("User can switch views to Third View and see a list of other less-commonly-used options", async () => {
-    await setup()
+describe("Third view", () => {
+    test("User can switch views to Third View and see upcoming goals and tasks", async () => {
+        await setup()
 
+        {
+            const { getByLabelText, queryAllByLabelText } = render(
+                <DashboardScreen navigation={makeNavigation({})}></DashboardScreen>
+            );
+
+            const viewThree = getByLabelText("input-view-3-lists");
+            fireEvent.press(viewThree)
+            await wait(() => {
+                const task = queryAllByLabelText("task-list-item");
+                expect(task.length).toEqual(1);
+            });
+        }
+
+        {
+            const { getByLabelText, queryAllByLabelText } = render(
+                <DashboardScreen navigation={makeNavigation({})}></DashboardScreen>
+            );
+
+            const viewThree = getByLabelText("input-view-3-lists");
+            fireEvent.press(viewThree)
+            await wait(() => {
+                const goal = queryAllByLabelText("goal-list-item");
+                expect(goal.length).toEqual(1);
+            });
+        }
+
+
+        await teardown() 
+
+        async function setup() {
+            await DB.get().action(async () => {
+                await createGoals({
+                    active: true,
+                    title: "Upcoming goal",
+                    startDate: new MyDate().add(1, "days").toDate(),
+                    dueDate: new MyDate().add(2, "days").toDate()
+                }, 1);
+
+                await createTasks({
+                    active: true,
+                    title: "Upcoming task",
+                    startDate: new MyDate().add(1, "days").toDate(),
+                    dueDate: new MyDate().add(2, "days").toDate()
+                }, 1);
+
+                await createGoals({
+                    active: true,
+                    title: "In progress goal",
+                    startDate: new MyDate().subtract(1, "days").toDate(),
+                    dueDate: new MyDate().add(1, "days").toDate(),
+
+                }, 3)
+
+                await createTasks({
+                    active: true,
+                    title: "Overdue task",
+                    startDate: new MyDate().subtract(2, "days").toDate(),
+                    dueDate: new MyDate().subtract(1, "days").toDate(),
+
+                }, 3)
+
+                await createTasks({
+                    active: false,
+                    title: "Inactive upcoming task",
+                    startDate: new MyDate().add(1, "days").toDate(),
+                    dueDate: new MyDate().add(2, "days").toDate()
+                }, 3)
+            });
+        }
+
+        async function teardown() {
+            await destroyAllIn("goals");
+            await destroyAllIn("tasks");
+        }
+    }, 10000);
+})
+
+test("User can access menu", async () => {
     const { getByLabelText } = render(
         <DashboardScreen navigation={makeNavigation({})}></DashboardScreen>
     );
