@@ -17,7 +17,7 @@ export default class RewardQuery extends ModelQuery<Reward, IReward> {
             title: "Default Task",
             details: "",
             expireDate: new Date(),
-        }
+        } as const;
     }
 }
 

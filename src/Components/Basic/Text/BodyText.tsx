@@ -16,7 +16,7 @@ const localStyle = StyleSheet.create({
     defaultText: {
         fontFamily: "OpenSans-Regular",
         color: "black",
-        fontSize: 16,
+        fontSize: 17,
     }
 });
 

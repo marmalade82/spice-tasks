@@ -4,6 +4,7 @@ import SQLiteAdapter from "@nozbe/watermelondb/adapters/sqlite";
 import Goal from "src/Models/Goal/Goal";
 import Task from "src/Models/Task/Task";
 import Reward from "src/Models/Reward/Reward";
+import EarnedReward from "src/Models/Reward/EarnedReward";
 
 class DB {
     static database: Database | undefined;
@@ -18,7 +19,7 @@ class DB {
 
             DB.database = new Database({
                 adapter: adapter,
-                modelClasses: [Goal, Task, Reward],
+                modelClasses: [Goal, Task, Reward, EarnedReward],
                 actionsEnabled: true,
             });
 

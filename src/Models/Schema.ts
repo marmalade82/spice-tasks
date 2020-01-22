@@ -2,13 +2,15 @@ import { appSchema, tableSchema, ColumnSchema, ColumnType, ColumnName, TableSche
 import GoalSchema from "src/Models/Goal/GoalSchema";
 import TaskSchema from 'src/Models/Task/TaskSchema';
 import RewardSchema from 'src/Models/Reward/RewardSchema';
+import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
 
 const Schema = appSchema({
-    version: 4,
+    version: 1,
     tables: [
         generateTableSchema(GoalSchema),
         generateTableSchema(TaskSchema),
         generateTableSchema(RewardSchema),
+        generateTableSchema(EarnedRewardSchema),
     ]
 });
 

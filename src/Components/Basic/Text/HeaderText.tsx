@@ -16,6 +16,7 @@ const localStyle = StyleSheet.create({
     headerDefault: {
         fontFamily: "OpenSans-Regular",
         color: "black",
+        fontSize: 16,
     }
 })
 
@@ -35,13 +36,16 @@ export default class HeaderText extends React.Component<Props, State> {
                 break;
             case 3: {
                 return {
-                    fontSize: 16, 
-                    fontFamily: "OpenSans-SemiBold"
+                    fontSize: 17, 
+                    fontFamily: "OpenSans-SemiBold",
                 }
             }
                 break;
             case 4: {
-                this.props.level
+                return {
+                    fontSize: 17,
+                    fontFamily: "OpenSans-Italic",
+                }
             }
                 break;
             case 5: {

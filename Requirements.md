@@ -302,6 +302,7 @@ Rewards typically come with the following data items:
     - [X] Coin (50-50 chance of a chosen reward or a chosen penalty)
     - [X] Specific ( Choose the reward beforehand. Prevents deletion of the reward)
     - [X] Random (Randomly chooses from all available rewards. Small chance of penalty instead)
+    - [ ] Still need to **typeset** the line spacing correctly.
 
 ## Earned Rewards (ER for short)
 

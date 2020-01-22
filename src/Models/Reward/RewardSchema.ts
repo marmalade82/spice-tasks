@@ -1,6 +1,5 @@
 
 import { ColumnType } from "@nozbe/watermelondb"
-import Rewards from "src/Components/Lists/Rewards"
 
 const RewardName = {
     TITLE: 'title',
