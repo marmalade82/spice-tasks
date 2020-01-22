@@ -5,6 +5,9 @@ import RowReverseView from "src/Components/Basic/RowReverseView";
 import Button from "src/Components/Basic/Button";
 import ViewPicker from "src/Components/Basic/ViewPicker";
 import AccordionList from "src/Components/Basic/AccordionList";
+import FreeTextView from "src/Components/Basic/Text/FreeTextView";
+import HeaderText from "src/Components/Basic/Text/HeaderText";
+import BodyText from "src/Components/Basic/Text/BodyText";
 
 export {
     ColumnView,
@@ -14,4 +17,7 @@ export {
     Button,
     ViewPicker,
     AccordionList,
+    FreeTextView,
+    HeaderText,
+    BodyText,
 }

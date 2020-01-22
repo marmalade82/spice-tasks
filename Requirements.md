@@ -294,6 +294,15 @@ Rewards typically come with the following data items:
     - [ ] If Active, Retire button should be available if user wants to retire the reward.
     - [ ] If Inactive, Unretire button should be available if user wants to unretire the reward.
 
+### User Stories - Viewing Reward Info
+
+- [X] User should be able to view all reward types and read their descriptions
+    - [X] Dice (2 six-sided, one number is a penalty)
+    - [X] Lootbox (3 choices of loot, all are rewards)
+    - [X] Coin (50-50 chance of a chosen reward or a chosen penalty)
+    - [X] Specific ( Choose the reward beforehand. Prevents deletion of the reward)
+    - [X] Random (Randomly chooses from all available rewards. Small chance of penalty instead)
+
 ## Earned Rewards (ER for short)
 
 When a goal is completed, the associated Reward is earned, if any. The user can then choose to claim these at any time. Ideally, these earned Rewards would have an attached expiration date, so that the user would be forced to take advantage of one of these. But this would be somewhat complicated to make into a good user experience -- most users will want to have complete freedom when it comes to what they've earned. So for now, no implementation of expiration for Earned Rewards will be implemented.
