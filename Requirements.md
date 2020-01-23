@@ -312,18 +312,34 @@ When a goal is completed, the associated Reward is earned, if any. The user can 
 
 - [ ] User should be able to view all ER
     - [ ] The following attributes should be available at a glance:
-        - [ ] Title
+        - [ ] Type
+        - [ ] Icon
+        - [ ] Earned Date
         - [ ] Tier
     - [ ] ER should be filterable
-        - [ ] Unclaimed (that is, not yet used)
+        - [ ] Unclaimed (that is, not yet opened)
         - [ ] Claimed
 
 - [ ] User should be able to view one particular ER
     - [ ] The following details should be available:
-        - [ ] Title
+        - [ ] Type
+        - [ ] Icon
+        - [ ] Earned Date
+        - [ ] Source Goal
         - [ ] Tier
-        - [ ] Details
-        - [ ] Goal it was earned from
+
+### User Stories - Claiming an ER
+
+- [ ] From the view of a particular ER, the user should be able to
+    - [ ] View a "Claim" button for claiming the ER
+    - [ ] Click the "Claim" button, which should take them to a screen based on the type of earned reward:
+        - [ ] Two Dice
+            - [ ] User should be able to view which numbers correspond to which rewards.
+            - [ ] User should be able to click "Refresh" to refresh the selection of rewards per number.
+            - [ ] User should be able to roll one die, and then the other. Once a die is rolled, the "Refresh" button is disabled.
+            - [ ] After the second die is rolled 
+                - [ ] the sum of the two rolls, and the corresponding reward/penalty
+                - [ ] The user is taken back to the list of earned rewards.
 
 ### User Stories - Adding ER
 

@@ -8,6 +8,7 @@ import AccordionList from "src/Components/Basic/AccordionList";
 import FreeTextView from "src/Components/Basic/Text/FreeTextView";
 import HeaderText from "src/Components/Basic/Text/HeaderText";
 import BodyText from "src/Components/Basic/Text/BodyText";
+import Image from "src/Components/Basic/Image";
 
 export {
     ColumnView,
@@ -20,4 +21,5 @@ export {
     FreeTextView,
     HeaderText,
     BodyText,
+    Image,
 }

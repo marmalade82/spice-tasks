@@ -14,6 +14,7 @@ import AddRewardScreen from "src/Screens/Rewards/AddRewardScreen";
 import TaskScreen from "src/Screens/Tasks/TaskScreen";
 import DashboardScreen from "src/Screens/Dashboard/DashboardScreen";
 import RewardOptionsScreen from "src/Screens/Rewards/RewardOptionsScreen";
+import EarnedRewardScreen from "src/Screens/Rewards/EarnedRewardScreen";
 import TestScreen from "src/Screens/TestScreen";
 
 export {
@@ -31,5 +32,6 @@ export {
     TaskScreen as Task,
     DashboardScreen as Dashboard,
     RewardOptionsScreen as RewardOptions,
+    EarnedRewardScreen as EarnedReward,
     TestScreen as Test,
 }

@@ -1,8 +1,8 @@
 import React from "react";
-import { Button, Text } from "react-native";
-import { ColumnView, RowView } from "src/Components/Basic/Basic";
+import { Button, Text, View, FlatList } from "react-native";
+import { ColumnView, RowView, Image, HeaderText, BodyText } from "src/Components/Basic/Basic";
 import Style from "src/Style/Style";
-import { AccordionList } from "src/Components/Basic/Basic";
+import EarnedRewardSummary from "src/Components/Summaries/EarnedRewardSummary";
 
 interface Props {
     navigation: any;
@@ -10,14 +10,6 @@ interface Props {
 
 interface State {}
 
-const items = [
-    {   id: "123"
-    ,   title: "first" 
-    },
-    {   id: "456"
-    ,   title: "second"
-    }
-]
 
 export default class TestScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
@@ -26,52 +18,109 @@ export default class TestScreen extends React.Component<Props, State> {
         }
     }
 
-    renderHeader = () => {
-        return (
-            <ColumnView style={{
-            }}>
-                <RowView style={[Style.yellowBg, {
-                    alignItems: "center"
-                }]}>
-                    <Text>Header</Text>
-                </RowView>
-            </ColumnView>
-        );
-    }
-
-    renderItem = (item: {id: string, title: string}) => {
-        return (
-            <RowView style={[Style.redBg, {
-                height: 80,
-            }]}>
-                <Text>{item.title}</Text>
-            </RowView>
-        );
-    }
-
     render = () => {
         return (
             <ColumnView style={{
                 justifyContent: "flex-start"
             }}>
-                <AccordionList
-                    renderHeader={this.renderHeader}
-                    items={items} 
-                    renderItem={this.renderItem}
-                    data={false}
-                    onDataChange={() => {}}
-                    headerStyle={{
-                        flex: 0,
-                        height: 60,
-                    }}
-                    bodyStyle={[Style.blueBg, {
-                        //flex: 0,
-                        //height: 400,
-                    }]}
-                    accessibilityLabel={"test accordion"}
+                <EarnedRewardSummary 
+                    style={{ flex: 9 }}
+                    rewardType={"two_dice"}
+                    goalName={"Go to the gym every day for a week"}
+                    earnedDate={new Date()}
                 >
+                </EarnedRewardSummary>
+                <RowView style={{
+                    flex: 13
+                }}>
+                    <ColumnView style={{}}>
+                        <FlatList
+                            style={{
+                                width: "100%",
+                                backgroundColor: "pink"
+                            }}
+                            data={[
+                                { key: "1", text: "Goal 1", number: "1"},
+                                { key: "2", text: "Goal 2", number: "2"},
+                                { key: "3", text: "Goal 3", number: "3"},
+                                { key: "4", text: "Goal 4", number: "4"},
+                                { key: "5", text: "Goal 5", number: "5"},
+                                { key: "6", text: "Goal 6", number: "6"},
+                                { key: "7", text: "Goal 7", number: "7"},
+                                { key: "8", text: "Goal 8", number: "8"},
+                                { key: "9", text: "Goal 9", number: "9"},
+                                { key: "10", text: "Goal 10", number: "10"},
+                                { key: "11", text: "Goal 11", number: "11"},
+                                { key: "12", text: "Goal 12", number: "12"},
+                            ] } 
+                            renderItem={({item}) => {
+                                return (
+                                    <ColumnView style={{
+                                        backgroundColor: "purple",
+                                    }}>
+                                        <RowView style={{
+                                            backgroundColor: "brown"
+                                        }}>
+                                            <ColumnView style={{
+                                                backgroundColor: "pink",
+                                                flex: 0,
+                                                width: 80,
+                                                alignItems: "center",
+                                            }}>
+                                                <View style={{
+                                                    width: 60,
+                                                    height: 60,
+                                                    borderRadius: 30,
+                                                    backgroundColor: "lightgreen",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                }}>
+                                                    <BodyText style={{}}>{item.number}</BodyText>
+                                                </View>
+                                            </ColumnView>
+                                            <ColumnView style={{
+                                                alignItems: "flex-start",
+                                            }}>
+                                                <BodyText style={{}}>{item.text}</BodyText>
+                                            </ColumnView>
+                                        </RowView>
+                                    </ColumnView>
+                                );
+                            }}
+                        >
 
-                </AccordionList>
+                        </FlatList>
+                    </ColumnView>
+                </RowView>
+                <RowView style={[Style.greenBg, {
+                    flex: 3
+                }]}>
+                    <ColumnView style={{
+                        alignItems:"center"
+                    }}>
+                        <Button 
+                            title={"Prev"}
+                            onPress={() => {}}
+                        ></Button>
+                    </ColumnView>
+
+                    <ColumnView
+                        style={{
+                            alignItems:"center"
+                        }}
+                    >
+                        <Button title={"Refresh"} onPress={() => {}}></Button>
+                    </ColumnView>
+
+                    <ColumnView style={{
+                        alignItems: "center"
+                    }}>
+                        <Button 
+                            title={"Next"}
+                            onPress={() => {}}
+                        ></Button>
+                    </ColumnView>
+                </RowView>
             </ColumnView>
         );
     }

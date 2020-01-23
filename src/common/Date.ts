@@ -7,10 +7,17 @@ type timeUnit = "seconds" | "minutes" | "hours" | "days" | "weeks";
 
 export default class MyDate {
     m: Moment;
-    constructor() {
-        this.m = moment() // initialize moment to now
+    constructor(date?: Date) {
+        if(date) {
+            this.m = moment(date);
+        } else {
+            this.m = moment() // initialize moment to now
+        }
     }
 
+    format = (format: string) => {
+        return this.m.format(format);
+    }
 
     subtract = (n: number, val: timeUnit): this => {
         this.m = this.m.subtract(n, val);

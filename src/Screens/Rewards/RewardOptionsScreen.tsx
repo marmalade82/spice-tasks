@@ -26,7 +26,7 @@ export default class RewardListScreen extends React.Component<Props> {
                 <ScrollView>
                     <ColumnView style={[localStyle.container]}>
                         <FreeTextView style={{}}>
-                            <HeaderText level={3} style={{}}>Two Dice</HeaderText>
+                            <HeaderText level={3} style={{}}>Dice Roll</HeaderText>
                             <BodyText style={{}}>
                                 Randomly selects from nine rewards and one penalty.
                                 Roll 2 or 12 for the penalty, or
