@@ -5,6 +5,8 @@ import LokiJSAdapter from "@nozbe/watermelondb/adapters/lokijs";
 import Goal from "src/Models/Goal/Goal";
 import Task from "src/Models/Task/Task";
 import Reward from "src/Models/Reward/Reward";
+import EarnedReward from "src/Models/Reward/EarnedReward";
+import ClaimedReward from "src/Models/Reward/ClaimedReward";
 
 class DB {
     static database: Database | undefined;
@@ -19,7 +21,7 @@ class DB {
 
             DB.database = new Database({
                 adapter: adapter,
-                modelClasses: [Goal, Task, Reward],
+                modelClasses: [Goal, Task, Reward, EarnedReward, ClaimedReward],
                 actionsEnabled: true,
             });
 

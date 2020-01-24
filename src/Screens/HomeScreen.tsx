@@ -31,6 +31,7 @@ export default class HomeScreen extends React.Component<Props, State> {
         this.state = {
             screens: [
                 'Dashboard', 'Goal', "Tasks", "Task", "Rewards", "Test", "RewardOptions", "EarnedReward",
+                'EarnedRewards',
             ]
         }
     }

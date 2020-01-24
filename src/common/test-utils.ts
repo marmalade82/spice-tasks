@@ -4,6 +4,8 @@ import DB from "src/Models/Database";
 import { Model } from "@nozbe/watermelondb";
 import { Task, ITask } from "src/Models/Task/Task";
 import { Goal, IGoal } from "src/Models/Goal/Goal";
+import EarnedReward, { IEarnedReward } from "src/Models/Reward/EarnedReward";
+import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
 
 function makeNavigation(params: {}) {
     const navigation = {
@@ -59,9 +61,32 @@ async function createGoals(data: Partial<IGoal>, count: number) {
     return goals;
 }
 
+async function createEarnedRewards(data: Partial<IEarnedReward>, count: number) {
+    /*
+    let earned: EarnedReward[] = [];
+    for(let i = 0; i < count; i++) {
+        let earn = await _create('earnedrewards', data) as EarnedReward;
+        earned.push(earn);
+    }
+    return earned;
+    */
+    return (await _createModels(EarnedRewardSchema.table, data, count)) as EarnedReward[];
+
+}
+
+async function _createModels<M extends Model>(table: string, data: any, count: number) {
+    let models: M[] = [];
+    for(let i = 0; i < count; i++) {
+        let model = await _create(table, data) as M;
+        models.push(model);
+    }
+    return models;
+}
+
 export {
     makeNavigation,
     destroyAllIn,
     createTasks,
     createGoals,
+    createEarnedRewards,
 }

@@ -18,7 +18,7 @@ const EarnedRewardType: Record<keyof typeof EarnedRewardName, ColumnType> = {
 const EarnedRewardSchema = {
     name: EarnedRewardName,
     type: EarnedRewardType,
-    table: "earned_rewards",
+    table: "earnedrewards",
 }
 
 export default EarnedRewardSchema;

@@ -6,7 +6,7 @@ import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
 import ClaimedRewardSchema from "src/Models/Reward/ClaimedRewardSchema";
 
 const Schema = appSchema({
-    version: 1,
+    version: 2,
     tables: [
         generateTableSchema(GoalSchema),
         generateTableSchema(TaskSchema),

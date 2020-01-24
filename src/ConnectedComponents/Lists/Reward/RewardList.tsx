@@ -8,7 +8,7 @@ import withObservables from "@nozbe/with-observables";
 import RewardQuery from "src/Models/Reward/RewardQuery";
 import List from "src/Components/Lists/base/List";
 import ClickNavigation from "src/Components/Navigation/ClickNavigation";
-import { ConnectedRewardListItem } from "./RewardListItem";
+import { ConnectedRewardListItem } from "src/ConnectedComponents/Lists/Reward/RewardListItem";
 
 interface Props {
     rewards: Reward[];
