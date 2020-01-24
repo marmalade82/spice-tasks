@@ -28,8 +28,8 @@ export default class RewardListScreen extends React.Component<Props> {
                         <FreeTextView style={{}}>
                             <HeaderText level={3} style={{}}>Dice Roll</HeaderText>
                             <BodyText style={{}}>
-                                Randomly selects from nine rewards and one penalty.
-                                Roll 2 or 12 for the penalty, or
+                                Randomly selects from nine rewards and two penalties.
+                                Roll 2 or 12 for a penalty, or
                                 3 through 11 for one of the rewards.
                             </BodyText>
                         </FreeTextView>

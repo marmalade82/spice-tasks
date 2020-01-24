@@ -1,8 +1,15 @@
 import React from "react";
-import { Button, Text, View, FlatList } from "react-native";
-import { ColumnView, RowView, Image, HeaderText, BodyText } from "src/Components/Basic/Basic";
+import { Button, Text, View, FlatList} from "react-native";
+import { 
+    ColumnView, RowView, Image, 
+    HeaderText, BodyText, ViewWizard 
+} from "src/Components/Basic/Basic";
+import {
+    Die 
+} from "src/Components/Images/Images";
 import Style from "src/Style/Style";
 import EarnedRewardSummary from "src/Components/Summaries/EarnedRewardSummary";
+import TwoDiceRoll from "src/Components/EarnedRewards/TwoDice/TwoDiceRoll";
 
 interface Props {
     navigation: any;
@@ -30,9 +37,28 @@ export default class TestScreen extends React.Component<Props, State> {
                     earnedDate={new Date()}
                 >
                 </EarnedRewardSummary>
-                <RowView style={{
-                    flex: 13
-                }}>
+                <ViewWizard
+                    accessibilityLabel={"test view wizard"}
+                    style={{
+                        flex: 14
+                    }}
+                    allowSwiping={false}
+                    useButtons={true}
+                    wizardPlacement={"footer"}
+                    data={false}
+                    onDataChange={() => {}}
+                    views={this.renderViews()}
+                >
+
+                </ViewWizard>
+            </ColumnView>
+        );
+    }
+
+    renderViews = () => {
+        return [
+            () => {
+                return (
                     <ColumnView style={{}}>
                         <FlatList
                             style={{
@@ -40,7 +66,6 @@ export default class TestScreen extends React.Component<Props, State> {
                                 backgroundColor: "pink"
                             }}
                             data={[
-                                { key: "1", text: "Goal 1", number: "1"},
                                 { key: "2", text: "Goal 2", number: "2"},
                                 { key: "3", text: "Goal 3", number: "3"},
                                 { key: "4", text: "Goal 4", number: "4"},
@@ -91,37 +116,18 @@ export default class TestScreen extends React.Component<Props, State> {
 
                         </FlatList>
                     </ColumnView>
-                </RowView>
-                <RowView style={[Style.greenBg, {
-                    flex: 3
-                }]}>
-                    <ColumnView style={{
-                        alignItems:"center"
-                    }}>
-                        <Button 
-                            title={"Prev"}
-                            onPress={() => {}}
-                        ></Button>
-                    </ColumnView>
-
-                    <ColumnView
-                        style={{
-                            alignItems:"center"
-                        }}
-                    >
-                        <Button title={"Refresh"} onPress={() => {}}></Button>
-                    </ColumnView>
-
-                    <ColumnView style={{
-                        alignItems: "center"
-                    }}>
-                        <Button 
-                            title={"Next"}
-                            onPress={() => {}}
-                        ></Button>
-                    </ColumnView>
-                </RowView>
-            </ColumnView>
-        );
+                );
+            },
+            () => {
+                return (
+                    <TwoDiceRoll></TwoDiceRoll>
+                )
+            },
+            () => {
+                return (
+                    <ColumnView style={{}}><Text>Hi 3</Text></ColumnView>
+                )
+            },
+        ];
     }
 }

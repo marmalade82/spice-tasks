@@ -9,6 +9,7 @@ import FreeTextView from "src/Components/Basic/Text/FreeTextView";
 import HeaderText from "src/Components/Basic/Text/HeaderText";
 import BodyText from "src/Components/Basic/Text/BodyText";
 import Image from "src/Components/Basic/Image";
+import ViewWizard from "src/Components/Basic/ViewWizard";
 
 export {
     ColumnView,
@@ -22,4 +23,5 @@ export {
     HeaderText,
     BodyText,
     Image,
+    ViewWizard,
 }
