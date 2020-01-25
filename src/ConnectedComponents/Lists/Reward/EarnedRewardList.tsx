@@ -24,8 +24,8 @@ const AdaptedEarnedRewardList: React.FunctionComponent<Props> = (props: Props) =
                 parameters={{
                     id: item.id
                 }}
-                destination={"AddEarnedReward"}
-                navType={"push"}
+                destination={"EarnedReward"}
+                navType={"navigate"}
             >
                 <ConnectedEarnedRewardListItem
                     earned={item}

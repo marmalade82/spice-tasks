@@ -25,7 +25,7 @@ export default class EarnedRewardListScreen extends React.Component<Props, State
 
     render = () => {
         return (
-            <ColumnView style={{}}>
+            <ColumnView style={{ alignItems: "center" }}>
                 <ConnectedEarnedRewardList
                     navigation={this.props.navigation}
                 >

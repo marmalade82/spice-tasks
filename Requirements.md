@@ -236,7 +236,7 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
         - [T] When clicked, Complete button should mark task as Complete and Inactive
         - [T] When clicked, Complete button should mark subtasks as Complete and Inactive
         - [ ] When clicked, Complete button should generate corresponding reward
-            - [ ] If reward was Two Dice, a Two Dice earned reward should be generated.
+            - [T] If reward was Two Dice, a Two Dice earned reward should be generated.
             - [ ] If reward was Specific reward, a Specific earned reward should be generated.
     - [T] User should be able to see the past, the present, and the future of the goal:
         - [T] User should be able to view currently active tasks in their own view

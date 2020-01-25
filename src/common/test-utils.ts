@@ -6,6 +6,10 @@ import { Task, ITask } from "src/Models/Task/Task";
 import { Goal, IGoal } from "src/Models/Goal/Goal";
 import EarnedReward, { IEarnedReward } from "src/Models/Reward/EarnedReward";
 import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
+import GoalSchema from "src/Models/Goal/GoalSchema";
+import TaskSchema from "src/Models/Task/TaskSchema";
+import RewardSchema from "src/Models/Reward/RewardSchema";
+import ClaimedReward from "src/Models/Reward/ClaimedReward";
 
 function makeNavigation(params: {}) {
     const navigation = {
@@ -62,14 +66,6 @@ async function createGoals(data: Partial<IGoal>, count: number) {
 }
 
 async function createEarnedRewards(data: Partial<IEarnedReward>, count: number) {
-    /*
-    let earned: EarnedReward[] = [];
-    for(let i = 0; i < count; i++) {
-        let earn = await _create('earnedrewards', data) as EarnedReward;
-        earned.push(earn);
-    }
-    return earned;
-    */
     return (await _createModels(EarnedRewardSchema.table, data, count)) as EarnedReward[];
 
 }
@@ -83,9 +79,21 @@ async function _createModels<M extends Model>(table: string, data: any, count: n
     return models;
 }
 
+async function destroyAll() {
+    const tables: string[] = [
+        GoalSchema.table, TaskSchema.table, RewardSchema.table,
+        EarnedRewardSchema.table, ClaimedReward.table,
+    ];
+    const destroys = tables.map((name: string) => {
+        return destroyAllIn(name);
+    })
+    await Promise.all(destroys);
+}
+
 export {
     makeNavigation,
     destroyAllIn,
+    destroyAll,
     createTasks,
     createGoals,
     createEarnedRewards,
