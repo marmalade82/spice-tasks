@@ -6,6 +6,10 @@ import { Task, ITask } from "src/Models/Task/Task";
 import ModelQuery from "src/Models/base/Query";
 import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils";
 import { Q, Database, Model } from "@nozbe/watermelondb";
+import { GoalType } from "src/Models/Goal/GoalLogic";
+import { Rewards } from "src/Models/Reward/RewardLogic";
+import EarnedRewardQuery from "../Reward/EarnedRewardQuery";
+import MyDate from "src/common/Date";
 
 class GoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
@@ -15,7 +19,7 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
     default = () => {
         const Default = {
             title: 'Default Goal',
-            goalType: 'normal',
+            goalType: GoalType.NORMAL,
             startDate: new Date(),
             dueDate: new Date(),
             streakMinimum: 2,
@@ -26,6 +30,7 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
             parentId: "",
             active: true,
             state: "open",
+            rewardType: Rewards.NONE,
         } as const;
         return Default;
     }
@@ -124,4 +129,32 @@ export {
     GoalQuery,
     Goal,
     IGoal,
+}
+
+export class GoalLogic {
+    valid: boolean;
+    id: string;
+    constructor(id: string) {
+        this.valid = true;
+        this.id = id;
+    }
+
+    complete = async () => {
+        await new GoalQuery().completeGoalAndDescendants({
+            id: this.id
+        });
+
+        await this.earnReward();
+    }
+
+    earnReward = async () => {
+        const goal = await new GoalQuery().get(this.id);
+        if(goal) {
+            await new EarnedRewardQuery().create({
+                earnedDate: new MyDate().toDate(),
+                type: goal.rewardType,
+                goalId: this.id,
+            })
+        }
+    }
 }

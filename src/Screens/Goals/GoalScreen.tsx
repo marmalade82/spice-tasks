@@ -4,7 +4,7 @@ import Style from "src/Style/Style";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList"
 import { ConnectedGoalSummary } from "src/ConnectedComponents/Summaries/GoalSummary";
 import Goal from "src/Models/Goal/Goal";
-import GoalQuery from "src/Models/Goal/GoalQuery";
+import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
 import {
     ColumnView, RowView, Button as MyButton, ViewPicker,
 } from "src/Components/Basic/Basic";
@@ -86,9 +86,7 @@ export default class GoalScreen extends React.Component<Props, State> {
     }
 
     onCompleteGoal = () => {
-        new GoalQuery().completeGoalAndDescendants({
-            id: this.props.navigation.getParam("id", "")
-        });
+        new GoalLogic(this.props.navigation.getParam("id", "")).complete();
     }
 
     render = () => {

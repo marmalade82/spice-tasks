@@ -29,8 +29,8 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
         return this.store().query();
     }
 
-    all = () => {
-        return this.queryAll().fetch();
+    all = async () => {
+        return (await this.queryAll().fetch()) as Model[];
     }
 
     get = async (id: string) => {

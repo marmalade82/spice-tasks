@@ -4,6 +4,7 @@ import {
     EarnedReward, IEarnedReward,
 } from "src/Models/Reward/EarnedReward";
 import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
+import { Rewards } from "./RewardLogic";
 
 export default class EarnedRewardQuery extends ModelQuery<EarnedReward, IEarnedReward> {
     constructor() {
@@ -14,7 +15,7 @@ export default class EarnedRewardQuery extends ModelQuery<EarnedReward, IEarnedR
         return {
             earnedDate: new Date(),
             active: true,
-            type: "none",
+            type: Rewards.NONE,
             goalId: "",
         } as const
     }

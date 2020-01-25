@@ -146,7 +146,13 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
         - [T] Goal Type
         - [T] Start Date
         - [T] Due Date
-        - [T] Reward
+        - [ ] Reward
+            - [T] Visible
+            - [ ] Two Dice
+            - [ ] Specific
+            - [ ] Coin
+            - [ ] Wheel
+            - [ ] None
         - [T] Penalty
         - [T] Recurring
     - [ ] User should be able to fill out data about recurrence of the goal.
@@ -159,6 +165,11 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
     - [X] User should be able to click "Save" and return to previous screen
     - [X] After "Save" is clicked, the new Goal should available in the GoalList.
     - [X] After "Save" is clicked, all fields of the Goal should be saved to the database as a new goal.
+        - [T] Summary
+        - [T] Goal Type
+        - [ ] Start Date
+        - [ ] Due Date
+        - [T] Reward Type
     - [ ] User should be able to scroll through the form's fields when they overrun the page.
 
 - [ ] User should be able to edit an existing Goal through a form
@@ -224,6 +235,9 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
         - [T] Complete button should be available
         - [T] When clicked, Complete button should mark task as Complete and Inactive
         - [T] When clicked, Complete button should mark subtasks as Complete and Inactive
+        - [ ] When clicked, Complete button should generate corresponding reward
+            - [ ] If reward was Two Dice, a Two Dice earned reward should be generated.
+            - [ ] If reward was Specific reward, a Specific earned reward should be generated.
     - [T] User should be able to see the past, the present, and the future of the goal:
         - [T] User should be able to view currently active tasks in their own view
         - [T] User should be able to view inactive tasks in their own view
@@ -316,6 +330,7 @@ When a goal is completed, the associated Reward is earned, if any. The user can 
         - [ ] Icon
         - [ ] Earned Date
         - [ ] Tier
+    - [T] All ER should be available in list.
     - [ ] ER should be filterable
         - [ ] Unclaimed (that is, not yet opened)
         - [ ] Claimed

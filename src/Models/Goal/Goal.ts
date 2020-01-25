@@ -4,17 +4,19 @@ import { Model } from "@nozbe/watermelondb";
 import { field, date, children, relation } from "@nozbe/watermelondb/decorators";
 import GoalSchema from "src/Models/Goal/GoalSchema";
 import TaskSchema from "src/Models/Task/TaskSchema";
+import { RewardType } from "src/Models/Reward/RewardLogic";
+import { GoalType } from "src/Models/Goal/GoalLogic";
 
-type GoalType = "normal" | "streak"
 
 interface IGoal extends IStreak{
     title: string;
-    goalType: string;
+    goalType: GoalType;
     startDate: Date;
     dueDate: Date;
     parentId: string;
     state: "open" | "in_progress" | "complete" | "cancelled"
     active: boolean;
+    rewardType: RewardType;
 }
 
 interface IStreak {
@@ -51,6 +53,7 @@ export default class Goal extends Model implements IGoal {
     @field(name.PARENT) parentId
     @field(name.STATE) state
     @field(name.ACTIVE) active
+    @field(name.REWARD_TYPE) rewardType
 
     /*Relations*/
     @children('tasks') tasks

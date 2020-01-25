@@ -11,6 +11,7 @@ import MyDate from "src/common/Date";
 import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
 
 import EarnedRewardListScreen from "src/Screens/Rewards/EarnedRewardListScreen";
+import { Rewards } from "src/Models/Reward/RewardLogic";
 
 
 
@@ -32,7 +33,7 @@ test("User can view all earned rewards present", async () => {
             await createEarnedRewards({
                 earnedDate: new MyDate().toDate(),
                 active: true,
-                type: "two_dice",
+                type: Rewards.TWO_DICE,
             }, 4);
         })
     }

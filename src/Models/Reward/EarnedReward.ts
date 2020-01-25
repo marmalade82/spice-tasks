@@ -2,11 +2,12 @@
 import { Model } from "@nozbe/watermelondb";
 import { field, date } from "@nozbe/watermelondb/decorators";
 import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
+import { RewardType } from "src/Models/Reward/RewardLogic";
 
 interface IEarnedReward {
     earnedDate: Date,
     active : boolean,
-    type: "two_dice" | "lootbox" | "coin_flip" | "spin_wheel" | "specific" | "none"
+    type: RewardType,
     goalId: string,
 }
 

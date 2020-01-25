@@ -3,7 +3,7 @@ import { View, ScrollView, SafeAreaView, Button } from "react-native";
 import { AddGoalForm, AddGoalData, AddGoalDefault } from "src/Components/Forms/AddGoalForm";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
-import { GoalQuery, Goal } from "src/Models/Goal/GoalQuery";
+import { GoalQuery, Goal, IGoal } from "src/Models/Goal/GoalQuery";
 import { ColumnView } from "src/Components/Basic/Basic";
 
 interface Props {
@@ -87,7 +87,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
     onSave = () => {
         const data = this.state.data;
         const streak = data.streakData;
-        const goalData = {
+        const goalData: Partial<IGoal> = {
             title: data.title,
             goalType: data.type,
             startDate: data.start_date,
@@ -97,6 +97,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             streakDailyStart: streak.daily_start,
             streakWeeklyStart: streak.weekly_start,
             streakMonthlyStart: streak.monthly_start,
+            rewardType: data.reward,
         };
         if(this.state.goal) {
             new GoalQuery().update(this.state.goal, goalData)
@@ -123,6 +124,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 <Button
                     title={"SAVE"}
                     onPress={this.onSave}
+                    accessibilityLabel={"input-save-button"}
                 />
             </ColumnView>
         );

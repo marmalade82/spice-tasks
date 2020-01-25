@@ -15,6 +15,8 @@ import { RecurringForm, RecurringData, RecurringDefault} from "src/Components/Fo
 import { StreakForm, StreakDefault, StreakData }from "src/Components/Forms/AddGoalForm/StreakForm";
 import Style from "src/Style/Style";
 import { ColumnView } from "../Basic/Basic";
+import { RewardChoices, RewardType, Rewards } from "src/Models/Reward/RewardLogic";
+import { GoalChoices, GoalType } from "src/Models/Goal/GoalLogic";
 
 interface Props {
     navigation: Navigator
@@ -24,11 +26,11 @@ interface Props {
 
 interface State {
     title: string;
-    type: "normal" | "streak";
+    type: GoalType;
     recurring: boolean;
     start_date: Date;
     due_date: Date;
-    reward: Reward
+    reward: RewardType;
     penalty: Penalty
     recurData: RecurringData
     streakData: StreakData
@@ -38,11 +40,6 @@ interface Navigator {
     navigate: (screen: string) => void
 }
 
-enum Reward {
-    NONE = 1,
-    DICE,
-    ONE,
-}
 
 enum Penalty {
     NONE = 1,
@@ -57,13 +54,6 @@ interface LabelValue {
 
 }
 
-const rewards: LabelValue[] = [
-    { label: "none", value: Reward.NONE.toString(), key: Reward.NONE.toString() },
-    { label: "dice", value: Reward.DICE.toString(), key: Reward.DICE.toString()},
-    { label: "choose one...", value: Reward.ONE.toString(), key: Reward.ONE.toString() },
-].sort((a, b) => {
-    return parseInt(a.value) - parseInt(b.value)
-});
 
 const penalties: LabelValue[] = [
     { label: "none", value: Penalty.NONE.toString(), key: Penalty.NONE.toString() },
@@ -76,15 +66,15 @@ const penalties: LabelValue[] = [
 function Default(): State {
     return {
         title: "",
-        type: "normal",
+        type: GoalType.NORMAL,
         recurring: false,
         start_date: new Date(),
         due_date: new Date(),
-        reward: Reward.DICE,
+        reward: Rewards.NONE,
         penalty: Penalty.NONE,
         recurData: RecurringDefault(),
         streakData: StreakDefault(),
-    }
+    } as const
 }
 
 export default class AddGoalForm extends DataComponent<Props, State, State> {
@@ -126,13 +116,13 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
     }
 
     onChangeType = (type: string) => {
-        if(type === "streak" || type === "normal") {
+        if(type === GoalType.NORMAL || type === GoalType.STREAK) {
             this.setData({
                 type: type
             });
         } else {
             this.setData({
-                type: "normal"
+                type: GoalType.NORMAL
             });
         }
     }
@@ -156,7 +146,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                 <ChoiceInput
                     title={"Type"}
                     selectedValue={this.data().type}
-                    choices={typeChoices}
+                    choices={GoalChoices}
                     onValueChange={this.onChangeType}
                     accessibilityLabel={"goal-type"}
                 />
@@ -183,9 +173,9 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     title={"Reward"}
                     selectedValue={this.data().reward.toString()}
                     onValueChange={(itemValue, itemIndex) => {
-                        this.setData({reward: parseInt(itemValue)})  
+                        this.setData({reward: itemValue as RewardType})  
                     }}
-                    choices={rewards}
+                    choices={RewardChoices}
                     accessibilityLabel={"goal-reward"}
                 />
 
@@ -244,19 +234,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         return this.data().recurData.recurs + " " + this.data().recurData.date.toDateString();
     }
 }
-
-
-
-const typeChoices = [
-    { label: "Normal"
-    , value: "normal"
-    , key: "1"
-    },
-    { label: "Streak"
-    , value: "streak"
-    , key: "0"
-    },
-]
 
 export {
     AddGoalForm,
