@@ -6,6 +6,7 @@ import { StyleProp, ViewStyle, StyleSheet, View, TextStyle, Text } from "react-n
 interface Props {
     style: StyleProp<TextStyle>
     level: 1 | 2 | 3 | 4 | 5 | 6
+    accessibilityLabel?: string;
 }
 
 interface State {
@@ -66,7 +67,9 @@ export default class HeaderText extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <Text style={[localStyle.headerDefault, this.headerStyle(), this.props.style]}>
+            <Text style={[localStyle.headerDefault, this.headerStyle(), this.props.style]}
+                accessibilityLabel={this.props.accessibilityLabel} 
+            >
                 {this.props.children}
             </Text>
         );

@@ -5,6 +5,7 @@ import { Text, StyleSheet, TextStyle, StyleProp } from "react-native";
 
 interface Props {
     style: StyleProp<TextStyle>
+    accessibilityLabel? : string;
 }
 
 
@@ -25,7 +26,7 @@ export default class BodyText extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <Text style={[localStyle.defaultText,]}>
+            <Text style={[localStyle.defaultText,]} accessibilityLabel={this.props.accessibilityLabel}>
                 {this.props.children}
             </Text>
         );

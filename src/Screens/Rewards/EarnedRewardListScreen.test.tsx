@@ -4,7 +4,7 @@ import React from "react";
 
 import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cleanup } from '@testing-library/react-native';
 import { 
-    makeNavigation, destroyAllIn,
+    makeNavigation, destroyAll,
     createGoals, createTasks, createEarnedRewards,
 } from "src/common/test-utils";
 import MyDate from "src/common/Date";
@@ -39,6 +39,6 @@ test("User can view all earned rewards present", async () => {
     }
 
     async function teardown() {
-        await destroyAllIn(EarnedRewardSchema.table);
+        await destroyAll()
     }
 }, 10000)

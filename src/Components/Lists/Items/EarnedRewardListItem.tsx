@@ -10,6 +10,7 @@ interface EarnedReward {
     id: string;
     earnedDate: Date;
     type: "two_dice";
+    goalId: string;
 }
 
 interface Props {
@@ -61,6 +62,7 @@ export default class EarnedRewardListItem extends Item<Props, State, EarnedRewar
                 </RowView>
                 <RowView style={localStyle.details}>
                     <Text>{item.earnedDate.toString()}</Text>
+                    <Text>{item.goalId}</Text>
                 </RowView>
             </ColumnView>
         );

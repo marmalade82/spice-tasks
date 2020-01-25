@@ -19,6 +19,7 @@ const AdaptedEarnedRewardListItem: React.FunctionComponent<Props> = function(pro
     const mappedEarnedReward: IEarnedReward = {
         id: earned.id,
         earnedDate: earned.earnedDate,
+        goalId: earned.goalId,
         type: earned.type,
     }
 

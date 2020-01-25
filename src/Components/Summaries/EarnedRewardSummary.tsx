@@ -52,21 +52,27 @@ export default class EarnedRewardSummary extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <RowView style={[this.props.style]}>
+            <RowView 
+                style={[this.props.style]}
+                accessibilityLabel={"earned-reward-summary"}
+            >
                 <ColumnView style={[Style.blueBg, {
                     flex: 0,
                     width: 120,
                     alignItems: "center",
                 }]}>
-                    <View style={{
-                        flex: 0,
-                        height: 75,
-                        width: 75,
-                        borderRadius: 75/2,
-                        justifyContent: "center",
-                        alignItems: "stretch",
-                        backgroundColor: "lightyellow",
-                    }}>
+                    <View 
+                        style={{
+                            flex: 0,
+                            height: 75,
+                            width: 75,
+                            borderRadius: 75/2,
+                            justifyContent: "center",
+                            alignItems: "stretch",
+                            backgroundColor: "lightyellow",
+                        }}
+                        accessibilityLabel={"earned-reward-icon"}
+                    >
                         <Image
                             style={{
                                 resizeMode: "cover",
@@ -77,12 +83,19 @@ export default class EarnedRewardSummary extends React.Component<Props, State> {
                     </View>
                 </ColumnView>
                 <ColumnView style={[Style.greenBg]}>
-                    <HeaderText style={{}} level={3}>
+                    <HeaderText style={{}} level={3}
+                        accessibilityLabel={"earned-reward-type"} 
+                    >
                         { this.getHeaderText() }
                     </HeaderText>
                     <BodyText style={{}}>
-                        For completing <HeaderText style={{}} level={4}>{this.props.goalName}</HeaderText> on 
-                        {" " + new MyDate(this.props.earnedDate).format("dddd, MMMM Do")}.
+                        For completing 
+                            <HeaderText style={{}} level={4} accessibilityLabel={"earned-reward-goal"}>
+                                {" " + this.props.goalName }
+                            </HeaderText> on 
+                        <BodyText style={{}} accessibilityLabel={"earned-reward-earned-date"}>
+                            {" " + new MyDate(this.props.earnedDate).format("dddd, MMMM Do") }
+                        </BodyText>
                     </BodyText>
                 </ColumnView>
             </RowView>

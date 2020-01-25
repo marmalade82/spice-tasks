@@ -337,10 +337,10 @@ When a goal is completed, the associated Reward is earned, if any. The user can 
 
 - [ ] User should be able to view one particular ER
     - [ ] The following details should be available:
-        - [ ] Type
-        - [ ] Icon
-        - [ ] Earned Date
-        - [ ] Source Goal
+        - [T] Type
+        - [T] Icon
+        - [T] Earned Date
+        - [T] Source Goal
         - [ ] Tier
 
 ### User Stories - Claiming an ER
