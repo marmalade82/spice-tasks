@@ -391,3 +391,7 @@ Penalties typically come with the following data items:
 - Tier of the penalty, since some penalties are harder than others.
 - Points - points will typically be automatically calculated (formula to be determined). Completing penalties will also boost your scores over time.
 - Whether this penalty has been converted to a goal, since some penalties are just goals that we have been putting off because they seem to disruptive to our current lifestyle.
+
+### User Stories - Viewing Penalties
+
+- [ ] User can view all existing penalties in a list
