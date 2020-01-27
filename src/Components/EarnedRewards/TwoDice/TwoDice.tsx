@@ -3,12 +3,25 @@ import {
     ColumnView, RowView, Image, 
     HeaderText, BodyText, ViewWizard 
 } from "src/Components/Basic/Basic";
-import { Button, Text, View, FlatList} from "react-native";
+import { Button, Text, View, FlatList, StyleProp, ViewStyle} from "react-native";
 import TwoDiceRoll from "src/Components/EarnedRewards/TwoDice/TwoDiceRoll";
 
-interface Props { }
+interface Props { 
+    style: StyleProp<ViewStyle>
+    controlHeight?: number;
+    accessibilityLabel: string;
+    rewardChoices: RewardChoice[];
+}
 
 interface State  { }
+
+interface RewardChoice {
+    key: string;
+    text: string;
+    number: string;
+    rewardId?: string;
+    penaltyId?: string;
+}
 
 export default class TwoDice extends React.Component<Props, State> {
     constructor(props: Props) {
@@ -18,16 +31,15 @@ export default class TwoDice extends React.Component<Props, State> {
     render = () => {
         return (
             <ViewWizard
-                accessibilityLabel={"test view wizard"}
-                style={{
-                    flex: 14
-                }}
+                accessibilityLabel={this.props.accessibilityLabel}
+                style={[this.props.style]}
                 allowSwiping={false}
                 useButtons={true}
                 wizardPlacement={"footer"}
                 data={false}
                 onDataChange={() => {}}
                 views={this.renderViews()}
+                wizardHeight={this.props.controlHeight}
             >
 
             </ViewWizard>
@@ -44,19 +56,7 @@ export default class TwoDice extends React.Component<Props, State> {
                                 width: "100%",
                                 backgroundColor: "pink"
                             }}
-                            data={[
-                                { key: "2", text: "Goal 2", number: "2"},
-                                { key: "3", text: "Goal 3", number: "3"},
-                                { key: "4", text: "Goal 4", number: "4"},
-                                { key: "5", text: "Goal 5", number: "5"},
-                                { key: "6", text: "Goal 6", number: "6"},
-                                { key: "7", text: "Goal 7", number: "7"},
-                                { key: "8", text: "Goal 8", number: "8"},
-                                { key: "9", text: "Goal 9", number: "9"},
-                                { key: "10", text: "Goal 10", number: "10"},
-                                { key: "11", text: "Goal 11", number: "11"},
-                                { key: "12", text: "Goal 12", number: "12"},
-                            ] } 
+                            data={ this.props.rewardChoices } 
                             renderItem={({item}) => {
                                 return (
                                     <ColumnView style={{
@@ -109,4 +109,8 @@ export default class TwoDice extends React.Component<Props, State> {
             },
         ];
     }
+}
+
+export {
+    RewardChoice
 }

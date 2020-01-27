@@ -4,15 +4,17 @@ import TaskSchema from 'src/Models/Task/TaskSchema';
 import RewardSchema from 'src/Models/Reward/RewardSchema';
 import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
 import ClaimedRewardSchema from "src/Models/Reward/ClaimedRewardSchema";
+import { PenaltySchema } from "src/Models/Penalty/PenaltySchema";
 
 const Schema = appSchema({
-    version: 3,
+    version: 1,
     tables: [
         generateTableSchema(GoalSchema),
         generateTableSchema(TaskSchema),
         generateTableSchema(RewardSchema),
         generateTableSchema(EarnedRewardSchema),
         generateTableSchema(ClaimedRewardSchema),
+        generateTableSchema(PenaltySchema),
     ]
 });
 

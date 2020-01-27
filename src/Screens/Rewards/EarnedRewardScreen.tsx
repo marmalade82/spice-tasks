@@ -7,6 +7,7 @@ import EarnedRewardQuery, { EarnedReward } from "src/Models/Reward/EarnedRewardQ
 import { ConnectedEarnedRewardSummary } from "src/ConnectedComponents/Summaries/EarnedRewardSummary";
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery from "src/Models/Goal/GoalQuery";
+import EarnedRewardWizard from "src/Screens/Rewards/EarnedRewardScreen/EarnedRewardWizard";
 
 
 interface Props {
@@ -37,7 +38,7 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
         const earned = await new EarnedRewardQuery().get(this.props.navigation.getParam("id", ""));
         if(earned) {
             this.setState({
-                earnedReward: earned
+                earnedReward: earned,
             });
 
             const goal = await new GoalQuery().get(earned.goalId);
@@ -63,36 +64,7 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
                 justifyContent: "flex-start"
             }}>
                 {this.renderSummary()}
-                <RowView style={{
-                    flex: 10
-                }}>
-                    <ColumnView style={{
-                        justifyContent: "flex-start",
-                        alignItems: "center"
-                    }}>
-                        <TouchableOpacity style={{
-                            flex:0,
-                            height: 150,
-                            width: 150,
-                            margin: 0,
-                            padding: 10,
-                        }}>
-                            <ColumnView style={{
-                                borderRadius: 65,
-                                height: 130,
-                                width: 130,
-                                alignItems: "center",
-                                backgroundColor: "pink",
-                                elevation: 4,
-                            }}>
-                                    <BodyText style={{}}>CLAIM</BodyText>
-                            </ColumnView>
-                        </TouchableOpacity>
-                    </ColumnView>
-                </RowView>
-                <RowView style={{
-                    flex: 6
-                }}></RowView>
+                {this.renderWizard()}
             </ColumnView>
 
         );
@@ -109,5 +81,44 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
                 </ConnectedEarnedRewardSummary>
             );
         }
+    }
+
+    renderWizard = () => {
+        if(this.state.earnedReward) {
+            return (
+                <EarnedRewardWizard
+                    earnedRewardType={this.state.earnedReward.type}
+                ></EarnedRewardWizard>
+            );
+        }         
+        return (
+            <RowView style={{
+                flex: 10
+            }}>
+                <ColumnView style={{
+                    justifyContent: "flex-start",
+                    alignItems: "center"
+                }}>
+                    <TouchableOpacity style={{
+                        flex:0,
+                        height: 150,
+                        width: 150,
+                        margin: 0,
+                        padding: 10,
+                    }}>
+                        <ColumnView style={{
+                            borderRadius: 65,
+                            height: 130,
+                            width: 130,
+                            alignItems: "center",
+                            backgroundColor: "pink",
+                            elevation: 4,
+                        }}>
+                                <BodyText style={{}}>CLAIM</BodyText>
+                        </ColumnView>
+                    </TouchableOpacity>
+                </ColumnView>
+            </RowView>
+        );
     }
 }

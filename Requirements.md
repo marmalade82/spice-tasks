@@ -342,6 +342,13 @@ When a goal is completed, the associated Reward is earned, if any. The user can 
         - [T] Earned Date
         - [T] Source Goal
         - [ ] Tier
+    - [ ] If the user has not claimed the ER, the wizard for the ER should be available
+        - [T] Two Dice
+        - [ ] Coin
+        - [ ] Wheel
+        - [ ] Specific
+        - [ ] Lootbox
+    - [ ] If the user __has__ claimed the ER, the resulting reward/penalty should be available in the Claimed Rewards
 
 ### User Stories - Claiming an ER
 

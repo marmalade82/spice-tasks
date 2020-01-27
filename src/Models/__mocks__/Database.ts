@@ -7,6 +7,7 @@ import Task from "src/Models/Task/Task";
 import Reward from "src/Models/Reward/Reward";
 import EarnedReward from "src/Models/Reward/EarnedReward";
 import ClaimedReward from "src/Models/Reward/ClaimedReward";
+import Penalty from "src/Models/Penalty/Penalty";
 
 class DB {
     static database: Database | undefined;
@@ -21,7 +22,7 @@ class DB {
 
             DB.database = new Database({
                 adapter: adapter,
-                modelClasses: [Goal, Task, Reward, EarnedReward, ClaimedReward],
+                modelClasses: [Goal, Task, Reward, EarnedReward, ClaimedReward, Penalty],
                 actionsEnabled: true,
             });
 

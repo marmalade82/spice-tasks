@@ -50,7 +50,10 @@ export default class ViewWizard extends DataComponent<Props, State, Data> {
 
     render = () => {
         return (
-            <ColumnView style={[this.props.style]}>
+            <ColumnView 
+                style={[this.props.style]}
+                accessibilityLabel={this.props.accessibilityLabel}
+            >
                 {this.renderHeader()}
                 {this.renderViews()}
                 {this.renderFooter()}
@@ -80,13 +83,13 @@ export default class ViewWizard extends DataComponent<Props, State, Data> {
             style = {
                 marginBottom: 20,
                 paddingTop: 30,
-                borderBottomWidth: 2
+                borderBottomWidth: 2,
             }
         } else {
             style = {
                 marginBottom: 30,
                 paddingTop: 20,
-                borderTopWidth: 2
+                borderTopWidth: 2,
             }
         }
 
