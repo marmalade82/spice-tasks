@@ -10,6 +10,8 @@ import GoalSchema from "src/Models/Goal/GoalSchema";
 import TaskSchema from "src/Models/Task/TaskSchema";
 import RewardSchema from "src/Models/Reward/RewardSchema";
 import ClaimedReward from "src/Models/Reward/ClaimedReward";
+import { PenaltySchema } from "src/Models/Penalty/PenaltySchema";
+import { IPenalty } from "src/Models/Penalty/Penalty";
 
 function makeNavigation(params: {}) {
     const navigation = {
@@ -70,6 +72,10 @@ async function createEarnedRewards(data: Partial<IEarnedReward>, count: number) 
 
 }
 
+async function createPenalties(data: Partial<IPenalty>, count: number) {
+    return (await _createModels(PenaltySchema.table, data, count));
+}
+
 async function _createModels<M extends Model>(table: string, data: any, count: number) {
     let models: M[] = [];
     for(let i = 0; i < count; i++) {
@@ -82,7 +88,7 @@ async function _createModels<M extends Model>(table: string, data: any, count: n
 async function destroyAll() {
     const tables: string[] = [
         GoalSchema.table, TaskSchema.table, RewardSchema.table,
-        EarnedRewardSchema.table, ClaimedReward.table,
+        EarnedRewardSchema.table, ClaimedReward.table, PenaltySchema.table,
     ];
     const destroys = tables.map((name: string) => {
         return destroyAllIn(name);
@@ -97,4 +103,5 @@ export {
     createTasks,
     createGoals,
     createEarnedRewards,
+    createPenalties,
 }

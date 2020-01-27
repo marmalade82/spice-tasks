@@ -55,7 +55,7 @@ export default class PenaltyListItem extends Item<Props, State, Penalty> {
         const item = this.props.item
 
         return (
-            <View style={[localStyle.container]}>
+            <View style={[localStyle.container]} accessibilityLabel={this.props.accessibilityLabel}>
                 <View style={localStyle.title}>
                     <Text>{item.title + " : " + item.id}</Text>
                 </View>
