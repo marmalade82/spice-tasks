@@ -1,13 +1,18 @@
 import React from "react";
 import { Rewards, RewardType } from "src/Models/Reward/RewardLogic";
 import TwoDice, { RewardChoice as TwoDiceRewardChoice } from "src/Components/EarnedRewards/TwoDice/TwoDice";
-import RewardQuery from "src/Models/Reward/RewardQuery";
-import PenaltyQuery from "src/Models/Penalty/PenaltyQuery";
+import RewardQuery, { Reward } from "src/Models/Reward/RewardQuery";
+import PenaltyQuery, { Penalty } from "src/Models/Penalty/PenaltyQuery";
+import { IReward } from "src/Models/Reward/Reward";
+import { IPenalty } from "src/Models/Penalty/Penalty";
 import { random } from "src/common/random";
+import { StyleProp, ViewStyle } from "react-native";
 
 
 interface Props {
     earnedRewardType: RewardType;
+    onComplete: (result: { reward: string[], penalty : string[]}) => void;
+    style: StyleProp<ViewStyle>;
 }
 
 interface State {
@@ -81,17 +86,20 @@ export default class EarnedRewardWizard extends React.Component<Props, State> {
 
     }
 
+    onCompleteTwoDice = ( result: { reward?: string; penalty? : string }) => {
+
+    }
+
     render = () => {
         switch(this.props.earnedRewardType) {
             case Rewards.TWO_DICE: {
                 return (
                     <TwoDice 
-                        style={{
-                            flex: 16
-                        }}
+                        style={this.props.style}
                         controlHeight={50}
                         accessibilityLabel={"two-dice-wizard"}
                         rewardChoices={this.state.twoDiceRewardChoices}
+                        onComplete={this.onCompleteTwoDice}
                     >
 
                     </TwoDice>

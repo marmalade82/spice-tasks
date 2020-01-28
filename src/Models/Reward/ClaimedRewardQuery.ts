@@ -4,6 +4,7 @@ import {
     ClaimedReward, IClaimedReward,
 } from "src/Models/Reward/ClaimedReward";
 import ClaimedRewardSchema from "src/Models/Reward/ClaimedRewardSchema";
+import MyDate from "src/common/Date";
 
 export default class ClaimedRewardQuery extends ModelQuery<ClaimedReward, IClaimedReward> {
     constructor() {
@@ -14,9 +15,10 @@ export default class ClaimedRewardQuery extends ModelQuery<ClaimedReward, IClaim
         return {
             title: "Default claimed reward",
             details: "Default details",
-            claimedDate: new Date(),
-            completedDate: new Date(),
+            claimedDate: MyDate.Zero().toDate(),
+            completedDate: MyDate.Zero().toDate(),
             earnedId: "",
+            type: "reward"
         } as const
     }
 }

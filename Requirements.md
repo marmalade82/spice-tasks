@@ -417,3 +417,12 @@ Penalties typically come with the following data items:
     - [T] Details
     - [T] Save button is available
     - [T] After clicking Save, the existing table is edited in the database.
+
+
+## Claimed Rewards/Penalties
+
+
+### User Stories - Viewing Claimed Items
+
+- [ ] User should be able to view all claimed rewards
+- [ ] User should be able to view all claimed penalties

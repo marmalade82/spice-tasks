@@ -18,6 +18,7 @@ import EarnedRewardScreen from "src/Screens/Rewards/EarnedRewardScreen";
 import EarnedRewardListScreen from "src/Screens/Rewards/EarnedRewardListScreen";
 import PenaltyListScreen from "src/Screens/Penalties/PenaltyListScreen";
 import AddPenaltyScreen from "src/Screens/Penalties/AddPenaltyScreen";
+import ClaimedRewardListScreen from "src/Screens/Rewards/ClaimedRewardListScreen";
 import TestScreen from "src/Screens/TestScreen";
 
 export {
@@ -39,5 +40,6 @@ export {
     EarnedRewardListScreen as EarnedRewardList,
     PenaltyListScreen as PenaltyList,
     AddPenaltyScreen as AddPenalty,
+    ClaimedRewardListScreen as ClaimedRewardList,
     TestScreen as Test,
 }

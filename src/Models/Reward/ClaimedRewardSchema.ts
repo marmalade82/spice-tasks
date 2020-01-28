@@ -8,6 +8,7 @@ const ClaimedRewardName = {
     CLAIMED_ON: "claimed_at",
     COMPLETED_ON: "completed_on",
     EARNED_ID: "earned_id",
+    TYPE: "reward_type",
 }
 
 const ClaimedRewardType: Record<keyof typeof ClaimedRewardName, ColumnType>= {
@@ -16,6 +17,7 @@ const ClaimedRewardType: Record<keyof typeof ClaimedRewardName, ColumnType>= {
     CLAIMED_ON: "number", // this is very much like a created at date. Should I just use that instead? Nah.
     COMPLETED_ON: "number",
     EARNED_ID: "string",
+    TYPE: "string",
 }
 
 const ClaimedRewardSchema = {

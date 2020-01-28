@@ -4,6 +4,8 @@ import { ColumnView, RowView, Image, HeaderText, BodyText, } from "src/Component
 import Style from "src/Style/Style";
 import EarnedRewardSummary from "src/Components/Summaries/EarnedRewardSummary";
 import EarnedRewardQuery, { EarnedReward } from "src/Models/Reward/EarnedRewardQuery";
+import EarnedRewardLogic from "src/Models/Reward/EarnedRewardLogic";
+import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
 import { ConnectedEarnedRewardSummary } from "src/ConnectedComponents/Summaries/EarnedRewardSummary";
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery from "src/Models/Goal/GoalQuery";
@@ -58,6 +60,21 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
         }
     }
 
+    onCompleteWizard = (result:{ reward: string[], penalty: string[]} ) => {
+        // result shows the ids of rewards and penalties that were earned, so they 
+        // can be created and shown.
+        const { reward, penalty } = result;
+        const earnedId = this.props.navigation.getParam("id", "");
+
+        for(let i = 0; i < reward.length; i++) {
+            new EarnedRewardLogic(earnedId).claimReward(reward[i]);
+        }
+
+        for(let i = 0; i < penalty.length; i++) {
+            new EarnedRewardLogic(earnedId).claimPenalty(penalty[i]);
+        }
+    }
+
     render = () => {
         return (
             <ColumnView style={{
@@ -88,6 +105,8 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
             return (
                 <EarnedRewardWizard
                     earnedRewardType={this.state.earnedReward.type}
+                    onComplete={this.onCompleteWizard}
+                    style={{ flex: 16}}
                 ></EarnedRewardWizard>
             );
         }         

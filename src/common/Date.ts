@@ -15,6 +15,10 @@ export default class MyDate {
         }
     }
 
+    static Zero = () => {
+        return new MyDate(new Date(0))
+    }
+
     format = (format: string) => {
         return this.m.format(format);
     }

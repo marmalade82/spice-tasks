@@ -28,6 +28,7 @@ const ScreenNavigator = createStackNavigator(
   , EarnedRewards: Screens.EarnedRewardList
   , Penalties: Screens.PenaltyList
   , AddPenalty: Screens.AddPenalty
+  , ClaimedRewards: Screens.ClaimedRewardList
   , Test: Screens.Test
   },
   { initialRouteName: 'Home'

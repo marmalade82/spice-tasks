@@ -9,6 +9,7 @@ interface IClaimedReward {
     claimedDate: Date,
     completedDate: Date,
     earnedId: string,
+    type: "reward" | "penalty",
 }
 
 const name = ClaimedRewardSchema.name;
@@ -21,6 +22,7 @@ export default class ClaimedReward extends Model implements IClaimedReward {
     @date(name.CLAIMED_ON) claimedDate
     @date(name.COMPLETED_ON) completedDate
     @field(name.EARNED_ID) earnedId
+    @field(name.TYPE) type
 }
 
 export {

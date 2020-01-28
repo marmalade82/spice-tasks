@@ -11,6 +11,7 @@ interface Props {
     controlHeight?: number;
     accessibilityLabel: string;
     rewardChoices: RewardChoice[];
+    onComplete: ( result: { reward?: string; penalty?: string }) => void;
 }
 
 interface State  { }

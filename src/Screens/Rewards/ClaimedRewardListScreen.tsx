@@ -1,6 +1,7 @@
+
 import React from "react";
 import { ColumnView, RowView, Image, HeaderText, BodyText, } from "src/Components/Basic/Basic";
-import { ConnectedEarnedRewardList } from "src/ConnectedComponents/Lists/Reward/EarnedRewardList";
+import { ConnectedClaimedRewardList } from "src/ConnectedComponents/Lists/Reward/ClaimedRewardList";
 
 interface Props {
     navigation: any;
@@ -11,10 +12,10 @@ interface State {
 }
 
 
-export default class EarnedRewardListScreen extends React.Component<Props, State> {
+export default class ClaimedRewardListScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
-            title: 'Earned Rewards',
+            title: 'Claimed Rewards',
         }
     }
 
@@ -25,10 +26,10 @@ export default class EarnedRewardListScreen extends React.Component<Props, State
     render = () => {
         return (
             <ColumnView style={{ alignItems: "center" }}>
-                <ConnectedEarnedRewardList
+                <ConnectedClaimedRewardList
                     navigation={this.props.navigation}
                 >
-                </ConnectedEarnedRewardList>
+                </ConnectedClaimedRewardList>
             </ColumnView>
         );
     }
