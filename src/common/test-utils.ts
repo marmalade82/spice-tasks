@@ -11,7 +11,7 @@ import TaskSchema from "src/Models/Task/TaskSchema";
 import RewardSchema from "src/Models/Reward/RewardSchema";
 import ClaimedReward from "src/Models/Reward/ClaimedReward";
 import { PenaltySchema } from "src/Models/Penalty/PenaltySchema";
-import { IPenalty } from "src/Models/Penalty/Penalty";
+import Penalty, { IPenalty } from "src/Models/Penalty/Penalty";
 
 function makeNavigation(params: {}) {
     const navigation = {
@@ -73,7 +73,7 @@ async function createEarnedRewards(data: Partial<IEarnedReward>, count: number) 
 }
 
 async function createPenalties(data: Partial<IPenalty>, count: number) {
-    return (await _createModels(PenaltySchema.table, data, count));
+    return (await _createModels(PenaltySchema.table, data, count)) as Penalty[];
 }
 
 async function _createModels<M extends Model>(table: string, data: any, count: number) {
