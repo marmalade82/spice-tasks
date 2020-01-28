@@ -395,3 +395,25 @@ Penalties typically come with the following data items:
 ### User Stories - Viewing Penalties
 
 - [ ] User can view all existing penalties in a list
+    - [T] Each penalty from the database is present
+    - [ ] Each penalty list item shows the following attributes:
+        - [ ] Title
+        - [ ] Expiration date
+
+### User Stories - Adding/Editing a Penalty
+
+- [ ] User can fill out a form with the new penalty's informtion
+    - [ ] Mandatory fields should be marked
+    - [T] Title
+    - [T] Expiration Date
+    - [T] Details
+    - [T] Save button is available
+    - [T] After clicking save, a new Penalty is created in the database.
+
+- [ ] User can edit a form with an existing penalty's information
+    - [ ] Mandatory fields should be marked
+    - [T] Title
+    - [T] Expiration Date
+    - [T] Details
+    - [T] Save button is available
+    - [T] After clicking Save, the existing table is edited in the database.
