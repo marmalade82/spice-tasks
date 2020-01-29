@@ -13,10 +13,11 @@ export default class EarnedRewardLogic {
         this.id = id;
     }
 
-    _fetchEarned = async () => {
+    fetchEarned = async () => {
         if(this.earned) {
-            return this.earned;
+            debugger;
         } else {
+            debugger;
             const earned = await new EarnedRewardQuery().get(this.id);
             if(earned) {
                 this.earned = earned;
@@ -24,6 +25,7 @@ export default class EarnedRewardLogic {
                 this.earned = undefined;
             }
         }
+        return this.earned;
     }
 
     /**
@@ -32,16 +34,17 @@ export default class EarnedRewardLogic {
      * it can be accessed by the user.
      */
     claimReward = async (rewardId: string) => {
-        const earned = await this._fetchEarned();
-
+        const earned = await this.fetchEarned();
+        debugger;
         if(earned) {
             const reward = await new RewardQuery().get(rewardId);
-
+            debugger;
             if(reward) {
                 new ClaimedRewardQuery().create({
                     title: reward.title,
                     details: reward.details,
                     claimedDate: new MyDate().toDate(),
+                    type: "reward",
                     earnedId: this.id,
                 });
             }
@@ -50,7 +53,7 @@ export default class EarnedRewardLogic {
     }
 
     claimPenalty = async (penaltyId: string) => {
-        const earned = await this._fetchEarned();
+        const earned = await this.fetchEarned();
 
         if(earned) {
             const penalty = await new PenaltyQuery().get(penaltyId);
@@ -60,6 +63,7 @@ export default class EarnedRewardLogic {
                     title: penalty.title,
                     details: penalty.details,
                     claimedDate: new MyDate().toDate(),
+                    type: "penalty",
                     earnedId: this.id,
                 });
             }

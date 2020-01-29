@@ -353,15 +353,15 @@ When a goal is completed, the associated Reward is earned, if any. The user can 
 ### User Stories - Claiming an ER
 
 - [ ] From the view of a particular ER, the user should be able to
-    - [ ] View a "Claim" button for claiming the ER
     - [ ] Click the "Claim" button, which should take them to a screen based on the type of earned reward:
         - [ ] Two Dice
+            - [T] Claim button is available, which rolls the dice
             - [ ] User should be able to view which numbers correspond to which rewards.
-            - [ ] User should be able to click "Refresh" to refresh the selection of rewards per number.
-            - [ ] User should be able to roll one die, and then the other. Once a die is rolled, the "Refresh" button is disabled.
-            - [ ] After the second die is rolled 
-                - [ ] the sum of the two rolls, and the corresponding reward/penalty
-                - [ ] The user is taken back to the list of earned rewards.
+            - [T] After Claim is clicked, the ClaimedReward is created with the corresponding
+                        Penalty or Reward.
+            - [ ] After Claim is clicked, user should be shown a modal of 
+                    the reward that they claimed, with a link to go to the reward if they so desire
+            - [ ] General polish of the dice-rolling portion, which currently looks horrible.
 
 ### User Stories - Adding ER
 
@@ -424,5 +424,5 @@ Penalties typically come with the following data items:
 
 ### User Stories - Viewing Claimed Items
 
-- [ ] User should be able to view all claimed rewards
-- [ ] User should be able to view all claimed penalties
+- [T] User should be able to view all claimed rewards
+- [T] User should be able to view all claimed penalties

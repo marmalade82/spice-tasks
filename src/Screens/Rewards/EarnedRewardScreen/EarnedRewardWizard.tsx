@@ -44,7 +44,7 @@ export default class EarnedRewardWizard extends React.Component<Props, State> {
                 rewardChoices.push({
                     text: reward.title,
                     number: (i + 3).toString(), // rewards are numbered 3 through 11
-                    key: reward.id,
+                    key: (i +3).toString() + reward.id,
                     rewardId: reward.id,
                 });
             } else {
@@ -63,7 +63,7 @@ export default class EarnedRewardWizard extends React.Component<Props, State> {
                 penaltyChoices.push({
                     text: penalty.title,
                     number: i === 0 ? "2" : "12",
-                    key: penalty.id,
+                    key: (i === 0 ? "2" : "12") + penalty.id,
                     penaltyId: penalty.id
                 });
             } else {
@@ -87,7 +87,15 @@ export default class EarnedRewardWizard extends React.Component<Props, State> {
     }
 
     onCompleteTwoDice = ( result: { reward?: string; penalty? : string }) => {
+        const { reward, penalty } = result;
+        debugger;
+        const rewards = reward ? [ reward ] : []
+        const penalties = penalty ? [ penalty ] : []
 
+        this.props.onComplete({
+            reward: rewards,
+            penalty: penalties,
+        });
     }
 
     render = () => {
@@ -103,7 +111,6 @@ export default class EarnedRewardWizard extends React.Component<Props, State> {
                     >
 
                     </TwoDice>
-
                 )
             } break;
             default: {

@@ -13,6 +13,7 @@ import ClaimedReward, { IClaimedReward } from "src/Models/Reward/ClaimedReward";
 import { PenaltySchema } from "src/Models/Penalty/PenaltySchema";
 import Penalty, { IPenalty } from "src/Models/Penalty/Penalty";
 import ClaimedRewardSchema from "src/Models/Reward/ClaimedRewardSchema";
+import { IReward, Reward } from "src/Models/Reward/Reward";
 
 function makeNavigation(params: {}) {
     const navigation = {
@@ -68,6 +69,10 @@ async function createGoals(data: Partial<IGoal>, count: number) {
     return goals;
 }
 
+async function createRewards(data: Partial<IReward>, count: number) {
+    return (await _createModels(RewardSchema.table, data, count)) as Reward[];
+}
+
 async function createEarnedRewards(data: Partial<IEarnedReward>, count: number) {
     return (await _createModels(EarnedRewardSchema.table, data, count)) as EarnedReward[];
 
@@ -110,4 +115,5 @@ export {
     createEarnedRewards,
     createClaimedRewards,
     createPenalties,
+    createRewards,
 }

@@ -5,6 +5,7 @@ import {
 } from "src/Components/Basic/Basic";
 import { Button, Text, View, FlatList, StyleProp, ViewStyle} from "react-native";
 import TwoDiceRoll from "src/Components/EarnedRewards/TwoDice/TwoDiceRoll";
+import { random } from "src/common/random";
 
 interface Props { 
     style: StyleProp<ViewStyle>
@@ -27,6 +28,24 @@ interface RewardChoice {
 export default class TwoDice extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
+    }
+
+    onRollComplete = (num: number) => {
+        const choice = this.props.rewardChoices.find( (r: RewardChoice) => {
+            return r.number === num.toString()
+        })
+
+        if(choice) {
+            this.props.onComplete({
+                reward: choice.rewardId,
+                penalty: choice.penaltyId,
+            })
+        } else {
+            this.props.onComplete({
+                reward: undefined,
+                penalty: undefined,
+            })
+        }
     }
 
     render = () => {
@@ -100,7 +119,9 @@ export default class TwoDice extends React.Component<Props, State> {
             },
             () => {
                 return (
-                    <TwoDiceRoll></TwoDiceRoll>
+                    <TwoDiceRoll
+                        onRollComplete={this.onRollComplete}
+                    ></TwoDiceRoll>
                 )
             },
             () => {

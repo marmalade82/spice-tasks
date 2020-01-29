@@ -8,9 +8,10 @@ import {
 import {
     Die 
 } from "src/Components/Images/Images";
+import { random } from "src/common/random";
 
 interface Props {
-
+    onRollComplete: (num: number) => void;
 }
 
 interface State {
@@ -37,6 +38,7 @@ export default class TwoDiceRoll extends React.Component<Props, State> {
     }
 
     rollDieOne = () => {
+        debugger;
         this.setState({
             runningDieOne: true,
         });
@@ -44,13 +46,16 @@ export default class TwoDiceRoll extends React.Component<Props, State> {
             let count = 0;
             let id = setInterval(() => {
                 count += 1;
+                const roll = random(2, 12);
                 this.setState({
-                    dieOne: (Math.floor(Math.random() * 100) % 6) + 1,
+                    dieOne: roll,
                     dieOnePhase: count % 2 === 1
                 })
 
                 if(count >= 4) {
                     clearInterval(id);
+                    debugger;
+                    this.props.onRollComplete(roll);
                 }
             }, 900)
         })();
@@ -82,6 +87,7 @@ export default class TwoDiceRoll extends React.Component<Props, State> {
                         <RowView style={{ backgroundColor: "pink" }}>
                             <ColumnView style={{ alignItems: "center" }}>
                                 <Button title={"Roll"} onPress={this.rollDieOne}
+                                    accessibilityLabel={"input-claim-button"}
                                     disabled={this.state.runningDieOne} 
                                 ></Button>
                             </ColumnView>
