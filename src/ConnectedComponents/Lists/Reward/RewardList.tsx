@@ -26,6 +26,7 @@ const AdaptedRewardList: React.FunctionComponent<Props> = (props: Props) => {
                 }}
                 destination={"AddReward"}
                 navType={"push"}
+                style={{}}
             >
                 <ConnectedRewardListItem
                     reward={item}

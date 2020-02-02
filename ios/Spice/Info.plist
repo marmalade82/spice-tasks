@@ -85,6 +85,9 @@
 		<string>OpenSans-Regular.ttf</string>
 		<string>OpenSans-SemiBold.ttf</string>
 		<string>OpenSans-SemiBoldItalic.ttf</string>
+		<string>AlegreyaSansSC-Bold.ttf</string>
+		<string>AlegreyaSansSC-Medium.ttf</string>
+		<string>AlegreyaSansSC-Regular.ttf</string>
 	</array>
 </dict>
 </plist>

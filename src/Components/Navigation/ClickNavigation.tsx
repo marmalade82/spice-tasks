@@ -1,25 +1,18 @@
 
 import React from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, TouchableHighlight, StyleSheet, StyleProp, ViewStyle } from "react-native";
 
 interface Props {
     navigation: any;
     parameters: object;
     destination: string;
     navType: "navigate" | "push";
+    style: StyleProp<ViewStyle>
 }
 
 interface State {}
 
 const localStyle = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "lightblue",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "95%",
-    },
     row: {
         flex: 1,
         flexDirection: "column",
@@ -38,7 +31,7 @@ export default class ClickNavigation extends React.Component<Props, State> {
     render = () => {
         return (
                 <TouchableOpacity 
-                    style={[localStyle.row]}
+                    style={[localStyle.row, this.props.style]}
                     onPress={() => {
                         if(this.props.navType === "push") {
                             this.props.navigation.push(this.props.destination, this.props.parameters);

@@ -7,6 +7,7 @@ interface Props {
     style: StyleProp<TextStyle>
     level: 1 | 2 | 3 | 4 | 5 | 6
     accessibilityLabel?: string;
+    numberOfLines?: number;
 }
 
 interface State {
@@ -27,12 +28,16 @@ export default class HeaderText extends React.Component<Props, State> {
         switch(this.props.level) { 
             case 1: {           // Main section title
                 return {
-
+                    fontSize: 22,
+                    fontFamily: "OpenSans-SemiBold",
                 }
             }
                 break;
             case 2: {
-                this.props.level
+                return {
+                    fontSize: 20,
+                    fontFamily: "OpenSans-SemiBold",
+                }
             }
                 break;
             case 3: {
@@ -44,13 +49,16 @@ export default class HeaderText extends React.Component<Props, State> {
                 break;
             case 4: {
                 return {
-                    fontSize: 17,
-                    fontFamily: "OpenSans-Italic",
+                    fontSize: 20,
+                    fontFamily: "AlegreyaSansSC-Regular",
                 }
             }
                 break;
             case 5: {
-                this.props.level
+                return {
+                    fontSize: 17,
+                    fontFamily: "OpenSans-Regular",
+                }
             }
                 break;
             case 6: {
@@ -69,6 +77,8 @@ export default class HeaderText extends React.Component<Props, State> {
         return (
             <Text style={[localStyle.headerDefault, this.headerStyle(), this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel} 
+                numberOfLines={this.props.numberOfLines}
+                ellipsizeMode={"tail"}
             >
                 {this.props.children}
             </Text>

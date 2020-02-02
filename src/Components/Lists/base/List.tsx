@@ -21,16 +21,14 @@ interface Identifiable {
 const localStyle = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "lightblue",
+        backgroundColor: "transparent",
         flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "95%",
+        justifyContent: "flex-start",
+        alignItems: "stretch",
     },
     list: {
         flex: 1,
-        backgroundColor: "lightgreen",
-        width: "95%",
+        backgroundColor: "transparent",
     },
 });
 
