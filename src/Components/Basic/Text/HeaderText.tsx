@@ -8,6 +8,7 @@ interface Props {
     level: 1 | 2 | 3 | 4 | 5 | 6
     accessibilityLabel?: string;
     numberOfLines?: number;
+    ellipsizeMode?: "clip" | "head" | "middle" | "tail"
 }
 
 interface State {
@@ -78,7 +79,7 @@ export default class HeaderText extends React.Component<Props, State> {
             <Text style={[localStyle.headerDefault, this.headerStyle(), this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel} 
                 numberOfLines={this.props.numberOfLines}
-                ellipsizeMode={"tail"}
+                ellipsizeMode={this.props.ellipsizeMode ? this.props.ellipsizeMode : "tail"}
             >
                 {this.props.children}
             </Text>

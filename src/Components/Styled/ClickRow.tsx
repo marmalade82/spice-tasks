@@ -3,7 +3,18 @@ import React from "react";
 
 import { View, StyleProp, ViewStyle } from "react-native";
 import { ColumnView, RowView, BodyText, HeaderText, RowReverseView } from "src/Components/Basic/Basic";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native";
+import { 
+    ROW_HEIGHT, 
+    ROW_CONTAINER_HEIGHT, 
+    LEFT_FIRST_MARGIN,
+    RIGHT_FIRST_MARGIN,
+    ICON_CONTAINER_WIDTH,
+    PRIMARY_COLOR,
+    TEXT_VERTICAL_MARGIN,
+    TEXT_HORIZONTAL_MARGIN,
+    Styles,
+} from "src/Components/Styled/Styles";
 
 interface Props {
     number: number;
@@ -26,11 +37,9 @@ export default class ClickRow extends React.Component<Props> {
                     style={[{
                         flexDirection: "column",
                         flex: 0,
-                        height: 62,
+                        height: ROW_CONTAINER_HEIGHT,
                         width: "100%",
-                        //marginBottom: 10,
                         backgroundColor: "white",
-                        //elevation: 5,
                         justifyContent: "center",
                         alignItems: "stretch"
                     }, this.props.style]}
@@ -46,16 +55,13 @@ export default class ClickRow extends React.Component<Props> {
             
             return (
                     <TouchableOpacity
-                        style={{
+                        style={[{
                             flex: 0,
-                            height: 60,
+                            height: ROW_HEIGHT,
                             width: "100%",
                             backgroundColor: "white",
                             flexDirection: "row",
-                            justifyContent: "center",
-                            alignItems: "stretch",
-                            marginLeft: 0,
-                        }}
+                        }, Styles.CENTERED_PRIMARY]}
                         onPress={this.props.onPress}
                     >
                         {this.renderRow()}
@@ -70,28 +76,22 @@ export default class ClickRow extends React.Component<Props> {
     
     renderRow = () => {
         return (
-                <RowView style={{
+                <RowView style={[{
                     flex: 1,
-                    height: 60,
+                    height: ROW_HEIGHT,
                     width: "100%",
-                    justifyContent: "center",
-                    alignItems: "stretch",
-                    paddingLeft: 15,
-                    paddingRight: 15,
-                }}>
-                    <RowView style={{
-                        alignItems: "center",
-                        justifyContent: "flex-start",
+                    paddingLeft: LEFT_FIRST_MARGIN,
+                    paddingRight: RIGHT_FIRST_MARGIN,
+                }, Styles.CENTERED_PRIMARY]}>
+                    <RowView style={[{
                         backgroundColor: "white",
-                    }}>
-                        <View style={{
-                            height: 37,
-                            width: 37,
-                            borderRadius: 37/2,
-                            backgroundColor: "rgb(191,38,0)",
-                            justifyContent: "center",
-                            alignItems: "center"
-                        }}>
+                    }, Styles.CENTERED_SECONDARY]}>
+                        <View style={[{
+                            height: ICON_CONTAINER_WIDTH,
+                            width: ICON_CONTAINER_WIDTH,
+                            borderRadius: ICON_CONTAINER_WIDTH/2,
+                            backgroundColor: PRIMARY_COLOR,
+                        }, Styles.CENTERED]}>
                             <HeaderText level={3} style={{
                                 color: "white",
                             }}>
@@ -99,19 +99,18 @@ export default class ClickRow extends React.Component<Props> {
                             </HeaderText>
                         </View>
                         <HeaderText level={3} style={{
-                            margin: 15,
-                            marginLeft: 9,
+                            marginTop: TEXT_VERTICAL_MARGIN,
+                            marginBottom: TEXT_VERTICAL_MARGIN,
+                            marginLeft: TEXT_HORIZONTAL_MARGIN,
                         }}>
                             {this.props.text}
                         </HeaderText>
 
                     </RowView>
-                    <RowReverseView style={{
+                    <RowReverseView style={[{
                         flex: 0, // this takes up as much as space as what it contains.
-                        justifyContent: "flex-start",
-                        alignItems: "center",
                         backgroundColor: "white",
-                    }}>
+                    }, Styles.CENTERED_SECONDARY]}>
                         { this.renderRightElements() }
                     </RowReverseView>
                 </RowView>

@@ -22,6 +22,7 @@ import ClaimedRewardListScreen from "src/Screens/Rewards/ClaimedRewardListScreen
 import HomePageScreen from "src/Screens/Home/HomePageScreen";
 import RemainingTaskScreen from "src/Screens/Tasks/RemainingTaskScreen";
 import SpecificTaskScreen from "src/Screens/Tasks/SpecificTaskScreen";
+import SpecificTaskListScreen from "src/Screens/Tasks/SpecificTaskListsScreen";
 import TestScreen from "src/Screens/TestScreen";
 
 export {
@@ -47,5 +48,6 @@ export {
     HomePageScreen as HomePage,
     RemainingTaskScreen as RemainingTasks,
     SpecificTaskScreen as SpecificTask,
+    SpecificTaskListScreen as SpecificTaskList,
     TestScreen as Test,
 }

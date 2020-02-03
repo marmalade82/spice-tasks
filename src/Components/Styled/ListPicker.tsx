@@ -3,13 +3,15 @@ import DataComponent from "src/Components/base/DataComponent";
 import { ColumnView, RowView, RowReverseView, ColumnReverseView } from "src/Components/Basic/Basic";
 import { ClickRow } from "./Styled";
 import { Icon } from "react-native-elements";
-import { View } from "react-native";
+import { View, StyleProp, ViewStyle } from "react-native";
+import { CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION } from "./Styles";
 
 interface Props {
     lists: List[]
     data: Data | false
     onDataChange: (d: Data) => void;
     layout: "top" | "bottom";
+    style: StyleProp<ViewStyle>;
 }
 
 interface List {
@@ -46,16 +48,17 @@ export default class ListPicker extends DataComponent<Props, State, State> {
     render = () => {
         if(this.props.layout === "top") {
             return (
-                <ColumnView style={{
-                    justifyContent: "flex-start",
-                    backgroundColor: "transparent",
-                }}>
+                <ColumnView style={[{
+                        justifyContent: "flex-start",
+                        backgroundColor: "transparent",
+                    }, this.props.style]}
+                >
                     <ColumnView style={{
                         flex: 0,
                         justifyContent: "flex-start",
-                        marginBottom: 10,
+                        marginBottom: CONTAINER_VERTICAL_MARGIN,
                         backgroundColor: "white",
-                        elevation: 5,
+                        elevation: CONTAINER_ELEVATION,
                     }}>
                         { this.renderSelectors() }
                     </ColumnView>
@@ -63,7 +66,7 @@ export default class ListPicker extends DataComponent<Props, State, State> {
                         flex: 1,
                         justifyContent: "flex-start",
                         backgroundColor: "transparent",
-                        marginBottom: 10,
+                        marginBottom: CONTAINER_VERTICAL_MARGIN,
                     }}>
                         { this.renderLists() }
                     </ColumnView>
@@ -79,9 +82,9 @@ export default class ListPicker extends DataComponent<Props, State, State> {
                     <ColumnView style={{
                         flex: 0,
                         justifyContent: "flex-start",
-                        marginTop: 10,
+                        marginTop: CONTAINER_VERTICAL_MARGIN,
                         backgroundColor: "white",
-                        elevation: 5,
+                        elevation: CONTAINER_ELEVATION,
                     }}>
                         { this.renderSelectors() }
                     </ColumnView>

@@ -32,6 +32,7 @@ const ScreenNavigator = createStackNavigator(
   , HomePage : Screens.HomePage
   , RemainingTasks : Screens.RemainingTasks
   , SpecificTask: Screens.SpecificTask
+  , SpecificTaskLists: Screens.SpecificTaskList
   , Test: Screens.Test
   },
   { initialRouteName: 'Home'
