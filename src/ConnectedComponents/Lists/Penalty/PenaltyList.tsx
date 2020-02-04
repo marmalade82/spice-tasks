@@ -19,19 +19,11 @@ const AdaptedPenaltyList: React.FunctionComponent<Props> = (props: Props) => {
     
     const renderPenalty = (item: Penalty) => {
         return (
-            <ClickNavigation
+            <ConnectedPenaltyListItem
+                penalty={item}
                 navigation={props.navigation}
-                parameters={{
-                    id: item.id
-                }}
-                destination={"AddPenalty"}
-                navType={"push"}
             >
-                <ConnectedPenaltyListItem
-                    penalty={item}
-                >
-                </ConnectedPenaltyListItem>
-            </ClickNavigation>
+            </ConnectedPenaltyListItem>
         )
     }
 

@@ -11,6 +11,7 @@ import withObservables from "@nozbe/with-observables";
 
 interface Props {
     penalty: Penalty
+    navigation: any,
 }
 
 const AdaptedPenaltyListItem: React.FunctionComponent<Props> = function(props: Props) {
@@ -25,12 +26,14 @@ const AdaptedPenaltyListItem: React.FunctionComponent<Props> = function(props: P
         <PenaltyListItem
             item={mappedPenalty}
             accessibilityLabel={"penalty-list-item"}
+            navigation={props.navigation}
         ></PenaltyListItem>
     );
 }
 
 interface InputProps {
     penalty: Penalty
+    navigation: any,
 }
 
 /**
