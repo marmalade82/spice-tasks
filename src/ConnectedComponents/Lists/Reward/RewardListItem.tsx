@@ -11,6 +11,7 @@ import withObservables from "@nozbe/with-observables";
 
 interface Props {
     reward: Reward
+    navigation: any
 }
 
 const AdaptedRewardListItem: React.FunctionComponent<Props> = function(props: Props) {
@@ -25,12 +26,14 @@ const AdaptedRewardListItem: React.FunctionComponent<Props> = function(props: Pr
         <RewardListItem
             item={mappedReward}
             accessibilityLabel={"reward-list-item"}
+            navigation={props.navigation}
         ></RewardListItem>
     );
 }
 
 interface InputProps {
     reward: Reward
+    navigation: any
 }
 
 /**

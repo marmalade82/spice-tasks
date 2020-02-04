@@ -1,10 +1,13 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import Item from "src/Components/Lists/Items/base/Item";
+import { ListItem } from "src/Components/Styled/Styled";
+import MyDate from "src/common/Date";
 
 interface Props {
     item: Reward
     accessibilityLabel: string
+    navigation: any
 }
 
 interface State {
@@ -51,18 +54,20 @@ export default class RewardListItem extends Item<Props, State, Reward> {
     }
     
     render = () => {
-        const item = this.props.item
+        const {id, title, expire_date} = this.props.item
 
         return (
-            <View style={[localStyle.container]} accessibilityLabel={this.props.accessibilityLabel}>
-                <View style={localStyle.title}>
-                    <Text>{item.title + " : " + item.id}</Text>
-                </View>
-                <View style={localStyle.details}>
-                    <Text>{item.expire_date.toString()}</Text>
-                </View>
-            </View>
-        );
+            <ListItem
+                navigation={this.props.navigation}
+                params={{id: id}}
+                destination={"AddReward"}
+                text={title}
+                subtext={new MyDate(expire_date).format("MMM Do")}
+                number={0}
+                key={id}
+                accessibilityLabel={this.props.accessibilityLabel}
+            ></ListItem>
+        )
     }
 }
 

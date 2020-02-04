@@ -19,20 +19,11 @@ const AdaptedRewardList: React.FunctionComponent<Props> = (props: Props) => {
     
     const renderReward = (item: Reward) => {
         return (
-            <ClickNavigation
+            <ConnectedRewardListItem
+                reward={item}
                 navigation={props.navigation}
-                parameters={{
-                    id: item.id
-                }}
-                destination={"AddReward"}
-                navType={"push"}
-                style={{}}
             >
-                <ConnectedRewardListItem
-                    reward={item}
-                >
-                </ConnectedRewardListItem>
-            </ClickNavigation>
+            </ConnectedRewardListItem>
         )
     }
 
