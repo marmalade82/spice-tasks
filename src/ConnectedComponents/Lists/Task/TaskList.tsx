@@ -13,6 +13,7 @@ import TaskQuery from "src/Models/Task/TaskQuery";
 import List from "src/Components/Lists/base/List";
 import ClickNavigation from "src/Components/Navigation/ClickNavigation";
 import { Query } from "@nozbe/watermelondb";
+import {Text} from "react-native";
 
 interface Props {
     tasks: Task[];
@@ -23,17 +24,12 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
     
     const renderTask = (item: Task) => {
         return (
-            <ClickNavigation
-                navigation={props.navigation}
-                parameters={{id: item.id}}            
-                destination={'Task'}
-                navType={"push"}
-            >
                     <ConnectedTaskListItem
                         task={item}
+                        navigation={props.navigation}
                     ></ConnectedTaskListItem>
-            </ClickNavigation>
-        )
+        );
+        
     }
 
     return (

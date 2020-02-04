@@ -8,9 +8,11 @@ import {
 
 import Task from "src/Models/Task/Task";
 import withObservables from "@nozbe/with-observables";
+import {Text} from "react-native";
 
 interface Props {
     task: Task
+    navigation: any
 }
 
 const AdaptedTaskListItem: React.FunctionComponent<Props> = function(props: Props) {
@@ -26,12 +28,14 @@ const AdaptedTaskListItem: React.FunctionComponent<Props> = function(props: Prop
         <TaskListItem
             item={mappedTask}
             accessibilityLabel={"task-list-item"}
+            navigation={props.navigation}
         ></TaskListItem>
     );
 }
 
-interface InputProps {
-    task: Task
+interface InputProps extends Props {
+    task: Task,
+    navigation: any,
 }
 
 const enhance = withObservables(['task'], (props: InputProps) => {

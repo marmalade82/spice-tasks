@@ -2,43 +2,18 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import Item from "src/Components/Lists/Items/base/Item";
+import { ListItem } from "src/Components/Styled/Styled";
+import MyDate from "src/common/Date";
 
 interface Props {
     item: Task
     accessibilityLabel: string
+    navigation: any
 }
 
 interface State {
 
 }
-
-const localStyle = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "pink",
-        borderColor: "black",
-        borderWidth: 1,
-        flexDirection: 'column'
-    },
-    title: {
-        paddingTop: "2%",
-        paddingBottom: "2%",
-        paddingLeft: "2%",
-        paddingRight: "2%",
-        flex: 1,
-        flexDirection: 'row',
-    },
-    details: {
-        paddingTop: "2%",
-        paddingLeft: "2%",
-        paddingRight: "2%",
-        paddingBottom: "2%",
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor: "white",
-        flexWrap: 'wrap',
-    },
-});
 
 interface Task {
     id: string;
@@ -54,20 +29,22 @@ export default class TaskListItem extends Item<Props, State, Task> {
     
     render = () => {
         const item = this.props.item
+        const { id, title, due_date, start_date } = this.props.item;
 
         return (
-            <View style={[localStyle.container]}
+            <ListItem
+                text={title}
+                subtext={new MyDate(due_date).format("MMM Do")}
+                navigation={this.props.navigation}
+                destination={'Task'}
+                params={{id: id}}
+                number={0}
+                key={id}
                 accessibilityLabel={this.props.accessibilityLabel}
             >
-                <View style={localStyle.title}>
-                    <Text>{item.title + " : " + item.id}</Text>
-                </View>
-                <View style={localStyle.details}>
-                    <Text>{item.start_date.toString()}</Text>
-                    <Text>{item.due_date.toString()}</Text>
-                </View>
-            </View>
-        );
+
+            </ListItem>
+        )
     }
 }
 

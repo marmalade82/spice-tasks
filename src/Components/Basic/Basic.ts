@@ -10,6 +10,7 @@ import HeaderText from "src/Components/Basic/Text/HeaderText";
 import BodyText from "src/Components/Basic/Text/BodyText";
 import Image from "src/Components/Basic/Image";
 import ViewWizard from "src/Components/Basic/ViewWizard";
+import TouchableView from "src/Components/Basic/TouchableView";
 
 export {
     ColumnView,
@@ -24,4 +25,5 @@ export {
     BodyText,
     Image,
     ViewWizard,
+    TouchableView,
 }

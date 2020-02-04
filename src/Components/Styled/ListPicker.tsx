@@ -11,7 +11,7 @@ interface Props {
     data: Data | false
     onDataChange: (d: Data) => void;
     layout: "top" | "bottom";
-    style: StyleProp<ViewStyle>;
+    style?: StyleProp<ViewStyle>;
 }
 
 interface List {

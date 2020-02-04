@@ -12,6 +12,7 @@ interface Props {
     id: string;
     model: Goal | Task;
     accessibilityLabel?: string;
+    navigation: any,
 }
 
 
@@ -28,6 +29,7 @@ const AdaptedGoalTaskItem: React.FunctionComponent<Props> = function(props: Prop
             <TaskListItem
                 item={mappedTask}
                 accessibilityLabel={props.accessibilityLabel ? props.accessibilityLabel : "task-list-item"}
+                navigation={props.navigation}
             >
 
             </TaskListItem>
@@ -57,6 +59,7 @@ interface InputProps {
     id: string;
     model: Goal | Task
     accessibilityLabel?: string;
+    navigation: any,
 }
 
 const enhance = withObservables(['id', 'model'], (props: InputProps) => {

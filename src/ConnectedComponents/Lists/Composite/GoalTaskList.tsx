@@ -32,16 +32,7 @@ type Segregated = { roots: (Goal | Task)[], rootsMap: {}, children: (Goal | Task
 const AdaptedGoalTaskList: React.FunctionComponent<Props> = function(props: Props) {
     const renderItem = (item: Item) => {
         return (
-            <ClickNavigation
-                navigation={props.navigation}
-                parameters={{
-                    id: item.model.id
-                }}
-                destination={getDestination(item.model)}
-                navType={"push"}
-            > 
-                {   _renderItem(item)  }
-            </ClickNavigation>
+               _renderItem(item)  
         );
 
         function getDestination(model: Goal | Task) {
@@ -57,6 +48,7 @@ const AdaptedGoalTaskList: React.FunctionComponent<Props> = function(props: Prop
                 <ConnectedGoalTaskItem
                     id={item.id}
                     model={item.model}
+                    navigation={props.navigation}
                 ></ConnectedGoalTaskItem>
             )
         }

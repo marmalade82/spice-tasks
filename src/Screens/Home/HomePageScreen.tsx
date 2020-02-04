@@ -1,6 +1,6 @@
 import React from "react";
-import { View } from "react-native";
-import { ColumnView, RowView, BodyText, HeaderText } from "src/Components/Basic/Basic";
+import { View, Text } from "react-native";
+import { ColumnView, RowView, BodyText, HeaderText, TouchableView } from "src/Components/Basic/Basic";
 import MyDate from "src/common/Date";
 import { NavigationRow, ScreenHeader, DocumentView } from "src/Components/Styled/Styled";
 import ClickNavigation from "src/Components/Navigation/ClickNavigation";

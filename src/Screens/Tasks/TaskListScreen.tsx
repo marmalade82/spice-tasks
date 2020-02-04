@@ -1,6 +1,6 @@
 
 import React from "react";
-import { View, ScrollView, SafeAreaView, Button } from "react-native";
+import { View, ScrollView, SafeAreaView, Button, Text } from "react-native";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
@@ -14,6 +14,10 @@ interface State {
 
 const localStyle = StyleSheet.create({
     container: {
+        justifyContent: "flex-start",
+        alignItems: 'stretch',
+        backgroundColor: "lightyellow",
+        flex: 1
     },
     button: {
         position: 'absolute',

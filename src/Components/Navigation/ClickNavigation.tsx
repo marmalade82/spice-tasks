@@ -7,7 +7,7 @@ interface Props {
     parameters: object;
     destination: string;
     navType: "navigate" | "push";
-    style: StyleProp<ViewStyle>
+    style?: StyleProp<ViewStyle>
 }
 
 interface State {}
