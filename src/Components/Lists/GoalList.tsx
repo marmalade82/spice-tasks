@@ -75,6 +75,7 @@ export default class GoalList extends React.Component<Props, State> {
                     <GoalListItem
                         item={item}
                         accessibilityLabel={"goal-list-item"}
+                        navigation={this.props.navigation}
                     ></GoalListItem>
                 </TouchableOpacity>
             </View>

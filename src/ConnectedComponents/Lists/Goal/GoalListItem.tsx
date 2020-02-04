@@ -10,7 +10,8 @@ import Goal from "src/Models/Goal/Goal";
 import withObservables from "@nozbe/with-observables";
 
 interface Props {
-    goal: Goal
+    goal: Goal,
+    navigation: any,
 }
 
 const AdaptedGoalListItem: React.FunctionComponent<Props> = function(props: Props) {
@@ -26,12 +27,14 @@ const AdaptedGoalListItem: React.FunctionComponent<Props> = function(props: Prop
         <GoalListItem
             item={mappedGoal}
             accessibilityLabel={"goal-list-item"}
+            navigation={props.navigation}
         ></GoalListItem>
     );
 }
 
 interface InputProps {
     goal: Goal
+    navigation: any,
 }
 
 const enhance = withObservables(['goal'], (props: InputProps) => {

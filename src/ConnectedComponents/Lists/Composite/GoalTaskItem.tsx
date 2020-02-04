@@ -47,6 +47,7 @@ const AdaptedGoalTaskItem: React.FunctionComponent<Props> = function(props: Prop
             <GoalListItem
                 item={mappedGoal}
                 accessibilityLabel={props.accessibilityLabel ? props.accessibilityLabel : "goal-list-item"}
+                navigation={props.navigation}
             >
 
             </GoalListItem>

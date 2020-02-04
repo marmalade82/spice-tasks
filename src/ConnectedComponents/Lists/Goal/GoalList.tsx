@@ -20,18 +20,10 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
     
     const renderGoal = (item: Goal) => {
         return (
-            <ClickNavigation
+            <ConnectedGoalListItem
+                goal={item}
                 navigation={props.navigation}
-                parameters={{
-                    id: item.id
-                }}
-                destination={"Goal"}
-                navType={"push"}
-            >
-                    <ConnectedGoalListItem
-                        goal={item}
-                    ></ConnectedGoalListItem>
-            </ClickNavigation>
+            ></ConnectedGoalListItem>
         );
     }
 
