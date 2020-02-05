@@ -6,6 +6,7 @@ import ListPicker from "src/Components/Styled/ListPicker";
 import ListItem from "src/Components/Styled/ListItem";
 import Summary from "src/Components/Styled/Summary";
 import IconButton from "src/Components/Styled/IconButton";
+import ModalIconButton from "src/Components/Styled/ModalIconButton";
 
 
 export {
@@ -17,4 +18,5 @@ export {
     ListItem,
     Summary,
     IconButton,
+    ModalIconButton,
 }

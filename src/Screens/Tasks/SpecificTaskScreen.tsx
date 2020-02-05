@@ -3,10 +3,10 @@ import React from "react";
 import { ColumnView, RowView, RowReverseView, HeaderText, BodyText } from "src/Components/Basic/Basic";
 import { 
     ScreenHeader, DocumentView, ClickRow, 
-    ListPicker, NavigationRow, Summary
+    ListPicker, NavigationRow, Summary,
+    ModalIconButton,
 } from "src/Components/Styled/Styled";
 import { View, Text } from "react-native";
-import { Icon } from "react-native-elements";
 import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
 import { 
     LEFT_SECOND_MARGIN, ICON_CONTAINER_WIDTH, PRIMARY_COLOR, 
@@ -81,7 +81,7 @@ export default class SpecificTaskScreen extends React.Component<Props, State> {
                         footerElements={[
                             () => { return <IconButton type={"edit"}></IconButton>},
                             () => { return <IconButton type={"add"}></IconButton>},
-                            () => { return <IconButton type={"more"}></IconButton>},
+                            () => { return <ModalIconButton type={"more"}></ModalIconButton>},
                         ]}
                     >
                     </Summary>
