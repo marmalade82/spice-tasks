@@ -10,6 +10,7 @@ import {
     ViewPicker,
 } from "src/Components/Basic/Basic";
 import NavigationButton from "src/Components/Navigation/NavigationButton";
+import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
 
 
 interface Props {
@@ -88,34 +89,11 @@ export default class TaskScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <ColumnView style={[localStyle.container, Style.redBg]}>
-                <ColumnView
-                    style={[localStyle.summary, Style.yellowBg]}
-                >
-                    {this.renderSummary()}
-                </ColumnView>
-                <RowView style={[localStyle.actionHeader, Style.greenBg]}>
-                    <ColumnView style={[localStyle.actionItem]}>
-                    </ColumnView>
-                    <ColumnView style={[localStyle.actionItem]}>
-                        <NavigationButton
-                            title={"+"}
-                            navigation={this.props.navigation}
-                            parameters={{
-                                id: "", // The task is new, so no id.
-                                parent_id: this.props.navigation.getParam("id", ""), // id of the task, since it is this task's parent.
-                            }}
-                            destination={'AddTask'}
-                            accessibilityLabel={"add-task-button"}
-                        ></NavigationButton>
-                    </ColumnView>
-                    <ColumnView style={[localStyle.actionItem]}>
-                        <Button
-                            title={"..."}
-                            onPress={() => {}}
-                        />
-                    </ColumnView>
-                </RowView>
+            <DocumentView>
+                <ScreenHeader>
+                    Task Summary
+                </ScreenHeader>
+                {this.renderSummary()}
                 <ColumnView style={[localStyle.list]}>
                     <ViewPicker
                         views={[...this.renderTaskLists()]}
@@ -125,18 +103,6 @@ export default class TaskScreen extends React.Component<Props, State> {
                         pickerHeight={60}
                     ></ViewPicker>
                 </ColumnView>
-                <RowView style={[localStyle.button]}>
-                    <NavigationButton
-                        title={"edit"} 
-                        navigation={this.props.navigation}
-                        parameters={{
-                            id: this.props.navigation.getParam('id', ''),
-                        }}
-                        color={"purple"}
-                        destination={"AddTask"}
-                        accessibilityLabel={"edit-task-button"}
-                    ></NavigationButton>
-                </RowView>
                 <RowView style={[localStyle.completeButton]}>
                     <MyButton
                         title={"Complete"}
@@ -145,16 +111,17 @@ export default class TaskScreen extends React.Component<Props, State> {
                         color={"orange"}
                     ></MyButton>
                 </RowView>
-            </ColumnView>
+            </DocumentView>
         );
     }
 
     renderSummary = () => {
         if(this.state.task) {
             return (
-                    <ConnectedTaskSummary
-                        task={this.state.task} 
-                    ></ConnectedTaskSummary>
+                <ConnectedTaskSummary
+                    navigation={this.props.navigation}
+                    task={this.state.task} 
+                ></ConnectedTaskSummary>
             );
         }
     }

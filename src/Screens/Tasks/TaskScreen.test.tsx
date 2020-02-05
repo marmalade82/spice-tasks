@@ -16,7 +16,7 @@ test("User has access to the complete button", async() => {
     const completeButton = getByLabelText("input-task-complete-button");
 });
 
-test("User can mark a task (and its children) as Complete/Inactive in the database", async () => {
+test.only("User can mark a task (and its children) as Complete/Inactive in the database", async () => {
     const opts = await setup();
 
     let activeTasks: Task[] = await new TaskQuery().activeTasks();

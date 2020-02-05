@@ -8,7 +8,6 @@ import {
 
 import Task from "src/Models/Task/Task";
 import withObservables from "@nozbe/with-observables";
-import {Text} from "react-native";
 
 interface Props {
     task: Task

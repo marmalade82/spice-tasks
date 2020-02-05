@@ -10,6 +10,7 @@ import TaskSummary from "src/Components/Summaries/TaskSummary";
 
 interface Props {
     task: Task,
+    navigation: any,
 }
 
 const AdaptedTaskSummary: React.FunctionComponent<Props> = (props: Props) => {
@@ -22,6 +23,7 @@ const AdaptedTaskSummary: React.FunctionComponent<Props> = (props: Props) => {
     return (
         <TaskSummary
             task={mappedTask}
+            navigation={props.navigation}
         >
         </TaskSummary>
     )
@@ -31,6 +33,7 @@ const AdaptedTaskSummary: React.FunctionComponent<Props> = (props: Props) => {
 
 interface InputProps {
     task: Task
+    navigation: any
 }
 
 /**

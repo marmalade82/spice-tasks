@@ -20,11 +20,13 @@ export const ICON_CONTAINER_WIDTH = 37;
 
 export const LEFT_SECOND_MARGIN = LEFT_FIRST_MARGIN + ICON_CONTAINER_WIDTH + TEXT_HORIZONTAL_MARGIN;
 
-export const RIGHT_SECOND_MARGIN = 25;
+export const RIGHT_SECOND_MARGIN = 25 + RIGHT_FIRST_MARGIN;
 
 export const CONTAINER_VERTICAL_MARGIN = 10;
 
 export const CONTAINER_ELEVATION = 5;
+
+export const SECONDARY_COLOR = "rgb(7,99,5)";
 
 export const Styles = StyleSheet.create({
     CENTERED: {

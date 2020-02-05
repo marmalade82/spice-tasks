@@ -11,9 +11,6 @@ import {
 } from "src/Models/Task/Task";
 import TaskQuery from "src/Models/Task/TaskQuery";
 import List from "src/Components/Lists/base/List";
-import ClickNavigation from "src/Components/Navigation/ClickNavigation";
-import { Query } from "@nozbe/watermelondb";
-import {Text} from "react-native";
 
 interface Props {
     tasks: Task[];

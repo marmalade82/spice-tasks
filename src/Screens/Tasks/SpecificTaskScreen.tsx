@@ -1,11 +1,20 @@
 import React from "react";
 
 import { ColumnView, RowView, RowReverseView, HeaderText, BodyText } from "src/Components/Basic/Basic";
-import { ScreenHeader, DocumentView, ClickRow, ListPicker, NavigationRow } from "src/Components/Styled/Styled";
-import List from "src/Components/Lists/base/List";
+import { 
+    ScreenHeader, DocumentView, ClickRow, 
+    ListPicker, NavigationRow, Summary
+} from "src/Components/Styled/Styled";
 import { View, Text } from "react-native";
 import { Icon } from "react-native-elements";
 import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
+import { 
+    LEFT_SECOND_MARGIN, ICON_CONTAINER_WIDTH, PRIMARY_COLOR, 
+    RIGHT_SECOND_MARGIN, TEXT_HORIZONTAL_MARGIN, SECONDARY_COLOR, 
+    PRIMARY_COLOR_LIGHT, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION, 
+    LEFT_FIRST_MARGIN, Styles, TEXT_VERTICAL_MARGIN, ROW_HEIGHT,
+} from "src/Components/Styled/Styles";
+import IconButton from "src/Components/Styled/IconButton";
 
 interface Props {
     navigation: any;
@@ -38,128 +47,78 @@ export default class SpecificTaskScreen extends React.Component<Props, State> {
                     {"Summary"}
                 </ScreenHeader>
                 <ScrollView>
-                <ColumnView style={{
-                    backgroundColor: "white",
-                    justifyContent: "flex-start",
-                    marginBottom: 10,
-                    paddingBottom: 30,
-                    flex: 0,
-                    maxHeight: "66%",
-                    overflow: "hidden",
-                    elevation: 5,
-                }}>
-                    <ScrollView style={{
-                    }}>
-                        <RowView style={{
-                            flex: 0,
-                            justifyContent: "flex-start",
-                            paddingLeft: 15,
-                            paddingRight: 15 + 25,
-                            alignItems: "stretch",
-                        }}>
-                            <RowView style={{
-                                flex: 1,
-                                justifyContent: "flex-start",
-                                alignItems: "center",
-                            }}>
-                                <View style={{
-                                    height: 37,
-                                    width: 37,
-                                    borderRadius: 37/2,
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    backgroundColor: "white"
-                                }}>
-                                    <Icon
-                                        name='sc-telegram'
-                                        type='evilicon'
-                                        color='darkgreen'
-                                    ></Icon>
-                                </View>
+                    <Summary
+                        style={{}}
+                        headerText={"Finish 3 Books this month, ideally with plenty of time to spare"} 
+                        bodyText={() => {
+                            return (
                                 <Text style={{
-                                        margin: 15,
-                                        marginLeft: 9,
-                                    }}
-                                >
-                                    <HeaderText 
-                                        level={3} 
-                                        style={{
-                                            
+                                }}>
+                                    <BodyText style={{
                                         }}
-                                    >
-                                        {"Finish 3 Books this month, ideally with plenty of time to spare"}
-                                    </HeaderText>
+                                    > 
+                                        {"1/12/2020"}
+                                        { " \u2013 "}
+                                        {"1/18/2020\n\n"}
+                                    </BodyText>
+                                    <BodyText style={{}}>
+                                        I'd like to be better read, so I've started to 
+                                        read on a regular basis. Classics that I've 
+                                        put off reading, like the Great Gatsby and 
+                                        Shakespeare, are now first in line on my bookshelf.
+                                        I'd like to be better read, so I've started to 
+                                        read on a regular basis. Classics that I've 
+                                        put off reading, like the Great Gatsby and 
+                                        Shakespeare, are now first in line on my bookshelf.
+                                        I'd like to be better read, so I've started to 
+                                        read on a regular basis. Classics that I've 
+                                        put off reading, like the Great Gatsby and 
+                                        Shakespeare, are now first in line on my bookshelf.
+                                    </BodyText>
                                 </Text>
-                            </RowView>
-                        </RowView>
-                        <RowView style={{
-                            flex: 0,
-                            justifyContent: "flex-start",
-                            paddingLeft: 15 + 9 + 37,
-                            paddingRight: 15 + 25,
-                            alignItems: "stretch",
-                        }}>
-                            <Text style={{
-                            }}>
-                                <BodyText style={{
-                                    }}
-                                > 
-                                    {"1/12/2020"}
-                                    { " \u2013 "}
-                                    {"1/18/2020\n\n"}
-                                </BodyText>
-                                <BodyText style={{}}>
-                                    I'd like to be better read, so I've started to 
-                                    read on a regular basis. Classics that I've 
-                                    put off reading, like the Great Gatsby and 
-                                    Shakespeare, are now first in line on my bookshelf.
-                                    I'd like to be better read, so I've started to 
-                                    read on a regular basis. Classics that I've 
-                                    put off reading, like the Great Gatsby and 
-                                    Shakespeare, are now first in line on my bookshelf.
-                                    I'd like to be better read, so I've started to 
-                                    read on a regular basis. Classics that I've 
-                                    put off reading, like the Great Gatsby and 
-                                    Shakespeare, are now first in line on my bookshelf.
-                                </BodyText>
-                            </Text>
-                        </RowView>
-                    </ScrollView>
-                </ColumnView>
-                <NavigationRow
-                    number={2}
-                    text={"Active"}
-                    navOptions={{
-                        navigation: this.props.navigation,
-                        destination: "SpecificTaskLists",
-                        type: "push",
-                        parameters: {
-                            id: "",
-                            index: 0,
-                        }
-                    }}
-                    style={{
-                        marginBottom: 0,
-                        elevation: 0,
-                        borderBottomWidth: 1,
-                        borderBottomColor: "lightgrey",
-                    }}
-                ></NavigationRow>
-                <NavigationRow
-                    number={2}
-                    text={"Completed"}
-                    navOptions={{
-                        navigation: this.props.navigation,
-                        destination: "SpecificTaskLists",
-                        type: "push",
-                        parameters: {
-                            id: "",
-                            index: 1,
-                        }
-                    }}
-                >
+                            )
+                        }}
+                        footerElements={[
+                            () => { return <IconButton type={"edit"}></IconButton>},
+                            () => { return <IconButton type={"add"}></IconButton>},
+                            () => { return <IconButton type={"more"}></IconButton>},
+                        ]}
+                    >
+                    </Summary>
+                    <NavigationRow
+                        number={2}
+                        text={"Active"}
+                        navOptions={{
+                            navigation: this.props.navigation,
+                            destination: "SpecificTaskLists",
+                            type: "push",
+                            parameters: {
+                                id: "",
+                                index: 0,
+                            }
+                        }}
+                        style={{
+                            marginBottom: 0,
+                            elevation: 0,
+                            borderBottomWidth: 1,
+                            borderBottomColor: "lightgrey",
+                        }}
+                    ></NavigationRow>
+                    <NavigationRow
+                        number={2}
+                        text={"Completed"}
+                        navOptions={{
+                            navigation: this.props.navigation,
+                            destination: "SpecificTaskLists",
+                            type: "push",
+                            parameters: {
+                                id: "",
+                                index: 1,
+                            }
+                        }}
+                    >
 
-                </NavigationRow>
+                    </NavigationRow>
                 </ScrollView>
             </DocumentView>
         );
