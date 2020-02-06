@@ -7,6 +7,8 @@ import ListItem from "src/Components/Styled/ListItem";
 import Summary from "src/Components/Styled/Summary";
 import IconButton from "src/Components/Styled/IconButton";
 import ModalIconButton from "src/Components/Styled/ModalIconButton";
+import Icon from "src/Components/Styled/Icon";
+import ModalRow from "src/Components/Styled/ModalRow";
 
 
 export {
@@ -19,4 +21,6 @@ export {
     Summary,
     IconButton,
     ModalIconButton,
+    Icon,
+    ModalRow,
 }

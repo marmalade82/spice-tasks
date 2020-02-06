@@ -26,7 +26,7 @@ export default class BodyText extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <Text style={[localStyle.defaultText,]} accessibilityLabel={this.props.accessibilityLabel}>
+            <Text style={[localStyle.defaultText, this.props.style]} accessibilityLabel={this.props.accessibilityLabel}>
                 {this.props.children}
             </Text>
         );

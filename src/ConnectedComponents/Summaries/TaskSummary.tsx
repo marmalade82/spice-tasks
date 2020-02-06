@@ -11,6 +11,7 @@ import TaskSummary from "src/Components/Summaries/TaskSummary";
 interface Props {
     task: Task,
     navigation: any,
+    onModalChoice: (s: "complete" | "delete") => void;
 }
 
 const AdaptedTaskSummary: React.FunctionComponent<Props> = (props: Props) => {
@@ -24,6 +25,7 @@ const AdaptedTaskSummary: React.FunctionComponent<Props> = (props: Props) => {
         <TaskSummary
             task={mappedTask}
             navigation={props.navigation}
+            onModalChoice={props.onModalChoice}
         >
         </TaskSummary>
     )
@@ -34,6 +36,7 @@ const AdaptedTaskSummary: React.FunctionComponent<Props> = (props: Props) => {
 interface InputProps {
     task: Task
     navigation: any
+    onModalChoice: (s: "complete" | "delete") => void;
 }
 
 /**

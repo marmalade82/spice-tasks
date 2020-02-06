@@ -87,6 +87,20 @@ export default class TaskScreen extends React.Component<Props, State> {
         });
     }
 
+    onModalChoice = (str: "complete" | "delete") => {
+        switch(str) {
+            case "complete": {
+                this.onCompleteTask();
+            } break;
+            case "delete": {
+
+            } break;
+            default: {
+                // DO NOTHING
+            }
+        }
+    }
+
     render = () => {
         return (
             <DocumentView>
@@ -103,14 +117,6 @@ export default class TaskScreen extends React.Component<Props, State> {
                         pickerHeight={60}
                     ></ViewPicker>
                 </ColumnView>
-                <RowView style={[localStyle.completeButton]}>
-                    <MyButton
-                        title={"Complete"}
-                        onPress={this.onCompleteTask}
-                        accessibilityLabel={"task-complete-button"}
-                        color={"orange"}
-                    ></MyButton>
-                </RowView>
             </DocumentView>
         );
     }
@@ -121,6 +127,7 @@ export default class TaskScreen extends React.Component<Props, State> {
                 <ConnectedTaskSummary
                     navigation={this.props.navigation}
                     task={this.state.task} 
+                    onModalChoice={this.onModalChoice}
                 ></ConnectedTaskSummary>
             );
         }

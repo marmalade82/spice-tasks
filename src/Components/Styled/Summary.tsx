@@ -1,8 +1,7 @@
 import React from "react";
 
 import { ColumnView, RowView, RowReverseView, HeaderText, BodyText } from "src/Components/Basic/Basic";
-import { View, Text, StyleProp, ViewStyle, } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { View, Text, StyleProp, ViewStyle, ScrollView, } from "react-native";
 import { Icon } from "react-native-elements";
 import { 
     LEFT_SECOND_MARGIN, ICON_CONTAINER_WIDTH, PRIMARY_COLOR, 
@@ -26,7 +25,6 @@ export default class Summary extends React.Component<Props, State> {
     }
 
     render = () => {
-
         return (
                 <ColumnView style={[{
                     backgroundColor: "white",
@@ -100,6 +98,7 @@ export default class Summary extends React.Component<Props, State> {
                             return render();
                         })}
                     </RowView>
+                    
                 </ColumnView>
         )
     }

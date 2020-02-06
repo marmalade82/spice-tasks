@@ -5,16 +5,17 @@ import Style from "src/Style/Style";
 import {
     ColumnView, RowView, BodyText,
 } from "src/Components/Basic/Basic";
-import { Summary, IconButton } from "src/Components/Styled/Styled"
+import { Summary, IconButton, ModalIconButton, ModalRow } from "src/Components/Styled/Styled"
 import MyDate from "src/common/Date";
 
 interface Props {
     task: Task
     navigation: any
+    onModalChoice: (s: "complete" | "delete") => void;
 }
 
 interface State {
-
+    showMore: boolean;
 }
 
 interface Task {
@@ -45,7 +46,12 @@ const localStyle = StyleSheet.create({
 
 
 export default class TaskSummary extends React.Component<Props, State> {
-
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            showMore: false,
+        }
+    }
 
     render = () => {
         const { title, due_date } = this.props.task
@@ -76,6 +82,7 @@ export default class TaskSummary extends React.Component<Props, State> {
                                     );
                                 }}
                                 accessibilityLabel={"edit-task-button"}
+                                key={"edit"}
                             >
 
                             </IconButton>
@@ -93,10 +100,48 @@ export default class TaskSummary extends React.Component<Props, State> {
                                     );
                                 }}
                                 accessibilityLabel={"add-task-button"}
+                                key={"add"}
                             ></IconButton>
                         );
                     },
-                    () => { return <IconButton type={"more"}></IconButton>},
+                    () => { return (
+                                    <ModalIconButton type={"more"}
+                                        data={{
+                                            showModal: this.state.showMore
+                                        }}
+                                        onDataChange={({showModal}) => {
+                                            this.setState({
+                                                showMore: showModal
+                                            })
+                                        }}
+                                        accessibilityLabel={"task-more-button"}
+                                        key={"more"}
+                                    >
+                                        <ModalRow
+                                            text={"Complete"}
+                                            iconType={"complete"}
+                                            onPress={() => {
+                                                this.props.onModalChoice("complete");
+                                                this.setState({
+                                                    showMore: false,
+                                                })
+                                            }}
+                                            accessibilityLabel={"task-complete-button"}
+                                        ></ModalRow>
+                                        <ModalRow
+                                            text={"Delete"}
+                                            iconType={"delete"}
+                                            onPress={() => {
+                                                this.props.onModalChoice("delete");
+                                                this.setState({
+                                                    showMore: false,
+                                                })
+                                            }}
+                                            accessibilityLabel={"task-delete-button"}
+                                        ></ModalRow>
+                                    </ModalIconButton>
+                            );
+                    },
                 ]}
             ></Summary>
         )

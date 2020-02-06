@@ -4,6 +4,7 @@ import React from "react";
 interface Props {
     style: StyleProp<ViewStyle>
     onPress: () => void;
+    accessibilityLabel?: string;
 }
 
 export default class TouchableView extends React.Component<Props> {
@@ -16,6 +17,9 @@ export default class TouchableView extends React.Component<Props> {
             <TouchableOpacity
                 style={this.props.style}
                 onPress={this.props.onPress}
+                accessibilityLabel={
+                    this.props.accessibilityLabel ? "input-" + this.props.accessibilityLabel : undefined
+                }
             >
                 {this.props.children}
             </TouchableOpacity>

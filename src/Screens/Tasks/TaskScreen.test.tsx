@@ -2,7 +2,7 @@ jest.mock("src/Models/Database");
 
 import React from "react";
 import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cleanup } from '@testing-library/react-native';
-import { makeNavigation, destroyAllIn } from "src/common/test-utils";
+import { makeNavigation, destroyAllIn, destroyAll } from "src/common/test-utils";
 import TaskScreen from "src/Screens/Tasks/TaskScreen";
 import { TaskQuery, Task, ITask } from "src/Models/Task/TaskQuery";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
@@ -11,12 +11,53 @@ import DB from "src/Models/Database";
 
 afterEach(cleanup);
 
-test("User has access to the complete button", async() => {
-    const { getByLabelText, queryByLabelText, getByText, queryByText } = render(<TaskScreen navigation={makeNavigation({})}></TaskScreen>)
-    const completeButton = getByLabelText("input-task-complete-button");
-});
+test("User has access to the complete button and more button", async() => {
+    const opts = await setup();
+    const { getByLabelText, queryByLabelText, getByText, queryByText } = render(
+        <TaskScreen navigation={makeNavigation({id: opts.parentId})}>
 
-test.only("User can mark a task (and its children) as Complete/Inactive in the database", async () => {
+        </TaskScreen>
+    );
+    await wait(async () => {
+        const moreButton = getByLabelText("input-task-more-button");
+    })
+
+    await wait(async () => {
+        const completeButton = getByLabelText("input-task-complete-button");
+    })
+
+    await teardown();
+
+    async function setup() {
+        const opts = {
+            parentId: ""
+        }
+        await DB.get().action(async () => {
+            const parent = (await DB.get().collections.get('tasks').create((task: Task & ITask) => {
+                task.title = "Parent";
+                task.active = true;
+                task.state = 'open';
+            })) as Task;
+
+            opts.parentId = parent.id
+
+            const child = (await DB.get().collections.get('tasks').create((task: Task) => {
+                task.parentId = parent.id;
+                task.title= "Child";
+                task.active = true;
+                task.state = 'open';
+            }));
+        });
+
+        return opts;
+    }
+
+    async function teardown() {
+        await destroyAll();
+    }
+}, 10000);
+
+test("User can mark a task (and its children) as Complete/Inactive in the database", async () => {
     const opts = await setup();
 
     let activeTasks: Task[] = await new TaskQuery().activeTasks();
@@ -41,8 +82,11 @@ test.only("User can mark a task (and its children) as Complete/Inactive in the d
         const { getByLabelText } = render(
             <TaskScreen navigation={makeNavigation({id: opts.parentId})}></TaskScreen>
         );
-        const completeButton = getByLabelText("input-task-complete-button");
-        fireEvent.press(completeButton);
+
+        await wait(() => {
+            const completeButton = getByLabelText("input-task-complete-button");
+            fireEvent.press(completeButton);
+        })
     } 
 
     await wait(async() => {
@@ -109,7 +153,7 @@ test.only("User can mark a task (and its children) as Complete/Inactive in the d
     }
 }, 20000);
 
-test("User can view both active and inactive tasks", async () => {
+test.skip("User can view both active and inactive tasks", async () => {
     const opts = await setup();
 
     const { getByLabelText, queryAllByLabelText } = render(

@@ -1,20 +1,16 @@
 import React from "react";
 
-import { ColumnView, RowView, RowReverseView, HeaderText, BodyText } from "src/Components/Basic/Basic";
+import { 
+    ColumnView, RowView, RowReverseView, 
+    HeaderText, BodyText, TouchableView,
+} from "src/Components/Basic/Basic";
 import { 
     ScreenHeader, DocumentView, ClickRow, 
     ListPicker, NavigationRow, Summary,
-    ModalIconButton,
+    ModalIconButton, Icon, IconButton, ModalRow,
 } from "src/Components/Styled/Styled";
 import { View, Text } from "react-native";
-import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
-import { 
-    LEFT_SECOND_MARGIN, ICON_CONTAINER_WIDTH, PRIMARY_COLOR, 
-    RIGHT_SECOND_MARGIN, TEXT_HORIZONTAL_MARGIN, SECONDARY_COLOR, 
-    PRIMARY_COLOR_LIGHT, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION, 
-    LEFT_FIRST_MARGIN, Styles, TEXT_VERTICAL_MARGIN, ROW_HEIGHT,
-} from "src/Components/Styled/Styles";
-import IconButton from "src/Components/Styled/IconButton";
+import { ScrollView } from "react-native-gesture-handler";
 
 interface Props {
     navigation: any;
@@ -22,6 +18,7 @@ interface Props {
 
 interface State {
     current: number;
+    showMore: boolean;
 }
 
 
@@ -36,6 +33,7 @@ export default class SpecificTaskScreen extends React.Component<Props, State> {
 
         this.state = {
             current: -1,
+            showMore: false,
         }
     }
 
@@ -81,7 +79,40 @@ export default class SpecificTaskScreen extends React.Component<Props, State> {
                         footerElements={[
                             () => { return <IconButton type={"edit"}></IconButton>},
                             () => { return <IconButton type={"add"}></IconButton>},
-                            () => { return <ModalIconButton type={"more"}></ModalIconButton>},
+                            () => { 
+                                return (
+                                    <ModalIconButton type={"more"}
+                                        data={{
+                                            showModal: this.state.showMore
+                                        }}
+                                        onDataChange={({showModal}) => {
+                                            this.setState({
+                                                showMore: showModal
+                                            })
+                                        }}
+
+                                    >
+                                        <ModalRow
+                                            text={"Complete"}
+                                            iconType={"complete"}
+                                            onPress={() => {
+                                                this.setState({
+                                                    showMore: false
+                                                })
+                                            }}
+                                        ></ModalRow>
+                                        <ModalRow
+                                            text={"Delete"}
+                                            iconType={"delete"}
+                                            onPress={() => {
+                                                this.setState({
+                                                    showMore: false
+                                                })
+                                            }}
+                                        ></ModalRow>
+                                    </ModalIconButton>
+                                );
+                            },
                         ]}
                     >
                     </Summary>

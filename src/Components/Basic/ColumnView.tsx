@@ -23,15 +23,11 @@ const localStyle = StyleSheet.create({
 
 export default class ColumnView extends React.Component<Props, State> {
 
-    style = () => {
-        let styles = [localStyle.container, this.props.style];
-        return styles;
-    }
 
     render = () => {
         return (
             <View 
-                style={this.style()}
+                style={[localStyle.container, this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel} 
             >
                 {this.props.children}
