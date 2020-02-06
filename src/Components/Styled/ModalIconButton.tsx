@@ -1,7 +1,7 @@
 import React from "react";
 import IconButton from "src/Components/Styled/IconButton";
 import { View, Modal, TouchableWithoutFeedback } from "react-native";
-import { LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, RIGHT_SECOND_MARGIN } from "./Styles";
+import { LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, RIGHT_SECOND_MARGIN, OVERLAY, Styles, MODAL_VERTICAL_PADDING } from "./Styles";
 import DataComponent from "src/Components/base/DataComponent";
 
 interface Props {
@@ -68,14 +68,12 @@ export default class ModalIconButton extends DataComponent<Props, State, State> 
                             event.preventDefault();
                         }}
                     >
-                        <View style={{
+                        <View style={[{
                                 flex: 1,
-                                backgroundColor: "rgba(15,15,15,0.6)",
-                                justifyContent: "center",
-                                alignItems: "center",
+                                backgroundColor: OVERLAY,
                                 paddingLeft: RIGHT_SECOND_MARGIN,
                                 paddingRight: RIGHT_SECOND_MARGIN,
-                            }}
+                            }, Styles.CENTERED]}
                         >
                             <TouchableWithoutFeedback
                                 style={{
@@ -92,8 +90,8 @@ export default class ModalIconButton extends DataComponent<Props, State, State> 
                                     alignItems: "stretch",
                                     backgroundColor: "white",
                                     width: "100%",
-                                    paddingTop: 10,
-                                    paddingBottom: 10,
+                                    paddingTop: MODAL_VERTICAL_PADDING,
+                                    paddingBottom: MODAL_VERTICAL_PADDING,
                                 }}>
                                     {this.props.children}
                                 </View>

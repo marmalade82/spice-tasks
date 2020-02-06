@@ -30,6 +30,10 @@ export const SECONDARY_COLOR = "rgb(7,99,5)";
 
 export const MODAL_ROW_HEIGHT = 50;
 
+export const OVERLAY = "rgba(15,15,15,0.6)";
+
+export const MODAL_VERTICAL_PADDING = 10;
+
 export const Styles = StyleSheet.create({
     CENTERED: {
         justifyContent: "center",
