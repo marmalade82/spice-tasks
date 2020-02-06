@@ -28,6 +28,8 @@ export const CONTAINER_ELEVATION = 5;
 
 export const SECONDARY_COLOR = "rgb(7,99,5)";
 
+export const MODAL_ROW_HEIGHT = 50;
+
 export const Styles = StyleSheet.create({
     CENTERED: {
         justifyContent: "center",

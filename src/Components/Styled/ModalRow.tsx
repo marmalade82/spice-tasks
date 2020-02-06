@@ -5,6 +5,7 @@ import {
     HeaderText, BodyText, TouchableView,
 } from "src/Components/Basic/Basic";
 import Icon from "src/Components/Styled/Icon";
+import { LEFT_FIRST_MARGIN, MODAL_ROW_HEIGHT, Styles, TEXT_HORIZONTAL_MARGIN } from "./Styles";
 
 interface Props {
     text: string;
@@ -27,10 +28,10 @@ export default class ModalRow extends React.Component<Props, State> {
         return (
             <RowView style={{
                 flex: 0,
-                height: 50,
+                height: MODAL_ROW_HEIGHT,
                 justifyContent: "flex-start",
                 alignItems: "stretch",
-                paddingLeft: 15,
+                paddingLeft: LEFT_FIRST_MARGIN,
             }}>
                 <TouchableView
                     style={{flex: 1}} 
@@ -38,13 +39,11 @@ export default class ModalRow extends React.Component<Props, State> {
                     accessibilityLabel={this.props.accessibilityLabel}
                 >
                     <RowView
-                        style={{
+                        style={[{
                             flex: 1,
-                            justifyContent: "flex-start",
-                            alignItems: "center",
                             width: "100%",
                             backgroundColor: "white",
-                        }}
+                        }, Styles.CENTERED_SECONDARY]}
                     >
                         <Icon
                             type={this.props.iconType}
@@ -53,7 +52,7 @@ export default class ModalRow extends React.Component<Props, State> {
                         </Icon>
                         <HeaderText
                             style={{
-                                marginLeft: 9,
+                                marginLeft: TEXT_HORIZONTAL_MARGIN,
                             }}
                             level={3}
                         >
