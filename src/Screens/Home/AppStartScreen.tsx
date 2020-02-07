@@ -12,7 +12,7 @@ import {
 
 import { 
     CONTAINER_VERTICAL_MARGIN, ROW_CONTAINER_HEIGHT, Styles, 
-    LEFT_SECOND_MARGIN, PRIMARY_COLOR_LIGHT, LEFT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, RIGHT_SECOND_MARGIN
+    LEFT_SECOND_MARGIN, PRIMARY_COLOR_LIGHT, LEFT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, RIGHT_SECOND_MARGIN, ROW_HEIGHT
 } from "src/Components/Styled/Styles";
 
 interface Props {
@@ -78,6 +78,9 @@ export default class AppStartScreen extends React.Component<Props, State> {
                 <ScrollView>
 
                     <BackgroundTitle title={"Today"}
+                        style={{
+                            //marginTop: 2 * CONTAINER_VERTICAL_MARGIN,
+                        }}
                     ></BackgroundTitle>
                     <NavigationGroup
                         navigation={this.props.navigation}
@@ -173,6 +176,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                                     iconType={"goal"}
                                     iconBackground={"white"}
                                     onPress={() => {
+                                        this.props.navigation.navigate("AddGoal")
                                         this.setState({
                                             showAdd: false,
                                         })
@@ -183,6 +187,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                                     iconType={"task"}
                                     iconBackground={"white"}
                                     onPress={() => {
+                                        this.props.navigation.navigate("AddTask")
                                         this.setState({
                                             showAdd: false,
                                         })
@@ -193,6 +198,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                                     iconType={"reward"}
                                     iconBackground={"white"}
                                     onPress={() => {
+                                        this.props.navigation.navigate("AddReward")
                                         this.setState({
                                             showAdd: false,
                                         })
@@ -203,6 +209,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                                     iconType={"penalty"}
                                     iconBackground={"white"}
                                     onPress={() => {
+                                        this.props.navigation.navigate("AddPenalty")
                                         this.setState({
                                             showAdd: false,
                                         })
@@ -213,6 +220,9 @@ export default class AppStartScreen extends React.Component<Props, State> {
                     </RowView>
                     <NavigationGroup
                         navigation={this.props.navigation}
+                        style={{
+                            marginBottom: ROW_HEIGHT + 20,
+                        }}
                         rows={[
                             { text: "Goals"
                             , number: 4
