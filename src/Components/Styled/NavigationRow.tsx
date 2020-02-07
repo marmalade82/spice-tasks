@@ -9,7 +9,6 @@ interface Props {
     number: number;
     text: string;
     navOptions?: navOptions
-    key? : any
     style?: StyleProp<ViewStyle>
 }
 
@@ -32,6 +31,7 @@ export default class NavigationRow extends React.Component<Props> {
                 <View
                     style={[{
                         flex: 0,
+                        justifyContent: "space-evenly",
                         width: "100%",
                         height: ROW_CONTAINER_HEIGHT,
                         marginBottom: CONTAINER_VERTICAL_MARGIN,

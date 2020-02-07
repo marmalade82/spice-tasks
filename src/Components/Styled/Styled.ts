@@ -9,6 +9,8 @@ import IconButton from "src/Components/Styled/IconButton";
 import ModalIconButton from "src/Components/Styled/ModalIconButton";
 import Icon from "src/Components/Styled/Icon";
 import ModalRow from "src/Components/Styled/ModalRow";
+import NavigationGroup from "src/Components/Styled/NavigationGroup";
+import BackgroundTitle from "src/Components/Styled/BackgroundTitle";
 
 
 export {
@@ -23,4 +25,6 @@ export {
     ModalIconButton,
     Icon,
     ModalRow,
+    NavigationGroup,
+    BackgroundTitle,
 }

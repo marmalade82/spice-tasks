@@ -11,7 +11,7 @@ import {
 import { TouchableView } from "../Basic/Basic";
 
 interface Props {
-    type: "add" | "edit" | "more";
+    type: "add" | "edit" | "more" | "settings";
     onPress?: () => void;
     accessibilityLabel?: string;
 }
@@ -82,6 +82,17 @@ export default class IconButton extends React.Component<Props, State> {
                         name={"more-horizontal"}
                         type={"feather"}
                         color={"white"}
+                    >
+                    </Icon>
+                );
+            } break;
+            case "settings": {
+                return (
+                    <Icon
+                        name={"settings"}
+                        type={"feather"}
+                        color={"white"}
+                        size={20}
                     >
                     </Icon>
                 );

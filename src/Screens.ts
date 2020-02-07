@@ -23,6 +23,7 @@ import HomePageScreen from "src/Screens/Home/HomePageScreen";
 import RemainingTaskScreen from "src/Screens/Tasks/RemainingTaskScreen";
 import SpecificTaskScreen from "src/Screens/Tasks/SpecificTaskScreen";
 import SpecificTaskListScreen from "src/Screens/Tasks/SpecificTaskListsScreen";
+import AppStartScreen from "src/Screens/Home/AppStartScreen";
 import TestScreen from "src/Screens/TestScreen";
 
 export {
@@ -50,4 +51,5 @@ export {
     SpecificTaskScreen as SpecificTask,
     SpecificTaskListScreen as SpecificTaskList,
     TestScreen as Test,
+    AppStartScreen as AppStart,
 }

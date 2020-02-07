@@ -30,6 +30,7 @@ const ScreenNavigator = createStackNavigator(
   , AddPenalty: Screens.AddPenalty
   , ClaimedRewards: Screens.ClaimedRewardList
   , HomePage : Screens.HomePage
+  , AppStart : Screens.AppStart
   , RemainingTasks : Screens.RemainingTasks
   , SpecificTask: Screens.SpecificTask
   , SpecificTaskLists: Screens.SpecificTaskList

@@ -9,7 +9,9 @@ import { LEFT_FIRST_MARGIN, MODAL_ROW_HEIGHT, Styles, TEXT_HORIZONTAL_MARGIN } f
 
 interface Props {
     text: string;
-    iconType: "complete" | "delete";
+    iconType: "complete" | "delete" | "goal" | "task" | 
+        "reward" | "penalty";
+    iconBackground?: string;
     accessibilityLabel?: string;
     onPress: () => void;
 
@@ -48,6 +50,7 @@ export default class ModalRow extends React.Component<Props, State> {
                         <Icon
                             type={this.props.iconType}
                             accessibilityLabel={this.props.accessibilityLabel}
+                            backgroundColor={this.props.iconBackground}
                         >
                         </Icon>
                         <HeaderText

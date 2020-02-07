@@ -4,9 +4,9 @@ export const TEXT_VERTICAL_MARGIN = 15;
 
 export const TEXT_HORIZONTAL_MARGIN = 9;
 
-export const ROW_CONTAINER_HEIGHT = 62;
+export const ROW_CONTAINER_HEIGHT = 65;
 
-export const ROW_HEIGHT = ROW_CONTAINER_HEIGHT - 2;
+export const ROW_HEIGHT = ROW_CONTAINER_HEIGHT - 5;
 
 export const PRIMARY_COLOR = "rgb(191,38,0)";
 

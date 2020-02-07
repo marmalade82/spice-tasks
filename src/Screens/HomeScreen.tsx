@@ -31,7 +31,7 @@ export default class HomeScreen extends React.Component<Props, State> {
         this.state = {
             screens: [
                 'Dashboard', 'Goal', "Tasks", "Task", "Rewards", "Test", "RewardOptions", "EarnedReward",
-                'EarnedRewards', "Penalties", "AddPenalty", "HomePage",
+                'EarnedRewards', "Penalties", "AddPenalty", "HomePage", "AppStart",
             ]
         }
     }
@@ -42,6 +42,7 @@ export default class HomeScreen extends React.Component<Props, State> {
                 <Button 
                     title={screenName}
                     onPress={() => this.props.navigation.navigate(screenName)}
+                    key={screenName}
                 ></Button>
             );
         });

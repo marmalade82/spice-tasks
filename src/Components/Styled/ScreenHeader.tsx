@@ -6,10 +6,16 @@ import {
     RIGHT_FIRST_MARGIN, LEFT_SECOND_MARGIN, RIGHT_SECOND_MARGIN 
 } from "./Styles";
 import { Icon } from "react-native-elements";
-import { View } from "react-native";
+import { View, StyleProp, ViewStyle } from "react-native";
 
-export default class ScreenHeader extends React.Component {
+interface Props {
+    style?: StyleProp<ViewStyle>
+}
 
+export default class ScreenHeader extends React.Component<Props> {
+    constructor(props: Props) {
+        super(props);
+    }
 
     render = () => {
         return (
@@ -19,7 +25,7 @@ export default class ScreenHeader extends React.Component {
                 backgroundColor: PRIMARY_COLOR,
                 elevation: CONTAINER_ELEVATION,
                 paddingRight: RIGHT_FIRST_MARGIN,
-            }, Styles.CENTERED_SECONDARY]}>
+            }, Styles.CENTERED_SECONDARY, this.props.style]}>
                 <HeaderText level={1} style={{
                         marginTop: TEXT_VERTICAL_MARGIN,
                         marginLeft: LEFT_SECOND_MARGIN,

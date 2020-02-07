@@ -11,8 +11,10 @@ import {
 
 
 interface Props {
-    type: "complete" | "delete";
+    type: "complete" | "delete" | "goal" | "task" | 
+        "reward" | "penalty";
     accessibilityLabel?: string;
+    backgroundColor?: string;
 }
 
 interface State {
@@ -32,7 +34,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                         height: ICON_CONTAINER_WIDTH,
                         width: ICON_CONTAINER_WIDTH,
                         borderRadius: ICON_CONTAINER_WIDTH/2,
-                        backgroundColor: PRIMARY_COLOR,
+                        backgroundColor: this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR,
                     }, Styles.CENTERED]}
                     accessibilityLabel={this.props.accessibilityLabel}
                 >
@@ -65,7 +67,51 @@ export default class StyledIcon extends React.Component<Props, State>{
                     </Icon>
                 );
 
-            }
+            } break;
+            case "goal": {
+                return (
+                    <Icon
+                        name='target'
+                        type='feather'
+                        color={SECONDARY_COLOR}
+                    >
+
+                    </Icon>
+                );
+            } break;
+            case "task": {
+                return (
+                    <Icon
+                        name='activity'
+                        type='feather'
+                        color={SECONDARY_COLOR}
+                    >
+
+                    </Icon>
+                );
+            } break;
+            case "reward": {
+                return (
+                    <Icon
+                        name='star'
+                        type='feather'
+                        color={SECONDARY_COLOR}
+                    >
+
+                    </Icon>
+                );
+            } break;
+            case "penalty": {
+                return (
+                    <Icon
+                        name='heart'
+                        type='feather'
+                        color={SECONDARY_COLOR}
+                    >
+
+                    </Icon>
+                );
+            } break;
             default: {
                 return undefined
             }
