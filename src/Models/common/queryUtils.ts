@@ -58,6 +58,12 @@ function dueTodayConditions() {
     ]
 }
 
+function dueInFutureConditions() {
+    return [
+        Q.where(name.DUE_ON, Q.gte(new MyDate().toDate().valueOf()))
+    ]
+}
+
 function overdueConditions() {
     return [
         Q.where(name.DUE_ON, Q.lt(new MyDate().toDate().valueOf())),
@@ -91,6 +97,7 @@ export const Conditions = {
     open: openConditions,
     complete: completeConditions,
     dueToday: dueTodayConditions,
+    dueInFuture: dueInFutureConditions,
     overdue: overdueConditions,
     started: startedConditions,
     notDue: notDueConditions,

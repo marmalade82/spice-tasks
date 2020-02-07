@@ -49,6 +49,12 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
         );
     }
 
+    queryActiveAndDueSoonToday = () => {
+        return this.store().query(
+            ...[...Conditions.active(), ...Conditions.dueToday(), ...Conditions.dueInFuture()]
+        );
+    }
+
     queryActiveAndOverdue = () => {
         return this.store().query(
             ...[...Conditions.active(), ...Conditions.overdue()]

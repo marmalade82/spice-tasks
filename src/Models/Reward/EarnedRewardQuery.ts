@@ -19,6 +19,10 @@ export default class EarnedRewardQuery extends ModelQuery<EarnedReward, IEarnedR
             goalId: "",
         } as const
     }
+
+    queryUnused = () => {
+        return this.queryAll();
+    }
 }
 
 export {

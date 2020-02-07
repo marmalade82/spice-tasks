@@ -20,6 +20,7 @@ export default class EarnedReward extends Model implements IEarnedReward {
     @field(name.ACTIVE) active
     @field(name.TYPE) type
     @field(name.GOAL_ID) goalId
+
 }
 
 export {

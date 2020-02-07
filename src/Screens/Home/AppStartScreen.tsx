@@ -14,6 +14,11 @@ import {
     CONTAINER_VERTICAL_MARGIN, ROW_CONTAINER_HEIGHT, Styles, 
     LEFT_SECOND_MARGIN, PRIMARY_COLOR_LIGHT, LEFT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, RIGHT_SECOND_MARGIN, ROW_HEIGHT
 } from "src/Components/Styled/Styles";
+import withObservables from "@nozbe/with-observables";
+import GoalQuery from "src/Models/Goal/GoalQuery";
+import TaskQuery from "src/Models/Task/TaskQuery";
+import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
+import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
 
 interface Props {
     navigation: any;
@@ -76,46 +81,14 @@ export default class AppStartScreen extends React.Component<Props, State> {
                     { new MyDate(this.state.currentDate).format("MMMM Do, YYYY") }
                 </ScreenHeader>
                 <ScrollView>
-
                     <BackgroundTitle title={"Today"}
                         style={{
-                            //marginTop: 2 * CONTAINER_VERTICAL_MARGIN,
                         }}
                     ></BackgroundTitle>
-                    <NavigationGroup
+
+                    <ConnectedStatusList
                         navigation={this.props.navigation}
-                        style={{
-                            marginBottom: 0
-                        }}
-                        rows={[
-                            { text: "Tasks Remaining"
-                            , number: 4
-                            , navParams: {}
-                            , navDestination: "RemainingTasks"
-                            },
-                            { text: "Overdue"
-                            , number: 2
-                            , navParams: {}
-                            , navDestination: "Overdue"
-                            },
-                            { text: "Goals In Progress"
-                            , number: 1
-                            , navParams: {}
-                            , navDestination: "InProgressGoals"
-                            },
-                            { text: "Rewards Earned"
-                            , number: 5
-                            , navParams: {}
-                            , navDestination: "EarnedRewards"
-                            },
-                            { text: "Penalty Pending"
-                            , number: 1
-                            , navParams: {}
-                            , navDestination: "EarnedPenalties"
-                            },
-                        ]}
-                    >
-                    </NavigationGroup>
+                    ></ConnectedStatusList>
 
                     <RowView
                         style={{
@@ -252,3 +225,73 @@ export default class AppStartScreen extends React.Component<Props, State> {
         );
     }
 }
+
+
+interface StatusListProps {
+    overdueTaskCount: number;
+    remainingTodayTaskCount: number;
+    inProgressGoalsCount: number;
+    earnedRewardsCount: number;
+    earnedPenaltiesCount: number;
+    navigation: any;
+}
+const AdaptedStatusList: React.FunctionComponent<StatusListProps> = (props: StatusListProps) => {
+
+    return (
+        <NavigationGroup
+            navigation={props.navigation}
+            style={{
+                marginBottom: 0
+            }}
+            rows={[
+                { text: "Tasks Remaining"
+                , number: props.remainingTodayTaskCount
+                , navParams: {}
+                , navDestination: "RemainingTasks"
+                },
+                { text: "Overdue"
+                , number: props.overdueTaskCount
+                , navParams: {}
+                , navDestination: "Overdue"
+                },
+                { text: "Goals In Progress"
+                , number: props.inProgressGoalsCount
+                , navParams: {}
+                , navDestination: "InProgressGoals"
+                },
+                { text: "Rewards Earned"
+                , number: props.earnedRewardsCount
+                , navParams: {}
+                , navDestination: "EarnedRewards"
+                },
+                { text: "Penalty Pending"
+                , number: props.earnedPenaltiesCount
+                , navParams: {}
+                , navDestination: "EarnedPenalties"
+                },
+            ]}
+        >
+        </NavigationGroup>
+    );
+}
+
+interface AllStatusListProps {
+    navigation: any
+}
+
+/**
+ * TODO : earnedRewardsCount and earnedPenaltiesCount are still incorrect.
+ * TODO :   It is very likely that earned rewards are unnecessary -- no need to make user
+ * TODO :   perform the action. Just generate the reward for them automatically.
+ */
+const enhance = withObservables([], (_props: AllStatusListProps) => {
+    return {
+        overdueTaskCount: new TaskQuery().queryActiveAndOverdue().observeCount(),
+        remainingTodayTaskCount: new TaskQuery().queryActiveAndDueSoonToday().observeCount(),
+        inProgressGoalsCount: new GoalQuery().queryActiveAndStartedButNotDue().observeCount(),
+        earnedRewardsCount: new EarnedRewardQuery().queryUnused().observeCount(),
+        earnedPenaltiesCount: new EarnedRewardQuery().queryAll().observeCount(),
+    }
+});
+
+var ConnectedStatusList = enhance(AdaptedStatusList);
