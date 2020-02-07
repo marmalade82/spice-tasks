@@ -16,7 +16,8 @@ interface State {
 
 interface Row {
     text: string;
-    number: number;
+    number?: number;
+    icon?: "goal" | "task" | "reward" | "penalty";
     navParams: object;
     navDestination: string;
     navType?: "navigate" | "push";
@@ -61,10 +62,11 @@ export default class NavigationGroup extends React.Component<Props, State> {
                     }
                 }
 
-                const { number, text, navParams, navDestination, navType } = row;
+                const { number, icon, text, navParams, navDestination, navType } = row;
                 return (
                     <NavigationRow
                         number={number}
+                        icon={icon}
                         text={text}
                         navOptions={{
                             navigation: this.props.navigation,

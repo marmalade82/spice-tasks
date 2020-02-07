@@ -15,6 +15,7 @@ interface Props {
         "reward" | "penalty";
     accessibilityLabel?: string;
     backgroundColor?: string;
+    color?: string;
 }
 
 interface State {
@@ -50,7 +51,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"check"}
                         type={"feather"}
-                        color={"white"}
+                        color={this.props.color ? this.props.color : "white"}
                         size={20}
                     >
                     </Icon>
@@ -61,7 +62,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"trash"}
                         type={"feather"}
-                        color={"white"}
+                        color={this.props.color ? this.props.color : "white"}
                         size={20}
                     >
                     </Icon>
@@ -73,7 +74,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name='target'
                         type='feather'
-                        color={SECONDARY_COLOR}
+                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
                     >
 
                     </Icon>
@@ -84,7 +85,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name='activity'
                         type='feather'
-                        color={SECONDARY_COLOR}
+                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
                     >
 
                     </Icon>
@@ -95,7 +96,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name='star'
                         type='feather'
-                        color={SECONDARY_COLOR}
+                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
                     >
 
                     </Icon>
@@ -106,7 +107,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name='heart'
                         type='feather'
-                        color={SECONDARY_COLOR}
+                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
                     >
 
                     </Icon>

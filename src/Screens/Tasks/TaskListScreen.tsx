@@ -4,6 +4,7 @@ import { View, ScrollView, SafeAreaView, Button, Text } from "react-native";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
+import { DocumentView } from "src/Components/Styled/Styled";
 
 interface Props {
     navigation: any;
@@ -41,7 +42,7 @@ export default class TaskListScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <View style={[Style.container, localStyle.container]}>
+            <DocumentView>
                 <ConnectedTaskList
                     navigation={this.props.navigation}
                     parentId={false}
@@ -58,7 +59,7 @@ export default class TaskListScreen extends React.Component<Props, State> {
                         }}
                     />
                 </View>
-            </View>
+            </DocumentView>
         );
     }
 }

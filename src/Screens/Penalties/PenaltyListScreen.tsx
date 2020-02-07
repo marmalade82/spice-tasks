@@ -3,6 +3,7 @@ import React from "react";
 import {View, Button, Text, StyleSheet } from "react-native";
 import { ConnectedPenaltyList } from "src/ConnectedComponents/Lists/Penalty/PenaltyList";
 import Style from "src/Style/Style";
+import { DocumentView } from "src/Components/Styled/Styled";
 
 interface Props {
     navigation: any
@@ -26,7 +27,7 @@ export default class PenaltyListScreen extends React.Component<Props> {
 
     render = () => {
         return (
-            <View style={[Style.container, Style.yellowBg]}>
+            <DocumentView>
                 <ConnectedPenaltyList 
                     navigation={this.props.navigation}
                 >
@@ -42,7 +43,7 @@ export default class PenaltyListScreen extends React.Component<Props> {
                         }}
                     />
                 </View>
-            </View>
+            </DocumentView>
         );
     }
 }

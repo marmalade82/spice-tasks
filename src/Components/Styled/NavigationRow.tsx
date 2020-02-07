@@ -3,10 +3,12 @@ import React from "react";
 import { View, StyleProp, ViewStyle, StyleSheet } from "react-native";
 import { ColumnView, RowView, BodyText, HeaderText } from "src/Components/Basic/Basic";
 import ClickNavigation from "src/Components/Navigation/ClickNavigation";
-import { ROW_CONTAINER_HEIGHT, ROW_HEIGHT, PRIMARY_COLOR, ICON_CONTAINER_WIDTH, Styles, TEXT_VERTICAL_MARGIN, TEXT_HORIZONTAL_MARGIN, LEFT_FIRST_MARGIN, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION } from "./Styles";
+import { ROW_CONTAINER_HEIGHT, ROW_HEIGHT, PRIMARY_COLOR, ICON_CONTAINER_WIDTH, Styles, TEXT_VERTICAL_MARGIN, TEXT_HORIZONTAL_MARGIN, LEFT_FIRST_MARGIN, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION, SECONDARY_COLOR } from "./Styles";
+import StyledIcon from "./Icon";
 
 interface Props {
-    number: number;
+    number?: number;
+    icon?: "goal" | "task" | "reward" | "penalty";
     text: string;
     navOptions?: navOptions
     style?: StyleProp<ViewStyle>
@@ -74,18 +76,7 @@ export default class NavigationRow extends React.Component<Props> {
                     height: ROW_HEIGHT,
                     paddingLeft: LEFT_FIRST_MARGIN,
                 }, Styles.CENTERED_SECONDARY]}>
-                    <View style={[{
-                        height: ICON_CONTAINER_WIDTH,
-                        width: ICON_CONTAINER_WIDTH,
-                        borderRadius: ICON_CONTAINER_WIDTH/2,
-                        backgroundColor: PRIMARY_COLOR,
-                    }, Styles.CENTERED]}>
-                        <HeaderText level={3} style={{
-                            color: "white",
-                        }}>
-                            { this.props.number }
-                        </HeaderText>
-                    </View>
+                    { this.renderThumbnail() }
                     <HeaderText level={3} style={{
                         margin: TEXT_VERTICAL_MARGIN,
                         marginLeft: TEXT_HORIZONTAL_MARGIN,
@@ -95,5 +86,32 @@ export default class NavigationRow extends React.Component<Props> {
                     </HeaderText>
                 </RowView>
         )
+    }
+
+    renderThumbnail = () => {
+        if(this.props.number !== undefined) {
+            return (
+                <View style={[{
+                    height: ICON_CONTAINER_WIDTH,
+                    width: ICON_CONTAINER_WIDTH,
+                    borderRadius: ICON_CONTAINER_WIDTH/2,
+                    backgroundColor: PRIMARY_COLOR,
+                }, Styles.CENTERED]}>
+                    <HeaderText level={3} style={{
+                        color: "white",
+                    }}>
+                        { this.props.number }
+                    </HeaderText>
+                </View>
+            )
+        } else if(this.props.icon) {
+            return (
+                <StyledIcon
+                    type={this.props.icon}
+                    backgroundColor={"white"}
+                    color={SECONDARY_COLOR}
+                ></StyledIcon>
+            );
+        }
     }
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import {View, Button, Text, StyleSheet } from "react-native";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
+import { DocumentView } from "src/Components/Styled/Styled";
 import Style from "src/Style/Style";
 
 interface Props {
@@ -25,7 +26,7 @@ export default class GoalListScreen extends React.Component<Props> {
 
     render = () => {
         return (
-            <View style={[Style.container, Style.yellowBg]}>
+            <DocumentView>
                 <ConnectedGoalList 
                     navigation={this.props.navigation}
                 >
@@ -41,7 +42,7 @@ export default class GoalListScreen extends React.Component<Props> {
                         }}
                     />
                 </View>
-            </View>
+            </DocumentView>
         );
     }
 }

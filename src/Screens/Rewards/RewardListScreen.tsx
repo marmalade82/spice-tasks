@@ -3,6 +3,7 @@ import React from "react";
 import {View, Button, Text, StyleSheet } from "react-native";
 import { ConnectedRewardList } from "src/ConnectedComponents/Lists/Reward/RewardList";
 import Style from "src/Style/Style";
+import { DocumentView } from "src/Components/Styled/Styled";
 
 interface Props {
     navigation: any
@@ -26,7 +27,7 @@ export default class RewardListScreen extends React.Component<Props> {
 
     render = () => {
         return (
-            <View style={[Style.container, Style.yellowBg]}>
+            <DocumentView>
                 <ConnectedRewardList 
                     navigation={this.props.navigation}
                 >
@@ -42,7 +43,7 @@ export default class RewardListScreen extends React.Component<Props> {
                         }}
                     />
                 </View>
-            </View>
+            </DocumentView>
         );
     }
 }

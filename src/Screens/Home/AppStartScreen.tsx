@@ -191,35 +191,9 @@ export default class AppStartScreen extends React.Component<Props, State> {
                             </ModalIconButton>
                         </RowReverseView>
                     </RowView>
-                    <NavigationGroup
+                    <NavigationList
                         navigation={this.props.navigation}
-                        style={{
-                            marginBottom: ROW_HEIGHT + 20,
-                        }}
-                        rows={[
-                            { text: "Goals"
-                            , number: 4
-                            , navParams: {}
-                            , navDestination: "Goals"
-                            },
-                            { text: "Tasks"
-                            , number: 2
-                            , navParams: {}
-                            , navDestination: "Tasks"
-                            },
-                            { text: "Rewards"
-                            , number: 1
-                            , navParams: {}
-                            , navDestination: "Rewards"
-                            },
-                            { text: "Penalties"
-                            , number: 5
-                            , navParams: {}
-                            , navDestination: "Penalties"
-                            },
-                        ]}
-                    >
-                    </NavigationGroup>
+                    ></NavigationList>
                 </ScrollView>
             </DocumentView>
         );
@@ -295,3 +269,45 @@ const enhance = withObservables([], (_props: AllStatusListProps) => {
 });
 
 var ConnectedStatusList = enhance(AdaptedStatusList);
+
+
+interface NavListProps {
+    navigation: any;
+}
+
+class NavigationList extends React.Component<NavListProps> {
+
+    render = () => {
+        return (
+            <NavigationGroup
+                navigation={this.props.navigation}
+                style={{
+                    marginBottom: ROW_HEIGHT + 20,
+                }}
+                rows={[
+                    { text: "Goals"
+                    , icon: "goal"
+                    , navParams: {}
+                    , navDestination: "Goals"
+                    },
+                    { text: "Tasks"
+                    , icon: "task"
+                    , navParams: {}
+                    , navDestination: "Tasks"
+                    },
+                    { text: "Rewards"
+                    , icon: "reward"
+                    , navParams: {}
+                    , navDestination: "Rewards"
+                    },
+                    { text: "Penalties"
+                    , icon: "penalty"
+                    , navParams: {}
+                    , navDestination: "Penalties"
+                    },
+                ]}
+            >
+            </NavigationGroup>
+        )
+    }
+}
