@@ -1,15 +1,12 @@
 import React from "react";
-import { Button, Text, View, FlatList} from "react-native";
+import { RowView, ColumnView, HeaderText } from "src/Components/Basic/Basic";
+import { DocumentView, ScreenHeader, Label, TextInput } from "src/Components/Styled/Styled";
+import { StringInput } from "src/Components/Inputs";
 import { 
-    ColumnView, RowView, Image, 
-    HeaderText, BodyText, ViewWizard 
-} from "src/Components/Basic/Basic";
-import {
-    Die 
-} from "src/Components/Images/Images";
-import Style from "src/Style/Style";
-import EarnedRewardSummary from "src/Components/Summaries/EarnedRewardSummary";
-import TwoDiceRoll from "src/Components/EarnedRewards/TwoDice/TwoDiceRoll";
+    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, Styles, 
+    TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
+    PLACEHOLDER_GREY,
+} from "src/Components/Styled/Styles";
 
 interface Props {
     navigation: any;
@@ -27,10 +24,35 @@ export default class TestScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <ColumnView style={{
-                justifyContent: "flex-start"
-            }}>
-            </ColumnView>
+            <DocumentView>
+                <ScreenHeader style={{
+                    marginBottom: 60
+                }}>Test Screen</ScreenHeader>
+
+                <RowView style={{
+                    flex: 0,
+                    height: 60,
+                    backgroundColor: "transparent",
+                }}>
+                    <StringInput
+                        title={"Age"}
+                        value={"WHAT"}
+                        placeholder={"hi"}
+                        accessibilityLabel={"test-string-input"}
+                        onChangeText={() => {}}
+                    ></StringInput>
+                </RowView>
+
+                <Label
+                    text={"Age"}
+                ></Label>
+                <TextInput
+                    placeholder={"e.g. 58"}
+                    value={"YO"}
+                    onChangeText={() => {}}
+                ></TextInput>
+
+            </DocumentView>
         );
     }
 

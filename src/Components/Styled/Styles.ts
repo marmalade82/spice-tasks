@@ -34,6 +34,10 @@ export const OVERLAY = "rgba(15,15,15,0.6)";
 
 export const MODAL_VERTICAL_PADDING = 10;
 
+export const TEXT_GREY = "rgb(96,96,96)";
+
+export const PLACEHOLDER_GREY = "rgb(150, 150, 150)";
+
 export const Styles = StyleSheet.create({
     CENTERED: {
         justifyContent: "center",
@@ -46,5 +50,30 @@ export const Styles = StyleSheet.create({
     CENTERED_PRIMARY: {
         justifyContent: "center",
         alignItems: "stretch",
-    }
+    },
+    HEADER_DEFAULT: {
+        fontFamily: "OpenSans-Regular",
+        color: "black",
+        fontSize: 16,
+    },
+    HEADER_1: {
+        fontSize: 22,
+        fontFamily: "OpenSans-SemiBold",
+    },
+    HEADER_2: {
+        fontSize: 20,
+        fontFamily: "OpenSans-SemiBold",
+    },
+    HEADER_3: {
+        fontSize: 17, 
+        fontFamily: "OpenSans-SemiBold",
+    },
+    HEADER_4: {
+        fontSize: 20,
+        fontFamily: "AlegreyaSansSC-Regular",
+    },
+    HEADER_5: {
+        fontSize: 17,
+        fontFamily: "OpenSans-Regular",
+    },
 })

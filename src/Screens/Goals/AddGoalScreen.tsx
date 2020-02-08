@@ -5,6 +5,7 @@ import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { GoalQuery, Goal, IGoal } from "src/Models/Goal/GoalQuery";
 import { ColumnView } from "src/Components/Basic/Basic";
+import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
 
 interface Props {
     navigation: any;
@@ -70,19 +71,6 @@ export default class AddGoalScreen extends React.Component<Props, State> {
         }
     }
 
-    renderGoalForm = () => {
-        return (
-            <AddGoalForm
-                navigation={this.props.navigation}
-                onDataChange={(data: AddGoalData) => {
-                    this.setState({
-                        data: data
-                    })
-                }}
-                data={this.state.data}
-            ></AddGoalForm>
-        );
-    }
 
     onSave = () => {
         const data = this.state.data;
@@ -119,14 +107,31 @@ export default class AddGoalScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <ColumnView style={[Style.greenBg, localStyle.container]}>
+            <DocumentView>
+                <ScreenHeader style={{
+                    marginBottom: 20
+                }}>Add/Edit Goal</ScreenHeader>
                 { this.renderGoalForm() }
                 <Button
                     title={"SAVE"}
                     onPress={this.onSave}
                     accessibilityLabel={"input-save-button"}
                 />
-            </ColumnView>
+            </DocumentView>
+        );
+    }
+
+    renderGoalForm = () => {
+        return (
+            <AddGoalForm
+                navigation={this.props.navigation}
+                onDataChange={(data: AddGoalData) => {
+                    this.setState({
+                        data: data
+                    })
+                }}
+                data={this.state.data}
+            ></AddGoalForm>
         );
     }
 }

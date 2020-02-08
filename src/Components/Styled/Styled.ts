@@ -11,6 +11,8 @@ import Icon from "src/Components/Styled/Icon";
 import ModalRow from "src/Components/Styled/ModalRow";
 import NavigationGroup from "src/Components/Styled/NavigationGroup";
 import BackgroundTitle from "src/Components/Styled/BackgroundTitle";
+import Label from "src/Components/Styled/Label";
+import TextInput from "src/Components/Styled/TextInput";
 
 
 export {
@@ -27,4 +29,6 @@ export {
     ModalRow,
     NavigationGroup,
     BackgroundTitle,
+    Label,
+    TextInput,
 }

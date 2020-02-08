@@ -1,8 +1,9 @@
 
 import React from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
-import Style from "src/Style/Style";
+import { View, Text, TextInput as TInput, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import { ColumnView } from "src/Components/Basic/Basic";
 import Input from "src/Components/Inputs/base/Input";
+import { Label, TextInput } from "src/Components/Styled/Styled";
 
 interface Props {
     title: string;
@@ -10,6 +11,7 @@ interface Props {
     placeholder: string;
     onChangeText: (text: string) => void;
     accessibilityLabel: string;
+    style?: StyleProp<ViewStyle>;
 }
 
 interface State {
@@ -43,6 +45,26 @@ export default class StringInput extends Input<Props, State> {
 
     render = () => {
         return (
+            <ColumnView style={[{
+                backgroundColor: "transparent",
+            }, this.props.style]}>
+                <Label
+                    text={this.props.title}
+                ></Label>
+                <TextInput
+                    value={this.props.value}
+                    placeholder={this.props.placeholder}
+                    onChangeText={this.props.onChangeText}
+                    accessibilityLabel={this.props.accessibilityLabel}
+                >
+
+                </TextInput>
+            </ColumnView>
+        )
+    }
+
+}
+/*
             <View style={[localStyle.container, Style.maxInputHeight]}>
                 <View style={[Style.yellowBg, localStyle.text]}>
                     <Text>{this.props.title}</Text>
@@ -57,7 +79,4 @@ export default class StringInput extends Input<Props, State> {
                     </TextInput>
                 </View>
             </View>
-        )
-    }
-
-}
+            */

@@ -3,7 +3,7 @@ import { NavigationRow, ScreenHeader, DocumentView, NavigationGroup } from "src/
 import { ColumnView, RowView, BodyText, HeaderText, TouchableView } from "src/Components/Basic/Basic";
 import { 
     CONTAINER_VERTICAL_MARGIN, ROW_CONTAINER_HEIGHT, Styles, 
-    LEFT_SECOND_MARGIN, PRIMARY_COLOR_LIGHT, LEFT_FIRST_MARGIN, ICON_CONTAINER_WIDTH
+    LEFT_SECOND_MARGIN, PRIMARY_COLOR_LIGHT, LEFT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, TEXT_GREY
 } from "src/Components/Styled/Styles";
 import { StyleProp, ViewStyle } from "react-native";
 
@@ -26,7 +26,7 @@ export default class BackgroundTitle extends React.Component<Props> {
                 marginTop: 0,
             }, Styles.CENTERED_SECONDARY, this.props.style]}>
                 <HeaderText level={2} style={{
-                    color: "rgb(96,96,96)"
+                    color: TEXT_GREY,
                 }}>
                     {this.props.title}
                 </HeaderText>

@@ -1,6 +1,7 @@
 
 import React from "react";
 import { StyleProp, ViewStyle, StyleSheet, View, TextStyle, Text } from "react-native";
+import { Styles } from "src/Components/Styled/Styles";
 
 
 interface Props {
@@ -28,38 +29,23 @@ export default class HeaderText extends React.Component<Props, State> {
     headerStyle = (): StyleProp<TextStyle> => {
         switch(this.props.level) { 
             case 1: {           // Main section title
-                return {
-                    fontSize: 22,
-                    fontFamily: "OpenSans-SemiBold",
-                }
+                return Styles.HEADER_1; 
             }
                 break;
             case 2: {
-                return {
-                    fontSize: 20,
-                    fontFamily: "OpenSans-SemiBold",
-                }
+                return Styles.HEADER_2;
             }
                 break;
             case 3: {
-                return {
-                    fontSize: 17, 
-                    fontFamily: "OpenSans-SemiBold",
-                }
+                return Styles.HEADER_3;
             }
                 break;
             case 4: {
-                return {
-                    fontSize: 20,
-                    fontFamily: "AlegreyaSansSC-Regular",
-                }
+                return Styles.HEADER_4;
             }
                 break;
             case 5: {
-                return {
-                    fontSize: 17,
-                    fontFamily: "OpenSans-Regular",
-                }
+                return Styles.HEADER_5;
             }
                 break;
             case 6: {
