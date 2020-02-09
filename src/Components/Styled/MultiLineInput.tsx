@@ -1,3 +1,4 @@
+
 import React from "react";
 import { RowView, ColumnView, HeaderText } from "src/Components/Basic/Basic";
 import { 
@@ -17,10 +18,9 @@ interface Props {
     value: string;
     onChangeText: (s :string) => void;
     accessibilityLabel?: string;
-    multiline?: boolean;
 }
 
-export default class TextInput extends React.Component<Props> {
+export default class MultiLineInput extends React.Component<Props> {
 
 
     render = () => {
@@ -43,6 +43,8 @@ export default class TextInput extends React.Component<Props> {
                     borderBottomWidth: 1,
                 }}>
                     <Input
+                        multiline={true}
+                        numberOfLines={1}
                         value={this.props.value}
                         onChangeText={this.props.onChangeText}
                         placeholder={this.props.placeholder}
@@ -53,8 +55,6 @@ export default class TextInput extends React.Component<Props> {
                             marginBottom: 3,
                             color: this.props.textColor ? this.props.textColor : TEXT_GREY,
                         }]}
-                        multiline={this.props.multiline ? true : false}
-                        numberOfLines={this.props.multiline ? 1 : undefined}
                         accessibilityLabel={this.props.accessibilityLabel ? "input-" + this.props.accessibilityLabel : undefined}
                     ></Input>
                 </ColumnView>

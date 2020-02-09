@@ -134,7 +134,9 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
     render = () => {
         return (
-            <ColumnView style={[Style.blueBg]}>
+            <ColumnView style={[{
+                backgroundColor: "transparent",
+            }]}>
                 <StringInput
                     title={"Summary"}
                     value={this.data().title}

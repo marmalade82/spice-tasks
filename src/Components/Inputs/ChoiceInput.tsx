@@ -1,7 +1,9 @@
 import React from "react";
-import { View, Text, Picker, StyleSheet } from "react-native";
+import { View, Text, Picker, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import Style from "src/Style/Style";
 import Input from "src/Components/Inputs/base/Input";
+import { ColumnView } from "src/Components/Basic/Basic";
+import { Label, ChoiceInput as CInput } from "src/Components/Styled/Styled";
 
 
 interface LabelValue {
@@ -16,6 +18,7 @@ interface Props {
     choices: LabelValue[]
     onValueChange: (itemValue: string, itemPosition: number) => void
     accessibilityLabel: string;
+    style?: StyleProp<ViewStyle>;
 }
 
 interface State {
@@ -49,6 +52,23 @@ export default class ChoiceInput extends Input<Props, State> {
     }
 
     render = () => {
+        return (
+            <ColumnView style={[{
+                    backgroundColor: "transparent",
+                }, this.props.style]}
+            >
+                <Label
+                    text={this.props.title} 
+                ></Label>
+                <CInput
+                    value={this.props.selectedValue}
+                    choices={this.props.choices}
+                    onValueChange={this.props.onValueChange}
+                    accessibilityLabel={this.props.accessibilityLabel}
+                ></CInput>
+            </ColumnView>
+        )
+
         return (
             <View style={[localStyle.container, Style.maxInputHeight]}>
                 <View style={[Style.yellowBg, localStyle.text]}>

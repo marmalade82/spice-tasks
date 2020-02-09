@@ -13,6 +13,8 @@ import NavigationGroup from "src/Components/Styled/NavigationGroup";
 import BackgroundTitle from "src/Components/Styled/BackgroundTitle";
 import Label from "src/Components/Styled/Label";
 import TextInput from "src/Components/Styled/TextInput";
+import MultiLineInput from "src/Components/Styled/MultiLineInput";
+import ChoiceInput from "src/Components/Styled/ChoiceInput";
 
 
 export {
@@ -31,4 +33,6 @@ export {
     BackgroundTitle,
     Label,
     TextInput,
+    MultiLineInput,
+    ChoiceInput,
 }
