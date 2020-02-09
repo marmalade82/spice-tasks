@@ -1,7 +1,8 @@
 import React from "react";
 import IconButton from "src/Components/Styled/IconButton";
-import { View, Modal, TouchableWithoutFeedback } from "react-native";
+import { View, TouchableWithoutFeedback } from "react-native";
 import { LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, RIGHT_SECOND_MARGIN, OVERLAY, Styles, MODAL_VERTICAL_PADDING } from "./Styles";
+import Modal from "src/Components/Styled/Modal";
 import DataComponent from "src/Components/base/DataComponent";
 
 interface Props {
@@ -55,49 +56,9 @@ export default class ModalIconButton extends DataComponent<Props, State, State> 
         return (
                 <Modal
                     visible={this.data().showModal}
-                    transparent={true}
                     onRequestClose={ () => { this.hideModal() } }
-                    animationType={ "fade" }
                 >
-                    <TouchableWithoutFeedback
-                        style={{
-                            flex: 1
-                        }}
-                        onPress={(event) => {
-                            this.hideModal();
-                            event.preventDefault();
-                        }}
-                    >
-                        <View style={[{
-                                flex: 1,
-                                backgroundColor: OVERLAY,
-                                paddingLeft: RIGHT_SECOND_MARGIN,
-                                paddingRight: RIGHT_SECOND_MARGIN,
-                            }, Styles.CENTERED]}
-                        >
-                            <TouchableWithoutFeedback
-                                style={{
-                                    flex:0
-                                }}
-                                onPress={(event) => {
-                                    event.preventDefault()
-                                }}
-                                touchSoundDisabled={true}
-                            >
-                                <View style={{
-                                    flex: 0,
-                                    justifyContent: "flex-start",
-                                    alignItems: "stretch",
-                                    backgroundColor: "white",
-                                    width: "100%",
-                                    paddingTop: MODAL_VERTICAL_PADDING,
-                                    paddingBottom: MODAL_VERTICAL_PADDING,
-                                }}>
-                                    {this.props.children}
-                                </View>
-                            </TouchableWithoutFeedback>
-                        </View>
-                    </TouchableWithoutFeedback>
+                    {this.props.children}
                 </Modal>
         )
     }

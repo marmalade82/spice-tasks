@@ -4,6 +4,7 @@ import { View, Text, TextInput as TInput, StyleSheet, StyleProp, ViewStyle } fro
 import { ColumnView } from "src/Components/Basic/Basic";
 import Input from "src/Components/Inputs/base/Input";
 import { Label, TextInput } from "src/Components/Styled/Styled";
+import { CONTAINER_VERTICAL_MARGIN } from "src/Components/Styled/Styles";
 
 interface Props {
     title: string;
@@ -18,25 +19,6 @@ interface State {
 
 }
 
-const localStyle = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "stretch",
-        borderColor: "grey",
-        borderWidth: 1,
-    },
-    text: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    input: {
-        flex: 2,
-        justifyContent: "center",
-        alignItems: "stretch",
-    },
-});
 
 export default class StringInput extends Input<Props, State> {
     constructor(props: Props) {
@@ -46,7 +28,9 @@ export default class StringInput extends Input<Props, State> {
     render = () => {
         return (
             <ColumnView style={[{
+                flex: 0,
                 backgroundColor: "transparent",
+                marginBottom: 2 * CONTAINER_VERTICAL_MARGIN,
             }, this.props.style]}>
                 <Label
                     text={this.props.title}
@@ -64,19 +48,3 @@ export default class StringInput extends Input<Props, State> {
     }
 
 }
-/*
-            <View style={[localStyle.container, Style.maxInputHeight]}>
-                <View style={[Style.yellowBg, localStyle.text]}>
-                    <Text>{this.props.title}</Text>
-                </View>
-                <View style={[Style.whiteBg, localStyle.input]}>
-                    <TextInput
-                        value={this.props.value} 
-                        placeholder={this.props.placeholder}
-                        onChangeText={this.props.onChangeText}
-                        accessibilityLabel={"input-" + this.props.accessibilityLabel}
-                    >
-                    </TextInput>
-                </View>
-            </View>
-            */

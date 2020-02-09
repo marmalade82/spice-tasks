@@ -1,7 +1,7 @@
 import React from "react";
 import DataComponent from "src/Components/base/DataComponent";
 
-import { Text, TextInput, View, Picker } from "react-native";
+import { Text, TextInput, View, Picker, ScrollView } from "react-native";
 import {
     ChoiceInput,
     StringInput,
@@ -137,74 +137,76 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
             <ColumnView style={[{
                 backgroundColor: "transparent",
             }]}>
-                <StringInput
-                    title={"Summary"}
-                    value={this.data().title}
-                    placeholder={"What do you want to achieve?"}
-                    onChangeText={this.onChangeTitle}
-                    accessibilityLabel={"goal-summary"}
-                />
+                <ScrollView>
+                    <StringInput
+                        title={"Summary"}
+                        value={this.data().title}
+                        placeholder={"What do you want to achieve?"}
+                        onChangeText={this.onChangeTitle}
+                        accessibilityLabel={"goal-summary"}
+                    />
 
-                <ChoiceInput
-                    title={"Type"}
-                    selectedValue={this.data().type}
-                    choices={GoalChoices}
-                    onValueChange={this.onChangeType}
-                    accessibilityLabel={"goal-type"}
-                />
+                    <ChoiceInput
+                        title={"Type"}
+                        selectedValue={this.data().type}
+                        choices={GoalChoices}
+                        onValueChange={this.onChangeType}
+                        accessibilityLabel={"goal-type"}
+                    />
 
-                { this.renderStreakForm() }
+                    { this.renderStreakForm() }
 
-                <DateTimeInput
-                    title={"Starts on"}
-                    type={"date"}
-                    value={ this.data().start_date }
-                    onValueChange={ this.onChangeStartDate }
-                    accessibilityLabel={ "goal-start-date" }
-                />
+                    <DateTimeInput
+                        title={"Starts on"}
+                        type={"date"}
+                        value={ this.data().start_date }
+                        onValueChange={ this.onChangeStartDate }
+                        accessibilityLabel={ "goal-start-date" }
+                    />
 
-                <DateTimeInput
-                    title={"Due on"} 
-                    type={"date"}
-                    value={ this.data().due_date }
-                    onValueChange={ this.onChangeDueDate }
-                    accessibilityLabel = { "goal-due-date" }
-                />
+                    <DateTimeInput
+                        title={"Due on"} 
+                        type={"date"}
+                        value={ this.data().due_date }
+                        onValueChange={ this.onChangeDueDate }
+                        accessibilityLabel = { "goal-due-date" }
+                    />
 
-                <ChoiceInput
-                    title={"Reward"}
-                    selectedValue={this.data().reward.toString()}
-                    onValueChange={(itemValue, itemIndex) => {
-                        this.setData({reward: itemValue as RewardType})  
-                    }}
-                    choices={RewardChoices}
-                    accessibilityLabel={"goal-reward"}
-                />
+                    <ChoiceInput
+                        title={"Reward"}
+                        selectedValue={this.data().reward.toString()}
+                        onValueChange={(itemValue, itemIndex) => {
+                            this.setData({reward: itemValue as RewardType})  
+                        }}
+                        choices={RewardChoices}
+                        accessibilityLabel={"goal-reward"}
+                    />
 
-                <ChoiceInput
-                    title={"Penalty"}
-                    selectedValue={this.data().penalty.toString()}
-                    onValueChange={(itemValue, itemIndex) => {
-                        this.setData({penalty: parseInt(itemValue)})  
-                    }}
-                    choices={penalties}
-                    accessibilityLabel={"goal-penalty"}
-                />
+                    <ChoiceInput
+                        title={"Penalty"}
+                        selectedValue={this.data().penalty.toString()}
+                        onValueChange={(itemValue, itemIndex) => {
+                            this.setData({penalty: parseInt(itemValue)})  
+                        }}
+                        choices={penalties}
+                        accessibilityLabel={"goal-penalty"}
+                    />
 
-                <this.RecurModalForm
-                    title={"Recurring?"} 
-                    animationType={"fade"}
-                    screenType={"grey"}
-                    onSave={this.onRecurSave}
-                    formProps={{
-                        data: false,
-                        onDataChange: () => {} // this is overwritten
-                    }}
-                    renderData={(d: RecurringData) => {
-                        return "hi there, please impement data renderer";
-                    }}
-                    accessibilityLabel={"goal-recurring"}
-                />
+                    <this.RecurModalForm
+                        title={"Recurring?"} 
+                        animationType={"fade"}
+                        screenType={"grey"}
+                        onSave={this.onRecurSave}
+                        formProps={{
+                            data: false,
+                            onDataChange: () => {} // this is overwritten
+                        }}
+                        renderData={(d: RecurringData) => {
+                            return "hi there, please impement data renderer";
+                        }}
+                        accessibilityLabel={"goal-recurring"}
+                    />
+                </ScrollView>
             </ColumnView>
         )
     }

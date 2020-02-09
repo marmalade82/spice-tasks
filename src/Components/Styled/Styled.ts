@@ -15,6 +15,8 @@ import Label from "src/Components/Styled/Label";
 import TextInput from "src/Components/Styled/TextInput";
 import MultiLineInput from "src/Components/Styled/MultiLineInput";
 import ChoiceInput from "src/Components/Styled/ChoiceInput";
+import DateInput from "src/Components/Styled/DateInput";
+import Modal from "src/Components/Styled/Modal";
 
 
 export {
@@ -35,4 +37,6 @@ export {
     TextInput,
     MultiLineInput,
     ChoiceInput,
+    DateInput,
+    Modal,
 }

@@ -31,7 +31,9 @@ test('User can set type of goal to streak if desired', async () => {
 
     expect(queryByText("Minimum")).toEqual(null);
     const goalTypeInput = getByLabelText("input-goal-type");
-    fireEvent.valueChange(goalTypeInput, "streak" );
+    fireEvent.press(goalTypeInput);
+    const goalChoice = getByLabelText("input-streak-goal-type");
+    fireEvent.press(goalChoice);
     const minimumText = await waitForElement(() => getByText("Minimum"));
     const streakTypeInput = getByLabelText("input-streak-type");
     const streakDailyTimeInput = getByLabelText("modal-streak-time");
@@ -52,14 +54,18 @@ test("User can fill out all fields of a normal goal and have them saved to datab
     fireEvent.changeText(summaryInput, expected.summary);
 
     const typeInput = getByLabelText("input-goal-type");
-    fireEvent.valueChange(typeInput, expected.type);
+    fireEvent.press(typeInput);
+    const typeChoice = getByLabelText("input-" + expected.type + "-goal-type");
+    fireEvent.press(typeChoice);
 
     const dueDateInput = getByLabelText("modal-goal-start-date");
 
     const startDateInput = getByLabelText("modal-goal-due-date");
 
     const rewardInput = getByLabelText("input-goal-reward");
-    fireEvent.valueChange(rewardInput, expected.rewardType);
+    fireEvent.press(rewardInput);
+    const rewardChoice = getByLabelText("input-" + expected.rewardType + "-goal-reward");
+    fireEvent.press(rewardChoice);
 
     const penaltyInput = getByLabelText("input-goal-penalty");
 

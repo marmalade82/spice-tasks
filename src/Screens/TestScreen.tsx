@@ -2,9 +2,9 @@ import React from "react";
 import { RowView, ColumnView, HeaderText } from "src/Components/Basic/Basic";
 import { 
     DocumentView, ScreenHeader, Label, TextInput, 
-    MultiLineInput, 
+    MultiLineInput,  DateInput,
 } from "src/Components/Styled/Styled";
-import { StringInput, ChoiceInput } from "src/Components/Inputs";
+import { StringInput, ChoiceInput, DateTimeInput } from "src/Components/Inputs";
 import { 
     LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, Styles, 
     TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
@@ -19,6 +19,7 @@ interface Props {
 interface State {
     text: string;
     choice: string;
+    date: Date;
 }
 
 
@@ -36,6 +37,7 @@ export default class TestScreen extends React.Component<Props, State> {
         this.state = {
             text : "Hi",
             choice: "4",
+            date: new Date()
         }
     }
 
@@ -47,11 +49,6 @@ export default class TestScreen extends React.Component<Props, State> {
                 }}>Test Screen</ScreenHeader>
 
                 <ScrollView>
-                    <RowView style={{
-                        flex: 0,
-                        height: 60,
-                        backgroundColor: "transparent",
-                    }}>
                         <StringInput
                             title={"Age"}
                             value={"WHAT"}
@@ -59,7 +56,6 @@ export default class TestScreen extends React.Component<Props, State> {
                             accessibilityLabel={"test-string-input"}
                             onChangeText={() => {}}
                         ></StringInput>
-                    </RowView>
 
                     <Label
                         text={"Age"}
@@ -111,8 +107,24 @@ export default class TestScreen extends React.Component<Props, State> {
                             { label: "4", value: "9", key: "9"},
                         ]}
                         accessibilityLabel={"test"}
+                        style={{
+                            marginBottom: 60
+                        }}
                     ></ChoiceInput>
+                    
+                    <DateTimeInput
+                        title={"Starts on"} 
+                        value={this.state.date}
+                        type={"date"}
+                        onValueChange={(d: Date) => {
+                            this.setState({
+                                date: d
+                            })
+                        }}
+                        accessibilityLabel={"date input"}
+                    >
 
+                    </DateTimeInput>
 
                 </ScrollView>
 

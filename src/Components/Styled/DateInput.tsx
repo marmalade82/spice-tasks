@@ -7,43 +7,44 @@ import {
     PLACEHOLDER_GREY,
     CONTAINER_VERTICAL_MARGIN,
 } from "src/Components/Styled/Styles";
-import Modal from "src/Components/Styled/Modal";
-import ModalRow from "src/Components/Styled/ModalRow";
-import { StyleProp, ViewStyle, TextInput as Input, Picker, Text } from "react-native";
+import { StyleProp, Button, ViewStyle, TextInput as Input, Text } from "react-native";
+import MyDate from "src/common/Date";
 import { Icon } from "react-native-elements";
-
+import Modal from "src/Components/Styled/Modal";
+import DateTimePicker from "src/Components/Inputs/DateTimePicker";
 
 interface Props {
-    style?: StyleProp<ViewStyle>
-    underlineColor?: string;
+    style?: StyleProp<ViewStyle>;
     placeholder?: string;
     placeholderColor?: string;
     textColor?: string;
-    value: string;
-    choices: LabelValue[]
+    underlineColor? : string;
+    value: Date;
+    onChangeDate: (s : Date) => void;
     accessibilityLabel?: string;
-    onValueChange: (itemValue: string, itemPosition: number) => void
-}
-
-interface LabelValue {
-    label: string,
-    value: string,
-    key: string,
+    format: "january 1st, 2020"
 }
 
 interface State {
+    modalDateTime: Date
     showModal: boolean;
 }
 
-
-export default class ChoiceInput extends React.Component<Props, State> {
+export default class DateInput extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-
         this.state = {
+            modalDateTime : new Date(),
             showModal: false,
-        }
+        };
     }
+
+    onChangeModalDateTime = (d: Date) => {
+        this.setState({
+            modalDateTime: d,
+        })
+    }
+
 
     render = () => {
         return (
@@ -64,7 +65,6 @@ export default class ChoiceInput extends React.Component<Props, State> {
                     borderColor: this.props.underlineColor ? this.props.underlineColor : TEXT_GREY,
                     borderBottomWidth: 1,
                 }}>
-
                     <TouchableView style={{
                             flex: 1,
                         }}
@@ -93,14 +93,31 @@ export default class ChoiceInput extends React.Component<Props, State> {
                                 showModal: false,
                             })
                         }}
+                        height={500}
                         accessibilityLabel={this.props.accessibilityLabel}
                     >
-                        {this.renderChoices(this.props.choices)}
+                        <DateTimePicker
+                            onChange={this.onChangeModalDateTime}
+                            dateTime={this.props.value}
+                            type={"date"}
+                        >
+                        </DateTimePicker>
+                        <Button
+                            title="Save"
+                            onPress={() => {
+                                this.setState({
+                                    showModal: false,
+                                });
+                                this.props.onChangeDate(this.state.modalDateTime);
+                            }}
+                        >
+                        </Button>
                     </Modal>
                 </ColumnView>
             </RowView>
         );
     }
+
     renderText = () => {
         if (this.props.value) {
             return (
@@ -111,7 +128,7 @@ export default class ChoiceInput extends React.Component<Props, State> {
                         }]
                     }
                 >
-                    {this.renderChoice()}
+                    {this.renderDate()}
                 </Text>
             );
         } else if (this.props.placeholder) {
@@ -132,22 +149,22 @@ export default class ChoiceInput extends React.Component<Props, State> {
         }
     }
 
-    renderChoice = () => {
-        const result = 
-            this.props.choices.find((val) => {
-                return val.value === this.props.value;
-            })
-        if (result) {
-            return result.label;
+    renderDate = () => {
+        const date = new MyDate(this.props.value)
+        switch(this.props.format) {
+            case "january 1st, 2020": {
+                return date.format("MMMM Do, YYYY")
+            } break;
+            default: {
+                return undefined
+            }
         }
-
-        return "";
     }
 
     renderIcon = () => {
         return (
             <Icon
-                name={"chevron-down"}
+                name={"chevron-right"}
                 type={"feather"}
                 color={TEXT_GREY}
                 size={20}
@@ -156,27 +173,4 @@ export default class ChoiceInput extends React.Component<Props, State> {
             ></Icon>
         );
     }
-
-    renderChoices = (choices: LabelValue[]) => {
-        return choices.map((choice: LabelValue, index: number) => {
-            return (
-                <ModalRow
-                    text={choice.label}
-                    onPress={() => {
-                        this.setState({
-                            showModal: false,
-                        })
-                        this.props.onValueChange(choice.value, index);
-                    }}
-                    accessibilityLabel={
-                        choice.value +
-                        (this.props.accessibilityLabel ? ("-" + this.props.accessibilityLabel) : "")
-                    }
-                    iconType={"none"}
-                    key={choice.value}
-                ></ModalRow>
-            );
-        })
-    }
-
 }
