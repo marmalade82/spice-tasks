@@ -10,6 +10,8 @@ import GoalSummary from "src/Components/Summaries/GoalSummary";
 
 interface Props {
     goal: Goal,
+    navigation: any,
+    onModalChoice: (s: "complete" | "delete") => void;
 }
 
 const AdaptedGoalSummary: React.FunctionComponent<Props> = (props: Props) => {
@@ -22,6 +24,8 @@ const AdaptedGoalSummary: React.FunctionComponent<Props> = (props: Props) => {
     return (
         <GoalSummary
             goal={mappedGoal}
+            navigation={props.navigation}
+            onModalChoice={props.onModalChoice}
         >
         </GoalSummary>
     )
@@ -30,7 +34,9 @@ const AdaptedGoalSummary: React.FunctionComponent<Props> = (props: Props) => {
 
 
 interface InputProps {
-    goal: Goal
+    goal: Goal,
+    navigation: any,
+    onModalChoice: (s: "complete" | "delete") => void;
 }
 
 /**

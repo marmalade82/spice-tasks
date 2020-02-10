@@ -20,6 +20,7 @@ test("User has access to the complete button and more button", async() => {
     );
     await wait(async () => {
         const moreButton = getByLabelText("input-task-more-button");
+        fireEvent.press(moreButton);
     })
 
     await wait(async () => {
@@ -83,6 +84,10 @@ test("User can mark a task (and its children) as Complete/Inactive in the databa
             <TaskScreen navigation={makeNavigation({id: opts.parentId})}></TaskScreen>
         );
 
+        await wait(() => {
+            const moreButton = getByLabelText("input-task-more-button");
+            fireEvent.press(moreButton);
+        })
         await wait(() => {
             const completeButton = getByLabelText("input-task-complete-button");
             fireEvent.press(completeButton);

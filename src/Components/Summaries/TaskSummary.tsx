@@ -23,27 +23,6 @@ interface Task {
     due_date: Date;
 }
 
-const localStyle = StyleSheet.create({
-    container: {
-    },
-    row: {
-        flexDirection: 'row',
-        flex: 1,
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-    },
-    title: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    space: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-})
-
 
 export default class TaskSummary extends React.Component<Props, State> {
     constructor(props: Props) {

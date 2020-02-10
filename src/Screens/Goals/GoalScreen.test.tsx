@@ -17,12 +17,6 @@ import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 afterEach(cleanup)
 
 describe("Using the complete button", () => {
-    test("User has access to the complete button", async() => {
-        const { getByLabelText, queryByLabelText, getByText, queryByText } = render(
-            <GoalScreen navigation={makeNavigation({})}></GoalScreen>
-        )
-        const completeButton = getByLabelText("input-goal-complete-button");
-    });
 
     test("By pressing Complete button, user can mark the goal and its tasks as Complete in the database", async () => {
         const opts = await setup();
@@ -36,8 +30,11 @@ describe("Using the complete button", () => {
             const { getByLabelText } = render(
                 <GoalScreen navigation={makeNavigation({id: opts.parentId})}></GoalScreen>
             );
-            const completeButton = getByLabelText("input-goal-complete-button");
-            fireEvent.press(completeButton);
+
+            await wait(async () => {
+                const completeButton = getByLabelText("input-goal-complete-button");
+                fireEvent.press(completeButton);
+            })
         } 
 
         await wait(async() => {
@@ -99,8 +96,15 @@ describe("Using the complete button", () => {
             </GoalScreen>
         );
 
-        const completeButton = getByLabelText("input-goal-complete-button");
-        fireEvent.press(completeButton);
+        await wait(async () => {
+            const moreButton = getByLabelText("input-goal-more-button");
+            fireEvent.press(moreButton);
+        })
+
+        await wait(async () => {
+            const completeButton = getByLabelText("input-goal-complete-button");
+            fireEvent.press(completeButton);
+        })
 
         await wait(async () => {
             const earned = await new EarnedRewardQuery().all();

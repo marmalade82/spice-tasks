@@ -6,7 +6,7 @@
     "web": "expo start --web",
     "postinstall": "jetify && patch-package",
     "test": "jest",
-    "test-one": "jest TaskScreen.test.tsx",
+    "test-one": "jest GoalScreen.test.tsx",
     "debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
     "link": "react-native link"
   },

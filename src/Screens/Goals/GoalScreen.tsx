@@ -9,6 +9,7 @@ import {
     ColumnView, RowView, Button as MyButton, ViewPicker,
 } from "src/Components/Basic/Basic";
 import NavigationButton from "src/Components/Navigation/NavigationButton";
+import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
 
 
 interface Props {
@@ -89,36 +90,23 @@ export default class GoalScreen extends React.Component<Props, State> {
         new GoalLogic(this.props.navigation.getParam("id", "")).complete();
     }
 
+    onModalChoice = (s: "complete" | "delete") => {
+        switch(s) {
+            case "complete": {
+                this.onCompleteGoal();
+            } break;
+            default: {
+
+            }
+        }
+
+    }
+
     render = () => {
         return (
-            <ColumnView style={[localStyle.container, Style.redBg]}>
-                <ColumnView
-                    style={[localStyle.summary, Style.yellowBg]}
-                >
-                    {this.renderSummary()}
-                </ColumnView>
-                <RowView style={[localStyle.actionHeader, Style.greenBg]}>
-                    <ColumnView style={[localStyle.actionItem]}>
-                    </ColumnView>
-                    <ColumnView style={[localStyle.actionItem]}>
-                        <NavigationButton
-                            title={"+"}
-                            navigation={this.props.navigation}
-                            parameters={{
-                                id: "", // The task is new, so no id.
-                                parent_id: this.props.navigation.getParam("id", ""), // id of the goal, since it is this task's parent.
-                            }}
-                            destination={'AddTask'}
-                            accessibilityLabel={"add-goal-button"}
-                        ></NavigationButton>
-                    </ColumnView>
-                    <ColumnView style={[localStyle.actionItem]}>
-                        <Button
-                            title={"..."}
-                            onPress={() => {}}
-                        />
-                    </ColumnView>
-                </RowView>
+            <DocumentView>
+                <ScreenHeader>Goal Summary</ScreenHeader>
+                {this.renderSummary()}
                 <ColumnView style={[localStyle.list]}>
                     <ViewPicker
                         data={false}
@@ -128,27 +116,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                         views={[...this.renderTaskLists()]}
                     ></ViewPicker>
                 </ColumnView>
-                <RowView style={[localStyle.button]}>
-                    <NavigationButton
-                        title={"edit"} 
-                        navigation={this.props.navigation}
-                        parameters={{
-                            id: this.props.navigation.getParam('id', ''),
-                        }}
-                        color={"purple"}
-                        destination={"AddGoal"}
-                        accessibilityLabel={"edit-goal-button"}
-                    ></NavigationButton>
-                </RowView>
-                <RowView style={[localStyle.completeButton]}>
-                    <MyButton
-                        title={"Complete"}
-                        accessibilityLabel={"goal-complete-button"}
-                        onPress={this.onCompleteGoal}
-                        color={"purple"}
-                    ></MyButton>
-                </RowView>
-            </ColumnView>
+            </DocumentView>
         );
     }
 
@@ -157,6 +125,8 @@ export default class GoalScreen extends React.Component<Props, State> {
             return (
                     <ConnectedGoalSummary
                         goal={this.state.goal} 
+                        navigation={this.props.navigation}
+                        onModalChoice={this.onModalChoice}
                     ></ConnectedGoalSummary>
             );
         }

@@ -38,7 +38,7 @@ export default class ModalRow extends React.Component<Props, State> {
                 <TouchableView
                     style={{flex: 1}} 
                     onPress={this.props.onPress}
-                    accessibilityLabel={this.props.accessibilityLabel}
+                    accessibilityLabel={this.props.accessibilityLabel ? this.props.accessibilityLabel : undefined}
                 >
                     <RowView
                         style={[{
