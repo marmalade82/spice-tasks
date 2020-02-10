@@ -147,7 +147,7 @@ export default class ChoiceInput extends React.Component<Props, State> {
     renderIcon = () => {
         return (
             <Icon
-                name={"chevron-down"}
+                name={"chevron-right"}
                 type={"feather"}
                 color={TEXT_GREY}
                 size={20}

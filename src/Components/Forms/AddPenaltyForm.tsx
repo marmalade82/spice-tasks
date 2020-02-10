@@ -7,6 +7,8 @@ import {
 import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import DataComponent from "src/Components/base/DataComponent";
 import Style from "src/Style/Style"
+import { ColumnView } from "src/Components/Basic/Basic";
+import { ScreenHeader } from "src/Components/Styled/Styled";
 
 interface Props {
     data: State | false
@@ -27,13 +29,6 @@ function Default(): State {
         expire_date: new Date(),
     };
 }
-
-const localStyle = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "flex-start"
-    }
-})
 
 export default class AddPenaltyForm extends DataComponent<Props, State, State> {
     constructor(props: Props) {
@@ -62,7 +57,10 @@ export default class AddPenaltyForm extends DataComponent<Props, State, State> {
 
     render = () => {
         return (
-            <View style={[Style.container, localStyle.container, this.props.style]}>
+            <ColumnView style={[{
+                backgroundColor: "transparent",
+            }, this.props.style]}>
+                <ScreenHeader>Add/Edit Penalty</ScreenHeader>
                 <StringInput
                     title={"Name"} 
                     value={this.data().name}
@@ -86,7 +84,7 @@ export default class AddPenaltyForm extends DataComponent<Props, State, State> {
                     onValueChange={this.onChangeExpire}
                     accessibilityLabel={"penalty-expire-date"}
                 />
-            </View>
+            </ColumnView>
         );
     }
 }

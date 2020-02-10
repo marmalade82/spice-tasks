@@ -4,6 +4,7 @@ import { AddTaskForm, AddTaskData, AddTaskDefault } from "src/Components/Forms/A
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { TaskQuery, Task } from "src/Models/Task/TaskQuery";
+import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
 
 interface Props {
     navigation: any;
@@ -77,28 +78,33 @@ export default class AddTaskScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <View style={[Style.container, localStyle.container]}>
-                { this.renderTaskForm() }
+            <DocumentView>
+                <ScreenHeader>Add/Edit Task</ScreenHeader>
+                <ScrollView style={{
+                    backgroundColor: "transparent",
+                }}>
+                    { this.renderTaskForm() }
+                </ScrollView>
 
-                <Button
-                    title={"SAVE"}
-                    onPress={this.onSave}
-                />
-            </View>
+                    <Button
+                        title={"SAVE"}
+                        onPress={this.onSave}
+                    />
+            </DocumentView>
         );
     }
 
     renderTaskForm = () => {
         return (
-            <AddTaskForm
-                data={this.state.data}
-                onDataChange={(d: AddTaskData) => {
-                    this.setState({
-                        data: d
-                    });
-                }}
-                style={{}}
-            ></AddTaskForm>
+                <AddTaskForm
+                    data={this.state.data}
+                    onDataChange={(d: AddTaskData) => {
+                        this.setState({
+                            data: d
+                        });
+                    }}
+                    style={{}}
+                ></AddTaskForm>
         );
     }
 }

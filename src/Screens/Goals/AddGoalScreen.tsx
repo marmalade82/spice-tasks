@@ -16,15 +16,6 @@ interface State {
     goal?: Goal
 }
 
-const localStyle = StyleSheet.create({
-    container: {
-        paddingLeft: "2%",
-        paddingRight: "2%",
-        paddingTop: "2%",
-        paddingBottom: "2%",
-    },
-});
-
 
 export default class AddGoalScreen extends React.Component<Props, State> {
     constructor(props) {

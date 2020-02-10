@@ -6,6 +6,7 @@ import {
 import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import DataComponent from "src/Components/base/DataComponent";
 import Style from "src/Style/Style"
+import { ColumnView } from "../Basic/Basic";
 
 interface Props {
     data: State | false
@@ -26,13 +27,6 @@ function Default(): State {
         expire_date: new Date(),
     };
 }
-
-const localStyle = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "flex-start"
-    }
-})
 
 export default class AddRewardForm extends DataComponent<Props, State, State> {
     constructor(props: Props) {
@@ -61,7 +55,9 @@ export default class AddRewardForm extends DataComponent<Props, State, State> {
 
     render = () => {
         return (
-            <View style={[Style.container, localStyle.container, this.props.style]}>
+            <ColumnView style={[{
+                backgroundColor: "transparent",
+            }, this.props.style]}>
                 <StringInput
                     title={"Name"} 
                     value={this.data().name}
@@ -85,7 +81,7 @@ export default class AddRewardForm extends DataComponent<Props, State, State> {
                     onValueChange={this.onChangeExpire}
                     accessibilityLabel={"reward-expire-date"}
                 />
-            </View>
+            </ColumnView>
         );
     }
 }

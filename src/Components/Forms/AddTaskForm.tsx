@@ -8,6 +8,7 @@ import {
 import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import DataComponent from "src/Components/base/DataComponent";
 import Style from "src/Style/Style"
+import { ColumnView } from "../Basic/Basic";
 
 interface Props {
     data: State | false
@@ -71,7 +72,9 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
 
     render = () => {
         return (
-            <View style={[Style.container, localStyle.container, this.props.style]}>
+            <ColumnView style={[{
+                backgroundColor: "transparent",
+            },this.props.style]}>
                 <StringInput
                     title={"Name"} 
                     value={this.data().name}
@@ -104,7 +107,7 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                     accessibilityLabel={"task-due-date"}
                 />
 
-            </View>
+            </ColumnView>
         );
     }
 }

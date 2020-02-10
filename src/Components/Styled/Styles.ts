@@ -34,7 +34,7 @@ export const OVERLAY = "rgba(15,15,15,0.6)";
 
 export const MODAL_VERTICAL_PADDING = 10;
 
-export const TEXT_GREY = "rgb(96,96,96)";
+export const TEXT_GREY = "rgb(70,70,70)";
 
 export const PLACEHOLDER_GREY = "rgb(150, 150, 150)";
 
@@ -69,8 +69,8 @@ export const Styles = StyleSheet.create({
         fontFamily: "OpenSans-SemiBold",
     },
     HEADER_4: {
-        fontSize: 20,
-        fontFamily: "AlegreyaSansSC-Regular",
+        fontSize: 17,
+        fontFamily: "OpenSans-Italic",
     },
     HEADER_5: {
         fontSize: 17,

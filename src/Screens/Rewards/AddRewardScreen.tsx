@@ -5,6 +5,7 @@ import { AddRewardForm, AddRewardData, AddRewardDefault } from "src/Components/F
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { RewardQuery, Reward } from "src/Models/Reward/RewardQuery";
+import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
 
 interface Props {
     navigation: any;
@@ -72,14 +73,18 @@ export default class AddRewardScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <View style={[Style.container, localStyle.container]}>
-                { this.renderRewardForm() }
+            <DocumentView >
+                <ScreenHeader>Add/Edit Reward</ScreenHeader>
+                <ScrollView style={{
+                }}>
+                    { this.renderRewardForm() }
+                </ScrollView>
 
                 <Button
                     title={"SAVE"}
                     onPress={this.onSave}
                 />
-            </View>
+            </DocumentView>
         );
     }
 

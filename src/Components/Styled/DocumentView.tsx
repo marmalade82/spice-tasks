@@ -9,7 +9,7 @@ export default class DocumentView extends React.Component {
         return (
             <ColumnView style={{
                 justifyContent: "flex-start",
-                backgroundColor: PRIMARY_COLOR_LIGHT
+                backgroundColor: PRIMARY_COLOR_LIGHT,
             }}>
                 {this.props.children}
             </ColumnView>

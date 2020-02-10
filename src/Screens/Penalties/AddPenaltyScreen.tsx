@@ -3,6 +3,8 @@ import { ColumnView } from "src/Components/Basic/Basic";
 import { Button } from "react-native";
 import { AddPenaltyForm, AddPenaltyData, AddPenaltyDefault } from "src/Components/Forms/AddPenaltyForm";
 import { PenaltyQuery, Penalty } from "src/Models/Penalty/PenaltyQuery";
+import { DocumentView } from "src/Components/Styled/Styled";
+import { ScrollView } from "react-native";
 
 
 
@@ -67,15 +69,17 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <ColumnView style={[]}>
-                { this.renderPenaltyForm() }
+            <DocumentView>
+                <ScrollView>
+                    { this.renderPenaltyForm() }
+                </ScrollView>
 
                 <Button
                     title={"SAVE"}
                     onPress={this.onSave}
                     accessibilityLabel={"input-save-button"}
                 />
-            </ColumnView>
+            </DocumentView>
         );
     }
 
