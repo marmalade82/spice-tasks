@@ -13,6 +13,7 @@ interface ITask {
     parentId: string;
     active: boolean;
     state: 'open' | 'in_progress' | 'complete' | 'cancelled';
+    completedDate: Date;
 }
 
 const name = TaskSchema.name
@@ -37,6 +38,7 @@ export default class Task extends Model implements ITask {
     @field(name.PARENT) parentId
     @field(name.ACTIVE) active
     @field(name.STATE) state
+    @date(name.COMPLETED_ON) completedDate
 
     /* Relations */
     @relation(GoalSchema.table, name.PARENT) parentGoal

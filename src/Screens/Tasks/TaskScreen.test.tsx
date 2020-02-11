@@ -68,7 +68,7 @@ test("User can mark a task (and its children) as Complete/Inactive in the databa
         const { queryAllByLabelText } = render(
             <ConnectedTaskList
                 navigation={makeNavigation({})}
-                parentId={false}
+                parentId={""}
                 type={"active"}
             ></ConnectedTaskList>
         );
@@ -110,7 +110,7 @@ test("User can mark a task (and its children) as Complete/Inactive in the databa
         const { queryAllByLabelText } = render(
             <ConnectedTaskList
                 navigation={makeNavigation({})}
-                parentId={false}
+                parentId={""}
                 type={"active"}
             ></ConnectedTaskList>
         );

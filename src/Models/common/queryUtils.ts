@@ -88,6 +88,13 @@ function notStartedConditions() {
     ]
 }
 
+function completedTodayConditions() {
+    return [
+        Q.where(name.COMPLETED_ON, Q.lt(new MyDate().nextMidnight().toDate().valueOf())),
+        Q.where(name.COMPLETED_ON, Q.gte(new MyDate().prevMidnight().toDate().valueOf())),
+    ]
+}
+
 export const Conditions = {
     active: activeConditions,
     activeChild: activeChildConditions,
@@ -102,6 +109,7 @@ export const Conditions = {
     started: startedConditions,
     notDue: notDueConditions,
     notStarted: notStartedConditions,
+    completedToday: completedTodayConditions,
 }
 
 

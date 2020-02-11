@@ -24,6 +24,8 @@ import RemainingTaskScreen from "src/Screens/Tasks/RemainingTaskScreen";
 import SpecificTaskScreen from "src/Screens/Tasks/SpecificTaskScreen";
 import SpecificTaskListScreen from "src/Screens/Tasks/SpecificTaskListsScreen";
 import AppStartScreen from "src/Screens/Home/AppStartScreen";
+import OverdueScreen from "src/Screens/Home/OverdueScreen";
+import InProgressGoalListScreen from "src/Screens/Goals/InProgressGoalListScreen";
 import TestScreen from "src/Screens/TestScreen";
 
 export {
@@ -50,6 +52,8 @@ export {
     RemainingTaskScreen as RemainingTasks,
     SpecificTaskScreen as SpecificTask,
     SpecificTaskListScreen as SpecificTaskList,
-    TestScreen as Test,
     AppStartScreen as AppStart,
+    OverdueScreen as Overdue,
+    InProgressGoalListScreen as InProgressGoalList,
+    TestScreen as Test,
 }

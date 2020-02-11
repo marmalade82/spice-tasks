@@ -38,6 +38,7 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
 
 interface InputProps {
     navigation: any
+    type? : "overdue" | "in-progress-not-due"
 }
 
 /**
@@ -46,8 +47,22 @@ interface InputProps {
  */
 
 const enhance = withObservables([], (_props: InputProps) => {
-    return {
-        goals: new GoalQuery().queryAll().observe()
+    switch(_props.type) {
+        case "overdue" : {
+            return {
+                goals: new GoalQuery().queryActiveAndOverdue().observe()
+            }
+        } break;
+        case "in-progress-not-due": {
+            return {
+                goals: new GoalQuery().queryActiveAndStartedButNotDue().observe()
+            }
+        } break;
+        default: {
+            return {
+                goals: new GoalQuery().queryAll().observe()
+            }
+        }
     }
 });
 

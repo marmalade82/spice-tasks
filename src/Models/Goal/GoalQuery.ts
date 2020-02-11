@@ -92,6 +92,12 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
         return await this.queryInactive().fetch() as Goal[];
     }
 
+    queryActiveAndOverdue = () => {
+        return this.store().query(
+            ...[...Conditions.active(), ...Conditions.overdue()]
+        );
+    }
+
     completeGoalAndDescendants = async (opts: { id: string}) => {
         if(opts.id !== '') {
             try {

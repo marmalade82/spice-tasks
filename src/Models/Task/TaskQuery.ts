@@ -6,6 +6,7 @@ import TaskSchema from "src/Models/Task/TaskSchema";
 import { Q, Database, Model } from "@nozbe/watermelondb";
 import { Conditions } from "src/Models/common/queryUtils"
 import DB from "src/Models/Database";
+import MyDate from "src/common/Date";
 
 export default class TaskQuery extends ModelQuery<Task, ITask> {
     constructor() {
@@ -21,7 +22,27 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
             parentId: "",
             active: true,
             state: 'open',
+            completedDate: MyDate.Zero().toDate()
         } as const;
+    }
+
+    queryCompletedToday = () => {
+        return this.store().query(
+            ...[...Conditions.completedToday(), ...Conditions.complete()]
+        );
+    }
+
+    queryRemainingToday = () => {
+        return this.store().query(
+            Q.or(
+                Q.and(
+                    ...[...Conditions.active(), ...Conditions.dueToday(), ...Conditions.dueInFuture()]
+                ),
+                Q.and(
+                    ...[...Conditions.active(), ...Conditions.started(), ...Conditions.notDue()]
+                ),
+            )
+        )
     }
 
     queryHasParent = (parentId: string) => {
@@ -116,6 +137,7 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
                     return task.prepareUpdate((t: ITask) => {
                         t.active = false;
                         t.state = 'complete';
+                        t.completedDate = new Date() // it was completed today.
                     });
                 });
 

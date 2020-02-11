@@ -32,6 +32,8 @@ const ScreenNavigator = createStackNavigator(
   , HomePage : Screens.HomePage
   , AppStart : Screens.AppStart
   , RemainingTasks : Screens.RemainingTasks
+  , Overdue: Screens.Overdue
+  , InProgressGoals: Screens.InProgressGoalList
   , SpecificTask: Screens.SpecificTask
   , SpecificTaskLists: Screens.SpecificTaskList
   , Test: Screens.Test

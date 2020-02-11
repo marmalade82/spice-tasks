@@ -261,7 +261,7 @@ interface AllStatusListProps {
 const enhance = withObservables([], (_props: AllStatusListProps) => {
     return {
         overdueTaskCount: new TaskQuery().queryActiveAndOverdue().observeCount(),
-        remainingTodayTaskCount: new TaskQuery().queryActiveAndDueSoonToday().observeCount(),
+        remainingTodayTaskCount: new TaskQuery().queryRemainingToday().observeCount(),
         inProgressGoalsCount: new GoalQuery().queryActiveAndStartedButNotDue().observeCount(),
         earnedRewardsCount: new EarnedRewardQuery().queryUnused().observeCount(),
         earnedPenaltiesCount: new EarnedRewardQuery().queryAll().observeCount(),

@@ -114,6 +114,7 @@ As you would expect with any Todo app, Tasks are ubiquitous within Spice. Whenev
         - [T] Complete button should be available
         - [T] When clicked, Complete button should mark task as Complete and Inactive
         - [T] When clicked, Complete button should mark subtasks as Complete and Inactive
+        - [ ] When clicked, Complete button should mark grandchildren tasks as Complete and Inactive
     - [T] User should be able to see the past, the present, and the future of the task:
         - [T] User should be able to view currently active tasks in their own view
         - [T] User should be able to view inactive tasks in their own view

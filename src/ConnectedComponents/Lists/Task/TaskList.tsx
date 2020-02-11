@@ -41,8 +41,12 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
 
 interface InputProps {
     navigation: any;
-    type: "all" | "parent-active" | "parent-inactive" | "parent-all" | "active";
-    parentId: string | false;  // shows all tasks that have this parent
+    type: 
+        "all" | "parent-active" | "parent-inactive" | 
+        "parent-all" | "active" | "active-due-soon-today" |
+        "completed-today" | "in-progress-but-not-due-today" |
+        "overdue";
+    parentId: string  // shows all tasks that have this parent
 }
 
 /**
@@ -50,21 +54,46 @@ interface InputProps {
  */
 
 const enhance = withObservables(['type'], (props: InputProps) => {
-    if(props.type === "active") {
-        return {
-            tasks: new TaskQuery().queryActiveTasks().observe()
-        }
-    } else if(props.type === "parent-active" && props.parentId) {
-        return {
-            tasks: new TaskQuery().queryActiveHasParent(props.parentId).observe(),
-        }
-    } else if(props.type === "parent-inactive" && props.parentId) {
-        return {
-            tasks: new TaskQuery().queryInactiveHasParent(props.parentId).observe(),
-        }
-    } else {
-        return {
-            tasks: new TaskQuery().queryAll().observe(),
+    switch(props.type) {
+        case "active": {
+            return {
+                tasks: new TaskQuery().queryActiveTasks().observe()
+            }
+        } break;
+        case "parent-active": {
+            return {
+                tasks: new TaskQuery().queryActiveHasParent(props.parentId).observe(),
+            }
+        } break;
+        case "parent-inactive": {
+            return {
+                tasks: new TaskQuery().queryInactiveHasParent(props.parentId).observe(),
+            }
+        } break;
+        case "active-due-soon-today": {
+            return {
+                tasks: new TaskQuery().queryActiveAndDueSoonToday().observe()
+            }
+        } break;
+        case "completed-today" : {
+            return {
+                tasks: new TaskQuery().queryCompletedToday().observe()
+            }
+        } break;
+        case "in-progress-but-not-due-today": {
+            return {
+                tasks: new TaskQuery().queryActiveAndStartedButNotDue().observe()
+            }
+        } break;
+        case "overdue": {
+            return {
+                tasks: new TaskQuery().queryActiveAndOverdue().observe()
+            }
+        } break;
+        default: {
+            return {
+                tasks: new TaskQuery().queryAll().observe(),
+            }
         }
     }
 });
