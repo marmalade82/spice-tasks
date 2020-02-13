@@ -116,6 +116,14 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
         );
     }
 
+    queryFailed = () => {
+        return this.store().query(...Conditions.failed());
+    }
+
+    failedTasks = async () => {
+        return await this.queryFailed().fetch() as Task[];
+    }
+
     queryInactiveHasParent = (parentId: string) => {
         return this.store().query(
             ...Conditions.inactiveChild(parentId)

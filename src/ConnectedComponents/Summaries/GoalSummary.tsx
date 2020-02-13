@@ -6,19 +6,41 @@ import withObservables from "@nozbe/with-observables";
 import {
     Goal
 } from "src/Models/Goal/Goal";
-import GoalSummary from "src/Components/Summaries/GoalSummary";
+import GoalSummary, { ModalChoices } from "src/Components/Summaries/GoalSummary";
+import { GoalType } from "src/Models/Goal/GoalLogic";
 
 interface Props {
     goal: Goal,
     navigation: any,
-    onModalChoice: (s: "complete" | "delete") => void;
+    onModalChoice: (s: ModalChoices) => void;
 }
 
 const AdaptedGoalSummary: React.FunctionComponent<Props> = (props: Props) => {
     const goal = props.goal;
+    let type: "normal" | "streak";
+    switch(goal.goalType) {
+        case GoalType.NORMAL: type = "normal"; break;
+        case GoalType.STREAK: type = "streak"; break;
+        default: type = "normal";
+    }
+
+    let state: "open" | "completed" | "failed";
+
+    if(goal.active) {
+        state = "open";
+    } else if (goal.state === "complete") {
+        state = "completed"
+    } else {
+        state = "failed"
+    }
+
     const mappedGoal = {
         title: goal.title,
+        details: goal.details,
+        start_date: goal.startDate,
         due_date: goal.dueDate, 
+        type: type,
+        state: state
     }
 
     return (
@@ -36,7 +58,7 @@ const AdaptedGoalSummary: React.FunctionComponent<Props> = (props: Props) => {
 interface InputProps {
     goal: Goal,
     navigation: any,
-    onModalChoice: (s: "complete" | "delete") => void;
+    onModalChoice: (s: ModalChoices) => void;
 }
 
 /**

@@ -9,10 +9,12 @@ import { Summary, IconButton, ModalIconButton, ModalRow } from "src/Components/S
 import MyDate from "src/common/Date";
 import { booleanLiteral } from "@babel/types";
 
+export type ModalChoices = "complete" | "delete" | "incomplete"
+
 interface Props {
     goal: Goal
     navigation: any;
-    onModalChoice: (s: "complete" | "delete") => void;
+    onModalChoice: (s: ModalChoices) => void;
 }
 
 interface State {
@@ -21,7 +23,11 @@ interface State {
 
 interface Goal {
     title: string;
+    details: string;
+    start_date: Date;
     due_date: Date;
+    type: "streak" | "normal"
+    state: "open" | "completed" | "failed"
 }
 
 
@@ -120,6 +126,17 @@ export default class GoalSummary extends React.Component<Props, State> {
                                                 })
                                             }}
                                             accessibilityLabel={"goal-delete-button"}
+                                        ></ModalRow>
+                                        <ModalRow
+                                            text={"Mark Incomplete"}
+                                            iconType={"goal"}
+                                            onPress={() => {
+                                                this.props.onModalChoice("incomplete");
+                                                this.setState({
+                                                    showMore: false,
+                                                })
+                                            }}
+                                            accessibilityLabel={"goal-incomplete-button"}
                                         ></ModalRow>
                                     </ModalIconButton>
                             );

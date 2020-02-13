@@ -13,6 +13,7 @@ interface Props {
     onChangeText: (text: string) => void;
     accessibilityLabel: string;
     style?: StyleProp<ViewStyle>;
+    multiline?: boolean;
 }
 
 interface State {
@@ -40,6 +41,7 @@ export default class StringInput extends Input<Props, State> {
                     placeholder={this.props.placeholder}
                     onChangeText={this.props.onChangeText}
                     accessibilityLabel={this.props.accessibilityLabel}
+                    multiline={this.props.multiline}
                 >
 
                 </TextInput>

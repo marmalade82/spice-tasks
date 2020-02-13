@@ -10,6 +10,7 @@ import { GoalType } from "src/Models/Goal/GoalLogic";
 
 interface IGoal extends IStreak{
     title: string;
+    details: string;
     goalType: GoalType;
     startDate: Date;
     dueDate: Date;
@@ -21,7 +22,7 @@ interface IGoal extends IStreak{
 
 interface IStreak {
     streakMinimum: number;
-    streakType: string; // daily, weekly, or monthly
+    streakType: "daily" | "weekly" | "monthly"; // daily, weekly, or monthly
     streakDailyStart: Date;  // really represents the time portion
     streakWeeklyStart: string;  // sunday, monday, tuesday, etc.
     streakMonthlyStart: number; // Specific day of month it starts on
@@ -41,19 +42,20 @@ export default class Goal extends Model implements IGoal {
             key: name.PARENT,
         } as const,
     }
-    @field(name.TITLE) title
-    @field(name.TYPE) goalType
-    @date(name.STARTS_AT) startDate 
-    @date(name.DUE_AT) dueDate
-    @field(name.STREAK_MIN) streakMinimum
-    @field(name.STREAK_TYPE) streakType
-    @date(name.STREAK_DAILY_START) streakDailyStart
-    @field(name.STREAK_WEEKLY_START) streakWeeklyStart
-    @field(name.STREAK_MONTHLY_START) streakMonthlyStart
-    @field(name.PARENT) parentId
-    @field(name.STATE) state
-    @field(name.ACTIVE) active
-    @field(name.REWARD_TYPE) rewardType
+    @field(name.TITLE) title!: string;
+    @field(name.TYPE) goalType!: GoalType;
+    @date(name.STARTS_AT) startDate!: Date;
+    @date(name.DUE_AT) dueDate!: Date;
+    @field(name.STREAK_MIN) streakMinimum!: number;
+    @field(name.STREAK_TYPE) streakType!: "daily" | "weekly" | "monthly";
+    @date(name.STREAK_DAILY_START) streakDailyStart!: Date;
+    @field(name.STREAK_WEEKLY_START) streakWeeklyStart!: string;
+    @field(name.STREAK_MONTHLY_START) streakMonthlyStart!: number;
+    @field(name.PARENT) parentId!: string;
+    @field(name.STATE) state!: "open" | "in_progress" | "complete" | "cancelled";
+    @field(name.ACTIVE) active!: boolean;
+    @field(name.REWARD_TYPE) rewardType!: RewardType;
+    @field(name.DETAILS) details!: string;
 
     /*Relations*/
     @children('tasks') tasks

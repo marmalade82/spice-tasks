@@ -1,9 +1,13 @@
 import React from "react";
 import { 
-    View, Text, TextInput, StyleSheet, 
-    Alert, KeyboardAvoidingView,
+    View, Text, StyleSheet, 
+    Alert, KeyboardAvoidingView, StyleProp, ViewStyle,
 } from "react-native";
+import { TextInput, Label } from "src/Components/Styled/Styled";
 import Style from "src/Style/Style";
+import StringInput from "./StringInput";
+import { ColumnView } from "../Basic/Basic";
+import { CONTAINER_VERTICAL_MARGIN } from "../Styled/Styles";
 
 interface Props {
     title: string
@@ -13,31 +17,13 @@ interface Props {
     maximum?: number
     precision?: number
     onValueChange: (n: number) => void
+    accessibilityLabel: string;
+    style?: StyleProp<ViewStyle>;
 }
 
 interface State {
     //number: number
 }
-
-const localStyle = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "stretch",
-        borderColor: "grey",
-        borderWidth: 1,
-    },
-    text: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    input: {
-        flex: 2,
-        justifyContent: "center",
-        alignItems: "stretch",
-    },
-});
 
 export default class NumberInput extends React.Component<Props, State> {
     constructor(props: Props) {
@@ -82,20 +68,23 @@ export default class NumberInput extends React.Component<Props, State> {
     }
 
     render = () => {
+
         return (
-            <View style={[localStyle.container, Style.maxInputHeight]}>
-                <View style={[Style.yellowBg, localStyle.text]}>
-                    <Text>{this.props.title}</Text>
-                </View>
-                <View style={[Style.whiteBg, localStyle.input]}>
-                    <TextInput
-                        value={this.value()} 
-                        onChangeText={this.onChangeText}
-                        keyboardType={"number-pad"}
-                        onEndEditing={this.onEndEditing}
-                    />
-                </View>
-            </View>
+            <ColumnView style={[{
+                flex: 0,
+                justifyContent: "flex-start",
+                backgroundColor: "transparent",
+                marginBottom: 2 * CONTAINER_VERTICAL_MARGIN,
+            }, this.props.style]}>
+                <Label text={this.props.title}></Label>
+                <TextInput
+                    value={this.value()} 
+                    onChangeText={this.onChangeText}
+                    keyboardType={"number-pad"}
+                    onEndEditing={this.onEndEditing}
+                    accessibilityLabel={this.props.accessibilityLabel}
+                />
+            </ColumnView>
         );
     }
 }

@@ -47,11 +47,15 @@ test("User can fill out all fields of a normal goal and have them saved to datab
     const expected = {
         summary: "test summary",
         rewardType: "two_dice",
-        type: "streak",
+        type: "normal",
+        details: "my-dets",
     }
 
     const summaryInput = getByLabelText("input-goal-summary");
     fireEvent.changeText(summaryInput, expected.summary);
+
+    const detailsInput = getByLabelText("input-goal-details");
+    fireEvent.changeText(detailsInput, expected.details);
 
     const typeInput = getByLabelText("input-goal-type");
     fireEvent.press(typeInput);
@@ -81,6 +85,52 @@ test("User can fill out all fields of a normal goal and have them saved to datab
         expect(createdGoal.title).toEqual(expected.summary);
         expect(createdGoal.rewardType).toEqual(expected.rewardType);
         expect(createdGoal.goalType).toEqual(expected.type);
+        expect(createdGoal.details).toEqual(expected.details)
+    })
+
+    await destroyAllIn('goals');
+});
+
+test("User can fill out all fields of a streak goal and have them saved to database after 'Complete'" +
+                    "is clicked", async () => {
+    const { getByLabelText, queryByLabelText, getByText, queryByText } = render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
+
+    const expected = {
+        summary: "test summary",
+        rewardType: "two_dice",
+        type: "streak",
+        details: "my-dets",
+        streakType: "daily",
+        streakMinimum: "3"
+    }
+
+    const summaryInput = getByLabelText("input-goal-summary");
+    fireEvent.changeText(summaryInput, expected.summary);
+
+    const detailsInput = getByLabelText("input-goal-details");
+    fireEvent.changeText(detailsInput, expected.details);
+
+    const typeChoice = getByLabelText("input-" + expected.type + "-goal-type");
+    fireEvent.press(typeChoice);
+
+    const streakTypeChoice = getByLabelText("input-" + expected.streakType + "-streak-type" )
+    fireEvent.press(streakTypeChoice);
+
+    const streakMinimumInput = getByLabelText("input-streak-minimum");
+    fireEvent.changeText(streakMinimumInput, expected.streakMinimum);
+
+    const saveButton = getByLabelText("input-save-button");
+    fireEvent.press(saveButton);
+
+    await wait(async () => {
+        const createdGoals = (await new GoalQuery().all())
+        const createdGoal = createdGoals[0];
+        expect(createdGoals.length).toEqual(1)
+        expect(createdGoal.title).toEqual(expected.summary);
+        expect(createdGoal.goalType).toEqual(expected.type);
+        expect(createdGoal.details).toEqual(expected.details)
+        expect(createdGoal.streakType).toEqual(expected.streakType);
+        expect(createdGoal.streakMinimum.toString()).toEqual(expected.streakMinimum)
     })
 
     await destroyAllIn('goals');

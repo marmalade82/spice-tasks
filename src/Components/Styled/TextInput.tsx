@@ -18,6 +18,8 @@ interface Props {
     onChangeText: (s :string) => void;
     accessibilityLabel?: string;
     multiline?: boolean;
+    keyboardType? : "number-pad";
+    onEndEditing?: () => void;
 }
 
 export default class TextInput extends React.Component<Props> {
@@ -56,6 +58,8 @@ export default class TextInput extends React.Component<Props> {
                         multiline={this.props.multiline ? true : false}
                         numberOfLines={this.props.multiline ? 1 : undefined}
                         accessibilityLabel={this.props.accessibilityLabel ? "input-" + this.props.accessibilityLabel : undefined}
+                        keyboardType={this.props.keyboardType}
+                        onEndEditing={this.props.onEndEditing}
                     ></Input>
                 </ColumnView>
             </RowView>

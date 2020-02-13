@@ -7,7 +7,7 @@ import ClaimedRewardSchema from "src/Models/Reward/ClaimedRewardSchema";
 import { PenaltySchema } from "src/Models/Penalty/PenaltySchema";
 
 const Schema = appSchema({
-    version: 2,
+    version: 3,
     tables: [
         generateTableSchema(GoalSchema),
         generateTableSchema(TaskSchema),

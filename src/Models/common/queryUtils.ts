@@ -95,6 +95,13 @@ function completedTodayConditions() {
     ]
 }
 
+function failedConditions() {
+    return [
+        Q.where(name.ACTIVE, false),
+        Q.where(name.STATE, "cancelled"),
+    ]
+}
+
 export const Conditions = {
     active: activeConditions,
     activeChild: activeChildConditions,
@@ -110,6 +117,7 @@ export const Conditions = {
     notDue: notDueConditions,
     notStarted: notStartedConditions,
     completedToday: completedTodayConditions,
+    failed: failedConditions,
 }
 
 

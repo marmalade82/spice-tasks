@@ -23,6 +23,7 @@ interface Props {
     key?: any;
     rightElements: (() => JSX.Element)[]
     style?: StyleProp<ViewStyle>
+    accessibilityLabel?: string;
 }
 
 export default class ClickRow extends React.Component<Props> {
@@ -63,6 +64,7 @@ export default class ClickRow extends React.Component<Props> {
                             flexDirection: "row",
                         }, Styles.CENTERED_PRIMARY]}
                         onPress={this.props.onPress}
+                        accessibilityLabel={this.props.accessibilityLabel ? "input-" + this.props.accessibilityLabel : undefined }
                     >
                         {this.renderRow()}
                     </TouchableOpacity>

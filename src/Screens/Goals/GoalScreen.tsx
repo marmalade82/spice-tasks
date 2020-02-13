@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet, Button, FlatList } from "react-native";
 import Style from "src/Style/Style";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList"
 import { ConnectedGoalSummary } from "src/ConnectedComponents/Summaries/GoalSummary";
@@ -9,7 +9,9 @@ import {
     ColumnView, RowView, Button as MyButton, ViewPicker,
 } from "src/Components/Basic/Basic";
 import NavigationButton from "src/Components/Navigation/NavigationButton";
-import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
+import { DocumentView, ScreenHeader, ListPicker } from "src/Components/Styled/Styled";
+import { ScrollView } from "react-native-gesture-handler";
+import TaskQuery from "src/Models/Task/TaskQuery";
 
 
 interface Props {
@@ -18,35 +20,10 @@ interface Props {
 
 interface State {
     goal?: Goal;
+    currentList: number;
+    activeCount: number;
+    inactiveCount: number;
 }
-
-const localStyle = StyleSheet.create({
-    container: {
-    },
-    summary: {
-        flex: 1,
-    },
-    actionHeader: {
-        flex: 0.3,
-    },
-    actionItem: {
-        backgroundColor: "lightyellow"
-    },
-    list: {
-        flex: 2.7,
-    },
-    button: {
-        position: 'absolute',
-        right: 25,
-        top: 25,
-    },
-    completeButton: {
-        position: 'absolute',
-        right: 25,
-        bottom: 25,
-    }
-});
-
 
 export default class GoalScreen extends React.Component<Props, State> {
 
@@ -56,11 +33,17 @@ export default class GoalScreen extends React.Component<Props, State> {
         }
     }
 
+    unsubscribe : () => void;
     constructor(props: Props) {
         super(props);
         this.state = {
-            goal: undefined
+            goal: undefined,
+            currentList: 0,
+            activeCount: 0,
+            inactiveCount: 0,
         }
+
+        this.unsubscribe = () => {};
     }
 
     componentDidMount = async () => {
@@ -72,11 +55,30 @@ export default class GoalScreen extends React.Component<Props, State> {
                 goal: goal
             })
 
+            const activeSub = new TaskQuery().queryActiveHasParent(goal.id).observeCount().subscribe((num) => {
+                this.setState({
+                    activeCount: num,
+                })
+            });
+            const inactiveSub = new TaskQuery().queryInactiveHasParent(goal.id).observeCount().subscribe((num) => {
+                this.setState({
+                    inactiveCount: num,
+                })
+            })
+            this.unsubscribe = () => {
+                activeSub.unsubscribe();
+                inactiveSub.unsubscribe();
+            }
         } else {
             this.setState({
                 goal: undefined
             });
         }
+
+    }
+
+    componentWillUnmount = () => {
+        this.unsubscribe()
     }
 
     onEditGoal = () => {
@@ -87,14 +89,28 @@ export default class GoalScreen extends React.Component<Props, State> {
     }
 
     onCompleteGoal = () => {
-        new GoalLogic(this.props.navigation.getParam("id", "")).complete();
+        const id = this.props.navigation.getParam("id", "");
+        const logic = new GoalLogic(id);
+        if( logic.isStreak() && !logic.metMinimum()) {
+            // SHOW SOME SORT OF ERROR TOAST HERE
+        } else {
+            new GoalLogic(id).complete();
+        }
     }
 
-    onModalChoice = (s: "complete" | "delete") => {
+    onFailGoal = () => {
+        const id = this.props.navigation.getParam("id", "");
+        new GoalLogic(id).fail();
+    }
+
+    onModalChoice = (s: "complete" | "delete" | "incomplete") => {
         switch(s) {
             case "complete": {
                 this.onCompleteGoal();
             } break;
+            case "incomplete": {
+                this.onFailGoal();
+            }
             default: {
 
             }
@@ -107,15 +123,21 @@ export default class GoalScreen extends React.Component<Props, State> {
             <DocumentView>
                 <ScreenHeader>Goal Summary</ScreenHeader>
                 {this.renderSummary()}
-                <ColumnView style={[localStyle.list]}>
-                    <ViewPicker
-                        data={false}
-                        onDataChange={() => {}}
-                        accessibilityLabel={"tasks"}
-                        pickerHeight={60}
-                        views={[...this.renderTaskLists()]}
-                    ></ViewPicker>
-                </ColumnView>
+                <ListPicker
+                    data={{
+                        current: this.state.currentList
+                    }}
+                    onDataChange={({ current }) => {
+                        this.setState({
+                            currentList: current
+                        })
+                    }}
+                    lists={this.renderTaskLists()}
+                    layout={"top"}
+                    key="list"
+                >
+
+                </ListPicker>
             </DocumentView>
         );
     }
@@ -127,15 +149,21 @@ export default class GoalScreen extends React.Component<Props, State> {
                         goal={this.state.goal} 
                         navigation={this.props.navigation}
                         onModalChoice={this.onModalChoice}
+                        key={"summary"}
                     ></ConnectedGoalSummary>
             );
+        } else {
+            return <View></View>
         }
     }
 
     renderTaskLists = () => {
         return [
-            {   title: "Active"
-            ,   render: () => {
+            {   selector: {
+                    number: this.state.activeCount,
+                    text: "Active",
+                }
+            ,   list: () => {
                     return (
                         <ConnectedTaskList
                             navigation={this.props.navigation}
@@ -145,8 +173,11 @@ export default class GoalScreen extends React.Component<Props, State> {
                     );
                 }
             },
-            {   title: "Inactive"
-            ,   render: () => {
+            {   selector: {
+                    number: this.state.inactiveCount,
+                    text: "Inactive"
+                }
+            ,   list: () => {
                     return (
                         <ConnectedTaskList
                             navigation={this.props.navigation}

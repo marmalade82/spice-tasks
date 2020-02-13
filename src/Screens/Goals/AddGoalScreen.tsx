@@ -36,6 +36,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
         if(goal) {
             let data: AddGoalData = {
                 title : goal.title,
+                details: goal.details,
                 type : goal.goalType,
                 start_date : goal.startDate,
                 due_date : goal.dueDate,
@@ -45,7 +46,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 penalty: AddGoalDefault().penalty,
                 streakData: {
                     minimum: goal.streakMinimum,
-                    type: goal.streakType,
+                    type: goal.streakType as any,
                     daily_start: goal.streakDailyStart,
                     weekly_start: goal.streakWeeklyStart,
                     monthly_start: goal.streakMonthlyStart,
@@ -77,6 +78,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             streakWeeklyStart: streak.weekly_start,
             streakMonthlyStart: streak.monthly_start,
             rewardType: data.reward,
+            details: data.details,
         };
         if(this.state.goal) {
             new GoalQuery().update(this.state.goal, goalData)

@@ -9,6 +9,7 @@ import {
 import DataComponent from "src/Components/base/DataComponent";
 import Style from "src/Style/Style";
 import { DayOfWeek } from "lib/recurrence";
+import { ColumnView } from "src/Components/Basic/Basic";
 
 interface Props {
     data: State | false
@@ -90,9 +91,14 @@ export default class StreakForm extends DataComponent<Props, State, State> {
 
     render = () => {
         return (
-            <KeyboardAvoidingView 
-                style={[Style.container, localStyle.container, Style.greenBg, this.props.containerStyle]}
-                behavior={"padding"}
+            <ColumnView
+                style={[{
+                    flex: 0,
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    alignItems: "stretch",
+                    backgroundColor: "transparent",
+                }, this.props.containerStyle]}
             >
                 <NumberInput
                     title={"Minimum"}
@@ -101,6 +107,7 @@ export default class StreakForm extends DataComponent<Props, State, State> {
                     minimum={2}
                     precision={0}
                     onValueChange={this.onChangeMinimum}
+                    accessibilityLabel={"streak-minimum"}
                 />
                 <ChoiceInput
                     title={"Streak Type"}
@@ -111,7 +118,7 @@ export default class StreakForm extends DataComponent<Props, State, State> {
                 />
 
                 {this.renderByType()}
-            </KeyboardAvoidingView>
+            </ColumnView>
 
         );
     }
@@ -146,6 +153,7 @@ export default class StreakForm extends DataComponent<Props, State, State> {
                     minimum={1}
                     maximum={31}
                     onValueChange={this.onChangeMonthlyStart}
+                    accessibilityLabel={"streak-monthly-start"}
                 />
             );
         } else {

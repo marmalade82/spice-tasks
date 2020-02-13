@@ -123,6 +123,7 @@ export default class ListPicker extends DataComponent<Props, State, State> {
                         borderBottomWidth: index === this.props.lists.length - 1 ? 0 : 1,
                         borderColor: "lightgrey",
                     }}
+                    accessibilityLabel={"view-" + (index + 1).toString() }
                 >
                 </ClickRow>
             )

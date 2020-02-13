@@ -3,6 +3,7 @@ import { ChildSchema, StateSchema, ActiveSchema, Schema } from "src/Models/base/
 
 const GoalName = {
     TITLE: 'title',
+    DETAILS: 'details',
     TYPE: 'type',
     STARTS_AT: 'starts_at',
     DUE_AT: 'due_at',
@@ -19,6 +20,7 @@ const GoalName = {
 
 const GoalType = {
     TITLE: 'string',
+    DETAILS: 'string',
     TYPE: 'string',
     STARTS_AT: 'number',
     DUE_AT: 'number',

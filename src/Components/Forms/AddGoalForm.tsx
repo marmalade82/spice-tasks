@@ -17,6 +17,7 @@ import Style from "src/Style/Style";
 import { ColumnView } from "../Basic/Basic";
 import { RewardChoices, RewardType, Rewards } from "src/Models/Reward/RewardLogic";
 import { GoalChoices, GoalType } from "src/Models/Goal/GoalLogic";
+import { string } from "prop-types";
 
 interface Props {
     navigation: Navigator
@@ -26,6 +27,7 @@ interface Props {
 
 interface State {
     title: string;
+    details: string;
     type: GoalType;
     recurring: boolean;
     start_date: Date;
@@ -74,6 +76,7 @@ function Default(): State {
         penalty: Penalty.NONE,
         recurData: RecurringDefault(),
         streakData: StreakDefault(),
+        details: "",
     } as const
 }
 
@@ -131,6 +134,11 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
     }
 
+    onChangeDetails = (dets: string) => {
+        this.setData({
+            details: dets
+        })
+    }
 
     render = () => {
         return (
@@ -138,6 +146,13 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                 backgroundColor: "transparent",
             }]}>
                 <ScrollView>
+                    <ChoiceInput
+                        title={"Type"}
+                        selectedValue={this.data().type}
+                        choices={GoalChoices}
+                        onValueChange={this.onChangeType}
+                        accessibilityLabel={"goal-type"}
+                    />
                     <StringInput
                         title={"Summary"}
                         value={this.data().title}
@@ -146,13 +161,15 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         accessibilityLabel={"goal-summary"}
                     />
 
-                    <ChoiceInput
-                        title={"Type"}
-                        selectedValue={this.data().type}
-                        choices={GoalChoices}
-                        onValueChange={this.onChangeType}
-                        accessibilityLabel={"goal-type"}
+                    <StringInput
+                        title={"Details"}
+                        value={this.data().details}
+                        placeholder={"Explain what this goal is all about"}
+                        onChangeText={this.onChangeDetails}
+                        accessibilityLabel={"goal-details"}
+                        multiline={true}
                     />
+
 
                     { this.renderStreakForm() }
 

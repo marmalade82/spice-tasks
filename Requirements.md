@@ -228,17 +228,26 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
         - [ ] Title
         - [ ] Start Date
         - [ ] Due Date
+    - [ ] A list of the child tasks below with
+        - [ ] Only the goals that belong to the parent goal
+        - [ ] Title
+        - [ ] Start Date
+        - [ ] Due Date
     - [X] User should be able to edit the goal by clicking a button to go to the edit screen.
     - [X] User should be able to click a button to go to a screen for adding a new task to the goal
         - [X] Clicking the button takes the user to the Add Task screen.
         - [X] Using the Add Task Screen adds the task to the goal within the database
-    - [T] User should be able to mark task as complete
+    - [T] User should be able to mark goal as complete
         - [T] Complete button should be available
         - [T] When clicked, Complete button should mark task as Complete and Inactive
         - [T] When clicked, Complete button should mark subtasks as Complete and Inactive
-        - [ ] When clicked, Complete button should generate corresponding reward
-            - [T] If reward was Two Dice, a Two Dice earned reward should be generated.
-            - [ ] If reward was Specific reward, a Specific earned reward should be generated.
+        - [T] When clicked, Complete button should generate corresponding reward
+            - [T] If reward was Two Dice, a Two Dice earned reward should be generated a
+            - [T] If reward was Lootbox, a Lootbox earned reward should be generated 
+            - [T] If reward was Coin Flip, an earned reward/penalty should be generated.
+            - [T] If reward was Spin the Wheel, an earned reward/penalty should be generated.
+            - [T] If reward was Specific reward, a Specific earned reward should be generated.
+            - [T] If reward was None, no reward or penalty should be generated.
     - [T] User should be able to see the past, the present, and the future of the goal:
         - [T] User should be able to view currently active tasks in their own view
         - [T] User should be able to view inactive tasks in their own view

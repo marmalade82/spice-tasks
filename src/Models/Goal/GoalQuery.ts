@@ -31,6 +31,7 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
             active: true,
             state: "open",
             rewardType: Rewards.NONE,
+            details: "",
         } as const;
         return Default;
     }
@@ -88,8 +89,16 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
         return this.store().query(...Conditions.inactive());
     }
 
+    queryFailed = () => {
+        return this.store().query(...Conditions.failed());
+    }
+
     inactiveGoals = async () => {
         return await this.queryInactive().fetch() as Goal[];
+    }
+
+    failedGoals = async() => {
+        return await this.queryFailed().fetch() as Goal[];
     }
 
     queryActiveAndOverdue = () => {
@@ -128,6 +137,38 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
             }
         }
     }
+
+    failGoalAndDescendants = async(opts: { id: string}) => {
+        if(opts.id !== '') {
+            try {
+                const parent: Goal = await this.store().find(opts.id) as Goal;
+                /* THIS ISN"T READY YET. need to recursively check descendant goals for both goals and tasks */
+                const allGoals: Goal[] = [parent]// await findAllChildrenIn(this.table, parent.id, [parent]);
+                const allGoalsPrep = allGoals.map((goal: Goal) => {
+                    return goal.prepareUpdate((g: IGoal) => {
+                        g.active = false;
+                        g.state = 'cancelled';
+                    });
+                });
+
+                const allTasks: Task[] = await findAllChildrenIn(TaskSchema.table, parent.id, []);
+                const allTasksPrep = allTasks.map((task: Task) => {
+                    return task.prepareUpdate((t: ITask) => {
+                        t.active = false;
+                        t.state = 'cancelled';
+                    });
+                });
+
+                DB.get().action(async() => {
+                    DB.get().batch(...[...allGoalsPrep, ...allTasksPrep]);
+                })
+
+            } catch (e) {
+                console.log(e);
+                throw e;
+            }
+        }
+    }
 }
 
 export default GoalQuery;
@@ -154,13 +195,50 @@ export class GoalLogic {
     }
 
     earnReward = async () => {
-        const goal = await new GoalQuery().get(this.id);
+        const goal: IGoal | null = await new GoalQuery().get(this.id);
         if(goal) {
-            await new EarnedRewardQuery().create({
-                earnedDate: new MyDate().toDate(),
-                type: goal.rewardType,
-                goalId: this.id,
-            })
+            switch(goal.rewardType) {
+                case Rewards.NONE: {
+                    // If none, do nothing. No reward was earned.
+                } break;
+                default: {
+                    await new EarnedRewardQuery().create({
+                        earnedDate: new MyDate().toDate(),
+                        type: goal.rewardType,
+                        goalId: this.id,
+                    })
+                }
+            }
         }
+    }
+
+    fail = async () => {
+        await new GoalQuery().failGoalAndDescendants({
+            id: this.id
+        })
+    }
+
+    isStreak = async () => {
+        const goal: IGoal | null = await new GoalQuery().get(this.id);
+        if(goal) {
+            return goal.goalType === GoalType.STREAK;
+        }
+
+        return true;
+    }
+
+    /**
+     * We meet the minimum if the sum of completable goals and already-completed goals
+     * is gte the actual minimum of the goal.
+     */
+    metMinimum = async () => {
+        const goal: IGoal | null = await new GoalQuery().get(this.id);
+        const activeGoals: number = await new GoalQuery().queryActive().fetchCount();
+        const completedGoals: number = await new GoalQuery().queryCompleted().fetchCount();
+        if(goal) {
+            return (activeGoals + completedGoals) >= goal.streakMinimum;
+        }
+
+        return false;
     }
 }
