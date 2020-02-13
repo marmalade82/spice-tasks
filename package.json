@@ -8,7 +8,8 @@
     "test": "jest",
     "test-one": "jest GoalScreen.test.tsx",
     "debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
-    "link": "react-native link"
+    "link": "react-native link",
+    "lint": "tslint --project tsconfig.json"
   },
   "jest": {
     "preset": "@testing-library/react-native"

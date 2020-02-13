@@ -580,25 +580,7 @@ describe("streak goal tests", () => {
 
     test("If the minimum streak count isn't and cannot be met, completing gives an error message", async () => {
 
-        const { parentId } = await setup()
-
-        await wait(async() => {
-            const completedGoals: Goal[] = await new GoalQuery().completedGoals();
-            expect(completedGoals.length).toEqual(0);
-            const inactiveGoals: Goal[] = await new GoalQuery().inactiveGoals();
-            expect(inactiveGoals.length).toEqual(0);
-        })
-
-        {
-            const { getByLabelText } = render(
-                <GoalScreen navigation={makeNavigation({id: parentId})}></GoalScreen>
-            );
-
-            await wait(async () => {
-                const completeButton = getByLabelText("input-goal-complete-button");
-                fireEvent.press(completeButton);
-            })
-        } 
+        const { parentId } = await setup();
 
         await wait(async() => {
             const completedGoals: Goal[] = await new GoalQuery().completedGoals();
@@ -613,6 +595,34 @@ describe("streak goal tests", () => {
             const inactiveTasks: Task[] = await new TaskQuery().inactiveTasks();
             expect(inactiveTasks.length).toEqual(0);
         })
+
+        {
+            const { getByLabelText } = render(
+                <GoalScreen navigation={makeNavigation({id: parentId})}></GoalScreen>
+            );
+
+            let completeButton;
+            await wait(async () => {
+                completeButton = getByLabelText("input-goal-complete-button");
+            })
+            fireEvent.press(completeButton);
+        } 
+
+        await wait(async() => {
+            const completedTasks: Task[] = await new TaskQuery().completedTasks();
+            expect(completedTasks.length).toEqual(0);
+            const inactiveTasks: Task[] = await new TaskQuery().inactiveTasks();
+            expect(inactiveTasks.length).toEqual(0);
+        })
+
+        await wait(async() => {
+            // no goals should have completed, since the minimum is 2 and there is only 1 child.
+            const inactiveGoals: Goal[] = await new GoalQuery().inactiveGoals();
+            expect(inactiveGoals.length).toEqual(0);
+            const completedGoals: Goal[] = await new GoalQuery().completedGoals();
+            expect(completedGoals.length).toEqual(0);
+        })
+
         await teardown();
 
         async function setup() {
@@ -620,13 +630,15 @@ describe("streak goal tests", () => {
                 parentId: ""
             }
             await DB.get().action(async () => {
-                const parent = await DB.get().collections.get("goals").create((goal: Goal) => {
-                    goal.active = true;
-                    goal.title = "Parent";
-                    goal.state = "open"
-                    goal.streakMinimum = 2;
-                    goal.goalType = GoalType.STREAK;
-                });
+                const parent = (await createGoals({
+                    active : true,
+                    title : "Parent",
+                    state : "open",
+                    streakMinimum : 2,
+                    goalType : GoalType.STREAK,
+                }, 1))[0];
+
+                debugger;
 
                 opts.parentId = parent.id;
 
@@ -644,6 +656,6 @@ describe("streak goal tests", () => {
         async function teardown() {
             await destroyAll();
         }
-    });
+    }, 20000);
 
 })

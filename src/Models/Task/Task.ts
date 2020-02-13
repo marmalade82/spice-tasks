@@ -46,7 +46,7 @@ export default class Task extends Model implements ITask {
 
     /* Actions */
     @action async createChild(child: ITask) {
-        this.collections.get(Task.table).create((task: Task) => {
+        await this.collections.get(Task.table).create((task: Task) => {
             Object.assign(task, child);
             task.parentId = this.id;
         });

@@ -88,10 +88,11 @@ export default class GoalScreen extends React.Component<Props, State> {
         this.props.navigation.navigate('AddGoal', params);
     }
 
-    onCompleteGoal = () => {
+    onCompleteGoal = async () => {
         const id = this.props.navigation.getParam("id", "");
         const logic = new GoalLogic(id);
-        if( logic.isStreak() && !logic.metMinimum()) {
+        debugger;
+        if( await logic.isStreak() && (! (await logic.metMinimum()))) {
             // SHOW SOME SORT OF ERROR TOAST HERE
         } else {
             new GoalLogic(id).complete();

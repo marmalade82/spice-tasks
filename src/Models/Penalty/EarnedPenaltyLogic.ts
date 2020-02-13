@@ -32,7 +32,7 @@ export default class EarnedPenaltyLogic {
             const reward = await new PenaltyQuery().get(penaltyId);
 
             if(reward) {
-                new ClaimedRewardQuery().create({
+                await new ClaimedRewardQuery().create({
                     title: reward.title,
                     details: reward.details,
                     claimedDate: new MyDate().toDate(),

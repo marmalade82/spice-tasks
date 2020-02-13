@@ -136,6 +136,12 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
         );
     }
 
+    queryCompletedHasParent = (parentId: string) => {
+        return this.store().query(
+            ...[...Conditions.inactiveChild(parentId), ...Conditions.complete()]
+        )
+    }
+
     completeTaskAndDescendants = async (opts: { id: string}) => {
         if(opts.id !== '') {
             try {
@@ -149,8 +155,8 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
                     });
                 });
 
-                DB.get().action(async() => {
-                    DB.get().batch(...allTasksPrep);
+                await DB.get().action(async() => {
+                    await DB.get().batch(...allTasksPrep);
                 })
             } catch (e) {
                 console.log(e);

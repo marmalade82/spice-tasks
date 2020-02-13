@@ -40,7 +40,7 @@ export default class EarnedRewardLogic {
             const reward = await new RewardQuery().get(rewardId);
             debugger;
             if(reward) {
-                new ClaimedRewardQuery().create({
+                await new ClaimedRewardQuery().create({
                     title: reward.title,
                     details: reward.details,
                     claimedDate: new MyDate().toDate(),
@@ -59,7 +59,7 @@ export default class EarnedRewardLogic {
             const penalty = await new PenaltyQuery().get(penaltyId);
 
             if(penalty) {
-                new ClaimedRewardQuery().create({
+                await new ClaimedRewardQuery().create({
                     title: penalty.title,
                     details: penalty.details,
                     claimedDate: new MyDate().toDate(),

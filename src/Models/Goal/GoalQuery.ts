@@ -10,6 +10,7 @@ import { GoalType } from "src/Models/Goal/GoalLogic";
 import { Rewards } from "src/Models/Reward/RewardLogic";
 import EarnedRewardQuery from "../Reward/EarnedRewardQuery";
 import MyDate from "src/common/Date";
+import TaskQuery from "../Task/TaskQuery";
 
 class GoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
@@ -128,8 +129,8 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
                     });
                 });
 
-                DB.get().action(async() => {
-                    DB.get().batch(...[...allGoalsPrep, ...allTasksPrep]);
+                await DB.get().action(async() => {
+                    await DB.get().batch(...[...allGoalsPrep, ...allTasksPrep]);
                 })
             } catch (e) {
                 console.log(e);
@@ -159,8 +160,8 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
                     });
                 });
 
-                DB.get().action(async() => {
-                    DB.get().batch(...[...allGoalsPrep, ...allTasksPrep]);
+                await DB.get().action(async() => {
+                    await DB.get().batch(...[...allGoalsPrep, ...allTasksPrep]);
                 })
 
             } catch (e) {
@@ -233,10 +234,12 @@ export class GoalLogic {
      */
     metMinimum = async () => {
         const goal: IGoal | null = await new GoalQuery().get(this.id);
-        const activeGoals: number = await new GoalQuery().queryActive().fetchCount();
-        const completedGoals: number = await new GoalQuery().queryCompleted().fetchCount();
+        const activeTasks: number = await new TaskQuery().queryActiveHasParent(this.id).fetchCount();
+        const completedTasks: number = await new TaskQuery().queryCompletedHasParent(this.id).fetchCount();
+        debugger;
         if(goal) {
-            return (activeGoals + completedGoals) >= goal.streakMinimum;
+            const met = (activeTasks + completedTasks) >= goal.streakMinimum;
+            return met;
         }
 
         return false;

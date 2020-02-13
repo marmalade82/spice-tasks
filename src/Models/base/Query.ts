@@ -48,7 +48,7 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
         const Default = this.default();
 
         return DB.get().action(async () => {
-            this.store().create((m: Model) => {
+            await this.store().create((m: Model) => {
                 Object.assign(m, Default);
                 Object.assign(m, props);
             });
@@ -57,7 +57,7 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
 
     update = async (model: Model, props: Exact<Partial<IModel>>) => {
         return DB.get().action(async () => {
-            model.update((m: Model) => {
+            await model.update((m: Model) => {
                 Object.assign(m, props);
             });
         });
