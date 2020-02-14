@@ -248,8 +248,13 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
             - [T] If reward was Spin the Wheel, an earned reward/penalty should be generated.
             - [T] If reward was Specific reward, a Specific earned reward should be generated.
             - [T] If reward was None, no reward or penalty should be generated.
-        - [ ] If the goal is a streak goal, complete will show an error if the streak cannot be met.
-            - [ ] If the number of active tasks + the number of completed tasks does not meet the threshold minimum
+        - [T] If the goal is a streak goal, complete will show an fail if the streak minimum cannot be met.
+            - [T] Error message.
+            - [T] Complete will not complete anything.
+    - [ ] For streak goals, all tasks that were created and NOT DELETED in the last cycle will be regenerated according to the streak schedule
+        - [ ] Background tasks for generating the last cycle need to when the app is open in background
+        - [ ] Background tasks for generating the last cycle need to run when the app is open in foreground
+        - [ ] Background tasks for generating the last cycle need to run when the app is closed.
     - [T] User should be able to see the past, the present, and the future of the goal:
         - [T] User should be able to view currently active tasks in their own view
         - [T] User should be able to view inactive tasks in their own view

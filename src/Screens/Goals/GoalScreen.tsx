@@ -9,7 +9,7 @@ import {
     ColumnView, RowView, Button as MyButton, ViewPicker,
 } from "src/Components/Basic/Basic";
 import NavigationButton from "src/Components/Navigation/NavigationButton";
-import { DocumentView, ScreenHeader, ListPicker } from "src/Components/Styled/Styled";
+import { DocumentView, ScreenHeader, ListPicker, Toast } from "src/Components/Styled/Styled";
 import { ScrollView } from "react-native-gesture-handler";
 import TaskQuery from "src/Models/Task/TaskQuery";
 
@@ -23,6 +23,8 @@ interface State {
     currentList: number;
     activeCount: number;
     inactiveCount: number;
+    toastVisible: boolean;
+    toastMessage: string;
 }
 
 export default class GoalScreen extends React.Component<Props, State> {
@@ -41,6 +43,8 @@ export default class GoalScreen extends React.Component<Props, State> {
             currentList: 0,
             activeCount: 0,
             inactiveCount: 0,
+            toastVisible: false,
+            toastMessage: "",
         }
 
         this.unsubscribe = () => {};
@@ -93,7 +97,10 @@ export default class GoalScreen extends React.Component<Props, State> {
         const logic = new GoalLogic(id);
         debugger;
         if( await logic.isStreak() && (! (await logic.metMinimum()))) {
-            // SHOW SOME SORT OF ERROR TOAST HERE
+            this.setState({
+                toastVisible: true,
+                toastMessage: "Goal cannot be completed. Streak minimum has not been met yet.",
+            })
         } else {
             new GoalLogic(id).complete();
         }
@@ -139,6 +146,15 @@ export default class GoalScreen extends React.Component<Props, State> {
                 >
 
                 </ListPicker>
+                <Toast
+                    visible={this.state.toastVisible}
+                    message={this.state.toastMessage}
+                    onToastDisplay={() => {
+                        this.setState({
+                            toastVisible: false,
+                        })
+                    }}
+                ></Toast>
             </DocumentView>
         );
     }

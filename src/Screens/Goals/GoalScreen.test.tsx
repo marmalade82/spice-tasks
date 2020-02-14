@@ -606,6 +606,9 @@ describe("streak goal tests", () => {
                 completeButton = getByLabelText("input-goal-complete-button");
             })
             fireEvent.press(completeButton);
+            await wait(async () => {
+                let errorMessage = getByLabelText("toast")
+            })
         } 
 
         await wait(async() => {
