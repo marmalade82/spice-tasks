@@ -55,6 +55,20 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
         });
     }
 
+    createMultiple = async (models: Exact<Partial<IModel>>[]) => {
+        const Default = this.default();
+        await DB.get().action(async () => {
+            await DB.get().batch(
+                ...models.map((model) => {
+                    return this.store().prepareCreate((m: Model) => {
+                        Object.assign(m, Default);
+                        Object.assign(m, model);
+                    })
+                })
+            )
+        })
+    }
+
     update = async (model: Model, props: Exact<Partial<IModel>>) => {
         return DB.get().action(async () => {
             await model.update((m: Model) => {

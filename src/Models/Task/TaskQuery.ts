@@ -22,8 +22,39 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
             parentId: "",
             active: true,
             state: 'open',
-            completedDate: MyDate.Zero().toDate()
+            completedDate: MyDate.Zero().toDate(),
+            createdAt: new MyDate().toDate(),
         } as const;
+    }
+
+    queryCreatedBetween = (left: Date, right: Date) => {
+        return this.store().query(
+            ...[ ...Conditions.createdAfter(left), ...Conditions.createdBefore(right)]
+        )
+    }
+
+    createdBetween = async (left: Date, right: Date) => {
+        return (await this.queryCreatedBetween(left, right).fetch()) as Task[];
+    }
+
+    queryCreatedBefore = (d: Date) => {
+        return this.store().query(
+            ...Conditions.createdBefore(d)
+        );
+    }
+
+    createdBefore = async (d: Date) => {
+        return (await this.queryCreatedBefore(d).fetch()) as Task[];
+    }
+
+    queryCreatedAfter = (d: Date) => {
+        return this.store().query(
+            ...Conditions.createdAfter(d)
+        );
+    }
+
+    createdAfter = async (d:Date) => {
+        return (await this.queryCreatedAfter(d).fetch()) as Task[];
     }
 
     queryCompletedToday = () => {
@@ -226,4 +257,34 @@ export {
     TaskQuery,
     Task,
     ITask,
+}
+
+export class TaskLogic {
+    id: string;
+    constructor(id: string) {
+        this.id = id;
+    }
+
+    cloneRelativeTo = async (oldDate, newDate : Date) => {
+        const task = await new TaskQuery().get(this.id)
+
+        if(task) {
+            console.log("found task")
+            const newTask : Omit<ITask, "createdAt" | "completedDate"> = {
+                title: task.title,
+                parentId: task.parentId,
+                instructions: task.instructions,
+                active: task.active,
+                state: 'open',
+                startDate: new MyDate(newDate).add( new MyDate(task.startDate).diff(oldDate, "minutes"), "minutes").toDate(),
+                dueDate: new MyDate(newDate).add( new MyDate(task.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
+            }
+            return newTask;
+        } else {
+            console.log("no clone created")
+            throw new Error()
+        }
+
+
+    }
 }

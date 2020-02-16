@@ -2,9 +2,8 @@ import React from 'react';
 import * as Screens from "src/Screens";
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { Button } from "react-native";
-import DB from "src/Models/Database";
-
+import { Button, requireNativeComponent } from "react-native";
+import { Schedule } from "Schedule";
 
 
 const ScreenNavigator = createStackNavigator(
@@ -69,6 +68,12 @@ const AppNavigator = createStackNavigator(
 const AppContainer = createAppContainer(AppNavigator);
 
 export default class App extends React.Component {
+
+  componentDidMount = () => {
+
+    Schedule.refreshStreakGoals(() => false );
+  }
+
   render = () => {
     return <AppContainer></AppContainer>
   }

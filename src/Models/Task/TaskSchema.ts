@@ -15,6 +15,7 @@ const TaskName = {
     ACTIVE: 'is_active',
     STATE: 'state',
     COMPLETED_ON : 'completed_at',
+    CREATED_ON : 'created_at',
 } as const;
 
 const TaskType = {
@@ -26,6 +27,7 @@ const TaskType = {
     ACTIVE: 'boolean',
     STATE: 'string',
     COMPLETED_ON: 'number',
+    CREATED_ON: 'number',
 } as const
 
 export const TaskSchema: ChildSchema & StateSchema & ActiveSchema & Schema<typeof TaskName> = {

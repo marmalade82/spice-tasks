@@ -31,12 +31,15 @@ function makeNavigation(params: {}) {
 }
 
 async function destroyAllIn(table: string) {
+    jest.useRealTimers();
     let models = await DB.get().collections.get(table).query().fetch();
 
     await DB.get().action(async() => {
-        models.forEach(async (model: Model) => {
-            await model.destroyPermanently();
-        });
+        DB.get().batch(
+            ...models.map((model) => {
+                return model.prepareDestroyPermanently();
+            })
+        )
     });
 
     models = await DB.get().collections.get(table).query().fetch();

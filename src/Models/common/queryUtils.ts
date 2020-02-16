@@ -4,8 +4,11 @@ import { ChildSchema, ActiveSchema, StateSchema } from "src/Models/base/SharedSc
 import { TaskSchema } from "src/Models/Task/TaskSchema";
 import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
+import GoalSchema from "src/Models/Goal/GoalSchema";
+import { GoalType } from "../Goal/GoalLogic";
 
 const name = TaskSchema.name;
+const goalName = GoalSchema.name ;
 
 function inactiveConditions() {
     return [
@@ -95,10 +98,34 @@ function completedTodayConditions() {
     ]
 }
 
+function notOverdueConditions() {
+    return [
+        Q.where(name.DUE_ON, Q.gte(new MyDate().toDate().valueOf()))
+    ]
+}
+
+function streakConditions() {
+    return [
+        Q.where(goalName.TYPE, GoalType.STREAK)
+    ]
+}
+
 function failedConditions() {
     return [
         Q.where(name.ACTIVE, false),
         Q.where(name.STATE, "cancelled"),
+    ]
+}
+
+function createdAfterConditions(d: Date) {
+    return [
+        Q.where(name.CREATED_ON, Q.gt(d.valueOf()))
+    ]
+}
+
+function createdBeforeConditions(d: Date) {
+    return [
+        Q.where(name.CREATED_ON, Q.lt(d.valueOf()))
     ]
 }
 
@@ -118,6 +145,10 @@ export const Conditions = {
     notStarted: notStartedConditions,
     completedToday: completedTodayConditions,
     failed: failedConditions,
+    isStreak: streakConditions,
+    notOverdue: notOverdueConditions,
+    createdAfter: createdAfterConditions,
+    createdBefore: createdBeforeConditions,
 }
 
 

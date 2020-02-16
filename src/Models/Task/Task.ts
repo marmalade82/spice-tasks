@@ -1,6 +1,6 @@
 
 import { Model } from "@nozbe/watermelondb";
-import { field, date, relation, action} from "@nozbe/watermelondb/decorators";
+import { field, date, relation, action, readonly} from "@nozbe/watermelondb/decorators";
 import TaskSchema from "src/Models/Task/TaskSchema";
 import GoalSchema from "src/Models/Goal/GoalSchema";
 
@@ -14,6 +14,7 @@ interface ITask {
     active: boolean;
     state: 'open' | 'in_progress' | 'complete' | 'cancelled';
     completedDate: Date;
+    createdAt: Date;
 }
 
 const name = TaskSchema.name
@@ -31,14 +32,15 @@ export default class Task extends Model implements ITask {
         } as const,
     }
 
-    @field(name.TITLE) title
-    @date(name.STARTS_ON) startDate
-    @date(name.DUE_ON) dueDate 
-    @field(name.INSTRUCTIONS) instructions
-    @field(name.PARENT) parentId
-    @field(name.ACTIVE) active
-    @field(name.STATE) state
-    @date(name.COMPLETED_ON) completedDate
+    @field(name.TITLE) title!: string
+    @date(name.STARTS_ON) startDate!: Date
+    @date(name.DUE_ON) dueDate!: Date
+    @field(name.INSTRUCTIONS) instructions!: string
+    @field(name.PARENT) parentId! : string
+    @field(name.ACTIVE) active! : boolean
+    @field(name.STATE) state! : 'open' | 'in_progress' | 'complete' | 'cancelled';
+    @date(name.COMPLETED_ON) completedDate! : Date
+    @date(name.CREATED_ON) createdAt!: Date
 
     /* Relations */
     @relation(GoalSchema.table, name.PARENT) parentGoal
