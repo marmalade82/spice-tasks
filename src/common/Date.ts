@@ -198,6 +198,10 @@ export default class MyDate {
         let difference = this.m.diff(MyDate.Now().toDate(), unit) 
         return difference >= 0 && difference <= duration;
     }
+
+    dayOfMonth = () => {
+        return this.m.date();
+    }
 }
 
 type TimeCycle<T> = T extends "daily" ? 

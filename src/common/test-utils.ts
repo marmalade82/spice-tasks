@@ -99,6 +99,7 @@ async function _createModels<M extends Model>(table: string, data: any, count: n
 }
 
 async function destroyAll() {
+    jest.useRealTimers();
     const tables: string[] = [
         GoalSchema.table, TaskSchema.table, RewardSchema.table,
         EarnedRewardSchema.table, ClaimedReward.table, PenaltySchema.table,

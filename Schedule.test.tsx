@@ -13,6 +13,17 @@ import { Schedule } from "./Schedule";
 import TaskQuery from "src/Models/Task/TaskQuery";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 
+beforeEach(async () => {
+    jest.useFakeTimers();
+    jest.clearAllTimers();
+    await destroyAll();
+})
+
+afterEach(async () => {
+    jest.clearAllTimers();
+    await destroyAll();
+})
+
 test("Daily streak goal regenerates tasks", async () => {
     jest.useFakeTimers();
     const { id } = await setup();
@@ -96,7 +107,8 @@ test("Weekly streak goal regenerates tasks", async () => {
         expect(tasks.length).toEqual(2)
     })
 
-    await Schedule.refreshStreakGoals(1, () => false );
+    const timeUntilNextDay = new MyDate().nextMidnight().diff(MyDate.Now().toDate(), "minutes") + 30;
+    await Schedule.refreshStreakGoals(1, () => false, timeUntilNextDay );
     
     
     await wait(async () => {
@@ -131,8 +143,7 @@ test("Weekly streak goal regenerates tasks", async () => {
                 state: "open",
                 goalType: GoalType.STREAK,
                 streakType: "weekly",
-                // starts 30 minutes from now
-                streakWeeklyStart: new MyDate().add(1, "days").dayName(), // regenerates tomorrow at midnight.
+                streakWeeklyStart: new MyDate().add(1, "days").dayName(), // should regenerate tomorrow at midnight.
                 startDate: new MyDate().subtract(3, "days").toDate(),
                 dueDate: new MyDate().add(3, "days").toDate(),
             }, 1))[0]
@@ -161,7 +172,6 @@ test("Weekly streak goal regenerates tasks", async () => {
 
 
 test("Monthly streak goal regenerates tasks", async () => {
-    expect(true).toBe(false);
     jest.useFakeTimers();
     const { id } = await setup();
 
@@ -170,7 +180,8 @@ test("Monthly streak goal regenerates tasks", async () => {
         expect(tasks.length).toEqual(2)
     })
 
-    await Schedule.refreshStreakGoals(1, () => false );
+    const timeUntilNextDay = new MyDate().nextMidnight().diff(MyDate.Now().toDate(), "minutes") + 30;
+    await Schedule.refreshStreakGoals(1, () => false, timeUntilNextDay );
     
     
     await wait(async () => {
@@ -189,7 +200,7 @@ test("Monthly streak goal regenerates tasks", async () => {
 
     await wait(async () => {
         const tasks = await new TaskQuery().queryActiveHasParent(id).fetch();
-        expect(tasks.length).toEqual(16) // 2 * 2 * 2 * 2
+        expect(tasks.length).toEqual(16) // 2 * 2 * 2
     })
 
     await teardown();
@@ -204,11 +215,11 @@ test("Monthly streak goal regenerates tasks", async () => {
                 active: true,
                 state: "open",
                 goalType: GoalType.STREAK,
-                streakType: "daily",
-                // starts 30 minutes from now
-                streakDailyStart: new MyDate().add(30, "minutes").toDate(),
-                startDate: new MyDate().subtract(2, "days").toDate(),
-                dueDate: new MyDate().add(2, "days").toDate(),
+                streakType: "monthly",
+                // starts on next day
+                streakMonthlyStart: new MyDate().add(1, "days").dayOfMonth(), 
+                startDate: new MyDate().subtract(3, "days").toDate(),
+                dueDate: new MyDate().add(3, "days").toDate(),
             }, 1))[0]
 
             opts.id = goal.id;

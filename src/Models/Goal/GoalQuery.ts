@@ -293,6 +293,7 @@ export class GoalLogic {
                 let tasks = await new TaskQuery().createdBetween(
                         lastCycle.subtract(2, "hours").toDate(), MyDate.Now().toDate());
 
+                console.log("there were tasks " + tasks.length)
                 const newTasks = await Promise.all(tasks.map(async (task) => {
                     return await (new TaskLogic(task.id).cloneRelativeTo(lastCycle.toDate(), nextCycle.toDate()))
                 }));
