@@ -263,43 +263,42 @@ export class GoalLogic {
      * For each task created in the last cycle (after the scheduled start),
      * create duplicate tasks with the exact same date relationships to the scheduled start.
      */
-    generateStreakTasks = async () => {
+    generateStreakTasks = async (timeUntilNext?: number) => {
         const goal: IGoal | null = await new GoalQuery().get(this.id);
         if(goal) {
+            let nextCycle: MyDate;
+            let lastCycle: MyDate;
             switch(goal.streakType) {
                 case "daily": {
-                        const nextCycle =  new MyDate().nextCycleStart(goal.streakType, goal.streakDailyStart);
-                        const lastCycle = new MyDate().lastCycleStart(goal.streakType, goal.streakDailyStart);
-                    if( nextCycle.inNext("minutes", 50)) {
-                        console.log("in next cycle start");
-                        // If the time is really soon, then we'll generate the next streak's tasks right now.
-                        // We query all completed or active tasks created AFTER shortly before the last cycle start,
-                        // and we clone them.
-                        let tasks = await new TaskQuery().createdBetween(
-                                lastCycle.subtract(2, "hours").toDate(), MyDate.Now().toDate());
-                        console.log("tasks there were " + tasks.length)
-
-                        const newTasks = await Promise.all(tasks.map(async (task) => {
-                            return await (new TaskLogic(task.id).cloneRelativeTo(lastCycle.toDate(), nextCycle.toDate()))
-                        }));
-                        new TaskQuery().createMultiple(newTasks);
-                    } else {
-                        console.log("not in next cycle start");
-                    }
+                    nextCycle =  new MyDate().nextCycleStart(goal.streakType, goal.streakDailyStart);
+                    lastCycle = new MyDate().lastCycleStart(goal.streakType, goal.streakDailyStart);
                 } break;
                 case "weekly": {
-                    if( new MyDate().nextCycleStart(goal.streakType, goal.streakDailyStart).inNext("minutes", 50)) {
-                        new MyDate().lastCycleStart(goal.streakType, goal.streakWeeklyStart)
-                    }[]
+                    nextCycle = new MyDate().nextCycleStart(goal.streakType, goal.streakWeeklyStart);
+                    lastCycle = new MyDate().lastCycleStart(goal.streakType, goal.streakWeeklyStart);
                 } break;
                 case "monthly": {
-                    if( new MyDate().nextCycleStart(goal.streakType, goal.streakDailyStart).inNext("minutes", 50)) {
-                        new MyDate().lastCycleStart(goal.streakType, goal.streakMonthlyStart)
-                    }
+                    nextCycle = new MyDate().nextCycleStart(goal.streakType, goal.streakMonthlyStart);
+                    lastCycle = new MyDate().lastCycleStart(goal.streakType, goal.streakMonthlyStart);
                 } break;
                 default: {
                     throw new Error("unhandled streak type")
                 }
+            }
+
+            if( nextCycle.inNext("minutes", timeUntilNext ? timeUntilNext : 50)) {
+                // If the time is really soon, then we'll generate the next streak's tasks right now.
+                // We query all completed or active tasks created AFTER shortly before the last cycle start,
+                // and we clone them.
+                let tasks = await new TaskQuery().createdBetween(
+                        lastCycle.subtract(2, "hours").toDate(), MyDate.Now().toDate());
+
+                const newTasks = await Promise.all(tasks.map(async (task) => {
+                    return await (new TaskLogic(task.id).cloneRelativeTo(lastCycle.toDate(), nextCycle.toDate()))
+                }));
+                new TaskQuery().createMultiple(newTasks);
+            } else {
+                console.log("not in next cycle start");
             }
         }
     }

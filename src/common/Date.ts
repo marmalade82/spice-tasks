@@ -4,7 +4,7 @@ import { Moment } from "moment";
 import { TouchableHighlightBase } from "react-native";
 
 
-type timeUnit = "seconds" | "minutes" | "hours" | "days" | "weeks";
+type timeUnit = "seconds" | "minutes" | "hours" | "days" | "weeks" | "months";
 
 export default class MyDate {
     m: Moment;
@@ -54,6 +54,27 @@ export default class MyDate {
         return this;
     }
 
+    setDay = (d: string) => {
+        this.m = this.m.day(d);
+        return this;
+    }
+
+    setDayOfMonth = (n : number) => {
+        if(n > this.m.daysInMonth()) {
+            this.m.date(this.m.daysInMonth())
+        } else if (n < 1) {
+            this.m.date(1);
+        } else {
+            this.m.date(n);
+        }
+        return this;
+    }
+
+    set = (n: number, unit: timeUnit) => {
+        this.m.set(unit, n)
+        return this;
+    }
+
     minutes = () => {
         return this.m.minutes();
     }
@@ -66,7 +87,9 @@ export default class MyDate {
         return this.m.seconds();
     }
 
-
+    dayName = () => {
+        return this.m.format("dddd").toLowerCase();
+    }
 
     nextMidnight = (): this => {
         this.m = this.m.endOf('day');
@@ -93,10 +116,18 @@ export default class MyDate {
                 this.m = moment(nextCycleDate.toDate());
             } break;
             case "weekly": {
-                input
+                let nextCycleDate = new MyDate().setDay(input as TimeCycle<typeof type>).prevMidnight();
+                if (nextCycleDate.isWithinWeekInPast()) {
+                    nextCycleDate.add(1, "weeks")
+                }
+                this.m = moment(nextCycleDate.toDate())
             } break;
             case "monthly": {
-                input
+                let nextCycleDate = new MyDate().setDayOfMonth(input as TimeCycle<typeof type>).prevMidnight();
+                if (nextCycleDate.isWithinMonthInPast()) {
+                    nextCycleDate.add(1, "months")
+                }
+                this.m = moment(nextCycleDate.toDate())
             } break;
         }
         return this;
@@ -120,10 +151,19 @@ export default class MyDate {
                 this.m = moment(lastCycleDate.toDate());
             } break;
             case "weekly": {
-                input
+                // cycle is most recent occurence, midnight.
+                let lastCycleDate = new MyDate().setDay(input as TimeCycle<typeof type>).prevMidnight();
+                if (lastCycleDate.isWithinWeekInFuture()) {
+                    lastCycleDate.subtract(1, "weeks")
+                }
+                this.m = moment(lastCycleDate.toDate())
             } break;
             case "monthly": {
-                input
+                let lastCycleDate = new MyDate().setDayOfMonth(input as TimeCycle<typeof type>).prevMidnight();
+                if (lastCycleDate.isWithinMonthInFuture()) {
+                    lastCycleDate.subtract(1, "months")
+                }
+                this.m = moment(lastCycleDate.toDate())
             } break;
         }
         return this;
@@ -134,8 +174,24 @@ export default class MyDate {
         return this.m.isAfter( MyDate.Now().toDate() ) && this.m.isSameOrBefore( new MyDate().nextMidnight().toDate())
     }
 
+    isWithinWeekInFuture = () => {
+        return this.m.isAfter(MyDate.Now().toDate() ) && this.m.isSameOrBefore( new MyDate().add(1, "weeks").toDate());
+    }
+
+    isWithinMonthInFuture = () => {
+        return this.m.isAfter(MyDate.Now().toDate()) && this.m.isSameOrBefore( new MyDate().add(1, "months").toDate())
+    }
+
     isTodayInPast = () => {
         return this.m.isSameOrAfter( new MyDate().prevMidnight().toDate()) && this.m.isBefore(MyDate.Now().toDate());
+    }
+
+    isWithinWeekInPast = () => {
+        return this.m.isSameOrAfter( new MyDate().subtract(1, "weeks").toDate()) && this.m.isBefore(MyDate.Now().toDate());
+    }
+
+    isWithinMonthInPast = () => {
+        return this.m.isSameOrAfter( new MyDate().subtract(1, "months").toDate()) && this.m.isBefore(MyDate.Now().toDate());
     }
 
     inNext = ( unit: timeUnit, duration: number) => {
