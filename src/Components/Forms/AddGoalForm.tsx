@@ -11,13 +11,15 @@ import {
     MultipleInput,
     NumberInput,
 } from "src/Components/Inputs";
+
+import { Props as SummaryProps } from "src/Components/Inputs/StringInput";
 import { RecurringForm, RecurringData, RecurringDefault} from "src/Components/Forms/RecurringForm";
 import { StreakForm, StreakDefault, StreakData }from "src/Components/Forms/AddGoalForm/StreakForm";
 import Style from "src/Style/Style";
 import { ColumnView } from "../Basic/Basic";
 import { RewardChoices, RewardType, Rewards } from "src/Models/Reward/RewardLogic";
 import { GoalChoices, GoalType } from "src/Models/Goal/GoalLogic";
-import { string } from "prop-types";
+import { Validate } from "src/Components/Inputs/Validate";
 
 interface Props {
     navigation: Navigator
@@ -82,6 +84,13 @@ function Default(): State {
 
 export default class AddGoalForm extends DataComponent<Props, State, State> {
     RecurModalForm = createSaveModalInput(RecurringForm, RecurringDefault());
+    SummaryInput = Validate<string, SummaryProps>(
+                        StringInput, 
+                        (d: string) => { return d.length > 0 },
+                        (d: string) => { return d.length > 0},
+                        (d: string) => "",
+                        (d: string) => ""
+                   )
     constructor(props: Props) {
         super(props);
 
@@ -153,19 +162,22 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         onValueChange={this.onChangeType}
                         accessibilityLabel={"goal-type"}
                     />
-                    <StringInput
+
+                    <this.SummaryInput
                         title={"Summary"}
-                        value={this.data().title}
+                        data={this.data().title}
                         placeholder={"What do you want to achieve?"}
-                        onChangeText={this.onChangeTitle}
+                        onValidDataChange={this.onChangeTitle}
+                        onInvalidDataChange={this.onChangeTitle}
                         accessibilityLabel={"goal-summary"}
-                    />
+                    >
+                    </this.SummaryInput>
 
                     <StringInput
                         title={"Details"}
-                        value={this.data().details}
+                        data={this.data().details}
                         placeholder={"Explain what this goal is all about"}
-                        onChangeText={this.onChangeDetails}
+                        onDataChange={this.onChangeDetails}
                         accessibilityLabel={"goal-details"}
                         multiline={true}
                     />

@@ -6,14 +6,17 @@ import Input from "src/Components/Inputs/base/Input";
 import { Label, TextInput } from "src/Components/Styled/Styled";
 import { CONTAINER_VERTICAL_MARGIN } from "src/Components/Styled/Styles";
 
-interface Props {
+export interface Props {
     title: string;
-    value: string;
+    data: string;
     placeholder: string;
-    onChangeText: (text: string) => void;
+    onDataChange: (text: string) => void;
     accessibilityLabel: string;
     style?: StyleProp<ViewStyle>;
     multiline?: boolean;
+    success ? : string;
+    failure ? : string;
+    onBlur?: () => void;
 }
 
 interface State {
@@ -24,6 +27,12 @@ interface State {
 export default class StringInput extends Input<Props, State> {
     constructor(props: Props) {
         super(props);
+    }
+
+    icon = () => {
+        if(this.props.failure !== undefined) {
+            return "attention";
+        }
     }
 
     render = () => {
@@ -37,13 +46,14 @@ export default class StringInput extends Input<Props, State> {
                     text={this.props.title}
                 ></Label>
                 <TextInput
-                    value={this.props.value}
+                    value={this.props.data}
                     placeholder={this.props.placeholder}
-                    onChangeText={this.props.onChangeText}
+                    onChangeText={this.props.onDataChange}
                     accessibilityLabel={this.props.accessibilityLabel}
                     multiline={this.props.multiline}
+                    onBlur={this.props.onBlur}
+                    icon={this.icon()}
                 >
-
                 </TextInput>
             </ColumnView>
         )

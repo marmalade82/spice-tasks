@@ -51,10 +51,10 @@ export default class TestScreen extends React.Component<Props, State> {
                 <ScrollView>
                         <StringInput
                             title={"Age"}
-                            value={"WHAT"}
+                            data={"WHAT"}
                             placeholder={"hi"}
                             accessibilityLabel={"test-string-input"}
-                            onChangeText={() => {}}
+                            onDataChange={() => {}}
                         ></StringInput>
 
                     <Label
@@ -67,6 +67,7 @@ export default class TestScreen extends React.Component<Props, State> {
                         style={{
                             marginBottom: 60,
                         }}
+                        icon={"attention"}
                     ></TextInput>
 
                     <Label

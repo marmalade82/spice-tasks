@@ -63,17 +63,17 @@ export default class AddPenaltyForm extends DataComponent<Props, State, State> {
                 <ScreenHeader>Add/Edit Penalty</ScreenHeader>
                 <StringInput
                     title={"Name"} 
-                    value={this.data().name}
+                    data={this.data().name}
                     placeholder={"Name of this penalty"}
-                    onChangeText={this.onChangeName}
+                    onDataChange={this.onChangeName}
                     accessibilityLabel={"penalty-name"}
                 />
 
                 <StringInput
                     title={"Details"}
-                    value={this.data().details}
+                    data={this.data().details}
                     placeholder={"Description of this penalty"}
-                    onChangeText={this.onChangeDetails}
+                    onDataChange={this.onChangeDetails}
                     accessibilityLabel={"penalty-description"}
                 />
 

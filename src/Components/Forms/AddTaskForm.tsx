@@ -77,17 +77,17 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
             },this.props.style]}>
                 <StringInput
                     title={"Name"} 
-                    value={this.data().name}
+                    data={this.data().name}
                     placeholder={"Name of this task"}
-                    onChangeText={this.onChangeName}
+                    onDataChange={this.onChangeName}
                     accessibilityLabel={"task-name"}
                 />
 
                 <StringInput
                     title={"Description"}
-                    value={this.data().description}
+                    data={this.data().description}
                     placeholder={"Description of this task"}
-                    onChangeText={this.onChangeDescription}
+                    onDataChange={this.onChangeDescription}
                     accessibilityLabel={"task-description"}
                 />
 

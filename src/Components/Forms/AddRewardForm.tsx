@@ -60,17 +60,17 @@ export default class AddRewardForm extends DataComponent<Props, State, State> {
             }, this.props.style]}>
                 <StringInput
                     title={"Name"} 
-                    value={this.data().name}
+                    data={this.data().name}
                     placeholder={"Name of this reward"}
-                    onChangeText={this.onChangeName}
+                    onDataChange={this.onChangeName}
                     accessibilityLabel={"reward-name"}
                 />
 
                 <StringInput
                     title={"Details"}
-                    value={this.data().details}
+                    data={this.data().details}
                     placeholder={"Description of this reward"}
-                    onChangeText={this.onChangeDetails}
+                    onDataChange={this.onChangeDetails}
                     accessibilityLabel={"reward-description"}
                 />
 
