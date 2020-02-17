@@ -17,10 +17,10 @@ function inactiveConditions() {
 }
 
 function inactiveChildConditions(parent_id: string) {
-    return [
+    return flat([
         inactiveConditions(),
         childConditions(parent_id),
-    ].flat()
+    ])
 }
 
 function activeConditions() {
@@ -30,10 +30,10 @@ function activeConditions() {
 }
 
 function activeChildConditions(parent_id: string) {
-    return [
+    return flat([
         activeConditions(),
         childConditions(parent_id),
-    ].flat()
+    ])
 }
 
 function childConditions(parent_id: string) {
@@ -166,5 +166,14 @@ export async function findAllChildrenIn<M extends Model>(table: string, parentId
         return await findAllChildrenIn(table, child.id, [child])
     }));
 
-    return descendants.flat().concat(models);
+    return flat(descendants).concat(models);
+}
+
+function flat<T>(arr : T[][]) {
+    let newArr: T[] = [];
+
+    arr.forEach((a) => {
+        newArr = newArr.concat(a);
+    })
+    return newArr;
 }

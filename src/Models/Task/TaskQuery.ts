@@ -4,7 +4,7 @@ import {
 } from "src/Models/Task/Task";
 import TaskSchema from "src/Models/Task/TaskSchema";
 import { Q, Database, Model } from "@nozbe/watermelondb";
-import { Conditions } from "src/Models/common/queryUtils"
+import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils"
 import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
 
@@ -177,7 +177,7 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
         if(opts.id !== '') {
             try {
                 const parent: Task = await this.store().find(opts.id) as Task;
-                const allTasks: Task[] = await this._findAllChildren(parent.id, [parent]);
+                const allTasks: Task[] = await findAllChildrenIn(TaskSchema.table, parent.id, [parent]);
                 const allTasksPrep = allTasks.map((task: Task) => {
                     return task.prepareUpdate((t: ITask) => {
                         t.active = false;
@@ -194,26 +194,6 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
                 throw e;
             }
         }
-    }
-
-
-    /** 
-     * Potentially very slow operation, since it's an exhaustive DFS.
-    */
-    _findAllChildren = async (id: string, tasks: Task[]): Promise<Task[]> => {
-        if(id === '') {
-            return tasks;
-        }
-
-        const children = await this.store().query(
-            Q.where('parent_id', id)
-        ).fetch()
-
-        const descendants = await Promise.all(children.map(async (child: Task) => {
-            return await this._findAllChildren(child.id, [child])
-        }));
-
-        return descendants.flat().concat(tasks);
     }
 
     queryActiveTasks = () => {

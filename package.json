@@ -9,7 +9,8 @@
     "test-one": "jest Schedule.test.tsx",
     "debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
     "link": "react-native link",
-    "lint": "tslint --project tsconfig.json"
+    "lint": "tslint --project tsconfig.json",
+    "compile": "tsc"
   },
   "jest": {
     "preset": "@testing-library/react-native"
