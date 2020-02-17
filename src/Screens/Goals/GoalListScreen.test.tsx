@@ -5,7 +5,7 @@ import GoalListScreen from "src/Screens/Goals/GoalListScreen";
 import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cleanup } from '@testing-library/react-native';
 import { 
     makeNavigation, destroyAllIn,
-    createGoals, createTasks,
+    createGoals, createTasks, destroyAll,
 } from "src/common/test-utils";
 import MyDate from "src/common/Date";
 
@@ -81,7 +81,7 @@ test.skip("User can sort list by title", async () => {
     }
 
     async function teardown() {
-        destroyAllIn("goals");
+        await destroyAll();
     }
 });
 
@@ -105,7 +105,7 @@ test.skip("User can sort by start date", async () => {
     }
 
     async function teardown() {
-        destroyAllIn("goals");
+        await destroyAll();
     }
 
 });
@@ -130,7 +130,7 @@ test.skip("User can sort by due date", async () => {
     }
 
     async function teardown() {
-        destroyAllIn("goals");
+        await destroyAll();
     }
 })
 

@@ -35,7 +35,7 @@ async function destroyAllIn(table: string) {
     let models = await DB.get().collections.get(table).query().fetch();
 
     await DB.get().action(async() => {
-        DB.get().batch(
+        await DB.get().batch(
             ...models.map((model) => {
                 return model.prepareDestroyPermanently();
             })

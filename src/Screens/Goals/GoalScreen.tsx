@@ -102,22 +102,22 @@ export default class GoalScreen extends React.Component<Props, State> {
                 toastMessage: "Goal cannot be completed. Streak minimum has not been met yet.",
             })
         } else {
-            new GoalLogic(id).complete();
+            void new GoalLogic(id).complete();
         }
     }
 
-    onFailGoal = () => {
+    onFailGoal = async () => {
         const id = this.props.navigation.getParam("id", "");
-        new GoalLogic(id).fail();
+        void new GoalLogic(id).fail();
     }
 
-    onModalChoice = (s: "complete" | "delete" | "incomplete") => {
+    onModalChoice = async (s: "complete" | "delete" | "incomplete") => {
         switch(s) {
             case "complete": {
-                this.onCompleteGoal();
+                await this.onCompleteGoal();
             } break;
             case "incomplete": {
-                this.onFailGoal();
+                void this.onFailGoal();
             }
             default: {
 

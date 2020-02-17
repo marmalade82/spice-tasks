@@ -5,7 +5,7 @@ import DB from "src/Models/Database";
 import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cleanup } from '@testing-library/react-native';
 import { 
     makeNavigation, destroyAllIn,
-    createGoals, createTasks,
+    createGoals, createTasks, destroyAll,
 } from "src/common/test-utils";
 
 import MyDate from "src/common/Date";
@@ -587,8 +587,7 @@ describe("Second view: In Progress", () => {
         }
 
         async function teardown() {
-            destroyAllIn("goals");
-            destroyAllIn("tasks");
+            await destroyAll();
         }
 
     })
@@ -632,8 +631,7 @@ describe("Second view: In Progress", () => {
         }
 
         async function teardown() {
-            destroyAllIn("goals");
-            destroyAllIn("tasks");
+            await destroyAll();
         }
 
     })

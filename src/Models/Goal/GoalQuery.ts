@@ -297,7 +297,7 @@ export class GoalLogic {
                 const newTasks = await Promise.all(tasks.map(async (task) => {
                     return await (new TaskLogic(task.id).cloneRelativeTo(lastCycle.toDate(), nextCycle.toDate()))
                 }));
-                new TaskQuery().createMultiple(newTasks);
+                void new TaskQuery().createMultiple(newTasks);
             } else {
                 console.log("not in next cycle start");
             }

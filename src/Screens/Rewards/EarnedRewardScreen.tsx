@@ -67,11 +67,11 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
         const earnedId = this.props.navigation.getParam("id", "");
         debugger;
         for(let i = 0; i < reward.length; i++) {
-            new EarnedRewardLogic(earnedId).claimReward(reward[i]);
+            void new EarnedRewardLogic(earnedId).claimReward(reward[i]);
         }
 
         for(let i = 0; i < penalty.length; i++) {
-            new EarnedRewardLogic(earnedId).claimPenalty(penalty[i]);
+            void new EarnedRewardLogic(earnedId).claimPenalty(penalty[i]);
         }
     }
 

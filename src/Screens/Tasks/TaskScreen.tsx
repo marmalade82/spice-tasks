@@ -82,7 +82,7 @@ export default class TaskScreen extends React.Component<Props, State> {
 
     onCompleteTask = () => {
         // asynchronously complete task and descendants
-        new TaskQuery().completeTaskAndDescendants({
+        void new TaskQuery().completeTaskAndDescendants({
             id: this.props.navigation.getParam("id", "")
         });
     }

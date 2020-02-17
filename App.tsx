@@ -3,7 +3,7 @@ import * as Screens from "src/Screens";
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Button, requireNativeComponent } from "react-native";
-import { Schedule } from "Schedule";
+import { Schedule } from "./Schedule";
 
 
 const ScreenNavigator = createStackNavigator(
@@ -71,7 +71,7 @@ export default class App extends React.Component {
 
   componentDidMount = () => {
 
-    Schedule.refreshStreakGoals(15, () => false );
+    void Schedule.refreshStreakGoals(15, () => false );
   }
 
   render = () => {

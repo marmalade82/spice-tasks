@@ -56,11 +56,22 @@ As you would expect with any Todo app, Tasks are ubiquitous within Spice. Whenev
 - Date the task should have been completed
 
 ### User Stories - Adding a Task
-
-- [ ] User should be able to fill out and submit a form with data about a new task.
+- [ ] General
     - [ ] Mandatory fields
         - [ ] Indicate
         - [ ] Enforce
+            - [ ] Name
+    - [ ] Field validation - mandatory is just a variant of field validation
+        - [ ] Indicate
+        - [ ] Enforce
+            - [ ] If task is child of Goal
+                - [ ] Start date is within range of Goal Start to Goal Due
+                - [ ] Due date is within range of Goal Start to Goal Due
+    - [ ] Form validation
+        - [ ] Check mandatory fields
+        - [ ] Validate all fields
+            - [ ] Start date is before end date
+- [ ] User should be able to fill out and submit a form with data about a new task.
     - [ ] User should be able to associate the created task with a goal
         - [X] By adding the new task from the goal
         - [ ] By dragging and dropping a task onto a goal
@@ -70,6 +81,13 @@ As you would expect with any Todo app, Tasks are ubiquitous within Spice. Whenev
         - [X] In the list of tasks for the associated Goal, if there is one.
         - [X] In the list of tasks for the associated Task, if there is one.
     - [ ] User should be able to scroll through the form's fields when they overrun the page.
+
+- [ ] Add/Edit Task form should have following fields
+    - [ ] Name
+    - [ ] Description
+    - [ ] Start Date
+    - [ ] Due Date
+    - [ ] Recurring
 
 - [ ] User should be able to edit an existing task in a form
     - [ ] Mandatory fields
@@ -140,15 +158,23 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
 
 - [ ] User should be able fill out and submit a form with data about goals
     - [ ] Mandatory fields
-        - [ ] Indicate
+        - [ ] Indication icon
         - [ ] Enforce
-    - [T] Normal goal fields:
+            - [ ] Summary
+    - [ ] Field validation
+        - [ ] Indication icon
+        - [ ] Enforce
+            - [ ] Streak minimum cannot be lower than 2 after blur
+    - [ ] Form validation upon saving
+        - [ ] All mandatory fields are present.
+        - [ ] All fields pass validation
+    - [T] Normal goal fields are available:
         - [T] Summary
         - [T] Goal Type
         - [T] Start Date
         - [T] Due Date
         - [ ] Reward
-            - [T] Visible
+            - [T] Field is visible
             - [ ] Two Dice
             - [ ] Specific
             - [ ] Coin
@@ -160,6 +186,9 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
     - [XT] User should be able to fill out data about whether the goal is a streak.
         - [T] Minimum streak count
         - [T] Streak type (daily, weekly, monthly)
+            - [T] Daily shows when type is Daily
+            - [ ] Weekly shows when type is Weekly
+            - [ ] Monthly shows when type is Monthly
         - [T] Time if daily streak
         - [X] Day if weekly streak
         - [X] Day of month if monthly streak
@@ -251,10 +280,10 @@ Goals are a fundamental part of Spice, because a Goal comes with Rewards. There 
         - [T] If the goal is a streak goal, complete will show an fail if the streak minimum cannot be met.
             - [T] Error message.
             - [T] Complete will not complete anything.
-    - [ ] For streak goals, all tasks that were created and NOT DELETED in the last cycle will be regenerated according to the streak schedule
-        - [ ] Background tasks for generating the last cycle need to when the app is open in background
-        - [ ] Background tasks for generating the last cycle need to run when the app is open in foreground
-        - [ ] Background tasks for generating the last cycle need to run when the app is closed.
+    - [T] For streak goals, all tasks that were created and NOT DELETED in the last cycle will be regenerated according to the streak schedule
+        - [T] Background tasks for generating the last cycle need to when the app is open in background
+        - [T] Background tasks for generating the last cycle need to run when the app is open in foreground
+        - [T] Background tasks for generating the last cycle need to run when the app is closed.
     - [T] User should be able to see the past, the present, and the future of the goal:
         - [T] User should be able to view currently active tasks in their own view
         - [T] User should be able to view inactive tasks in their own view
