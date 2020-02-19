@@ -26,6 +26,8 @@ import java.util.List;
 
 import com.nozbe.watermelondb.WatermelonDBPackage;
 
+import com.spice.DBServicePackage;
+
 public class MainApplication extends Application implements ReactApplication {
   private final ReactModuleRegistryProvider mModuleRegistryProvider = new ReactModuleRegistryProvider(
     new BasePackageList().getPackageList(),
@@ -46,7 +48,8 @@ public class MainApplication extends Application implements ReactApplication {
           new RNGestureHandlerPackage(),
           new RNScreensPackage(),
           new ModuleRegistryAdapter(mModuleRegistryProvider),
-          new WatermelonDBPackage()
+          new WatermelonDBPackage(),
+          new DBServicePackage()
       );
     }
 
