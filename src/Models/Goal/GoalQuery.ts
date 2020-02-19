@@ -38,6 +38,16 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
         return Default;
     }
 
+    queryInRecurrence = (recurId: string) => {
+        return this.store().query(
+            Q.where(GoalSchema.name.RECUR_ID, recurId)
+        );
+    }
+
+    inRecurrence = async (recurId: string) => {
+        return (await this.queryInRecurrence(recurId).fetch()) as Goal[]
+    }
+
     queryOngoingStreakGoals = () => {
         return this.store().query(
             ...[...Conditions.active(), 
@@ -294,7 +304,6 @@ export class GoalLogic {
                 let tasks = await new TaskQuery().createdBetween(
                         lastCycle.subtract(2, "hours").toDate(), MyDate.Now().toDate());
 
-                console.log("there were tasks " + tasks.length)
                 const newTasks = await Promise.all(tasks.map(async (task) => {
                     return await (new TaskLogic(task.id).cloneRelativeTo(lastCycle.toDate(), nextCycle.toDate()))
                 }));
@@ -302,6 +311,37 @@ export class GoalLogic {
             } else {
                 console.log("not in next cycle start");
             }
+        }
+    }
+
+    /**
+     * Creates a new goal based on an old goal. Start/Due dates have the same relation to newDate taht 
+     * the old goal's start/due dates had to the oldDate.
+     */
+    cloneRelativeTo = async (oldDate: Date, newDate: Date) => {
+        const goal = await new GoalQuery().get(this.id);
+
+        if(goal) {
+            const newGoal : IGoal = {
+                title: goal.title,
+                details: goal.details,
+                goalType: goal.goalType,
+                parentId: goal.parentId,
+                state: 'open',
+                active: true,
+                rewardType: goal.rewardType,
+                recurId: goal.recurId,
+                streakMinimum: goal.streakMinimum,
+                streakDailyStart: goal.streakDailyStart,
+                streakMonthlyStart: goal.streakMonthlyStart,
+                streakType: goal.streakType,
+                streakWeeklyStart: goal.streakWeeklyStart,
+                startDate: new MyDate(newDate).add( new MyDate(goal.startDate).diff(oldDate, "minutes"), "minutes").toDate(),
+                dueDate: new MyDate(newDate).add( new MyDate(goal.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
+            }
+            return newGoal;
+        } else {
+            throw new Error()
         }
     }
 }

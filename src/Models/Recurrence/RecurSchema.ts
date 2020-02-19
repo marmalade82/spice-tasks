@@ -10,6 +10,7 @@ const RecurName = {
     TIME: "time",
     WEEK_DAY: "week_day",
     MONTH_DAY: "month_day",
+    ACTIVE: 'is_active',
 } as const;
 
 const RecurType = {
@@ -18,10 +19,11 @@ const RecurType = {
     TIME: "number",
     WEEK_DAY: "string",
     MONTH_DAY: "number",
+    ACTIVE: "boolean",
 } as const;
 
 
-export const RecurSchema: Schema<typeof RecurName> = {
+export const RecurSchema: ActiveSchema & Schema<typeof RecurName> = {
     name: RecurName,
     type: RecurType,
     table: "recurrences",

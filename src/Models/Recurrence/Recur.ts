@@ -11,6 +11,7 @@ export interface IRecur {
     time: Date,
     weekDay: "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
     monthDay: number;
+    active: boolean;
 }
 
 const name = RecurSchema.name;
@@ -23,6 +24,7 @@ export default class Recur extends Model implements IRecur {
     @date(name.TIME) time! : Date 
     @field(name.WEEK_DAY) weekDay!: "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
     @field(name.MONTH_DAY) monthDay!: number;
+    @field(name.ACTIVE) active!: boolean;
 }
 
 export {

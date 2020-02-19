@@ -8,7 +8,7 @@ import { PenaltySchema } from "src/Models/Penalty/PenaltySchema";
 import { RecurSchema } from 'src/Models/Recurrence/RecurSchema';
 
 const Schema = appSchema({
-    version: 4,
+    version: 5,
     tables: [
         generateTableSchema(GoalSchema),
         generateTableSchema(TaskSchema),
