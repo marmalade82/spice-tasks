@@ -1,8 +1,9 @@
 import React from "react";
-import { Text, View, Button, } from "react-native";
+import { Text, View, Button, ScrollView } from "react-native";
 import Style from "src/Style/Style";
 import { ChoiceInput, DateTimeInput, MultipleInput } from "src/Components/Inputs";
 import DataComponent from "src/Components/base/DataComponent";
+import { ColumnView } from "../Basic/Basic";
 
 interface Props {
     data: Data | false
@@ -123,21 +124,25 @@ export default class RecurringForm extends DataComponent<Props, State, Data> {
 
     render = () => {
         return (
-            <View style={[Style.container, {justifyContent: "flex-start"}]}>
-                <ChoiceInput
-                    title={"Repeats"}
-                    choices={recur_types}
-                    selectedValue={ this.data().recurs}
-                    onValueChange={ this.onRepeatChange }
-                    accessibilityLabel={"recurring-repeat"}
-                >
-                </ChoiceInput>
+            <ColumnView style={{
+                backgroundColor: "transparent",
+            }}>
+                <ScrollView>
+                    <ChoiceInput
+                        title={"Repeats"}
+                        choices={recur_types}
+                        selectedValue={ this.data().recurs}
+                        onValueChange={ this.onRepeatChange }
+                        accessibilityLabel={"recurring-repeat"}
+                    >
+                    </ChoiceInput>
 
-                {this.renderIfNever()}
-                {this.renderIfOnce()}
-                {this.renderIfDaily()}
-                {this.renderIfWeekly()}
-            </View>
+                    {this.renderIfNever()}
+                    {this.renderIfOnce()}
+                    {this.renderIfDaily()}
+                    {this.renderIfWeekly()}
+                </ScrollView>
+            </ColumnView>
         )
     }
 

@@ -18,6 +18,7 @@ interface IGoal extends IStreak{
     state: "open" | "in_progress" | "complete" | "cancelled"
     active: boolean;
     rewardType: RewardType;
+    recurId: string;
 }
 
 interface IStreak {
@@ -56,6 +57,7 @@ export default class Goal extends Model implements IGoal {
     @field(name.ACTIVE) active!: boolean;
     @field(name.REWARD_TYPE) rewardType!: RewardType;
     @field(name.DETAILS) details!: string;
+    @field(name.RECUR_ID) recurId!: string;
 
     /*Relations*/
     @children('tasks') tasks

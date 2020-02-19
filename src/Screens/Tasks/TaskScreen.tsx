@@ -21,33 +21,6 @@ interface State {
     task?: Task;
 }
 
-const localStyle = StyleSheet.create({
-    container: {
-    },
-    summary: {
-        flex: 1,
-    },
-    actionHeader: {
-        flex: 0.3,
-    },
-    actionItem: {
-        backgroundColor: "lightyellow"
-    },
-    list: {
-        flex: 2.7,
-    },
-    button: {
-        position: 'absolute',
-        right: 25,
-        top: 25,
-    },
-    completeButton: {
-        position: 'absolute',
-        right: 25,
-        bottom: 25,
-    }
-});
-
 
 export default class TaskScreen extends React.Component<Props, State> {
 
@@ -108,7 +81,9 @@ export default class TaskScreen extends React.Component<Props, State> {
                     Task Summary
                 </ScreenHeader>
                 {this.renderSummary()}
-                <ColumnView style={[localStyle.list]}>
+                <ColumnView style={{
+                    flex: 1,
+                }}>
                     <ViewPicker
                         views={[...this.renderTaskLists()]}
                         data={false}

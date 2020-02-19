@@ -33,6 +33,7 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
             state: "open",
             rewardType: Rewards.NONE,
             details: "",
+            recurId: "",
         } as const;
         return Default;
     }

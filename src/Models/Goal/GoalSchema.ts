@@ -16,6 +16,7 @@ const GoalName = {
     ACTIVE: 'is_active',
     STATE: 'state',
     REWARD_TYPE: 'reward_type',
+    RECUR_ID: 'recur_id',
 } as const;
 
 const GoalType = {
@@ -33,6 +34,7 @@ const GoalType = {
     ACTIVE: 'boolean',
     STATE: 'string',
     REWARD_TYPE: 'string',
+    RECUR_ID: 'string',
 } as const;
 
 const GoalSchema: ChildSchema & ActiveSchema & StateSchema & Schema<typeof GoalName> = {

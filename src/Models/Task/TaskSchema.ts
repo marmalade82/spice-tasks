@@ -1,5 +1,4 @@
 
-import { ColumnType } from "@nozbe/watermelondb"
 import { 
     ActiveSchema, ChildSchema, Schema, 
     StateSchema,

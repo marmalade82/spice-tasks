@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Style from "src/Style/Style";
 import { RecurringForm } from "src/Components";
+import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
 
 interface Props {
 
@@ -23,12 +24,15 @@ export default class RecurringScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <View style={[Style.container, Style.greenBg, localStyle.container]}>
+            <DocumentView>
+                <ScreenHeader>
+                    Recurring
+                </ScreenHeader>
                 <RecurringForm
                     data={false}
                     onDataChange={()=>{}}
                 ></RecurringForm>
-            </View>
+            </DocumentView>
         )
     }
 }
