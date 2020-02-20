@@ -8,6 +8,7 @@ import Reward from "src/Models/Reward/Reward";
 import EarnedReward from "src/Models/Reward/EarnedReward";
 import ClaimedReward from "src/Models/Reward/ClaimedReward";
 import Penalty from "src/Models/Penalty/Penalty";
+import Recur from "src/Models/Recurrence/Recur";
 
 class DB {
     static database: Database | undefined;
@@ -22,7 +23,7 @@ class DB {
 
             DB.database = new Database({
                 adapter: adapter,
-                modelClasses: [Goal, Task, Reward, EarnedReward, ClaimedReward, Penalty],
+                modelClasses: [Goal, Task, Reward, EarnedReward, ClaimedReward, Penalty, Recur],
                 actionsEnabled: true,
             });
 

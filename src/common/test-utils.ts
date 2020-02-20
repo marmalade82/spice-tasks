@@ -14,6 +14,8 @@ import { PenaltySchema } from "src/Models/Penalty/PenaltySchema";
 import Penalty, { IPenalty } from "src/Models/Penalty/Penalty";
 import ClaimedRewardSchema from "src/Models/Reward/ClaimedRewardSchema";
 import { IReward, Reward } from "src/Models/Reward/Reward";
+import Recur, { IRecur } from "src/Models/Recurrence/Recur";
+import { RecurSchema } from "src/Models/Recurrence/RecurSchema";
 
 function makeNavigation(params: {}) {
     const navigation = {
@@ -70,6 +72,10 @@ async function createGoals(data: Partial<IGoal>, count: number) {
         goals.push(goal);
     }
     return goals;
+}
+
+export async function createRecurrences(data: Partial<IRecur>, count: number) {
+    return (await _createModels(RecurSchema.table, data, count)) as Recur[];
 }
 
 async function createRewards(data: Partial<IReward>, count: number) {

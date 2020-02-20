@@ -71,7 +71,7 @@ export default class App extends React.Component {
 
   componentDidMount = () => {
 
-    void Schedule.refreshStreakGoals(15, () => false );
+    //void Schedule.refreshStreakGoals(15, () => false );
   }
 
   render = () => {

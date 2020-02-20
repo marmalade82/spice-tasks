@@ -170,6 +170,21 @@ export default class MyDate {
 
     };
 
+    isInNextCycleAfterDate = (d: Date, unit: timeUnit) => {
+        const start = new MyDate(d).add(1, unit).prevMidnight();
+        const end = new MyDate(d).add(2, unit).prevMidnight();
+        return this.m.isSameOrAfter(start.toDate()) && this.m.isBefore(end.toDate());
+    }
+
+    isAfterNextCycleAfterDate = (d: Date, unit: timeUnit) => {
+        const nextCycleEnd = new MyDate(d).add(2, unit).prevMidnight();
+        return this.m.isSameOrAfter(nextCycleEnd.toDate());
+    }
+
+    isInOrAfterNextCycleAfterDate = (d: Date, unit: timeUnit) => {
+        return this.isInNextCycleAfterDate(d, unit) || this.isAfterNextCycleAfterDate(d, unit);
+    }
+
     isTodayInFuture = () => {
         return this.m.isAfter( MyDate.Now().toDate() ) && this.m.isSameOrBefore( new MyDate().nextMidnight().toDate())
     }
