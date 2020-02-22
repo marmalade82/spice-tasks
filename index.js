@@ -3,6 +3,7 @@ import App from './App';
 import DB from "src/Models/Database";
 
 AppRegistry.registerComponent('Spice', () => App);
+AppRegistry.registerHeadlessTask("MyTask", () => require("./MyTask"));
 
 if (Platform.OS === 'web') {
   const rootTag = document.getElementById('root') || document.getElementById('main');

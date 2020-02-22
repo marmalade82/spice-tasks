@@ -14,29 +14,29 @@ import android.os.IBinder;
 
 import androidx.core.app.NotificationCompat;
 
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 public class DBServiceImplementation extends Service {
-    private static ReactApplicationContext reactContext;
 
-    public DBServiceImplementation(ReactApplicationContext context) {
-        reactContext = context;
+    public DBServiceImplementation() {
+
     }
-
-    private final IBinder mBinder = new Binder();
 
     @Override
     public IBinder onBind(Intent intent) {
-        return mBinder;
+        return null;
     }
 
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("Refresh",null);
-            handler.postDelayed(this, 1000 * 15);// Run every 15 minutes
+            //reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("Refresh",null);
+            handler.postDelayed(this, 1000);// Run every second
         }
     };
 
@@ -45,7 +45,7 @@ public class DBServiceImplementation extends Service {
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "HEARTBEAT", importance);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "SPICE_DB_SERVICE", importance);
             channel.setDescription("Keeping your Spice tasks up to date...");
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
@@ -56,8 +56,11 @@ public class DBServiceImplementation extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        this.handler.post(this.runnable);
-        createNotificationChannel(); // Creating channel for API 26+
+        ReactContext r = ((MainApplication) getApplicationContext()).getReactNativeHost().getReactInstanceManager().getCurrentReactContext();
+        r.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("Refresh",null);
+
+        //this.handler.post(this.runnable);
+        /*createNotificationChannel(); // Creating channel for API 26+
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -67,9 +70,9 @@ public class DBServiceImplementation extends Service {
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .build();
-        startForeground(DB_SERVICE_NOTIFICATION_ID, notification);
+        startForeground(DB_SERVICE_NOTIFICATION_ID, notification);*/
 
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
 }

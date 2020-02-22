@@ -10,7 +10,9 @@ import {
     TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
     PLACEHOLDER_GREY,
 } from "src/Components/Styled/Styles";
-import { ScrollView } from "react-native";
+import { ScrollView, DeviceEventEmitter, Button} from "react-native";
+import SpiceDBService from "src/Services/DBService";
+import TimeQuery from "src/Models/Time/TimeQuery";
 
 interface Props {
     navigation: any;
@@ -20,6 +22,7 @@ interface State {
     text: string;
     choice: string;
     date: Date;
+    count: number;
 }
 
 
@@ -31,14 +34,39 @@ export default class TestScreen extends React.Component<Props, State> {
 
     }
 
+    unsub: () => void;
     constructor(props: Props) {
         super(props);
 
         this.state = {
             text : "Hi",
             choice: "4",
-            date: new Date()
+            date: new Date(),
+            count: 0,
         }
+        this.unsub = () => {
+
+        }
+    }
+
+    componentDidMount = async () => {
+        const time = await new TimeQuery().currentTime();
+        SpiceDBService.stopService();
+        if(time) {
+            const timeSub = time.observe().subscribe((time) => {
+                this.setState({
+                    count: time.count,
+                })
+            });
+
+            this.unsub = () => {
+                timeSub.unsubscribe();
+            }
+        }
+    }
+
+    componentWillUnmount = () => {
+
     }
 
     render = () => {
@@ -46,9 +74,21 @@ export default class TestScreen extends React.Component<Props, State> {
             <DocumentView>
                 <ScreenHeader style={{
                     marginBottom: 60
-                }}>Test Screen</ScreenHeader>
+                }}>{"Test Screen: " + this.state.count.toString()}</ScreenHeader>
 
                 <ScrollView>
+                    <Button
+                        title="Start"
+                        onPress={() => {
+                            SpiceDBService.startService()
+                        }}
+                    ></Button>
+                    <Button
+                        title="Stop"
+                        onPress={() => {
+                            SpiceDBService.stopService()
+                        }}
+                    ></Button>
                         <StringInput
                             title={"Age"}
                             data={"WHAT"}

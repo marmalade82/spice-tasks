@@ -2,8 +2,6 @@
 import { Model } from "@nozbe/watermelondb";
 import { field, date, relation, action, readonly} from "@nozbe/watermelondb/decorators";
 import { RecurSchema } from "src/Models/Recurrence/RecurSchema";
-import { isTSImportEqualsDeclaration } from "@babel/types";
-import { weekdays } from "moment";
 
 export interface IRecur {
     type: "never" | "once" | "daily" | "weekly" | "monthly"

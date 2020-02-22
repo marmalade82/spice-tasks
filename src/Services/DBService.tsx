@@ -1,3 +1,5 @@
 import { NativeModules } from "react-native";
 
-module.exports =  NativeModules.SpiceDBService;
+const { SpiceDBService } = NativeModules;
+
+export default SpiceDBService;

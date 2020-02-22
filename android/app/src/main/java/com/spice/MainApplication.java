@@ -42,15 +42,17 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
+      List<ReactPackage> l = Arrays.<ReactPackage>asList(
           new MainReactPackage(),
           new ReanimatedPackage(),
           new RNGestureHandlerPackage(),
           new RNScreensPackage(),
           new ModuleRegistryAdapter(mModuleRegistryProvider),
           new WatermelonDBPackage(),
-          new DBServicePackage()
+              new DBServicePackage()
       );
+      //l.add(new DBServicePackage());
+      return l;
     }
 
     @Override

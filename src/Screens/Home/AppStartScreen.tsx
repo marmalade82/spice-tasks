@@ -19,6 +19,10 @@ import GoalQuery from "src/Models/Goal/GoalQuery";
 import TaskQuery from "src/Models/Task/TaskQuery";
 import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
+import { Schedule } from "Schedule";
+import Time from "src/Models/Time/Time";
+import TimeQuery, { TimeLogic, Global_Timer, observableWithRefreshTimer } from "src/Models/Time/TimeQuery";
+import { Subscription } from "rxjs";
 
 interface Props {
     navigation: any;
@@ -27,7 +31,6 @@ interface Props {
 
 interface State {
     currentDate: Date,
-    unsubscribe: () => void;
     showMore: boolean;
     showAdd: boolean;
 }
@@ -39,36 +42,31 @@ export default class AppStartScreen extends React.Component<Props, State> {
         }
     }
 
+    unsub: () => void;
     constructor(props: Props) {
         super(props);
         this.state = {
             currentDate: new Date(),
-            unsubscribe: () => {},
             showMore: false,
             showAdd: false,
         }
+        this.unsub = () => {}
     }
 
-    componentDidMount = () => {
-        /*
-        const minutes = (1000 * 60) * 30 // 30 minutes
-        
-        // Every 30 minutes, we update the date
-        const handle = setInterval(() => {
+    componentDidMount = async () => {
+        let timeSub: Subscription = Global_Timer.subscribe(() => {
             this.setState({
-                currentDate: new Date(),
-            });
-        }, minutes)
+                currentDate: new Date()
+            })
+        });
 
-        this.setState({
-            unsubscribe: () => {
-                clearInterval(handle);
-            }
-        })*/
+        this.unsub = () => {
+            timeSub.unsubscribe();
+        }
     }
 
     componentWillUnmount = () => {
-        this.state.unsubscribe();
+        this.unsub();
     }
 
     render = () => {
@@ -78,7 +76,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                     style={{
                     }}
                 >
-                    { new MyDate(this.state.currentDate).format("MMMM Do, YYYY") }
+                    { new MyDate(this.state.currentDate).format("MMMM Do, HH:mm") }
                 </ScreenHeader>
                 <ScrollView>
                     <BackgroundTitle title={"Today"}
@@ -260,11 +258,11 @@ interface AllStatusListProps {
  */
 const enhance = withObservables([], (_props: AllStatusListProps) => {
     return {
-        overdueTaskCount: new TaskQuery().queryActiveAndOverdue().observeCount(),
-        remainingTodayTaskCount: new TaskQuery().queryRemainingToday().observeCount(),
-        inProgressGoalsCount: new GoalQuery().queryActiveAndStartedButNotDue().observeCount(),
-        earnedRewardsCount: new EarnedRewardQuery().queryUnused().observeCount(),
-        earnedPenaltiesCount: new EarnedRewardQuery().queryAll().observeCount(),
+        overdueTaskCount: observableWithRefreshTimer(() => new TaskQuery().queryActiveAndOverdue().observeCount()),
+        remainingTodayTaskCount: observableWithRefreshTimer(() => new TaskQuery().queryRemainingToday().observeCount()),
+        inProgressGoalsCount: observableWithRefreshTimer(() => new GoalQuery().queryActiveAndStartedButNotDue().observeCount()),
+        earnedRewardsCount: observableWithRefreshTimer(() => new EarnedRewardQuery().queryUnused().observeCount()),
+        earnedPenaltiesCount: observableWithRefreshTimer(() => new EarnedRewardQuery().queryAll().observeCount()),
     }
 });
 

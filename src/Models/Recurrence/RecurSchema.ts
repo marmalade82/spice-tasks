@@ -6,8 +6,8 @@ import {
 
 const RecurName = {
     TYPE: "recur_type",
-    DATE: "date",
-    TIME: "time",
+    DATE: "date_at",
+    TIME: "time_at",
     WEEK_DAY: "week_day",
     MONTH_DAY: "month_day",
     ACTIVE: 'is_active',
