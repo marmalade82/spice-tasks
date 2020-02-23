@@ -46,10 +46,14 @@ async function scheduleRecurringGoals(mins: number, cancel: () => boolean, timeU
  * @param timeUntilNext 
  */
 async function scheduleRefresh(mins: number, cancel: () => boolean, timeUntilNext?: number) {
+    const count = 0;
     const minutes = (1000 * 60) * mins;
     async function run() {
         if(!cancel()) {
-            await new TimeLogic().refreshCurrentTime();
+            const count = 5;
+            // process @count of the recurring goals for the day.
+            // Keep this logic short so it doesn't take up too much resources.
+            void RecurLogic.processSomeRecurrences(count);
         }
 
         setTimeout(run, minutes);

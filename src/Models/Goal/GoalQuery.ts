@@ -48,6 +48,18 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
         return (await this.queryInRecurrence(recurId).fetch()) as Goal[]
     }
 
+    queryInRecentRecurrence = (recurId: string) => {
+        return this.store().query(
+            ...[ Q.where(GoalSchema.name.RECUR_ID, recurId),
+                ...Conditions.createdAfter( new MyDate().subtract(2, "months").toDate() )
+            ]
+        )
+    }
+
+    inRecentRecurrence = async (recurId: string) => {
+        return (await this.queryInRecentRecurrence(recurId).fetch()) as Goal[]
+    }
+
     queryOngoingStreakGoals = () => {
         return this.store().query(
             ...[...Conditions.active(), 

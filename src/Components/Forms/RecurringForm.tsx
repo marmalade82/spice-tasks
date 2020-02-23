@@ -14,7 +14,7 @@ interface State extends Data {
 }
 
 interface Data {
-    recurs: string;
+    recurs: "never" | "daily" | "weekly" | "monthly";
     date: Date;
     time: Date;
     weeks: number
@@ -97,7 +97,7 @@ export default class RecurringForm extends DataComponent<Props, State, Data> {
         this.state = Default();
     }
 
-    onRepeatChange = (value: string) => {
+    onRepeatChange = (value: "never" | "daily" | "weekly" | "monthly") => {
         this.setData({
             recurs: value
         });
@@ -138,7 +138,6 @@ export default class RecurringForm extends DataComponent<Props, State, Data> {
                     </ChoiceInput>
 
                     {this.renderIfNever()}
-                    {this.renderIfOnce()}
                     {this.renderIfDaily()}
                     {this.renderIfWeekly()}
                 </ScrollView>
@@ -148,21 +147,6 @@ export default class RecurringForm extends DataComponent<Props, State, Data> {
 
     renderIfNever = () => {
         if(this.data().recurs === "never") {
-        }
-    }
-
-    renderIfOnce = () => {
-        if(this.data().recurs === "once") {
-            return (
-                <DateTimeInput
-                    title={"When?"}
-                    type={"date"}
-                    onValueChange={this.onDateChange}
-                    value={this.data().date}
-                    accessibilityLabel={"recurring-once-date"}
-                >
-                </DateTimeInput>
-            );
         }
     }
 

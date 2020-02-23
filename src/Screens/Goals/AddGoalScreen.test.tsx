@@ -23,7 +23,6 @@ test('User view all desired initial fields for a normal goal', async () => {
 
     const penaltyInput = getByLabelText("input-goal-penalty");
 
-    const recurringInput = getByLabelText("modal-goal-recurring");
 });
 
 test('User can set type of goal to streak if desired', async () => {
@@ -73,7 +72,6 @@ test("User can fill out all fields of a normal goal and have them saved to datab
 
     const penaltyInput = getByLabelText("input-goal-penalty");
 
-    const recurringInput = getByLabelText("modal-goal-recurring");
 
     const saveButton = getByLabelText("input-save-button");
     fireEvent.press(saveButton);

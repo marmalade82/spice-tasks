@@ -40,8 +40,6 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 type : goal.goalType,
                 start_date : goal.startDate,
                 due_date : goal.dueDate,
-                recurring: AddGoalDefault().recurring,
-                recurData: AddGoalDefault().recurData,
                 reward: AddGoalDefault().reward,
                 penalty: AddGoalDefault().penalty,
                 streakData: {
@@ -50,7 +48,8 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                     daily_start: goal.streakDailyStart,
                     weekly_start: goal.streakWeeklyStart,
                     monthly_start: goal.streakMonthlyStart,
-                }
+                },
+                repeats: AddGoalDefault().repeats
             }
             this.setState({
                 goal: goal,

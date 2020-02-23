@@ -31,12 +31,12 @@ interface State {
     title: string;
     details: string;
     type: GoalType;
-    recurring: boolean;
     start_date: Date;
     due_date: Date;
     reward: RewardType;
     penalty: Penalty
-    recurData: RecurringData
+    repeats: "never" | "daily" | "weekly" | "monthly"
+    //recurData: RecurringData
     streakData: StreakData
 }
 
@@ -67,23 +67,29 @@ const penalties: LabelValue[] = [
     return parseInt(a.value) - parseInt(b.value);
 });
 
+const repeats: LabelValue[] = [
+    { label: "Never", value: "never", key: "never"},
+    { label: "Daily", value: "daily", key: "daily"},
+    { label: "Weekly", value: "weekly", key: "weekly"},
+    { label: "Monthly", value: "monthly", key: "monthly"},
+]
+
 function Default(): State {
     return {
         title: "",
         type: GoalType.NORMAL,
-        recurring: false,
         start_date: new Date(),
         due_date: new Date(),
         reward: Rewards.NONE,
         penalty: Penalty.NONE,
-        recurData: RecurringDefault(),
+        //recurData: RecurringDefault(),
         streakData: StreakDefault(),
         details: "",
+        repeats: "never",
     } as const
 }
 
 export default class AddGoalForm extends DataComponent<Props, State, State> {
-    RecurModalForm = createSaveModalInput(RecurringForm, RecurringDefault());
     SummaryInput = Validate<string, SummaryProps>(
                         StringInput, 
                         (d: string) => { return d.length > 0 },
@@ -103,11 +109,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         })
     }
 
-    onRecurSave = (data: RecurringData) => {
-        this.setData({
-            recurData: data,
-        });
-    }
 
     onChangeStreak = (data: StreakData ) => {
         this.setData({
@@ -221,20 +222,17 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         accessibilityLabel={"goal-penalty"}
                     />
 
-                    <this.RecurModalForm
-                        title={"Recurring?"} 
-                        animationType={"fade"}
-                        screenType={"grey"}
-                        onSave={this.onRecurSave}
-                        formProps={{
-                            data: false,
-                            onDataChange: () => {} // this is overwritten
+                    <ChoiceInput
+                        title={"Repeats"}
+                        selectedValue={this.data().repeats.toString()}
+                        onValueChange={(itemValue, itemIndex) => {
+                            this.setData({
+                                repeats: itemValue as "never" | "daily" | "weekly" | "monthly"
+                            })
                         }}
-                        renderData={(d: RecurringData) => {
-                            return "hi there, please impement data renderer";
-                        }}
-                        accessibilityLabel={"goal-recurring"}
-                    />
+                        choices={repeats}
+                        accessibilityLabel={"goal-repeat"}
+                    ></ChoiceInput>
                 </ScrollView>
             </ColumnView>
         )
@@ -261,10 +259,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                 <Picker.Item label={choice.label} value={choice.value}/>
             );
         })
-    }
-
-    renderRecurData = () => {
-        return this.data().recurData.recurs + " " + this.data().recurData.date.toDateString();
     }
 }
 
