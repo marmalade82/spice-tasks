@@ -1,5 +1,6 @@
 import React from "react";
 import DataComponent from "src/Components/base/DataComponent";
+import { Choices as RecurTypeChoices } from "src/Models/Recurrence/RecurLogic";
 
 import { Text, TextInput, View, Picker, ScrollView } from "react-native";
 import {
@@ -66,13 +67,6 @@ const penalties: LabelValue[] = [
 ].sort((a, b) => {
     return parseInt(a.value) - parseInt(b.value);
 });
-
-const repeats: LabelValue[] = [
-    { label: "Never", value: "never", key: "never"},
-    { label: "Daily", value: "daily", key: "daily"},
-    { label: "Weekly", value: "weekly", key: "weekly"},
-    { label: "Monthly", value: "monthly", key: "monthly"},
-]
 
 function Default(): State {
     return {
@@ -230,7 +224,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                                 repeats: itemValue as "never" | "daily" | "weekly" | "monthly"
                             })
                         }}
-                        choices={repeats}
+                        choices={RecurTypeChoices}
                         accessibilityLabel={"goal-repeat"}
                     ></ChoiceInput>
                 </ScrollView>

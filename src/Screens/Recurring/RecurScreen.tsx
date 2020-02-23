@@ -1,13 +1,14 @@
+
 import React from "react";
-import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList"
-import { ConnectedTaskSummary } from "src/ConnectedComponents/Summaries/TaskSummary";
-import Task from "src/Models/Task/Task";
-import TaskQuery from "src/Models/Task/TaskQuery";
+import { ConnectedRecurSummary } from "src/ConnectedComponents/Summaries/RecurSummary";
+import Recur from "src/Models/Recurrence/Recur";
+import RecurQuery, { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 import {
     ColumnView, RowView, Button as MyButton,
     ViewPicker,
 } from "src/Components/Basic/Basic";
 import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
+import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 
 
 interface Props {
@@ -15,55 +16,52 @@ interface Props {
 }
 
 interface State {
-    task?: Task;
+    recur?: Recur;
 }
 
 
-export default class TaskScreen extends React.Component<Props, State> {
+export default class RecurScreen extends React.Component<Props, State> {
 
     static navigationOptions = ({navigation}) => {
         return {
-            title: 'Task',
+            title: 'Recur',
         }
     }
 
     constructor(props: Props) {
         super(props);
         this.state = {
-            task: undefined
+            recur: undefined
         }
     }
 
     componentDidMount = async () => {
         const id = this.props.navigation.getParam('id', '');
-        const task = await new TaskQuery().get(id); 
+        const recur = await new RecurQuery().get(id); 
 
-        if(task) {
+        if(recur) {
             this.setState({
-                task: task
+               recur: recur
             })
 
         } else {
             this.setState({
-                task: undefined
+                recur: undefined
             });
         }
     }
 
-    onCompleteTask = () => {
-        // asynchronously complete task and descendants
-        void new TaskQuery().completeTaskAndDescendants({
-            id: this.props.navigation.getParam("id", "")
-        });
-    }
-
-    onModalChoice = (str: "complete" | "delete") => {
+    onModalChoice = (str: "enable" | "disable" | "delete") => {
+        const id = this.props.navigation.getParam('id', '');
         switch(str) {
-            case "complete": {
-                this.onCompleteTask();
+            case "enable": {
+                new RecurLogic(id).enable()
+            } break;
+            case "disable": {
+                new RecurLogic(id).disable()
             } break;
             case "delete": {
-
+                new RecurLogic(id).delete()
             } break;
             default: {
                 // DO NOTHING
@@ -75,17 +73,17 @@ export default class TaskScreen extends React.Component<Props, State> {
         return (
             <DocumentView>
                 <ScreenHeader>
-                    Task Summary
+                    Recur Summary
                 </ScreenHeader>
                 {this.renderSummary()}
                 <ColumnView style={{
                     flex: 1,
                 }}>
                     <ViewPicker
-                        views={[...this.renderTaskLists()]}
+                        views={[...this.renderRecurLists()]}
                         data={false}
                         onDataChange={() => {}}
-                        accessibilityLabel={"tasks"}
+                        accessibilityLabel={"recurs"}
                         pickerHeight={60}
                     ></ViewPicker>
                 </ColumnView>
@@ -94,41 +92,30 @@ export default class TaskScreen extends React.Component<Props, State> {
     }
 
     renderSummary = () => {
-        if(this.state.task) {
+        if(this.state.recur) {
             return (
-                <ConnectedTaskSummary
+                <ConnectedRecurSummary
                     navigation={this.props.navigation}
-                    task={this.state.task} 
+                    recur={this.state.recur} 
                     onModalChoice={this.onModalChoice}
-                ></ConnectedTaskSummary>
+                ></ConnectedRecurSummary>
             );
         }
     }
 
-    renderTaskLists = () => {
+    renderRecurLists = () => {
         return [
-            {   title: "Active"
+            {   title: "Goals"
             ,   render: () => {
                     return (
-                        <ConnectedTaskList
+                        <ConnectedGoalList
                             navigation={this.props.navigation}
                             parentId={this.props.navigation.getParam('id', '')}
-                            type={"parent-active"}
-                        ></ConnectedTaskList>
+                            type={"recurring"}
+                        ></ConnectedGoalList>
                     );
                 }
             },
-            {   title: "Inactive"
-            ,   render: () => {
-                    return (
-                        <ConnectedTaskList
-                            navigation={this.props.navigation}
-                            parentId={this.props.navigation.getParam('id', '')}
-                            type={"parent-inactive"}
-                        ></ConnectedTaskList>
-                    );
-                }
-            }
         ]
     }
 }

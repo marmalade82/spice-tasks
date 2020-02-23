@@ -73,11 +73,20 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
     }
 
     update = async (model: Model, props: Exact<Partial<IModel>>) => {
-        return DB.get().action(async () => {
+        return await DB.get().action(async () => {
             await model.update((m: Model) => {
                 Object.assign(m, props);
             });
         });
+    }
+
+    delete = async(id: string) => {
+        const model = await this.get(id);
+        if(model) {
+            await DB.get().action(async () => {
+                await model.destroyPermanently();
+            });
+        }
     }
 }
 

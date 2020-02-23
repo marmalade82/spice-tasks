@@ -27,6 +27,8 @@ import AppStartScreen from "src/Screens/Home/AppStartScreen";
 import OverdueScreen from "src/Screens/Home/OverdueScreen";
 import InProgressGoalListScreen from "src/Screens/Goals/InProgressGoalListScreen";
 import RecurringListScreen from "src/Screens/Recurring/RecurringListScreen";
+import RecurScreen from "src/Screens/Recurring/RecurScreen";
+import AddRecurScreen from "src/Screens/Recurring/AddRecurScreen";
 import TestScreen from "src/Screens/TestScreen";
 
 export {
@@ -57,5 +59,7 @@ export {
     OverdueScreen as Overdue,
     InProgressGoalListScreen as InProgressGoalList,
     RecurringListScreen as RecurringList,
+    RecurScreen as Recur,
+    AddRecurScreen as AddRecur,
     TestScreen as Test,
 }

@@ -1,71 +1,65 @@
+
 import React from "react";
 import { View, ScrollView, SafeAreaView, Button } from "react-native";
-import { AddTaskForm, AddTaskData, AddTaskDefault } from "src/Components/Forms/AddTaskForm";
+import { AddRecurForm, AddRecurData, AddRecurDefault } from "src/Components/Forms/AddRecurForm";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
-import { TaskQuery, Task } from "src/Models/Task/TaskQuery";
+import { RecurQuery, Recur } from "src/Models/Recurrence/RecurQuery";
 import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
+
 
 interface Props {
     navigation: any;
 }
 
 interface State { 
-    data: AddTaskData;
-    task?: Task;
+    data: AddRecurData;
+    recur?: Recur;
 }
 
-export default class AddTaskScreen extends React.Component<Props, State> {
+export default class AddRecurScreen extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            data: AddTaskDefault(),
+            data: AddRecurDefault(),
         }
     }
 
     static navigationOptions = ({navigation}) => {
         return {
-            title: 'Task',
+            title: 'Recur',
         }
     }
 
     componentDidMount = async () => {
         const id = this.props.navigation.getParam('id', '');
-        const task = await new TaskQuery().get(id); 
-        if(task) {
-            let data: AddTaskData = {
-                name: task.title,
-                start_date: task.startDate,
-                due_date: task.dueDate,
-                description: task.instructions,
+        const recur = await new RecurQuery().get(id); 
+        if(recur) {
+            let data: AddRecurData = {
+                repeats: recur.type,
             }
             this.setState({
-                task: task,
+                recur: recur,
                 data: data,
             })
         } else {
             this.setState({
-                task: undefined
+                recur: undefined
             })
         }
     }
 
     onSave = () => {
-        // Parent id only changes if task does not already have a parent id.
-        const parentId = this.state.task ? this.state.task.parentId : this.props.navigation.getParam('parent_id', '');
+        // Parent id only changes if recur does not already have a parent id.
         const data = this.state.data;
-        const taskData = {
-            title: data.name,
-            dueDate: data.due_date,
-            startDate: data.start_date,
-            instructions: data.description,
-            parentId: parentId,
+        const recurData = {
+            type: data.repeats,
         };
 
-        if(this.state.task) {
-            (new TaskQuery().update(this.state.task, taskData)).catch();        
+        if(this.state.recur) {
+            void (new RecurQuery().update(this.state.recur, recurData));
         } else {
-            new TaskQuery().create(taskData).catch();
+            // do nothing. We DO NOT create recurrences from this form.
         }
 
         this.props.navigation.goBack();
@@ -74,11 +68,11 @@ export default class AddTaskScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <DocumentView>
-                <ScreenHeader>Add/Edit Task</ScreenHeader>
+                <ScreenHeader>Add/Edit Recur</ScreenHeader>
                 <ScrollView style={{
                     backgroundColor: "transparent",
                 }}>
-                    { this.renderTaskForm() }
+                    { this.renderRecurForm() }
                 </ScrollView>
 
                     <Button
@@ -89,17 +83,17 @@ export default class AddTaskScreen extends React.Component<Props, State> {
         );
     }
 
-    renderTaskForm = () => {
+    renderRecurForm = () => {
         return (
-                <AddTaskForm
+                <AddRecurForm
                     data={this.state.data}
-                    onDataChange={(d: AddTaskData) => {
+                    onDataChange={(d: AddRecurData) => {
                         this.setState({
                             data: d
                         });
                     }}
                     style={{}}
-                ></AddTaskForm>
+                ></AddRecurForm>
         );
     }
 }

@@ -249,4 +249,33 @@ export class RecurLogic {
         let fullGoals = await Promise.all(goals)
         void new GoalQuery().createMultiple(fullGoals);
     }
+
+    enable = async () => {
+        const recur = await new RecurQuery().get(this.id);
+        if(recur) {
+            void new RecurQuery().update(recur, {
+                active: true,
+            })
+        }
+    }
+
+    disable = async () => {
+        const recur = await new RecurQuery().get(this.id);
+        if(recur) {
+            void new RecurQuery().update(recur, {
+                active: false,
+            })
+        }
+    }
+
+    delete = async () => {
+        // Luckily, deleting a recurrence doesn't really affect the underlying goals.
+        void new RecurQuery().delete(this.id);
+    }
+}
+
+export {
+    RecurQuery,
+    Recur,
+    IRecur,
 }
