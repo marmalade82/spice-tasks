@@ -26,6 +26,7 @@ import SpecificTaskListScreen from "src/Screens/Tasks/SpecificTaskListsScreen";
 import AppStartScreen from "src/Screens/Home/AppStartScreen";
 import OverdueScreen from "src/Screens/Home/OverdueScreen";
 import InProgressGoalListScreen from "src/Screens/Goals/InProgressGoalListScreen";
+import RecurringListScreen from "src/Screens/Recurring/RecurringListScreen";
 import TestScreen from "src/Screens/TestScreen";
 
 export {
@@ -55,5 +56,6 @@ export {
     AppStartScreen as AppStart,
     OverdueScreen as Overdue,
     InProgressGoalListScreen as InProgressGoalList,
+    RecurringListScreen as RecurringList,
     TestScreen as Test,
 }

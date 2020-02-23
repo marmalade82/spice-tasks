@@ -35,6 +35,7 @@ const ScreenNavigator = createStackNavigator(
   , InProgressGoals: Screens.InProgressGoalList
   , SpecificTask: Screens.SpecificTask
   , SpecificTaskLists: Screens.SpecificTaskList
+  , Recurrings: Screens.RecurringList
   , Test: Screens.Test
   },
   { initialRouteName: 'Home'

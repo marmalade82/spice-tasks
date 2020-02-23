@@ -6,6 +6,8 @@ import { StyleSheet } from "react-native";
 import { GoalQuery, Goal, IGoal } from "src/Models/Goal/GoalQuery";
 import { ColumnView } from "src/Components/Basic/Basic";
 import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
+import { RecurLogic } from "src/Models/Recurrence/RecurQuery";
+import Recur from "src/Models/Recurrence/Recur";
 
 interface Props {
     navigation: any;
@@ -63,7 +65,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
     }
 
 
-    onSave = () => {
+    onSave = async () => {
         const data = this.state.data;
         const streak = data.streakData;
         const goalData: Partial<IGoal> = {
@@ -87,10 +89,17 @@ export default class AddGoalScreen extends React.Component<Props, State> {
 
             this.props.navigation.goBack();
         } else {
-            new GoalQuery().create(goalData)
-            .catch((reason) => {
-                console.log("Failed to create goal with reason: " + reason);
-            });  
+            // Whether a goal is recurring can only be set in this form on creation. Otherwise it needs to be handled elsewhere.
+            let recur: Recur | null = await RecurLogic.createForGoal(data.repeats);
+
+            if(recur) {
+                goalData.recurId = recur.id;
+            }
+
+            void new GoalQuery().create(goalData)
+                .catch((reason) => {
+                    console.log("Failed to create goal with reason: " + reason);
+                });  
 
             this.props.navigation.goBack();
         }

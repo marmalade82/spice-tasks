@@ -10,6 +10,7 @@ import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
 import GoalQuery, { GoalLogic, IGoal, Goal } from "../Goal/GoalQuery";
 import { tsAnyKeyword } from "@babel/types";
+import { DatePickerAndroid } from "react-native";
 
 
 /**
@@ -101,7 +102,7 @@ export default class RecurQuery extends ModelQuery<Recur, IRecur> {
 
     default = () => {
         return {
-            type: "never",
+            type: "daily",
             date: new Date(), 
             // are these necessary? It would be simpler to just assume that they recur at the same time.
             time: new Date(),
@@ -119,6 +120,35 @@ export class RecurLogic {
     constructor(id: string) {
         this.valid = true;
         this.id = id;
+    }
+
+    static createForGoal = async (repeats: "never" | "daily" | "weekly" | "monthly") => {
+        switch(repeats) {
+            case "daily": {
+                return await new RecurQuery().create({
+                    lastRefreshed: new Date(),
+                    active: true,
+                    type: "daily",
+                });
+            } break;
+            case "weekly": {
+                return await new RecurQuery().create({
+                    lastRefreshed: new Date(),
+                    active: true,
+                    type: "weekly",
+                });
+            } break;
+            case "monthly": {
+                return await new RecurQuery().create({
+                    lastRefreshed: new Date(),
+                    active: true,
+                    type: "monthly",
+                });
+            } break;
+            default: {
+                return null;
+            }
+        }
     }
 
     static processRecurrences = async () => {
@@ -180,18 +210,6 @@ export class RecurLogic {
 
             if(latestGoal) {
                 switch(recur.type) {
-                    case "once": {
-                        let startDate = new MyDate(recur.date);
-                        let newGoal: IGoal | undefined = undefined;
-                        let newStart: MyDate | undefined = undefined
-                        if( startDate.inNext("minutes", timeUntilNext ? timeUntilNext : 50)) {
-                            newStart = startDate;
-                        }
-                        if(newGoal && newStart) {
-                            newGoal = await new GoalLogic(latestGoal.id).cloneRelativeTo(latestGoal.startDate, newStart.toDate());
-                            void new GoalQuery().create(newGoal);
-                        }
-                    } break;
                     case "daily": {
                         void this._generateNext(latestGoal.id, latestGoal.startDate, "days");
                     } break;

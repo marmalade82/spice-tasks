@@ -46,13 +46,16 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
 
     create = async (props: Exact<Partial<IModel>>) => {
         const Default = this.default();
-
-        return DB.get().action(async () => {
-            await this.store().create((m: Model) => {
+        let id = "";
+        await DB.get().action(async () => {
+            let m = await this.store().create((m: Model) => {
                 Object.assign(m, Default);
                 Object.assign(m, props);
-            });
+            }) as Model;
+            id = m.id;
         });
+
+        return await this.get(id)
     }
 
     createMultiple = async (models: Exact<Partial<IModel>>[]) => {

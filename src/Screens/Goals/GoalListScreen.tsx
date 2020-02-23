@@ -2,7 +2,6 @@ import React from "react";
 import {View, Button, Text, StyleSheet } from "react-native";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import { DocumentView } from "src/Components/Styled/Styled";
-import Style from "src/Style/Style";
 
 interface Props {
     navigation: any

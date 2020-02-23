@@ -4,7 +4,7 @@ import { field, date, relation, action, readonly} from "@nozbe/watermelondb/deco
 import { RecurSchema } from "src/Models/Recurrence/RecurSchema";
 
 export interface IRecur {
-    type: "never" | "once" | "daily" | "weekly" | "monthly"
+    type: "daily" | "weekly" | "monthly"
     date: Date,
     time: Date,
     weekDay: "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
@@ -18,7 +18,7 @@ const name = RecurSchema.name;
 export default class Recur extends Model implements IRecur {
     static table = RecurSchema.table;
 
-    @field(name.TYPE) type!: "never" | "once" | "daily" | "weekly" | "monthly"
+    @field(name.TYPE) type!: "daily" | "weekly" | "monthly"
     @date(name.DATE) date!: Date 
     @date(name.TIME) time! : Date 
     @field(name.WEEK_DAY) weekDay!: "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";

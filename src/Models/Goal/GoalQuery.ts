@@ -48,6 +48,19 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
         return (await this.queryInRecurrence(recurId).fetch()) as Goal[]
     }
 
+    latestInRecurrence = async (recurId: string) => {
+        let goals = await this.inRecurrence(recurId);
+        goals.sort((a, b) => {
+            return b.startDate.valueOf() - a.startDate.valueOf();
+        })
+
+        if(goals[0]) {
+            return goals[0];
+        } else {
+            return null;
+        }
+    }
+
     queryInRecentRecurrence = (recurId: string) => {
         return this.store().query(
             ...[ Q.where(GoalSchema.name.RECUR_ID, recurId),
