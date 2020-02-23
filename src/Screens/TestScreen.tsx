@@ -13,6 +13,7 @@ import {
 import { ScrollView, DeviceEventEmitter, Button} from "react-native";
 import SpiceDBService from "src/Services/DBService";
 import TimeQuery from "src/Models/Time/TimeQuery";
+import PushNotification from "src/Notification";
 
 interface Props {
     navigation: any;
@@ -80,7 +81,9 @@ export default class TestScreen extends React.Component<Props, State> {
                     <Button
                         title="Start"
                         onPress={() => {
-                            SpiceDBService.startService()
+                            PushNotification.localNotification({
+                                message: "hi there"
+                            })
                         }}
                     ></Button>
                     <Button

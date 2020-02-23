@@ -6,9 +6,11 @@ import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
 import GoalSchema from "src/Models/Goal/GoalSchema";
 import { GoalType } from "../Goal/GoalLogic";
+import { RecurSchema } from "../Recurrence/RecurSchema";
 
 const name = TaskSchema.name;
 const goalName = GoalSchema.name ;
+const recurName = RecurSchema.name;
 
 function inactiveConditions() {
     return [
@@ -129,6 +131,14 @@ function createdBeforeConditions(d: Date) {
     ]
 }
 
+function lastRefreshedOnOrBeforeConditions(d: Date) {
+    let endOfDay = new MyDate(d).nextMidnight();
+    return [
+        Q.where(recurName.LAST_REFRESHED, Q.lt(endOfDay.toDate().valueOf()))
+    ]
+
+}
+
 export const Conditions = {
     active: activeConditions,
     activeChild: activeChildConditions,
@@ -149,6 +159,7 @@ export const Conditions = {
     notOverdue: notOverdueConditions,
     createdAfter: createdAfterConditions,
     createdBefore: createdBeforeConditions,
+    lastRefreshedOnOrBefore: lastRefreshedOnOrBeforeConditions,
 }
 
 

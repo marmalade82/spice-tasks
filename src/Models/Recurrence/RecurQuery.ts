@@ -9,6 +9,29 @@ import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils"
 import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
 import GoalQuery, { GoalLogic, IGoal, Goal } from "../Goal/GoalQuery";
+import { tsAnyKeyword } from "@babel/types";
+
+
+/**
+ * If n < 1, returns @arr.
+ * If n >= 1, returns the first n elements of the array, or the entire array if the 
+ *  array has fewer than n elements
+ * @param arr 
+ * @param n 
+ */
+function take<T>(arr: T[], n: number): T[] {
+    let num = Math.floor(n);
+    if( num < 1) {
+        return arr.concat([]);
+    } else {
+        let newArr: T[] = [];
+        const newLength = Math.min(arr.length, num)
+        for(let i = 0; i < newLength; i++) {
+            newArr.push(arr[i]);
+        }
+        return newArr;
+    }
+}
 
 export default class RecurQuery extends ModelQuery<Recur, IRecur> {
     constructor() {
@@ -25,6 +48,57 @@ export default class RecurQuery extends ModelQuery<Recur, IRecur> {
         return (await this.queryActive().fetch()) as Recur[];
     }
 
+    queryUnprocessed = () => {
+        return this.store().query(
+            ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+                ...Conditions.active(),
+            ]
+        );
+    }
+
+    unprocessed = async () => {
+        return (await this.queryUnprocessed().fetch()) as Recur[];
+    }
+
+    queryDailyUnprocessed = () => {
+        return this.store().query(
+            ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+                ...Conditions.active(),
+                Q.where(RecurSchema.name.TYPE, "daily"),
+            ]
+        );
+    }
+
+    dailyUnprocessed = async () => {
+        return (await this.queryDailyUnprocessed().fetch()) as Recur[];
+    }
+
+    queryWeeklyUnprocessed = () => {
+        return this.store().query(
+            ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+                ...Conditions.active(),
+                Q.where(RecurSchema.name.TYPE, "weekly"),
+                ]
+        );
+    }
+
+    weeklyUnprocessed = async () => {
+        return (await this.queryWeeklyUnprocessed().fetch()) as Recur[];
+    }
+
+    queryMonthlyUnprocessed = () => {
+        return this.store().query(
+            ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+                ...Conditions.active(),
+                Q.where(RecurSchema.name.TYPE, "monthly"),
+                ]
+        );
+    }
+
+    monthlyUnprocessed = async () => {
+        return (await this.queryMonthlyUnprocessed().fetch()) as Recur[];
+    }
+
     default = () => {
         return {
             type: "never",
@@ -34,6 +108,7 @@ export default class RecurQuery extends ModelQuery<Recur, IRecur> {
             weekDay: "sunday",
             monthDay: 1,
             active: true,
+            lastRefreshed: new Date() // no need to calculate it if it was just created...
         } as const;
     }
 }
@@ -44,6 +119,48 @@ export class RecurLogic {
     constructor(id: string) {
         this.valid = true;
         this.id = id;
+    }
+
+    static processRecurrences = async () => {
+        await RecurLogic.processSomeDailyRecurrences();
+    }
+
+    static processSomeRecurrences = async (n?: number) => {
+        const recurs : Recur[] = await new RecurQuery().unprocessed();
+        RecurLogic.process(recurs, n);
+    }
+
+    static processDailyRecurrences = async () => {
+        await RecurLogic.processSomeDailyRecurrences();
+    }
+
+    static processSomeDailyRecurrences = async (n?: number) => {
+        const recurs: Recur[] = await new RecurQuery().dailyUnprocessed();
+        RecurLogic.process(recurs, n);
+    }
+
+    static process = async(arr: Recur[], n?: number) => {
+        take(arr, n? n : arr.length).forEach((recur) => {
+            void new RecurLogic(recur.id).generateNext();
+        })
+    }
+
+    static processWeeklyRecurrences = async () => {
+        await RecurLogic.processSomeWeeklyRecurrences();
+    }
+
+    static processSomeWeeklyRecurrences = async (n?: number) => {
+        const recurs: Recur[] = await new RecurQuery().weeklyUnprocessed();
+        RecurLogic.process(recurs, n);
+    }
+
+    static processMonthlyRecurrences = async () => {
+        await RecurLogic.processSomeMonthlyRecurrences();
+    }
+
+    static processSomeMonthlyRecurrences = async (n?: number) => {
+        const recurs: Recur[] = await new RecurQuery().monthlyUnprocessed();
+        RecurLogic.process(recurs, n);
     }
 
     /**
@@ -89,6 +206,11 @@ export class RecurLogic {
                     }
                 } 
             }
+
+            // now we need to mark this recurrence as having been refreshed today.
+            new RecurQuery().update(recur, {
+                lastRefreshed: new Date()
+            })
         }
     }
 

@@ -6,6 +6,7 @@ import {
 
 const RecurName = {
     TYPE: "recur_type",
+    LAST_REFRESHED: "last_refreshed_at",
     DATE: "date_at",
     TIME: "time_at",
     WEEK_DAY: "week_day",
@@ -15,6 +16,7 @@ const RecurName = {
 
 const RecurType = {
     TYPE: "string",
+    LAST_REFRESHED: "number",
     DATE: "number",
     TIME: "number",
     WEEK_DAY: "string",

@@ -145,6 +145,7 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 def enableHermes = project.ext.react.get("enableHermes", false);
 
 dependencies {
+    implementation project(':react-native-push-notification')
     def work_version = "2.3.2"
     // (Java only)
     implementation "androidx.work:work-runtime:$work_version"

@@ -21,6 +21,7 @@ export default class TimeQuery extends ModelQuery<Time, ITime> {
     default = () => {
         return {
             current: new Date(),
+            count: 0,
         }
     }
 

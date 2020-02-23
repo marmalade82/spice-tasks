@@ -218,3 +218,264 @@ describe("Recurring goal recurs despite being very far in past", () => {
     })
 
 });
+
+describe("Processing partially processed recurrences", () => {
+    beforeEach(async () => {
+        await destroyAll();
+    })
+
+    afterEach(async () => {
+        await destroyAll();
+    })
+
+    test("daily", async () => {
+        await wait(async () => {
+            const recurs = await new RecurQuery().dailyUnprocessed();
+            expect(recurs.length).toEqual(0)
+        });
+
+        await setup();
+
+        await wait(async () => {
+            const recurs = await new RecurQuery().dailyUnprocessed();
+            expect(recurs.length).toEqual(3)
+        });
+
+        await RecurLogic.processSomeDailyRecurrences(2);
+
+        await wait(async () => {
+            const recurs = await new RecurQuery().dailyUnprocessed();
+            expect(recurs.length).toEqual(1)
+        });
+
+        await RecurLogic.processSomeDailyRecurrences(2);
+
+        await wait(async () => {
+            const recurs = await new RecurQuery().dailyUnprocessed();
+            expect(recurs.length).toEqual(0)
+        });
+
+        async function setup() {
+            const opts = {
+                recur_1: "",
+                recur_2: "",
+                recur_3: "",
+                recur_4: "",
+                recur_5: "",
+            }
+            await DB.get().action(async () => {
+                const recur_1 = await createRecurrences({
+                    type: "daily",
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(1, "days").toDate(),
+                }, 1)
+
+                opts.recur_1 = recur_1[0].id;
+
+                const recur_2 = await createRecurrences({
+                    type: "daily",
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(1, "days").toDate(),
+                }, 1)
+
+                opts.recur_2 = recur_2[0].id;
+
+                const recur_3 = await createRecurrences({
+                    type: "daily",
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(2, "days").toDate(),
+                }, 1)
+
+                opts.recur_3 = recur_3[0].id;
+
+                const recur_4 = await createRecurrences({
+                    type: "daily",
+                    active: true,
+                    lastRefreshed: new MyDate().toDate(),
+                }, 1)
+
+                opts.recur_4 = recur_4[0].id;
+
+                const recur_5 = await createRecurrences({
+                    type: "daily",
+                    active: false,
+                    lastRefreshed: new MyDate().toDate(),
+                }, 1)
+
+                opts.recur_5 = recur_5[0].id;
+
+            })
+            return opts;
+        }
+    });
+
+    test("weekly", async () => {
+        await wait(async () => {
+            const recurs = await new RecurQuery().weeklyUnprocessed();
+            expect(recurs.length).toEqual(0)
+        });
+
+        await setup();
+
+        await wait(async () => {
+            const recurs = await new RecurQuery().weeklyUnprocessed();
+            expect(recurs.length).toEqual(5)
+        });
+
+        await RecurLogic.processSomeWeeklyRecurrences(3);
+
+        await wait(async () => {
+            const recurs = await new RecurQuery().weeklyUnprocessed();
+            expect(recurs.length).toEqual(2)
+        });
+
+        await RecurLogic.processSomeWeeklyRecurrences(3);
+
+        await wait(async () => {
+            const recurs = await new RecurQuery().weeklyUnprocessed();
+            expect(recurs.length).toEqual(0)
+        });
+
+        async function setup() {
+            const opts = {
+                recur_1: "",
+                recur_2: "",
+                recur_3: "",
+                recur_4: "",
+                recur_5: "",
+            }
+            await DB.get().action(async () => {
+                const recur_1 = await createRecurrences({
+                    type: "weekly",
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(1, "weeks").toDate(),
+                }, 1)
+
+                opts.recur_1 = recur_1[0].id;
+
+                const recur_2 = await createRecurrences({
+                    type: "weekly",
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(1, "weeks").toDate(),
+                }, 1)
+
+                opts.recur_2 = recur_2[0].id;
+
+                const recur_3 = await createRecurrences({
+                    type: "weekly",
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(2, "weeks").toDate(),
+                }, 3)
+
+                opts.recur_3 = recur_3[0].id;
+
+                const recur_4 = await createRecurrences({
+                    type: "weekly",
+                    active: true,
+                    lastRefreshed: new MyDate().toDate(),
+                }, 1)
+
+                opts.recur_4 = recur_4[0].id;
+
+                const recur_5 = await createRecurrences({
+                    type: "weekly",
+                    active: false,
+                    lastRefreshed: new MyDate().subtract(5, "weeks").toDate(),
+                }, 1)
+
+                opts.recur_5 = recur_5[0].id;
+
+                await createRecurrences({
+                    type: "daily",
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(2, "weeks").toDate(),
+                }, 1)
+            })
+            return opts;
+        }
+    });
+
+    test("monthly", async () => {
+        await wait(async () => {
+            const recurs = await new RecurQuery().monthlyUnprocessed();
+            expect(recurs.length).toEqual(0)
+        });
+
+        await setup();
+
+        await wait(async () => {
+            const recurs = await new RecurQuery().monthlyUnprocessed();
+            expect(recurs.length).toEqual(5)
+        });
+
+        await RecurLogic.processSomeMonthlyRecurrences(3);
+
+        await wait(async () => {
+            const recurs = await new RecurQuery().monthlyUnprocessed();
+            expect(recurs.length).toEqual(2)
+        });
+
+        await RecurLogic.processSomeMonthlyRecurrences(3);
+
+        await wait(async () => {
+            const recurs = await new RecurQuery().monthlyUnprocessed();
+            expect(recurs.length).toEqual(0)
+        });
+
+        async function setup() {
+            const opts = {
+                recur_1: "",
+                recur_2: "",
+                recur_3: "",
+                recur_4: "",
+                recur_5: "",
+            }
+            await DB.get().action(async () => {
+                const recur_1 = await createRecurrences({
+                    type: "monthly",
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(1, "months").toDate(),
+                }, 1)
+
+                opts.recur_1 = recur_1[0].id;
+
+                const recur_2 = await createRecurrences({
+                    type: "monthly",
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(1, "months").toDate(),
+                }, 1)
+
+                opts.recur_2 = recur_2[0].id;
+
+                const recur_3 = await createRecurrences({
+                    type: "monthly",
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(2, "months").toDate(),
+                }, 3)
+
+                opts.recur_3 = recur_3[0].id;
+
+                const recur_4 = await createRecurrences({
+                    type: "monthly",
+                    active: true,
+                    lastRefreshed: new MyDate().toDate(),
+                }, 1)
+
+                opts.recur_4 = recur_4[0].id;
+
+                const recur_5 = await createRecurrences({
+                    type: "monthly",
+                    active: false,
+                    lastRefreshed: new MyDate().subtract(5, "months").toDate(),
+                }, 1)
+
+                await createRecurrences({
+                    type: "daily",
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(2, "weeks").toDate(),
+                }, 1)
+            })
+            return opts;
+        }
+    });
+})

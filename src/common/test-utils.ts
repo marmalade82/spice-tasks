@@ -16,6 +16,7 @@ import ClaimedRewardSchema from "src/Models/Reward/ClaimedRewardSchema";
 import { IReward, Reward } from "src/Models/Reward/Reward";
 import Recur, { IRecur } from "src/Models/Recurrence/Recur";
 import { RecurSchema } from "src/Models/Recurrence/RecurSchema";
+import { TimeSchema } from "src/Models/Time/TimeSchema";
 
 function makeNavigation(params: {}) {
     const navigation = {
@@ -109,6 +110,7 @@ async function destroyAll() {
     const tables: string[] = [
         GoalSchema.table, TaskSchema.table, RewardSchema.table,
         EarnedRewardSchema.table, ClaimedReward.table, PenaltySchema.table,
+        TimeSchema.table, RecurSchema.table,
     ];
     const destroys = tables.map((name: string) => {
         return destroyAllIn(name);
