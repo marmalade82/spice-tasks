@@ -7,7 +7,7 @@
     "postinstall": "jetify && patch-package",
     "test": "jest --onlyChanged",
     "testAll": "jest",
-    "test-one": "jest RecurLogic.test.ts",
+    "test-one": "jest GoalLogic.test.ts",
     "debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
     "link": "react-native link",
     "lint": "tslint --project tsconfig.json",

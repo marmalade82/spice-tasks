@@ -339,7 +339,14 @@ export class GoalLogic {
         }
 
         let fullTasks = await Promise.all(tasks);
-        void new TaskQuery().createMultiple(fullTasks);
+        void new TaskQuery().createMultiple(fullTasks); // this should be batched, as it's all or nothing.
+
+        let goal = await new GoalQuery().get(parentId);
+        if(goal) {
+            new GoalQuery().update(goal, {
+                latestCycleStartDate: new MyDate(start).subtract(1, unit).toDate(),
+            })
+        }
     }
 
     /**
