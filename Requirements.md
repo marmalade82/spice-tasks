@@ -472,3 +472,21 @@ Penalties typically come with the following data items:
 
 - [T] User should be able to view all claimed rewards
 - [T] User should be able to view all claimed penalties
+
+
+## Streaks
+
+How to represent a Streak Goal? Like any goal, this should have a start and end date. The date indicates the starting date of the streak's cycles, and the end date represents the estimated last cycle (off by a fudge factor is permissible).
+
+What becomes more difficult here is how to represent the tasks that make up a cycle in the streak (whether daily, weekly, or monthly). What makes this tough is that, unlike with Recurring Goals, which have just one goal per cycle, the tasks of a Streak Goal may be spread throughout a cycle. How do we capture that information, while also allowing the user to add new goals to a cycle that get persisted to the next cycle?
+
+One way to do this is to calculate everything. If we know the start date, then perhaps we know other things about the cycle:
+
+- daily means the cycle starts every day at midnight
+- weekly means the cycle starts every week on the same weekday as the start date
+- monthly meanst he cycle starts every month on the same month day as the start date (rounded if necessary).
+
+Indeed, if we know this information, we can calculate the range of valid dates for a new task that the user adds to the streak -- the dates must fall in the current cycle or the next cycle. If it falls in the next cycle, when we calculate the next cycle, we take what is in the current cycle and add it to what is in the next cycle, no questions asked.
+
+An alternative way of doing this is to create streak templates. But if we use streak templates, we have to represent in the templates how the template falls in the cycle. If daily, what times are the tasks? If weekly, what days are the tasks ( and what times?). If monthly, what month days are the tasks (and what times)? This might seem like more trouble than it is worth, but one benefit is that it is easy for the user to see what tasks are being generated per cycle. On the other hand, it is more complex and it raises questions -- if the user adds a task to the templates, does it get put in the current cycle? It is far less complex to let the user choose where the tasks are in the current or next cycle.
+

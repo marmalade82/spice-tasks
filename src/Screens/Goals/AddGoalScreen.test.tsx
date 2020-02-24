@@ -35,8 +35,6 @@ test('User can set type of goal to streak if desired', async () => {
     fireEvent.press(goalChoice);
     const minimumText = await waitForElement(() => getByText("Minimum"));
     const streakTypeInput = getByLabelText("input-streak-type");
-    const streakDailyTimeInput = getByLabelText("modal-streak-time");
-
 });
 
 test("User can fill out all fields of a normal goal and have them saved to database after 'Complete'" +

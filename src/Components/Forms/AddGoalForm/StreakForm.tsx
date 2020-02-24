@@ -20,9 +20,6 @@ interface Props {
 interface State {
     minimum: number,
     type: "daily" | "weekly" | "monthly"
-    daily_start: Date,
-    weekly_start: string,
-    monthly_start: number,
 }
 
 const localStyle = StyleSheet.create({
@@ -35,9 +32,6 @@ function Default(): State {
     return {
         minimum: 2,
         type: "daily",
-        daily_start: new Date(),
-        weekly_start: "sunday",
-        monthly_start: 1,
     }
 }
 
@@ -67,27 +61,6 @@ export default class StreakForm extends DataComponent<Props, State, State> {
         }
     }
 
-    onChangeDailyStart = (val: Date) => {
-        this.setData({
-            daily_start: val
-        });
-    }
-
-    onChangeWeeklyStart = (vals: string[]) => {
-        if(vals.length > 0) {
-            this.setData({
-                weekly_start: vals[vals.length - 1]
-            });
-        } else {
-            this.setData({});
-        }
-    }
-
-    onChangeMonthlyStart = (val: number) => {
-        this.setData({
-            monthly_start: val
-        });
-    }
 
     render = () => {
         return (
@@ -116,49 +89,9 @@ export default class StreakForm extends DataComponent<Props, State, State> {
                     onValueChange={this.onChangeType}
                     accessibilityLabel={"streak-type"}
                 />
-
-                {this.renderByType()}
             </ColumnView>
 
         );
-    }
-
-    renderByType = () => {
-        if(this.data().type === "daily") {
-            return (
-                <DateTimeInput
-                    title={"Time"}
-                    value={this.data().daily_start}
-                    type={"time"}
-                    onValueChange={this.onChangeDailyStart}
-                    accessibilityLabel={"streak-time"}
-                />
-            );
-        } else if (this.data().type === "weekly") {
-            return (
-                <MultipleInput
-                    title={"Week Start"}
-                    values={[this.data().weekly_start]}
-                    choices={week_start_choices} 
-                    onValueChange={this.onChangeWeeklyStart}
-                />
-            );
-
-        } else if (this.data().type === "monthly") {
-            return (
-                <NumberInput
-                    title={"Month Start"}
-                    value={this.data().monthly_start}
-                    type={"integer"}
-                    minimum={1}
-                    maximum={31}
-                    onValueChange={this.onChangeMonthlyStart}
-                    accessibilityLabel={"streak-monthly-start"}
-                />
-            );
-        } else {
-
-        }
     }
 }
 

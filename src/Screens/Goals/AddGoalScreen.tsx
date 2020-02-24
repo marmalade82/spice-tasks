@@ -47,9 +47,6 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 streakData: {
                     minimum: goal.streakMinimum,
                     type: goal.streakType as any,
-                    daily_start: goal.streakDailyStart,
-                    weekly_start: goal.streakWeeklyStart,
-                    monthly_start: goal.streakMonthlyStart,
                 },
                 repeats: AddGoalDefault().repeats
             }
@@ -75,9 +72,6 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             dueDate: data.due_date,
             streakMinimum: streak.minimum,
             streakType: streak.type,
-            streakDailyStart: streak.daily_start,
-            streakWeeklyStart: streak.weekly_start,
-            streakMonthlyStart: streak.monthly_start,
             rewardType: data.reward,
             details: data.details,
         };
