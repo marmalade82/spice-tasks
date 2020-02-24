@@ -11,6 +11,7 @@ import { Rewards } from "src/Models/Reward/RewardLogic";
 import EarnedRewardQuery from "../Reward/EarnedRewardQuery";
 import MyDate from "src/common/Date";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
+import { take } from "src/Models/common/logicUtils";
 
 class GoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
@@ -35,6 +36,7 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
             details: "",
             recurId: "",
             latestCycleStartDate: new Date(),
+            lastRefreshed: new Date(),
         } as const;
         return Default;
     }
@@ -47,6 +49,18 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
 
     inRecurrence = async (recurId: string) => {
         return (await this.queryInRecurrence(recurId).fetch()) as Goal[]
+    }
+
+    queryUnprocessed = () => {
+        return this.store().query(
+            ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+                ...Conditions.active(),
+            ]
+        );
+    }
+
+    unprocessed = async () => {
+        return (await this.queryUnprocessed().fetch()) as Goal[];
     }
 
     latestInRecurrence = async (recurId: string) => {
@@ -238,6 +252,21 @@ export class GoalLogic {
         this.id = id;
     }
 
+    static processStreaks = async () => {
+        await GoalLogic.processSomeStreaks();
+    }
+
+    static processSomeStreaks = async (n?: number) => {
+        const goals: Goal[] = await new GoalQuery().unprocessed();
+        await GoalLogic.process(goals, n)
+    }
+
+    static process = async (arr: Goal[], n?: number) => {
+        take(arr, n? n : arr.length).forEach((goal) => {
+            void new GoalLogic(goal.id).generateNextStreakTasks();
+        })
+    }
+
     complete = async () => {
         await new GoalQuery().completeGoalAndDescendants({
             id: this.id
@@ -300,25 +329,35 @@ export class GoalLogic {
         const goal = await new GoalQuery().get(this.id);
         if(goal) {
             let unit: "days" | "weeks" | "months" = "days";
+            let updatedCycleStart: MyDate = new MyDate();
             switch(goal.streakType) {
                 case "daily": {
                     unit = "days";
+                    updatedCycleStart = new MyDate().lastCycleStart(goal.streakType, goal.latestCycleStartDate);
                 } break;
                 case "weekly": {
                     unit = "weeks";
+                    updatedCycleStart = new MyDate().lastCycleStart(goal.streakType, new MyDate(goal.latestCycleStartDate).dayName());
                 } break;
                 case "monthly": {
                     unit = "months";
+                    updatedCycleStart = new MyDate().lastCycleStart(goal.streakType, new MyDate(goal.latestCycleStartDate).dayOfMonth());
                 } break;
                 default: {
-
+                    updatedCycleStart = new MyDate();
                 }
             }
             const latest = new MyDate(goal.latestCycleStartDate);
             const latestCycleTasks: Task[] = await new TaskQuery().inStreakCycle(latest.toDate(), goal.streakType );
             if(latestCycleTasks.length > 0) {
-                this._generateNextStreakTasks(latestCycleTasks, goal.id, goal.latestCycleStartDate, unit);
+                await this._generateNextStreakTasks(latestCycleTasks, goal.id, goal.latestCycleStartDate, unit);
             }
+
+            // once we've processed everything, the latest cycle start date should be updated to be latest
+            // relative to TODAY's date.
+            await new GoalQuery().update(goal, {
+                latestCycleStartDate: updatedCycleStart.toDate()
+            })
         }
     }
 
@@ -340,13 +379,6 @@ export class GoalLogic {
 
         let fullTasks = await Promise.all(tasks);
         void new TaskQuery().createMultiple(fullTasks); // this should be batched, as it's all or nothing.
-
-        let goal = await new GoalQuery().get(parentId);
-        if(goal) {
-            new GoalQuery().update(goal, {
-                latestCycleStartDate: new MyDate(start).subtract(1, unit).toDate(),
-            })
-        }
     }
 
     /**
@@ -419,6 +451,7 @@ export class GoalLogic {
                 startDate: newStart.toDate(),
                 dueDate: new MyDate(newDate).add( new MyDate(goal.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
                 latestCycleStartDate: newStart.prevMidnight().toDate(),
+                lastRefreshed: goal.lastRefreshed,
             }
             return newGoal;
         } else {

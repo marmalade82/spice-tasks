@@ -11,28 +11,9 @@ import MyDate from "src/common/Date";
 import GoalQuery, { GoalLogic, IGoal, Goal } from "../Goal/GoalQuery";
 import { tsAnyKeyword } from "@babel/types";
 import { DatePickerAndroid } from "react-native";
+import { take } from "src/Models/common/logicUtils";
 
 
-/**
- * If n < 1, returns @arr.
- * If n >= 1, returns the first n elements of the array, or the entire array if the 
- *  array has fewer than n elements
- * @param arr 
- * @param n 
- */
-function take<T>(arr: T[], n: number): T[] {
-    let num = Math.floor(n);
-    if( num < 1) {
-        return arr.concat([]);
-    } else {
-        let newArr: T[] = [];
-        const newLength = Math.min(arr.length, num)
-        for(let i = 0; i < newLength; i++) {
-            newArr.push(arr[i]);
-        }
-        return newArr;
-    }
-}
 
 export default class RecurQuery extends ModelQuery<Recur, IRecur> {
     constructor() {
@@ -152,12 +133,12 @@ export class RecurLogic {
     }
 
     static processRecurrences = async () => {
-        await RecurLogic.processSomeDailyRecurrences();
+        await RecurLogic.processSomeRecurrences();
     }
 
     static processSomeRecurrences = async (n?: number) => {
         const recurs : Recur[] = await new RecurQuery().unprocessed();
-        RecurLogic.process(recurs, n);
+        await RecurLogic.process(recurs, n);
     }
 
     static processDailyRecurrences = async () => {
@@ -166,9 +147,10 @@ export class RecurLogic {
 
     static processSomeDailyRecurrences = async (n?: number) => {
         const recurs: Recur[] = await new RecurQuery().dailyUnprocessed();
-        RecurLogic.process(recurs, n);
+        await RecurLogic.process(recurs, n);
     }
 
+    
     static process = async(arr: Recur[], n?: number) => {
         take(arr, n? n : arr.length).forEach((recur) => {
             void new RecurLogic(recur.id).generateNext();
@@ -181,7 +163,7 @@ export class RecurLogic {
 
     static processSomeWeeklyRecurrences = async (n?: number) => {
         const recurs: Recur[] = await new RecurQuery().weeklyUnprocessed();
-        RecurLogic.process(recurs, n);
+        await RecurLogic.process(recurs, n);
     }
 
     static processMonthlyRecurrences = async () => {
@@ -190,7 +172,7 @@ export class RecurLogic {
 
     static processSomeMonthlyRecurrences = async (n?: number) => {
         const recurs: Recur[] = await new RecurQuery().monthlyUnprocessed();
-        RecurLogic.process(recurs, n);
+        await RecurLogic.process(recurs, n);
     }
 
     /**

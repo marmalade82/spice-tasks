@@ -2,6 +2,7 @@
 import { 
     ActiveSchema, ChildSchema, Schema, 
     StateSchema,
+    ProcessedSchema,
 } from "src/Models/base/SharedSchema"
 
 const RecurName = {
@@ -25,7 +26,7 @@ const RecurType = {
 } as const;
 
 
-export const RecurSchema: ActiveSchema & Schema<typeof RecurName> = {
+export const RecurSchema: ActiveSchema & ProcessedSchema & Schema<typeof RecurName> = {
     name: RecurName,
     type: RecurType,
     table: "recurrences",

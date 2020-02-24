@@ -9,7 +9,7 @@ import { RecurSchema } from 'src/Models/Recurrence/RecurSchema';
 import { TimeSchema } from 'src/Models/Time/TimeSchema';
 
 const Schema = appSchema({
-    version: 3,
+    version: 4,
     tables: [
         generateTableSchema(GoalSchema),
         generateTableSchema(TaskSchema),

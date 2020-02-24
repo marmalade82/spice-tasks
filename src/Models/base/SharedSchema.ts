@@ -42,7 +42,21 @@ interface StateType {
     STATE: 'string'
 }
 
+
 export interface StateSchema {
     name: StateName,
     type: StateType,
+}
+
+interface ProcessedName {
+    LAST_REFRESHED: "last_refreshed_at",
+}
+
+interface ProcessedType {
+    LAST_REFRESHED: "number",
+}
+
+export interface ProcessedSchema {
+    name: ProcessedName,
+    type: ProcessedType,
 }

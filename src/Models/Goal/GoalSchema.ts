@@ -1,5 +1,5 @@
 import { ColumnType } from "@nozbe/watermelondb"
-import { ChildSchema, StateSchema, ActiveSchema, Schema } from "src/Models/base/SharedSchema"
+import { ChildSchema, StateSchema, ActiveSchema, Schema, ProcessedSchema } from "src/Models/base/SharedSchema"
 
 const GoalName = {
     TITLE: 'title',
@@ -18,6 +18,7 @@ const GoalName = {
     REWARD_TYPE: 'reward_type',
     RECUR_ID: 'recur_id',
     LATEST_CYCLE_START: 'latest_cycle_start_at',
+    LAST_REFRESHED: 'last_refreshed_at',
 } as const;
 
 const GoalType = {
@@ -36,10 +37,12 @@ const GoalType = {
     STATE: 'string',
     REWARD_TYPE: 'string',
     RECUR_ID: 'string',
-    LATEST_CYCLE_START: 'number'
+    LATEST_CYCLE_START: 'number',
+    LAST_REFRESHED: 'number',
 } as const;
 
-const GoalSchema: ChildSchema & ActiveSchema & StateSchema & Schema<typeof GoalName> = {
+const GoalSchema: ChildSchema & ActiveSchema & StateSchema & 
+                    ProcessedSchema & Schema<typeof GoalName> = {
     name: GoalName,
     type: GoalType,
     table: 'goals',

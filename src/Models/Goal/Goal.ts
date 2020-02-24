@@ -28,6 +28,7 @@ interface IStreak {
     streakDailyStart: Date;  // really represents the time portion
     streakWeeklyStart: string;  // sunday, monday, tuesday, etc.
     streakMonthlyStart: number; // Specific day of month it starts on
+    lastRefreshed: Date;
 }
 
 const name = GoalSchema.name;
@@ -60,6 +61,7 @@ export default class Goal extends Model implements IGoal {
     @field(name.DETAILS) details!: string;
     @field(name.RECUR_ID) recurId!: string;
     @date(name.LATEST_CYCLE_START) latestCycleStartDate!: Date;
+    @date(name.LAST_REFRESHED) lastRefreshed!: Date;
 
     /*Relations*/
     @children('tasks') tasks
