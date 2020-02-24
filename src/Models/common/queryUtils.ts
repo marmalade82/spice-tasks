@@ -136,7 +136,20 @@ function lastRefreshedOnOrBeforeConditions(d: Date) {
     return [
         Q.where(recurName.LAST_REFRESHED, Q.lt(endOfDay.toDate().valueOf()))
     ]
+}
 
+function startsOnOrAfterConditions(d: Date) {
+    let startOfDay = new MyDate(d).prevMidnight();
+    return [
+        Q.where(goalName.STARTS_AT, Q.gte(startOfDay.toDate().valueOf()))
+    ]
+}
+
+function startsBeforeConditions(d: Date) {
+    let startOfDay = new MyDate(d).prevMidnight();
+    return [
+        Q.where(goalName.STARTS_AT, Q.lt(startOfDay.toDate().valueOf()))
+    ]
 }
 
 export const Conditions = {
@@ -160,6 +173,8 @@ export const Conditions = {
     createdAfter: createdAfterConditions,
     createdBefore: createdBeforeConditions,
     lastRefreshedOnOrBefore: lastRefreshedOnOrBeforeConditions,
+    startsOnOrAfter: startsOnOrAfterConditions,
+    startsBefore: startsBeforeConditions,
 }
 
 

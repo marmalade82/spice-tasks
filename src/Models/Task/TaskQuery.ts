@@ -231,6 +231,26 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
     completedTasks = async() => {
         return (await this.queryCompletedTasks().fetch()) as Task[];
     }
+
+    queryInStreakCycle = (start: Date, type: "daily" | "weekly" | "monthly") => {
+        let unit: "days" | "weeks" | "months" = "days";
+        switch(type) {
+            case "daily": unit = "days"; break;
+            case "weekly": unit = "weeks"; break;
+            case "monthly": unit = "months"; break;
+            default: { }
+        }
+
+        return this.store().query(
+            ...[ ...Conditions.startsOnOrAfter(start),
+                ...Conditions.startsBefore(new MyDate(start).add(1, unit).toDate()),
+            ]
+        )
+    }
+
+    inStreakCycle = async (start: Date, type: "daily" | "weekly" | "monthly") => {
+        return await this.queryInStreakCycle(start, type).fetch() as Task[];
+    }
 }
 
 export {
@@ -264,7 +284,5 @@ export class TaskLogic {
             console.log("no clone created")
             throw new Error()
         }
-
-
     }
 }

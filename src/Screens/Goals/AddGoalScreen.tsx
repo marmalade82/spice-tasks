@@ -8,6 +8,7 @@ import { ColumnView } from "src/Components/Basic/Basic";
 import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
 import { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 import Recur from "src/Models/Recurrence/Recur";
+import MyDate from "src/common/Date";
 
 interface Props {
     navigation: any;
@@ -76,10 +77,11 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             details: data.details,
         };
         if(this.state.goal) {
-            new GoalQuery().update(this.state.goal, goalData)
-            .catch((reason) => {
-                console.log("Failed to update existing goal with reason: " + reason);
-            });
+            goalData.latestCycleStartDate = new MyDate(goalData.startDate).prevMidnight().toDate();
+            void new GoalQuery().update(this.state.goal, goalData)
+                .catch((reason) => {
+                    console.log("Failed to update existing goal with reason: " + reason);
+                });
 
             this.props.navigation.goBack();
         } else {

@@ -34,6 +34,7 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
             rewardType: Rewards.NONE,
             details: "",
             recurId: "",
+            latestCycleStartDate: new Date(),
         } as const;
         return Default;
     }
@@ -295,6 +296,52 @@ export class GoalLogic {
         return false;
     }
 
+    generateNextStreakTasks = async (timeUntilNext? : number) => {
+        const goal = await new GoalQuery().get(this.id);
+        if(goal) {
+            let unit: "days" | "weeks" | "months" = "days";
+            switch(goal.streakType) {
+                case "daily": {
+                    unit = "days";
+                } break;
+                case "weekly": {
+                    unit = "weeks";
+                } break;
+                case "monthly": {
+                    unit = "months";
+                } break;
+                default: {
+
+                }
+            }
+            const latest = new MyDate(goal.latestCycleStartDate);
+            const latestCycleTasks: Task[] = await new TaskQuery().inStreakCycle(latest.toDate(), goal.streakType );
+            if(latestCycleTasks.length > 0) {
+                this._generateNextStreakTasks(latestCycleTasks, goal.id, goal.latestCycleStartDate, unit);
+            }
+        }
+    }
+
+    _generateNextStreakTasks = async (latestTasks: Task[], parentId: string, 
+                                latestCycleStart: Date,
+                                unit: "days" | "weeks" | "months") => {
+        let start = latestCycleStart;
+        let tasks: Promise<Partial<ITask>>[] = [];
+        // We continue generating streak tasks until processed everything up to the next cycle
+        while(new MyDate().isInOrAfterNextCycleAfterDate(start, unit)) {
+            const next = new MyDate(start).add(1, unit);
+            let clones = latestTasks.map((task) => {
+                return new TaskLogic(task.id).cloneRelativeTo(latestCycleStart, next.toDate());
+            });
+
+            tasks = tasks.concat(clones);
+            start = next.toDate();
+        }
+
+        let fullTasks = await Promise.all(tasks);
+        void new TaskQuery().createMultiple(fullTasks);
+    }
+
     /**
      * For each task created in the last cycle (after the scheduled start),
      * create duplicate tasks with the exact same date relationships to the scheduled start.
@@ -347,6 +394,7 @@ export class GoalLogic {
         const goal = await new GoalQuery().get(this.id);
 
         if(goal) {
+            const newStart = new MyDate(newDate).add( new MyDate(goal.startDate).diff(oldDate, "minutes"), "minutes");
             const newGoal : IGoal = {
                 title: goal.title,
                 details: goal.details,
@@ -361,8 +409,9 @@ export class GoalLogic {
                 streakMonthlyStart: goal.streakMonthlyStart,
                 streakType: goal.streakType,
                 streakWeeklyStart: goal.streakWeeklyStart,
-                startDate: new MyDate(newDate).add( new MyDate(goal.startDate).diff(oldDate, "minutes"), "minutes").toDate(),
+                startDate: newStart.toDate(),
                 dueDate: new MyDate(newDate).add( new MyDate(goal.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
+                latestCycleStartDate: newStart.prevMidnight().toDate(),
             }
             return newGoal;
         } else {
