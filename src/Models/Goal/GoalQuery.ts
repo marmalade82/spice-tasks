@@ -63,6 +63,19 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
         return (await this.queryUnprocessed().fetch()) as Goal[];
     }
 
+    queryUnprocessedStreaks = () => {
+        return this.store().query(
+            ...[ ...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+                 ...Conditions.active(),
+                 ...Conditions.isStreak(),
+            ]
+        )
+    }
+
+    unprocessedStreaks = async () => {
+        return (await this.queryUnprocessedStreaks().fetch()) as Goal[];
+    }
+
     latestInRecurrence = async (recurId: string) => {
         let goals = await this.inRecurrence(recurId);
         goals.sort((a, b) => {
@@ -257,7 +270,7 @@ export class GoalLogic {
     }
 
     static processSomeStreaks = async (n?: number) => {
-        const goals: Goal[] = await new GoalQuery().unprocessed();
+        const goals: Goal[] = await new GoalQuery().unprocessedStreaks();
         await GoalLogic.process(goals, n)
     }
 
@@ -356,7 +369,8 @@ export class GoalLogic {
             // once we've processed everything, the latest cycle start date should be updated to be latest
             // relative to TODAY's date.
             await new GoalQuery().update(goal, {
-                latestCycleStartDate: updatedCycleStart.toDate()
+                latestCycleStartDate: updatedCycleStart.toDate(),
+                lastRefreshed: new Date(),
             })
         }
     }

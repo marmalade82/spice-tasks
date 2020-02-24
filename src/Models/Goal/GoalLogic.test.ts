@@ -198,3 +198,99 @@ describe("streak tasks recur despite being very far in past" , () => {
         }
     })
 })
+
+describe("Processing partially processed streak goals", () => {
+    beforeEach(async () => {
+        await destroyAll();
+    })
+
+    afterEach(async () => {
+        await destroyAll();
+    });
+
+    test("any streak type", async () => {
+        await wait(async () => {
+            const goals = await new GoalQuery().unprocessed();
+            expect(goals.length).toEqual(0)
+        });
+
+        await setup();
+
+        await wait(async () => {
+            const goals = await new GoalQuery().unprocessed();
+            expect(goals.length).toEqual(3)
+        });
+
+        await GoalLogic.processSomeStreaks(2);
+
+        await wait(async () => {
+            const goals = await new GoalQuery().unprocessed();
+            expect(goals.length).toEqual(1)
+        });
+
+        await GoalLogic.processSomeStreaks(2);
+
+        await wait(async () => {
+            const goals = await new GoalQuery().unprocessed();
+            expect(goals.length).toEqual(0)
+        });
+
+        async function setup() {
+            const opts = {
+                goal_1: "",
+                goal_2: "",
+                goal_3: "",
+                goal_4: "",
+                goal_5: "",
+            }
+            await DB.get().action(async () => {
+                const goal_1 = await createGoals({
+                    streakType: "daily",
+                    goalType: GoalType.STREAK,
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(1, "days").toDate(),
+                }, 1)
+
+                opts.goal_1 = goal_1[0].id;
+
+                const goal_2 = await createGoals({
+                    streakType: "weekly",
+                    goalType: GoalType.STREAK,
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(1, "days").toDate(),
+                }, 1)
+
+                opts.goal_2 = goal_2[0].id;
+
+                const goal_3 = await createGoals({
+                    streakType: "monthly",
+                    goalType: GoalType.STREAK,
+                    active: true,
+                    lastRefreshed: new MyDate().subtract(2, "days").toDate(),
+                }, 1)
+
+                opts.goal_3 = goal_3[0].id;
+
+                const goal_4 = await createGoals({
+                    streakType: "daily",
+                    goalType: GoalType.STREAK,
+                    active: true,
+                    lastRefreshed: new MyDate().toDate(),
+                }, 1)
+
+                opts.goal_4 = goal_4[0].id;
+
+                const goal_5 = await createGoals({
+                    streakType: "daily",
+                    goalType: GoalType.STREAK,
+                    active: false,
+                    lastRefreshed: new MyDate().toDate(),
+                }, 1)
+
+                opts.goal_5 = goal_5[0].id;
+
+            })
+            return opts;
+        }
+    });
+});
