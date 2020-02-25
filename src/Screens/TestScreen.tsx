@@ -2,7 +2,7 @@ import React from "react";
 import { RowView, ColumnView, HeaderText } from "src/Components/Basic/Basic";
 import { 
     DocumentView, ScreenHeader, Label, TextInput, 
-    MultiLineInput,  DateInput,
+    MultiLineInput,  DateInput, DynamicChoiceInput,
 } from "src/Components/Styled/Styled";
 import { StringInput, ChoiceInput, DateTimeInput } from "src/Components/Inputs";
 import { 
@@ -14,6 +14,8 @@ import { ScrollView, DeviceEventEmitter, Button} from "react-native";
 import SpiceDBService from "src/Services/DBService";
 import TimeQuery from "src/Models/Time/TimeQuery";
 import PushNotification from "src/Notification";
+import { Observable } from "rxjs";
+import { LabelValue } from "src/common/types";
 
 interface Props {
     navigation: any;
@@ -24,6 +26,7 @@ interface State {
     choice: string;
     date: Date;
     count: number;
+    dynChoice: string;
 }
 
 
@@ -44,6 +47,7 @@ export default class TestScreen extends React.Component<Props, State> {
             choice: "4",
             date: new Date(),
             count: 0,
+            dynChoice: "APPLES",
         }
         this.unsub = () => {
 
@@ -71,6 +75,30 @@ export default class TestScreen extends React.Component<Props, State> {
     }
 
     render = () => {
+        let obs: Observable<LabelValue[]> = new Observable((subscriber) => {
+            let arr: LabelValue[] = [];
+            for(let i = 0; i < 3; i++) {
+                arr.push({
+                    label: "hi",
+                    value: "hi",
+                    key: "hi"
+                })
+            }
+            subscriber.next(arr);
+
+            let arr_2: LabelValue[] = [];
+            for(let i = 0; i < 15; i++) {
+                arr_2.push({
+                    label: "bye",
+                    value: "bye",
+                    key: "bye"
+                })
+            }
+
+            setTimeout(() => {
+                subscriber.next(arr_2);
+            }, 10000)
+        })
         return (
             <DocumentView>
                 <ScreenHeader style={{
@@ -92,44 +120,19 @@ export default class TestScreen extends React.Component<Props, State> {
                             SpiceDBService.stopService()
                         }}
                     ></Button>
-                        <StringInput
-                            title={"Age"}
-                            data={"WHAT"}
-                            placeholder={"hi"}
-                            accessibilityLabel={"test-string-input"}
-                            onDataChange={() => {}}
-                        ></StringInput>
 
                     <Label
-                        text={"Age"}
+                        text={"Database Choice"}
                     ></Label>
-                    <TextInput
-                        placeholder={"e.g. 58"}
-                        value={"YO"}
-                        onChangeText={() => {}}
-                        style={{
-                            marginBottom: 60,
-                        }}
-                        icon={"attention"}
-                    ></TextInput>
-
-                    <Label
-                        text={"Instructions"}
-                    ></Label>
-                    <MultiLineInput
-                        placeholder={"What to do?"}
-                        value={this.state.text}
-                        onChangeText={(s) => {
+                    <DynamicChoiceInput
+                        value={this.state.dynChoice}
+                        choices={obs}
+                        onValueChange={(val) => {
                             this.setState({
-                                text: s
+                                dynChoice: val
                             })
                         }}
-                        style={{
-                            marginBottom: 60
-                        }}
-                    >
-
-                    </MultiLineInput>
+                    ></DynamicChoiceInput>
 
                     <ChoiceInput
                         title={"Goal Type"}

@@ -20,6 +20,7 @@ interface IGoal extends IStreak{
     rewardType: RewardType;
     recurId: string;
     latestCycleStartDate: Date;
+    rewardId: string;
 }
 
 interface IStreak {
@@ -62,6 +63,7 @@ export default class Goal extends Model implements IGoal {
     @field(name.RECUR_ID) recurId!: string;
     @date(name.LATEST_CYCLE_START) latestCycleStartDate!: Date;
     @date(name.LAST_REFRESHED) lastRefreshed!: Date;
+    @field(name.REWARD_ID) rewardId!: string;
 
     /*Relations*/
     @children('tasks') tasks

@@ -1,6 +1,6 @@
 import React from "react";
 import IconButton from "src/Components/Styled/IconButton";
-import { View, Modal as ReactModal, TouchableWithoutFeedback } from "react-native";
+import { ScrollView, View, Modal as ReactModal, TouchableWithoutFeedback } from "react-native";
 import { LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, RIGHT_SECOND_MARGIN, OVERLAY, Styles, MODAL_VERTICAL_PADDING } from "./Styles";
 
 interface Props {
@@ -57,6 +57,7 @@ export default class Modal extends React.Component<Props, State> {
                         >
                             <View style={{
                                     flex: 0,
+                                    maxHeight: "80%",
                                     height: this.props.height,
                                     justifyContent: "flex-start",
                                     alignItems: "stretch",
@@ -67,7 +68,9 @@ export default class Modal extends React.Component<Props, State> {
                                 }}
                                 accessibilityLabel={this.props.accessibilityLabel ? "modal-" + this.props.accessibilityLabel : undefined}
                             >
-                                {this.props.children}
+                                <ScrollView>
+                                    {this.props.children}
+                                </ScrollView>
                             </View>
                         </TouchableWithoutFeedback>
                     </View>

@@ -37,6 +37,7 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
             recurId: "",
             latestCycleStartDate: new Date(),
             lastRefreshed: new Date(),
+            rewardId: "",
         } as const;
         return Default;
     }
@@ -466,6 +467,7 @@ export class GoalLogic {
                 dueDate: new MyDate(newDate).add( new MyDate(goal.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
                 latestCycleStartDate: newStart.prevMidnight().toDate(),
                 lastRefreshed: goal.lastRefreshed,
+                rewardId: goal.rewardId,
             }
             return newGoal;
         } else {

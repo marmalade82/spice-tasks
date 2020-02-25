@@ -8,6 +8,7 @@ import createSaveModalInput from "src/Components/Inputs/SaveModalInput";
 import DateTimePicker from "src/Components/Inputs/DateTimePicker";
 import MultipleInput from "src/Components/Inputs/MultipleInput";
 import NumberInput from "src/Components/Inputs/NumberInput";
+import DynamicChoiceInput from "src/Components/Inputs/DynamicChoiceInput";
 
 export {
     ChoiceInput,
@@ -19,4 +20,5 @@ export {
     createSaveModalInput,
     MultipleInput,
     NumberInput,
+    DynamicChoiceInput,
 }

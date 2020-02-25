@@ -38,7 +38,7 @@ interface State {
 export default class AppStartScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
-            title: 'Spice!',
+            title: 'App Start!',
         }
     }
 
@@ -303,6 +303,11 @@ class NavigationList extends React.Component<NavListProps> {
                     , navParams: {}
                     , navDestination: "Penalties"
                     },
+                    { text: "Recurring Goals"
+                    , icon: "recur"
+                    , navParams: {}
+                    , navDestination: "Recurrings"
+                    }
                 ]}
             >
             </NavigationGroup>

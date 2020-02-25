@@ -9,6 +9,10 @@ import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
 import { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 import Recur from "src/Models/Recurrence/Recur";
 import MyDate from "src/common/Date";
+import RewardQuery from "src/Models/Reward/RewardQuery";
+import Reward from "src/Models/Reward/Reward";
+import { Observable } from "rxjs";
+import { LabelValue } from "src/common/types";
 
 interface Props {
     navigation: any;
@@ -49,7 +53,8 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                     minimum: goal.streakMinimum,
                     type: goal.streakType as any,
                 },
-                repeats: AddGoalDefault().repeats
+                repeats: AddGoalDefault().repeats,
+                rewardId: AddGoalDefault().rewardId,
             }
             this.setState({
                 goal: goal,
@@ -75,7 +80,9 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             streakType: streak.type,
             rewardType: data.reward,
             details: data.details,
+            rewardId: data.rewardId,
         };
+
         if(this.state.goal) {
             goalData.latestCycleStartDate = new MyDate(goalData.startDate).prevMidnight().toDate();
             void new GoalQuery().update(this.state.goal, goalData)
@@ -118,6 +125,22 @@ export default class AddGoalScreen extends React.Component<Props, State> {
         );
     }
 
+    rewardChoices = () => {
+        let obs: Observable<LabelValue[]> = new Observable((subscriber) => {
+            new RewardQuery().queryAll().observe().subscribe((rewards) => {
+                const lvs = (rewards as Reward[]).map((reward) => {
+                    return {
+                        label: reward.title,
+                        value: reward.id,
+                        key: reward.id,
+                    }
+                });
+                subscriber.next(lvs);
+            })
+        })
+        return obs;
+    }
+
     renderGoalForm = () => {
         return (
             <AddGoalForm
@@ -128,6 +151,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                     })
                 }}
                 data={this.state.data}
+                rewardChoices={this.rewardChoices()}
             ></AddGoalForm>
         );
     }

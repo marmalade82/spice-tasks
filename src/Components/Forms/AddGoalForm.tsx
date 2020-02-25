@@ -11,6 +11,7 @@ import {
     DateTimeInput,
     MultipleInput,
     NumberInput,
+    DynamicChoiceInput,
 } from "src/Components/Inputs";
 
 import { Props as SummaryProps } from "src/Components/Inputs/StringInput";
@@ -21,10 +22,12 @@ import { ColumnView } from "../Basic/Basic";
 import { RewardChoices, RewardType, Rewards } from "src/Models/Reward/RewardLogic";
 import { GoalChoices, GoalType } from "src/Models/Goal/GoalLogic";
 import { Validate } from "src/Components/Inputs/Validate";
+import { Observable } from "rxjs";
 
 interface Props {
     navigation: Navigator
     onDataChange: (d: State) => void;
+    rewardChoices: Observable<LabelValue[]>
     data: State | false;
 }
 
@@ -35,6 +38,7 @@ interface State {
     start_date: Date;
     due_date: Date;
     reward: RewardType;
+    rewardId: string;
     penalty: Penalty
     repeats: "never" | "daily" | "weekly" | "monthly"
     //recurData: RecurringData
@@ -80,6 +84,7 @@ function Default(): State {
         streakData: StreakDefault(),
         details: "",
         repeats: "never",
+        rewardId: "",
     } as const
 }
 
@@ -205,6 +210,19 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         choices={RewardChoices}
                         accessibilityLabel={"goal-reward"}
                     />
+
+                    <DynamicChoiceInput
+                        title={"Specific Reward"}
+                        selectedValue={this.data().rewardId}
+                        onValueChange={(itemValue) => {
+                            this.setData({
+                                rewardId: itemValue
+                            })
+                        }}
+                        choices={this.props.rewardChoices}
+                        accessibilityLabel={"goal-specific-reward"}
+                    ></DynamicChoiceInput>
+
 
                     <ChoiceInput
                         title={"Penalty"}

@@ -12,7 +12,7 @@ import {
 
 interface Props {
     type: "complete" | "delete" | "goal" | "task" | 
-        "reward" | "penalty" | "mandatory" | "attention" | "info";
+        "reward" | "penalty" | "mandatory" | "attention" | "info" | "recur";
     accessibilityLabel?: string;
     backgroundColor?: string;
     color?: string;
@@ -146,6 +146,15 @@ export default class StyledIcon extends React.Component<Props, State>{
                     </Icon>
                 );
             } break;
+            case "recur": {
+                return (
+                    <Icon
+                        name="repeat"
+                        type="feather"
+                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
+                    ></Icon>
+                );
+            }
             default: {
                 return undefined
             }
