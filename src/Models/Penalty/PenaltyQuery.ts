@@ -3,13 +3,13 @@ import ModelQuery from "src/Models/base/Query";
 import {
     Penalty, IPenalty,
 } from "src/Models/Penalty/Penalty";
-import { PenaltySchema } from "src/Models/Penalty/PenaltySchema";
+import RewardSchema from "src/Models/Reward/RewardSchema";
 
 
 
 export default class PenaltyQuery extends ModelQuery<Penalty, IPenalty> {
     constructor() {
-        super(PenaltySchema.table);
+        super(RewardSchema.table);
     }
 
     default = () => {

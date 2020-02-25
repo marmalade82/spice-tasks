@@ -1,7 +1,7 @@
 
 import { Model } from "@nozbe/watermelondb";
 import { field, date } from "@nozbe/watermelondb/decorators";
-import { PenaltySchema } from "src/Models/Penalty/PenaltySchema";
+import RewardSchema from "src/Models/Reward/RewardSchema";
 
 
 
@@ -11,10 +11,10 @@ interface IPenalty {
     details: string;
 }
 
-const name = PenaltySchema.name
+const name = RewardSchema.name
 
 export default class Penalty extends Model implements IPenalty {
-    static table = PenaltySchema.table
+    static table = RewardSchema.table
 
     @field(name.TITLE) title
     @date(name.EXPIRES_ON) expireDate

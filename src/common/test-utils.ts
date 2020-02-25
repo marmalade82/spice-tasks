@@ -10,7 +10,6 @@ import GoalSchema from "src/Models/Goal/GoalSchema";
 import TaskSchema from "src/Models/Task/TaskSchema";
 import RewardSchema from "src/Models/Reward/RewardSchema";
 import ClaimedReward, { IClaimedReward } from "src/Models/Reward/ClaimedReward";
-import { PenaltySchema } from "src/Models/Penalty/PenaltySchema";
 import Penalty, { IPenalty } from "src/Models/Penalty/Penalty";
 import ClaimedRewardSchema from "src/Models/Reward/ClaimedRewardSchema";
 import { IReward, Reward } from "src/Models/Reward/Reward";
@@ -93,7 +92,7 @@ async function createClaimedRewards(data: Partial<IClaimedReward>, count: number
 }
 
 async function createPenalties(data: Partial<IPenalty>, count: number) {
-    return (await _createModels(PenaltySchema.table, data, count)) as Penalty[];
+    return (await _createModels(RewardSchema.table, data, count)) as Penalty[];
 }
 
 async function _createModels<M extends Model>(table: string, data: any, count: number) {
@@ -109,7 +108,7 @@ async function destroyAll() {
     jest.useRealTimers();
     const tables: string[] = [
         GoalSchema.table, TaskSchema.table, RewardSchema.table,
-        EarnedRewardSchema.table, ClaimedReward.table, PenaltySchema.table,
+        EarnedRewardSchema.table, ClaimedReward.table,
         TimeSchema.table, RecurSchema.table,
     ];
     const destroys = tables.map((name: string) => {
