@@ -18,6 +18,10 @@ export default class TimeQuery extends ModelQuery<Time, ITime> {
         super(TimeSchema.table);
     }
 
+    queries = () => {
+        return [];
+    }
+
     default = () => {
         return {
             current: new Date(),

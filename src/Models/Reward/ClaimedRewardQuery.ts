@@ -11,6 +11,10 @@ export default class ClaimedRewardQuery extends ModelQuery<ClaimedReward, IClaim
         super(ClaimedRewardSchema.table);
     }
 
+    queries = () => {
+        return [];
+    }
+
     default = () => {
         return {
             title: "Default claimed reward",

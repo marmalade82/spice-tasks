@@ -13,6 +13,10 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
         super(TaskSchema.table);
     }
 
+    queries = () => {
+        return [];
+    }
+
     default = () => {
         return {
             title: "Default Task",

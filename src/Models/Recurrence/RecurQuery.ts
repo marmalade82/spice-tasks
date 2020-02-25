@@ -20,6 +20,8 @@ export default class RecurQuery extends ModelQuery<Recur, IRecur> {
         super(RecurSchema.table);
     }
 
+
+
     queryActive = () => {
         return this.store().query(
             ...Conditions.active()
@@ -79,6 +81,10 @@ export default class RecurQuery extends ModelQuery<Recur, IRecur> {
 
     monthlyUnprocessed = async () => {
         return (await this.queryMonthlyUnprocessed().fetch()) as Recur[];
+    }
+
+    queries = () => {
+        return [];
     }
 
     default = () => {

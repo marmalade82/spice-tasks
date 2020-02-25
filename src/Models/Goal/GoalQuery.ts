@@ -19,6 +19,10 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
         super(GoalSchema.table);
     }
 
+    queries = () => {
+        return [];
+    }
+
     default = () => {
         const Default = {
             title: 'Default Goal',

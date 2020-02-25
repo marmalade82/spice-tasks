@@ -79,6 +79,7 @@ export async function createRecurrences(data: Partial<IRecur>, count: number) {
 }
 
 async function createRewards(data: Partial<IReward>, count: number) {
+    data.type = "reward";
     return (await _createModels(RewardSchema.table, data, count)) as Reward[];
 }
 
@@ -92,6 +93,7 @@ async function createClaimedRewards(data: Partial<IClaimedReward>, count: number
 }
 
 async function createPenalties(data: Partial<IPenalty>, count: number) {
+    data.type = "penalty";
     return (await _createModels(RewardSchema.table, data, count)) as Penalty[];
 }
 

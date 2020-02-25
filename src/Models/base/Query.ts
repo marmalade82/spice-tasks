@@ -2,6 +2,7 @@
 import DB from "src/Models/Database";
 import { Model as M } from "@nozbe/watermelondb";
 import { Exact } from "src/common/types";
+import { Condition } from "@nozbe/watermelondb/QueryDescription";
 
 interface IModelQuery<Model extends M & IModel, IModel> {
     store: () => any;
@@ -11,6 +12,7 @@ interface IModelQuery<Model extends M & IModel, IModel> {
     default: () => IModel;
     create: (p: Exact<Partial<IModel>>) => any;
     update: (m: Model, p: Exact<Partial<IModel>>) => any;
+    queries: () => Condition[];
 }
 
 export default abstract class ModelQuery<Model extends M & IModel, IModel> implements IModelQuery<Model, IModel> {
@@ -26,7 +28,7 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
     }
 
     queryAll = () => {
-        return this.store().query();
+        return this.query();
     }
 
     all = async () => {
@@ -41,6 +43,17 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
             return null;
         }
     }
+
+    query = (...conditions: Condition[]) => {
+        return this.store().query(
+            ...[...this.queries(), ...conditions]
+        )
+    }
+
+    /**
+     * Expresses the default filters that run with ALL queries with this class.
+     */
+    abstract queries(): Condition[];
 
     abstract default(): IModel
 

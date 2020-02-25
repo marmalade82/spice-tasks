@@ -9,6 +9,7 @@ interface IReward {
     title: string;
     expireDate: Date;
     details: string;
+    type: "reward";
 }
 
 const name = RewardSchema.name
@@ -16,9 +17,10 @@ const name = RewardSchema.name
 export default class Reward extends Model implements IReward {
     static table = RewardSchema.table
 
-    @field(name.TITLE) title
-    @date(name.EXPIRES_ON) expireDate
-    @field(name.DETAILS) details
+    @field(name.TITLE) title!: string;
+    @date(name.EXPIRES_ON) expireDate!: Date;
+    @field(name.DETAILS) details!: string;
+    @field(name.TYPE) type!: "reward";
 }
 
 export {

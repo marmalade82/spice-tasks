@@ -11,6 +11,10 @@ export default class EarnedRewardQuery extends ModelQuery<EarnedReward, IEarnedR
         super(EarnedRewardSchema.table);
     }
 
+    queries = () => {
+        return [];
+    }
+
     default = () => {
         return {
             earnedDate: new Date(),
