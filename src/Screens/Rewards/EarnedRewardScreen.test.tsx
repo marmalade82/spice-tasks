@@ -15,7 +15,7 @@ import { Rewards } from "src/Models/Reward/RewardLogic";
 import MyDate from "src/common/Date";
 import ClaimedRewardQuery from "src/Models/Reward/ClaimedRewardQuery";
 
-test("User can view the summary of the earned reward", async() => {
+test.skip("User can view the summary of the earned reward", async() => {
     const { id } = await setup();
 
     const { getByLabelText, queryAllByLabelText } = render(
@@ -64,7 +64,7 @@ test("User can view the summary of the earned reward", async() => {
     }
 });
 
-describe("Earned reward is two dice", () => {
+describe.skip("Earned reward is two dice", () => {
     test("If earned reward is for two dice, user can see claiming wizard for two dice", async () => {
         const { id } = await setup();
 

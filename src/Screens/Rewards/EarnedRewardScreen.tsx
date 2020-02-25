@@ -10,6 +10,7 @@ import { ConnectedEarnedRewardSummary } from "src/ConnectedComponents/Summaries/
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import EarnedRewardWizard from "src/Screens/Rewards/EarnedRewardScreen/EarnedRewardWizard";
+import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
 
 
 interface Props {
@@ -76,6 +77,14 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
     }
 
     render = () => {
+        
+        return (
+            <DocumentView>
+                <ScreenHeader>Earned Reward</ScreenHeader>
+                {this.renderSummary()}
+            </DocumentView>
+
+        );
         return (
             <ColumnView style={{
                 justifyContent: "flex-start"
@@ -87,6 +96,19 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
         );
     }
 
+    onChoice = (choice: "use") => {
+        const id = this.props.navigation.getParam("id", "");
+        switch(choice) {
+            case "use": {
+                void new EarnedRewardLogic(id).use();
+                this.props.navigation.goBack();
+            } break;
+            default: {
+
+            }
+        }
+    }
+
     renderSummary = () => {
         if(this.state.earnedReward && this.state.sourceGoal) {
             return (
@@ -94,6 +116,8 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
                     earned={this.state.earnedReward}
                     style={{ flex: 9 }}
                     goal={this.state.sourceGoal}
+                    navigation={this.props.navigation}
+                    onChoice={this.onChoice}
                 >
                 </ConnectedEarnedRewardSummary>
             );

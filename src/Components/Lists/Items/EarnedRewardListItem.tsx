@@ -6,17 +6,22 @@ import {
 } from "src/Components/Basic/Basic";
 import Item from "src/Components/Lists/Items/base/Item";
 import { RewardType } from "src/Models/Reward/RewardLogic";
+import { ListItem } from "src/Components/Styled/Styled";
+import MyDate from "src/common/Date";
 
 interface EarnedReward {
     id: string;
     earnedDate: Date;
     type: Exclude<RewardType, "none">;
     goalId: string;
+    title: string;
+    details: string;
 }
 
 interface Props {
     item: EarnedReward;
     accessibilityLabel: string
+    navigation: any;
 }
 
 interface State {
@@ -54,19 +59,20 @@ export default class EarnedRewardListItem extends Item<Props, State, EarnedRewar
     }
     
     render = () => {
-        const item = this.props.item
+        const { id, earnedDate, type, goalId, title, details } = this.props.item
 
         return (
-            <ColumnView style={[]} accessibilityLabel={this.props.accessibilityLabel}>
-                <RowView style={localStyle.title}>
-                    <Text>{item.type + " : " + item.id}</Text>
-                </RowView>
-                <RowView style={localStyle.details}>
-                    <Text>{item.earnedDate.toString()}</Text>
-                    <Text>{item.goalId}</Text>
-                </RowView>
-            </ColumnView>
-        );
+            <ListItem
+                navigation={this.props.navigation}
+                params={{id: id}}
+                destination={"EarnedReward"}
+                text={title}
+                subtext={new MyDate(earnedDate).format("MMM Do")}
+                number={0}
+                key={id}
+                accessibilityLabel={this.props.accessibilityLabel}
+            ></ListItem>
+        )
     }
 }
 

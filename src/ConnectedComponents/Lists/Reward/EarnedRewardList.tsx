@@ -7,7 +7,6 @@ import withObservables from "@nozbe/with-observables";
 
 import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import List from "src/Components/Lists/base/List";
-import ClickNavigation from "src/Components/Navigation/ClickNavigation";
 import { ConnectedEarnedRewardListItem } from "src/ConnectedComponents/Lists/Reward/EarnedRewardListItem";
 
 interface Props {
@@ -19,19 +18,11 @@ const AdaptedEarnedRewardList: React.FunctionComponent<Props> = (props: Props) =
     
     const renderEarnedReward = (item: EarnedReward) => {
         return (
-            <ClickNavigation
+            <ConnectedEarnedRewardListItem
+                earned={item}
                 navigation={props.navigation}
-                parameters={{
-                    id: item.id
-                }}
-                destination={"EarnedReward"}
-                navType={"navigate"}
             >
-                <ConnectedEarnedRewardListItem
-                    earned={item}
-                >
-                </ConnectedEarnedRewardListItem>
-            </ClickNavigation>
+            </ConnectedEarnedRewardListItem>
         )
     }
 

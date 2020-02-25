@@ -4,6 +4,7 @@ import EarnedRewardQuery, { EarnedReward } from "src/Models/Reward/EarnedRewardQ
 import MyDate from "src/common/Date";
 import PenaltyQuery from "src/Models/Penalty/PenaltyQuery";
 import { Rewards } from "./RewardLogic";
+import { isBuffer } from "util";
 
 
 export default class EarnedRewardLogic {
@@ -24,6 +25,15 @@ export default class EarnedRewardLogic {
                 goalId: goalId,
                 type: Rewards.SPECIFIC
             });
+        }
+    }
+
+    use = async() => {
+        const earned = await new EarnedRewardQuery().get(this.id);
+        if(earned) {
+            await new EarnedRewardQuery().update(earned, {
+                active: false,
+            })
         }
     }
 

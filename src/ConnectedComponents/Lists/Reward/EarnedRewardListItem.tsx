@@ -12,6 +12,7 @@ import withObservables from "@nozbe/with-observables";
 
 interface Props {
     earned: EarnedReward
+    navigation: any;
 }
 
 const AdaptedEarnedRewardListItem: React.FunctionComponent<Props> = function(props: Props) {
@@ -21,12 +22,15 @@ const AdaptedEarnedRewardListItem: React.FunctionComponent<Props> = function(pro
         earnedDate: earned.earnedDate,
         goalId: earned.goalId,
         type: earned.type,
+        title: earned.title,
+        details: earned.details,
     }
 
     return (
         <EarnedRewardListItem
             item={mappedEarnedReward}
             accessibilityLabel={"earned-reward-list-item"}
+            navigation={props.navigation}
         ></EarnedRewardListItem>
     );
 }
@@ -34,6 +38,7 @@ const AdaptedEarnedRewardListItem: React.FunctionComponent<Props> = function(pro
 
 interface InputProps {
     earned: EarnedReward
+    navigation: any;
 }
 
 /**

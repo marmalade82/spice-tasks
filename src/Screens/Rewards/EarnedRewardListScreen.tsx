@@ -1,6 +1,7 @@
 import React from "react";
 import { ColumnView, RowView, Image, HeaderText, BodyText, } from "src/Components/Basic/Basic";
 import { ConnectedEarnedRewardList } from "src/ConnectedComponents/Lists/Reward/EarnedRewardList";
+import { DocumentView } from "src/Components/Styled/Styled";
 
 interface Props {
     navigation: any;
@@ -24,12 +25,12 @@ export default class EarnedRewardListScreen extends React.Component<Props, State
 
     render = () => {
         return (
-            <ColumnView style={{ alignItems: "center" }}>
+            <DocumentView>
                 <ConnectedEarnedRewardList
                     navigation={this.props.navigation}
                 >
                 </ConnectedEarnedRewardList>
-            </ColumnView>
+            </DocumentView>
         );
     }
 }
