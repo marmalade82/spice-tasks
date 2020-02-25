@@ -5,6 +5,7 @@ import Recur from "src/Models/Recurrence/Recur";
 import RecurQuery, { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 import TimeQuery, { TimeLogic } from "src/Models/Time/TimeQuery";
 
+/**Don't use */
 async function scheduleStreakGoalRefresh(mins: number, cancel: () => boolean, timeUntilNext?: number)  {
     const minutes = (1000 * 60) * mins;
     async function run() {
@@ -21,6 +22,7 @@ async function scheduleStreakGoalRefresh(mins: number, cancel: () => boolean, ti
     await run();
 }
 
+/**Don't use */
 async function scheduleRecurringGoals(mins: number, cancel: () => boolean, timeUntilNext?: number) {
     const minutes = (1000 * 60) * mins;
     async function run() {
@@ -54,6 +56,7 @@ async function scheduleRefresh(mins: number, cancel: () => boolean, timeUntilNex
             // process @count of the recurring goals for the day.
             // Keep this logic short so it doesn't take up too much resources.
             void RecurLogic.processSomeRecurrences(count);
+            void GoalLogic.processSomeStreaks(count);
         }
 
         setTimeout(run, minutes);

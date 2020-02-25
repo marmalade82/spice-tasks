@@ -4,10 +4,7 @@ import Notification from "src/Notification";
 
 module.exports = async (taskData) => {
 
-    const time = await new TimeQuery().currentTime();
-    if(time) {
-        new TimeQuery().update(time, {
-            count: time.count + 1,
-        })
-    }
+    Notification.localNotification({
+        message: "hi there"
+    })
 }

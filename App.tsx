@@ -2,8 +2,9 @@ import React from 'react';
 import * as Screens from "src/Screens";
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { Button, requireNativeComponent } from "react-native";
+import { Button, AppState } from "react-native";
 import { Schedule } from "./Schedule";
+import SpiceDBService from 'src/Services/DBService';
 
 
 const ScreenNavigator = createStackNavigator(
@@ -73,9 +74,35 @@ const AppContainer = createAppContainer(AppNavigator);
 export default class App extends React.Component {
 
   componentDidMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
 
     void Schedule.refresh(1, () => false);
     //void Schedule.refreshStreakGoals(15, () => false );
+  }
+
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange)
+  }
+
+  handleAppStateChange = (nextState: "active" | "background" | "inactive" | null) => {
+    switch(nextState) {
+      case "active": {
+        SpiceDBService.stopService();
+      } break;
+      case "background": {
+        SpiceDBService.startService();
+      } break;
+      case "inactive": {
+        SpiceDBService.startService();
+      } break;
+      case null: {
+        // do nothing
+      } break;
+      default: {
+        // do nothing
+      }
+    }
+
   }
 
   render = () => {
