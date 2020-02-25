@@ -3,7 +3,7 @@ import ClaimedRewardQuery from "src/Models/Reward/ClaimedRewardQuery";
 import EarnedRewardQuery, { EarnedReward } from "src/Models/Reward/EarnedRewardQuery";
 import MyDate from "src/common/Date";
 import PenaltyQuery from "src/Models/Penalty/PenaltyQuery";
-
+import { Rewards } from "./RewardLogic";
 
 
 export default class EarnedRewardLogic {
@@ -11,6 +11,20 @@ export default class EarnedRewardLogic {
     earned?: EarnedReward;
     constructor(id: string) {
         this.id = id;
+    }
+
+    static earnSpecific = async (rewardId: string, goalId: string) => {
+        const reward = await new RewardQuery().get(rewardId);
+        if(reward) {
+            const title = reward.title;
+            const details = reward.details;
+            void new EarnedRewardQuery().create({
+                title: title,
+                details: details,
+                goalId: goalId,
+                type: Rewards.SPECIFIC
+            });
+        }
     }
 
     fetchEarned = async () => {

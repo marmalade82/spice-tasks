@@ -15,8 +15,10 @@ export default class EarnedRewardQuery extends ModelQuery<EarnedReward, IEarnedR
         return {
             earnedDate: new Date(),
             active: true,
-            type: Rewards.NONE,
+            type: Rewards.SPECIFIC,
             goalId: "",
+            title: "",
+            details: "",
         } as const
     }
 

@@ -8,7 +8,7 @@ import { TaskQuery, Task, ITask } from "src/Models/Task/TaskQuery";
 import GoalScreen from "src/Screens/Goals/GoalScreen";
 import { 
     makeNavigation, destroyAllIn, destroyAll,
-    createGoals, createTasks,
+    createGoals, createTasks, createRewards,
 } from "src/common/test-utils";
 import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
 import { Rewards } from "src/Models/Reward/RewardLogic";
@@ -277,51 +277,109 @@ describe("Using the complete button", () => {
             await destroyAll();
         }
     })
-    test("If user completes a goal with a reward type of 'Specific', an earned reward is generated " + 
-        "", async () => {
-        const { id } = await setup();
 
-        const { getByLabelText, queryByLabelText } = render(
-            <GoalScreen navigation={makeNavigation({ id: id})}>
-            </GoalScreen>
-        );
-
-        await wait(async () => {
-            const moreButton = getByLabelText("input-goal-more-button");
-            fireEvent.press(moreButton);
+    describe("Complete a specific goal", () => {
+        afterEach(async () => {
+            await destroyAll();
         })
 
-        await wait(async () => {
-            const completeButton = getByLabelText("input-goal-complete-button");
-            fireEvent.press(completeButton);
-        })
+        test("An earned reward is generated " + 
+            "", async () => {
+            const { id } = await setup();
 
-        await wait(async () => {
-            const earned = await new EarnedRewardQuery().all();
-            expect(earned.length).toEqual(1);
+            const { getByLabelText, queryByLabelText } = render(
+                <GoalScreen navigation={makeNavigation({ id: id})}>
+                </GoalScreen>
+            );
+
+            await wait(async () => {
+                const moreButton = getByLabelText("input-goal-more-button");
+                fireEvent.press(moreButton);
+            })
+
+            await wait(async () => {
+                const completeButton = getByLabelText("input-goal-complete-button");
+                fireEvent.press(completeButton);
+            })
+
+            await wait(async () => {
+                const earned = await new EarnedRewardQuery().all();
+                expect(earned.length).toEqual(1);
+            });
+            
+            await teardown(); 
+
+            async function setup() {
+                const opts = {
+                    id: ""
+                };
+                await DB.get().action(async () => {
+                    const goal = (await createGoals({
+                        active: true,
+                        title: "Test goal",
+                        rewardType: Rewards.SPECIFIC,
+                    }, 1))[0];
+                    opts.id = goal.id;
+                });
+
+                return opts;
+            }
+
+            async function teardown() {
+                await destroyAll();
+            }
         });
-        
-        await teardown(); 
 
-        async function setup() {
-            const opts = {
-                id: ""
-            };
-            await DB.get().action(async () => {
-                const goal = (await createGoals({
-                    active: true,
-                    title: "Test goal",
-                    rewardType: Rewards.SPECIFIC,
-                }, 1))[0];
-                opts.id = goal.id;
+        test("The earned reward is populated from the reward specified in the goal", async () => {
+            const { goalId, rewardId } = await setup();
+
+            const { getByLabelText, queryByLabelText } = render(
+                <GoalScreen navigation={makeNavigation({ id: goalId})}>
+                </GoalScreen>
+            );
+
+            await wait(async () => {
+                const moreButton = getByLabelText("input-goal-more-button");
+                fireEvent.press(moreButton);
+            })
+
+            await wait(async () => {
+                const completeButton = getByLabelText("input-goal-complete-button");
+                fireEvent.press(completeButton);
+            })
+
+            await wait(async () => {
+                const earned = (await new EarnedRewardQuery().all())[0];
+                expect(earned.type).toEqual(Rewards.SPECIFIC);
+                expect(earned.title).toEqual("I am a reward");
+                expect(earned.details).toEqual("I am some details");
             });
 
-            return opts;
-        }
+            async function setup() {
+                const opts = {
+                    goalId: "",
+                    rewardId: "",
+                };
+                await DB.get().action(async () => {
+                    const rewards = await createRewards({
+                        title: "I am a reward",
+                        details: "I am some details",
+                    }, 1)
 
-        async function teardown() {
-            await destroyAll();
-        }
+                    opts.rewardId = rewards[0].id;
+
+                    const goal = (await createGoals({
+                        active: true,
+                        title: "Test goal",
+                        rewardType: Rewards.SPECIFIC,
+                        rewardId: opts.rewardId,
+                    }, 1))[0];
+                    opts.goalId = goal.id;
+                });
+
+                return opts;
+            }
+        })
     })
 
     test("If user completes a goal with a reward type of 'None', no earned reward is generated " + 

@@ -5,11 +5,12 @@ import {
     ColumnView, RowView,
 } from "src/Components/Basic/Basic";
 import Item from "src/Components/Lists/Items/base/Item";
+import { RewardType } from "src/Models/Reward/RewardLogic";
 
 interface EarnedReward {
     id: string;
     earnedDate: Date;
-    type: "two_dice";
+    type: Exclude<RewardType, "none">;
     goalId: string;
 }
 

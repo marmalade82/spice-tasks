@@ -78,13 +78,13 @@ function Default(): State {
         type: GoalType.NORMAL,
         start_date: new Date(),
         due_date: new Date(),
-        reward: Rewards.NONE,
+        reward: Rewards.SPECIFIC,
+        rewardId: "",
         penalty: Penalty.NONE,
         //recurData: RecurringDefault(),
         streakData: StreakDefault(),
         details: "",
         repeats: "never",
-        rewardId: "",
     } as const
 }
 
@@ -211,17 +211,8 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         accessibilityLabel={"goal-reward"}
                     />
 
-                    <DynamicChoiceInput
-                        title={"Specific Reward"}
-                        selectedValue={this.data().rewardId}
-                        onValueChange={(itemValue) => {
-                            this.setData({
-                                rewardId: itemValue
-                            })
-                        }}
-                        choices={this.props.rewardChoices}
-                        accessibilityLabel={"goal-specific-reward"}
-                    ></DynamicChoiceInput>
+                    { this.renderByRewardType() }
+
 
 
                     <ChoiceInput
@@ -265,12 +256,22 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         }
     };
 
-    renderChoices = (choices: LabelValue[]) => {
-        return choices.map((choice: LabelValue) => {
+    renderByRewardType = () => {
+        if(this.data().reward === Rewards.SPECIFIC) {
             return (
-                <Picker.Item label={choice.label} value={choice.value}/>
+                <DynamicChoiceInput
+                    title={"Specific Reward"}
+                    selectedValue={this.data().rewardId}
+                    onValueChange={(itemValue) => {
+                        this.setData({
+                            rewardId: itemValue
+                        })
+                    }}
+                    choices={this.props.rewardChoices}
+                    accessibilityLabel={"goal-specific-reward"}
+                ></DynamicChoiceInput>
             );
-        })
+        }
     }
 }
 

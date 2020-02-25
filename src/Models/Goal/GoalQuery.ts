@@ -12,6 +12,7 @@ import EarnedRewardQuery from "../Reward/EarnedRewardQuery";
 import MyDate from "src/common/Date";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import { take } from "src/Models/common/logicUtils";
+import EarnedRewardLogic from "../Reward/EarnedRewardLogic";
 
 class GoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
@@ -296,6 +297,9 @@ export class GoalLogic {
                 case Rewards.NONE: {
                     // If none, do nothing. No reward was earned.
                 } break;
+                case Rewards.SPECIFIC: {
+                    await EarnedRewardLogic.earnSpecific(goal.rewardId, this.id);
+                };
                 default: {
                     await new EarnedRewardQuery().create({
                         earnedDate: new MyDate().toDate(),

@@ -69,16 +69,6 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
         }
     }
 
-    myComponentDidRender = () => {
-        const result = 
-            this.state.choices.find((val) => {
-                return val.value === this.props.value;
-            })
-        if(result === undefined && this.props.value !== "") {
-            this.props.onValueChange("", -1);
-        }
-    }
-
     componentWillUnmount = () => {
         this.unsub();
     }
