@@ -4,7 +4,7 @@ import { View, Text, Picker, StyleSheet, StyleProp, ViewStyle } from "react-nati
 import Style from "src/Style/Style";
 import Input from "src/Components/Inputs/base/Input";
 import { ColumnView } from "src/Components/Basic/Basic";
-import { Label, DynamicChoiceInput } from "src/Components/Styled/Styled";
+import { Label, DynamicChoiceInput as CInput } from "src/Components/Styled/Styled";
 import { CONTAINER_VERTICAL_MARGIN } from "src/Components/Styled/Styles";
 import { Observable } from "rxjs";
 
@@ -28,7 +28,7 @@ interface State {
 
 }
 
-export default class ChoiceInput extends Input<Props, State> {
+export default class DynamicChoiceInput extends Input<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -45,12 +45,12 @@ export default class ChoiceInput extends Input<Props, State> {
                 <Label
                     text={this.props.title} 
                 ></Label>
-                <DynamicChoiceInput
+                <CInput
                     value={this.props.selectedValue}
                     choices={this.props.choices}
                     onValueChange={this.props.onValueChange}
                     accessibilityLabel={this.props.accessibilityLabel}
-                ></DynamicChoiceInput>
+                ></CInput>
             </ColumnView>
         )
     }

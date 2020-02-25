@@ -56,12 +56,17 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
             this.setState({
                 choices: lv
             });
+            const result = 
+                this.state.choices.find((val) => {
+                    return val.value === this.props.value;
+                })
+            if(result === undefined && this.props.value !== "") {
+                this.props.onValueChange("", -1);
+            }
         })
         this.unsub = () => {
             choiceSub.unsubscribe();
         }
-
-        this.myComponentDidRender();
     }
 
     myComponentDidRender = () => {
@@ -79,7 +84,7 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
     }
 
     componentDidUpdate = () => {
-        this.myComponentDidRender();
+
     }
 
     render = () => {

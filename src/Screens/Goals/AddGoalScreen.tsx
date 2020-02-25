@@ -54,7 +54,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                     type: goal.streakType as any,
                 },
                 repeats: AddGoalDefault().repeats,
-                rewardId: AddGoalDefault().rewardId,
+                rewardId: goal.rewardId,
             }
             this.setState({
                 goal: goal,
