@@ -13,6 +13,7 @@ import RewardQuery from "src/Models/Reward/RewardQuery";
 import Reward from "src/Models/Reward/Reward";
 import { Observable } from "rxjs";
 import { LabelValue } from "src/common/types";
+import PenaltyQuery, { Penalty } from "src/Models/Penalty/PenaltyQuery";
 
 interface Props {
     navigation: any;
@@ -23,6 +24,9 @@ interface State {
     goal?: Goal
 }
 
+type OmitFromGoal = "parentId" | "state" | "active" | "lastRefreshed" | 
+                     "streakDailyStart" | 
+                    "streakWeeklyStart" | "streakMonthlyStart"
 
 export default class AddGoalScreen extends React.Component<Props, State> {
     constructor(props) {
@@ -47,14 +51,15 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 type : goal.goalType,
                 start_date : goal.startDate,
                 due_date : goal.dueDate,
-                reward: AddGoalDefault().reward,
-                penalty: AddGoalDefault().penalty,
+                reward: goal.rewardType,
+                penalty: goal.penaltyType,
                 streakData: {
                     minimum: goal.streakMinimum,
                     type: goal.streakType as any,
                 },
                 repeats: AddGoalDefault().repeats,
                 rewardId: goal.rewardId,
+                penaltyId: goal.penaltyId,
             }
             this.setState({
                 goal: goal,
@@ -79,8 +84,10 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             streakMinimum: streak.minimum,
             streakType: streak.type,
             rewardType: data.reward,
+            penaltyType: data.penalty,
             details: data.details,
             rewardId: data.rewardId,
+            penaltyId: data.penaltyId,
         };
 
         if(this.state.goal) {
@@ -141,6 +148,22 @@ export default class AddGoalScreen extends React.Component<Props, State> {
         return obs;
     }
 
+    penaltyChoices = () => {
+        let obs: Observable<LabelValue[]> = new Observable((subscriber) => {
+            new PenaltyQuery().queryAll().observe().subscribe((penalties) => {
+                const lvs = (penalties as Penalty[]).map((penalty) => {
+                    return {
+                        label: penalty.title,
+                        value: penalty.id,
+                        key: penalty.id,
+                    }
+                });
+                subscriber.next(lvs);
+            })
+        });
+        return obs;
+    }
+
     renderGoalForm = () => {
         return (
             <AddGoalForm
@@ -152,6 +175,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 }}
                 data={this.state.data}
                 rewardChoices={this.rewardChoices()}
+                penaltyChoices={this.penaltyChoices()}
             ></AddGoalForm>
         );
     }

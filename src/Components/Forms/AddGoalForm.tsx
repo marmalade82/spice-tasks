@@ -29,6 +29,7 @@ interface Props {
     navigation: Navigator
     onDataChange: (d: State) => void;
     rewardChoices: Observable<LabelValue[]>
+    penaltyChoices: Observable<LabelValue[]>
     data: State | false;
 }
 
@@ -41,6 +42,7 @@ interface State {
     reward: RewardType;
     rewardId: string;
     penalty: PenaltyTypes;
+    penaltyId: string;
     repeats: "never" | "daily" | "weekly" | "monthly"
     //recurData: RecurringData
     streakData: StreakData
@@ -68,6 +70,7 @@ function Default(): State {
         reward: Rewards.SPECIFIC,
         rewardId: "",
         penalty: PenaltyTypes.NONE,
+        penaltyId: "",
         //recurData: RecurringDefault(),
         streakData: StreakDefault(),
         details: "",
@@ -201,7 +204,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     { this.renderByRewardType() }
 
 
-
                     <ChoiceInput
                         title={"Penalty"}
                         selectedValue={this.data().penalty.toString()}
@@ -211,6 +213,8 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         choices={PenaltyChoices}
                         accessibilityLabel={"goal-penalty"}
                     />
+
+                    { this.renderByPenaltyType() }
 
                     <ChoiceInput
                         title={"Repeats"}
@@ -258,6 +262,24 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     accessibilityLabel={"goal-specific-reward"}
                 ></DynamicChoiceInput>
             );
+        }
+    }
+
+    renderByPenaltyType = () => {
+        if(this.data().penalty === PenaltyTypes.SPECIFIC) {
+            return (
+                <DynamicChoiceInput
+                    title={"Specific Penalty"}
+                    selectedValue={this.data().penaltyId}
+                    onValueChange={(itemValue) => {
+                        this.setData({
+                            penaltyId: itemValue
+                        })
+                    }}
+                    choices={this.props.penaltyChoices}
+                    accessibilityLabel={"goal-specific-penalty"}
+                ></DynamicChoiceInput>
+            )
         }
     }
 }

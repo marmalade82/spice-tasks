@@ -45,6 +45,7 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
             latestCycleStartDate: new Date(),
             lastRefreshed: new Date(),
             rewardId: "",
+            penaltyId: "",
         } as const;
         return Default;
     }
@@ -479,6 +480,7 @@ export class GoalLogic {
                 lastRefreshed: goal.lastRefreshed,
                 rewardId: goal.rewardId,
                 penaltyType: goal.penaltyType,
+                penaltyId: goal.penaltyId,
             }
             return newGoal;
         } else {
