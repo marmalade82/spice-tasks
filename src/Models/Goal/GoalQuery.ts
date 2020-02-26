@@ -14,6 +14,8 @@ import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import { take } from "src/Models/common/logicUtils";
 import EarnedRewardLogic from "../Reward/EarnedRewardLogic";
 import { PenaltyTypes } from "../Penalty/PenaltyLogic";
+import EarnedPenaltyQuery from "../Penalty/EarnedPenaltyQuery";
+import EarnedPenaltyLogic from "../Penalty/EarnedPenaltyLogic";
 
 class GoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
@@ -322,6 +324,25 @@ export class GoalLogic {
         await new GoalQuery().failGoalAndDescendants({
             id: this.id
         })
+
+        await this.earnPenalty();
+    }
+
+    earnPenalty = async () => {
+        const goal = await new GoalQuery().get(this.id);
+        if(goal) {
+            switch(goal.penaltyType) {
+                case PenaltyTypes.NONE: {
+                    // Nothing
+                } break;
+                case PenaltyTypes.SPECIFIC: {
+                    await EarnedPenaltyLogic.earnSpecific(goal.penaltyId, this.id);
+                } break;
+                default: {
+                    // Nothing for now.
+                }
+            }
+        }
     }
 
     isStreak = async () => {

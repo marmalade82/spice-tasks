@@ -2,6 +2,8 @@ import EarnedRewardQuery, { EarnedReward} from "src/Models/Reward/EarnedRewardQu
 import PenaltyQuery from "src/Models/Penalty/PenaltyQuery";
 import ClaimedRewardQuery from "src/Models/Reward/ClaimedRewardQuery"
 import MyDate from "src/common/Date";
+import { PenaltyTypes } from "./PenaltyLogic";
+import EarnedPenaltyQuery from "./EarnedPenaltyQuery";
 
 
 
@@ -10,6 +12,20 @@ export default class EarnedPenaltyLogic {
     earned?: EarnedReward;  // This is still an earned reward -- because the penalty was earned from a reward
     constructor(id: string) {
         this.id = id;
+    }
+
+    static earnSpecific = async (penaltyId: string, goalId: string) => {
+        const penalty = await new PenaltyQuery().get(penaltyId);
+        if(penalty) {
+            const title = penalty.title;
+            const details = penalty.details;
+            void new EarnedPenaltyQuery().create({
+                title: title,
+                details: details,
+                goalId: goalId,
+                type: PenaltyTypes.SPECIFIC
+            });
+        }
     }
 
     _fetchEarned = async () => {

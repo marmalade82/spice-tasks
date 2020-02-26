@@ -8,6 +8,7 @@ const EarnedRewardName = {
     GOAL_ID: "goal_id",
     TITLE: "title",
     DETAILS: "details",
+    CLASS_TYPE: 'class_type',
 }
 
 const EarnedRewardType: Record<keyof typeof EarnedRewardName, ColumnType> = {
@@ -17,6 +18,7 @@ const EarnedRewardType: Record<keyof typeof EarnedRewardName, ColumnType> = {
     GOAL_ID: "string",
     TITLE: "string",
     DETAILS: "string",
+    CLASS_TYPE: 'string',
 }
 
 const EarnedRewardSchema = {

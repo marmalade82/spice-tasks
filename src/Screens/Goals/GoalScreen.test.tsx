@@ -8,12 +8,14 @@ import { TaskQuery, Task, ITask } from "src/Models/Task/TaskQuery";
 import GoalScreen from "src/Screens/Goals/GoalScreen";
 import { 
     makeNavigation, destroyAllIn, destroyAll,
-    createGoals, createTasks, createRewards,
+    createGoals, createTasks, createRewards, createPenalties,
 } from "src/common/test-utils";
 import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
 import { Rewards } from "src/Models/Reward/RewardLogic";
 import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import { GoalType } from "src/Models/Goal/GoalLogic";
+import { PenaltyTypes } from "src/Models/Penalty/PenaltyLogic";
+import { EarnedPenaltyQuery } from "src/Models/Penalty/EarnedPenaltyQuery";
 
 afterEach(cleanup)
 
@@ -504,76 +506,214 @@ test("User can view active and inactive tasks", async () => {
     }
 }, 20000)
 
+describe("Using the incomplete button", () => {
+    afterEach(async() => {
+        await destroyAll();
+    })
 
-test("User can mark a goal as incomplete, which marks the goal and descendant tasks/goals " + 
-    " as incomplete as well", async () => {
+    test("User can mark a goal as incomplete, which marks the goal and descendant tasks/goals " + 
+        " as incomplete as well", async () => {
 
-    const opts = await setup();
+        const opts = await setup();
 
-    let activeGoals: Goal[] = await new GoalQuery().activeGoals();
-    expect(activeGoals.length).toEqual(1);
-    let activeTasks: Task[] = await new TaskQuery().activeTasks();
-    expect(activeTasks.length).toEqual(1);
+        let activeGoals: Goal[] = await new GoalQuery().activeGoals();
+        expect(activeGoals.length).toEqual(1);
+        let activeTasks: Task[] = await new TaskQuery().activeTasks();
+        expect(activeTasks.length).toEqual(1);
 
-    {
-        const { getByLabelText } = render(
-            <GoalScreen navigation={makeNavigation({id: opts.parentId})}></GoalScreen>
-        );
+        {
+            const { getByLabelText } = render(
+                <GoalScreen navigation={makeNavigation({id: opts.parentId})}></GoalScreen>
+            );
+
+            await wait(async () => {
+                const completeButton = getByLabelText("input-goal-incomplete-button");
+                fireEvent.press(completeButton);
+            })
+        } 
+
+        await wait(async() => {
+            const completedGoals: Goal[] = await new GoalQuery().failedGoals();
+            expect(completedGoals.length).toEqual(1);
+            const inactiveGoals: Goal[] = await new GoalQuery().inactiveGoals();
+            expect(inactiveGoals.length).toEqual(1);
+            activeGoals = await new GoalQuery().activeGoals();
+            expect(activeGoals.length).toEqual(0);
+        })
+
+        await wait(async() => {
+            const completedTasks: Task[] = await new TaskQuery().failedTasks();
+            expect(completedTasks.length).toEqual(1);
+            const inactiveTasks: Task[] = await new TaskQuery().inactiveTasks();
+            expect(inactiveTasks.length).toEqual(1);
+            activeTasks = await new TaskQuery().activeTasks();
+            expect(activeTasks.length).toEqual(0);
+        })
+
+        async function setup() {
+            const opts = {
+                parentId: ""
+            }
+            await DB.get().action(async () => {
+                const parent = await DB.get().collections.get("goals").create((goal: Goal) => {
+                    goal.active = true;
+                    goal.title = "Parent";
+                    goal.state = "open"
+                });
+
+                opts.parentId = parent.id;
+                const child = await DB.get().collections.get("tasks").create((task: Task) => {
+                    task.parentId = parent.id;
+                    task.active = true;
+                    task.title = "Child";
+                    task.state = "open"
+                });
+            });
+
+            return opts;
+        }
+
+    }, 20000)
+
+    test("Failing a goal with penalty type NONE does not generate an earned penalty" , async () => {
+        const { id } = await setup();
 
         await wait(async () => {
-            const completeButton = getByLabelText("input-goal-incomplete-button");
-            fireEvent.press(completeButton);
+            const earned = await new EarnedPenaltyQuery().all();
+            expect(earned.length).toEqual(0);
         })
-    } 
 
-    await wait(async() => {
-        const completedGoals: Goal[] = await new GoalQuery().failedGoals();
-        expect(completedGoals.length).toEqual(1);
-        const inactiveGoals: Goal[] = await new GoalQuery().inactiveGoals();
-        expect(inactiveGoals.length).toEqual(1);
-        activeGoals = await new GoalQuery().activeGoals();
-        expect(activeGoals.length).toEqual(0);
-    })
+        {
+            const { getByLabelText } = render(
+                <GoalScreen navigation={makeNavigation({id: id})}></GoalScreen>
+            );
 
-    await wait(async() => {
-        const completedTasks: Task[] = await new TaskQuery().failedTasks();
-        expect(completedTasks.length).toEqual(1);
-        const inactiveTasks: Task[] = await new TaskQuery().inactiveTasks();
-        expect(inactiveTasks.length).toEqual(1);
-        activeTasks = await new TaskQuery().activeTasks();
-        expect(activeTasks.length).toEqual(0);
-    })
+            await wait(async () => {
+                const completeButton = getByLabelText("input-goal-incomplete-button");
+                fireEvent.press(completeButton);
+            })
+        } 
 
-    await teardown();
+        await wait(async () => {
+            const earned = await new EarnedPenaltyQuery().all();
+            expect(earned.length).toEqual(0);
+        })
+        
 
+        async function setup() {
+            const opts = {
+                id: ""
+            };
+            await DB.get().action(async () => {
+                const goal = (await createGoals({
+                    active: true,
+                    title: "Test goal",
+                    penaltyType: PenaltyTypes.NONE,
+                    penaltyId: "",
+                }, 1))[0];
+                opts.id = goal.id;
+            });
 
-    async function setup() {
-        const opts = {
-            parentId: ""
+            return opts;
         }
-        await DB.get().action(async () => {
-            const parent = await DB.get().collections.get("goals").create((goal: Goal) => {
-                goal.active = true;
-                goal.title = "Parent";
-                goal.state = "open"
+
+    });
+
+    test("Failing a goal with penalty type SPECIFIC generates an earned penalty", async() => {
+        const { id } = await setup();
+
+        await wait(async () => {
+            const earned = await new EarnedPenaltyQuery().all();
+            expect(earned.length).toEqual(0);
+        })
+
+        {
+            const { getByLabelText } = render(
+                <GoalScreen navigation={makeNavigation({id: id})}></GoalScreen>
+            );
+
+            await wait(async () => {
+                const completeButton = getByLabelText("input-goal-incomplete-button");
+                fireEvent.press(completeButton);
+            })
+        } 
+
+        await wait(async () => {
+            const earned = await new EarnedPenaltyQuery().all();
+            expect(earned.length).toEqual(1);
+        })
+        
+
+        async function setup() {
+            const opts = {
+                id: ""
+            };
+            await DB.get().action(async () => {
+                const penalties = (await createPenalties({
+                    title: "I am a penalty",
+                    details: "Hi penalty details",
+                }, 1))
+
+                const goal = (await createGoals({
+                    active: true,
+                    title: "Test goal",
+                    penaltyType: PenaltyTypes.SPECIFIC,
+                    penaltyId: penalties[0].id,
+                }, 1))[0];
+                opts.id = goal.id;
             });
 
-            opts.parentId = parent.id;
-            const child = await DB.get().collections.get("tasks").create((task: Task) => {
-                task.parentId = parent.id;
-                task.active = true;
-                task.title = "Child";
-                task.state = "open"
+            return opts;
+        }
+    });
+
+    test("Failing a goal with penalty type SPECIFIC generates an earned penalty based on the template", async() => {
+        const { id } = await setup();
+
+        {
+            const { getByLabelText } = render(
+                <GoalScreen navigation={makeNavigation({id: id})}></GoalScreen>
+            );
+
+            await wait(async () => {
+                const completeButton = getByLabelText("input-goal-incomplete-button");
+                fireEvent.press(completeButton);
+            })
+        } 
+
+        await wait(async () => {
+            const earned = await new EarnedPenaltyQuery().all();
+            expect(earned[0].title).toEqual("I am a penalty");
+            expect(earned[0].details).toEqual("Hi penalty details");
+            expect(earned[0].goalId).toEqual(id);
+        })
+        
+
+        async function setup() {
+            const opts = {
+                id: ""
+            };
+            await DB.get().action(async () => {
+                const penalties = (await createPenalties({
+                    title: "I am a penalty",
+                    details: "Hi penalty details",
+                }, 1))
+
+                const goal = (await createGoals({
+                    active: true,
+                    title: "Test goal",
+                    penaltyType: PenaltyTypes.SPECIFIC,
+                    penaltyId: penalties[0].id,
+                }, 1))[0];
+                opts.id = goal.id;
             });
-        });
 
-        return opts;
-    }
+            return opts;
+        }
+    });
+    
+})
 
-    async function teardown() {
-        await destroyAll();
-    }
-}, 20000)
 
 describe("streak goal tests", () => {
     test("If the minimum streak count is or can be met, completing succeeds", async () => {

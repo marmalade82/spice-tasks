@@ -1,20 +1,20 @@
 
 import ModelQuery from "src/Models/base/Query";
 import {
-    EarnedReward, IEarnedReward,
-} from "src/Models/Reward/EarnedReward";
+    EarnedPenalty, IEarnedPenalty,
+} from "src/Models/Penalty/EarnedPenalty";
 import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
-import { Rewards } from "./RewardLogic";
+import { PenaltyTypes } from "./PenaltyLogic";
 import { Q } from "@nozbe/watermelondb";
 
-export default class EarnedRewardQuery extends ModelQuery<EarnedReward, IEarnedReward> {
+export default class EarnedPenaltyQuery extends ModelQuery<EarnedPenalty, IEarnedPenalty> {
     constructor() {
         super(EarnedRewardSchema.table);
     }
 
     queries = () => {
         return [
-            Q.where(EarnedRewardSchema.name.CLASS_TYPE, "reward")
+            Q.where(EarnedRewardSchema.name.CLASS_TYPE, "penalty")
         ];
     }
 
@@ -22,11 +22,11 @@ export default class EarnedRewardQuery extends ModelQuery<EarnedReward, IEarnedR
         return {
             earnedDate: new Date(),
             active: true,
-            type: Rewards.SPECIFIC,
+            type: PenaltyTypes.SPECIFIC,
             goalId: "",
             title: "",
             details: "",
-            classType: "reward",
+            classType: "penalty",
         } as const
     }
 
@@ -36,6 +36,6 @@ export default class EarnedRewardQuery extends ModelQuery<EarnedReward, IEarnedR
 }
 
 export {
-    EarnedRewardQuery,
-    EarnedReward,
+    EarnedPenaltyQuery,
+    EarnedPenalty,
 }

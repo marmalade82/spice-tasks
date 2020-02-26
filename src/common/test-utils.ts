@@ -84,6 +84,7 @@ async function createRewards(data: Partial<IReward>, count: number) {
 }
 
 async function createEarnedRewards(data: Partial<IEarnedReward>, count: number) {
+    data.classType = "reward";
     return (await _createModels(EarnedRewardSchema.table, data, count)) as EarnedReward[];
 
 }
