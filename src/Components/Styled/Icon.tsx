@@ -12,7 +12,8 @@ import {
 
 interface Props {
     type: "complete" | "delete" | "goal" | "task" | 
-        "reward" | "penalty" | "mandatory" | "attention" | "info" | "recur";
+        "reward" | "penalty" | "mandatory" | "attention" | "info" | "recur"| 
+        "earned_reward" | "earned_penalty";
     accessibilityLabel?: string;
     backgroundColor?: string;
     color?: string;
@@ -154,7 +155,25 @@ export default class StyledIcon extends React.Component<Props, State>{
                         color={this.props.color ? this.props.color : SECONDARY_COLOR}
                     ></Icon>
                 );
-            }
+            } break;
+            case "earned_reward": {
+                return (
+                    <Icon
+                        name="award"
+                        type="feather"
+                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
+                    ></Icon>
+                );
+            } break;
+            case "earned_penalty": {
+                return (
+                    <Icon
+                        name="thumbs-up"
+                        type="feather"
+                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
+                    ></Icon>
+                );
+            } break;
             default: {
                 return undefined
             }

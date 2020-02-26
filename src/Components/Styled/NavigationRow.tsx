@@ -8,7 +8,7 @@ import StyledIcon from "./Icon";
 
 interface Props {
     number?: number;
-    icon?: "goal" | "task" | "reward" | "penalty" | "recur";
+    icon?: "goal" | "task" | "reward" | "penalty" | "recur" | "earned_reward" | "earned_penalty";
     text: string;
     navOptions?: navOptions
     style?: StyleProp<ViewStyle>

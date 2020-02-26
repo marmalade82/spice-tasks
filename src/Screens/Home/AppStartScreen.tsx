@@ -310,12 +310,12 @@ class NavigationList extends React.Component<NavListProps> {
                     , navDestination: "Recurrings"
                     },
                     { text: "Earned Rewards"
-                    , icon: "recur"
+                    , icon: "earned_reward"
                     , navParams: {}
                     , navDestination: "EarnedRewards"
                     },
                     { text: "Earned Penalties"
-                    , icon: "recur"
+                    , icon: "earned_penalty"
                     , navParams: {}
                     , navDestination: "EarnedPenalties"
                     }

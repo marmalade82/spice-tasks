@@ -17,7 +17,7 @@ interface State {
 interface Row {
     text: string;
     number?: number;
-    icon?: "goal" | "task" | "reward" | "penalty" | "recur";
+    icon?: "goal" | "task" | "reward" | "penalty" | "recur" | "earned_reward" | "earned_penalty";
     navParams: object;
     navDestination: string;
     navType?: "navigate" | "push";
