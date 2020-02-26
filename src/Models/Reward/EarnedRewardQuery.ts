@@ -6,6 +6,7 @@ import {
 import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
 import { Rewards } from "./RewardLogic";
 import { Q } from "@nozbe/watermelondb";
+import { Conditions } from "src/Models/common/queryUtils";
 
 export default class EarnedRewardQuery extends ModelQuery<EarnedReward, IEarnedReward> {
     constructor() {
@@ -31,7 +32,11 @@ export default class EarnedRewardQuery extends ModelQuery<EarnedReward, IEarnedR
     }
 
     queryUnused = () => {
-        return this.queryAll();
+        return this.query(
+            ...[
+                ...Conditions.active()
+            ]
+        );
     }
 }
 

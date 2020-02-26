@@ -6,6 +6,7 @@ import {
 import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
 import { PenaltyTypes } from "./PenaltyLogic";
 import { Q } from "@nozbe/watermelondb";
+import { Conditions } from "src/Models/common/queryUtils";
 
 export default class EarnedPenaltyQuery extends ModelQuery<EarnedPenalty, IEarnedPenalty> {
     constructor() {
@@ -31,7 +32,11 @@ export default class EarnedPenaltyQuery extends ModelQuery<EarnedPenalty, IEarne
     }
 
     queryUnused = () => {
-        return this.queryAll();
+        return this.query(
+            ...[
+                ...Conditions.active()
+            ]
+        );
     }
 }
 

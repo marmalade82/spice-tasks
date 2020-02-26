@@ -28,6 +28,15 @@ export default class EarnedPenaltyLogic {
         }
     }
 
+    use = async () => {
+        let earned = await new EarnedPenaltyQuery().get(this.id);
+        if(earned) {
+            await new EarnedPenaltyQuery().update(earned, {
+                active: false,
+            });
+        }
+    }
+
     _fetchEarned = async () => {
         if(this.earned) {
             return this.earned;

@@ -2,7 +2,6 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 import { ColumnView, RowView, Image, HeaderText, BodyText, } from "src/Components/Basic/Basic";
 import Style from "src/Style/Style";
-import EarnedRewardSummary from "src/Components/Summaries/EarnedRewardSummary";
 import EarnedRewardQuery, { EarnedReward } from "src/Models/Reward/EarnedRewardQuery";
 import EarnedRewardLogic from "src/Models/Reward/EarnedRewardLogic";
 import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";

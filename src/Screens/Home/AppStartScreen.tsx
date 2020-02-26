@@ -263,7 +263,7 @@ const enhance = withObservables([], (_props: AllStatusListProps) => {
         remainingTodayTaskCount: observableWithRefreshTimer(() => new TaskQuery().queryRemainingToday().observeCount()),
         inProgressGoalsCount: observableWithRefreshTimer(() => new GoalQuery().queryActiveAndStartedButNotDue().observeCount()),
         earnedRewardsCount: observableWithRefreshTimer(() => new EarnedRewardQuery().queryUnused().observeCount()),
-        earnedPenaltiesCount: observableWithRefreshTimer(() => new EarnedPenaltyQuery().queryAll().observeCount()),
+        earnedPenaltiesCount: observableWithRefreshTimer(() => new EarnedPenaltyQuery().queryUnused().observeCount()),
     }
 });
 
