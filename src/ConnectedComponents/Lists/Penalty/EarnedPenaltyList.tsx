@@ -34,15 +34,32 @@ const AdaptedEarnedPenaltyList: React.FunctionComponent<Props> = (props: Props) 
 }
 
 interface InputProps {
-    navigation: any
+    navigation: any,
+    type?: "active",
 }
 
 /**
  * Connects the list with the database
  */
-const enhance = withObservables([], (_props: InputProps) => {
-    return {
-        earned: new EarnedPenaltyQuery().queryAll().observe()
+const enhance = withObservables([], (props: InputProps) => {
+    const { type } = props;
+    if(type) {
+        switch(type) {
+            case "active": {
+                return {
+                    earned: new EarnedPenaltyQuery().queryUnused().observe()
+                }
+            } break;
+            default: {
+                return {
+                    earned: new EarnedPenaltyQuery().queryAll().observe()
+                }
+            }
+        }
+    } else {
+        return {
+            earned: new EarnedPenaltyQuery().queryAll().observe()
+        }
     }
 });
 

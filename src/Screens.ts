@@ -32,6 +32,8 @@ import AddRecurScreen from "src/Screens/Recurring/AddRecurScreen";
 import TestScreen from "src/Screens/TestScreen";
 import EarnedPenaltyListScreen from "src/Screens/Penalties/EarnedPenaltyListScreen";
 import EarnedPenaltyScreen from "src/Screens/Penalties/EarnedPenaltyScreen";
+import UnusedEarnedRewardsScreen from "src/Screens/Rewards/UnusedEarnedRewardsScreen";
+import UnusedEarnedPenaltiesScreen from "src/Screens/Penalties/UnusedEarnedPenalties";
 
 export {
     HomeScreen as Home,
@@ -65,5 +67,7 @@ export {
     AddRecurScreen as AddRecur,
     EarnedPenaltyListScreen as EarnedPenaltyList,
     EarnedPenaltyScreen as EarnedPenalty,
+    UnusedEarnedRewardsScreen as UnusedEarnedRewards,
+    UnusedEarnedPenaltiesScreen as UnusedEarnedPenalties,
     TestScreen as Test,
 }

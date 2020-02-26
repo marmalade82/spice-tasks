@@ -2,7 +2,6 @@
 import React from "react";
 import {View, Button, Text, StyleSheet } from "react-native";
 import { ConnectedPenaltyList } from "src/ConnectedComponents/Lists/Penalty/PenaltyList";
-import Style from "src/Style/Style";
 import { DocumentView } from "src/Components/Styled/Styled";
 
 interface Props {

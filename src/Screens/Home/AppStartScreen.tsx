@@ -232,15 +232,15 @@ const AdaptedStatusList: React.FunctionComponent<StatusListProps> = (props: Stat
                 , navParams: {}
                 , navDestination: "InProgressGoals"
                 },
-                { text: "Rewards Earned"
+                { text: "Unused Rewards"
                 , number: props.earnedRewardsCount
                 , navParams: {}
-                , navDestination: "EarnedRewards"
+                , navDestination: "UnusedEarnedRewards"
                 },
-                { text: "Penalty Pending"
+                { text: "Pending Penalties"
                 , number: props.earnedPenaltiesCount
                 , navParams: {}
-                , navDestination: "EarnedPenalties"
+                , navDestination: "UnusedEarnedPenalties"
                 },
             ]}
         >
@@ -308,7 +308,18 @@ class NavigationList extends React.Component<NavListProps> {
                     , icon: "recur"
                     , navParams: {}
                     , navDestination: "Recurrings"
+                    },
+                    { text: "Earned Rewards"
+                    , icon: "recur"
+                    , navParams: {}
+                    , navDestination: "EarnedRewards"
+                    },
+                    { text: "Earned Penalties"
+                    , icon: "recur"
+                    , navParams: {}
+                    , navDestination: "EarnedPenalties"
                     }
+
                 ]}
             >
             </NavigationGroup>
