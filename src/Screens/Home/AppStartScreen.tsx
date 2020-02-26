@@ -23,6 +23,7 @@ import { Schedule } from "Schedule";
 import Time from "src/Models/Time/Time";
 import TimeQuery, { TimeLogic, Global_Timer, observableWithRefreshTimer } from "src/Models/Time/TimeQuery";
 import { Subscription } from "rxjs";
+import EarnedPenaltyQuery from "src/Models/Penalty/EarnedPenaltyQuery";
 
 interface Props {
     navigation: any;
@@ -262,7 +263,7 @@ const enhance = withObservables([], (_props: AllStatusListProps) => {
         remainingTodayTaskCount: observableWithRefreshTimer(() => new TaskQuery().queryRemainingToday().observeCount()),
         inProgressGoalsCount: observableWithRefreshTimer(() => new GoalQuery().queryActiveAndStartedButNotDue().observeCount()),
         earnedRewardsCount: observableWithRefreshTimer(() => new EarnedRewardQuery().queryUnused().observeCount()),
-        earnedPenaltiesCount: observableWithRefreshTimer(() => new EarnedRewardQuery().queryAll().observeCount()),
+        earnedPenaltiesCount: observableWithRefreshTimer(() => new EarnedPenaltyQuery().queryAll().observeCount()),
     }
 });
 

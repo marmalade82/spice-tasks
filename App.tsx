@@ -39,6 +39,7 @@ const ScreenNavigator = createStackNavigator(
   , Recurrings: Screens.RecurringList
   , Recur: Screens.Recur
   , AddRecur: Screens.AddRecur
+  , EarnedPenalties: Screens.EarnedPenaltyList
   , Test: Screens.Test
   },
   { initialRouteName: 'Home'
