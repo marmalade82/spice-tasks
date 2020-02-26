@@ -6,6 +6,7 @@ import GoalSchema from "src/Models/Goal/GoalSchema";
 import TaskSchema from "src/Models/Task/TaskSchema";
 import { RewardType } from "src/Models/Reward/RewardLogic";
 import { GoalType } from "src/Models/Goal/GoalLogic";
+import { PenaltyTypes } from "src/Models/Penalty/PenaltyLogic";
 
 
 interface IGoal extends IStreak{
@@ -18,6 +19,7 @@ interface IGoal extends IStreak{
     state: "open" | "in_progress" | "complete" | "cancelled"
     active: boolean;
     rewardType: RewardType;
+    penaltyType: PenaltyTypes
     recurId: string;
     latestCycleStartDate: Date;
     rewardId: string;
@@ -64,6 +66,7 @@ export default class Goal extends Model implements IGoal {
     @date(name.LATEST_CYCLE_START) latestCycleStartDate!: Date;
     @date(name.LAST_REFRESHED) lastRefreshed!: Date;
     @field(name.REWARD_ID) rewardId!: string;
+    @field(name.PENALTY_TYPE) penaltyType!: PenaltyTypes;
 
     /*Relations*/
     @children('tasks') tasks

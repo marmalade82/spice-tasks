@@ -19,7 +19,8 @@ const GoalName = {
     RECUR_ID: 'recur_id',
     LATEST_CYCLE_START: 'latest_cycle_start_at',
     LAST_REFRESHED: 'last_refreshed_at',
-    REWARD_ID: 'reward_id'
+    REWARD_ID: 'reward_id',
+    PENALTY_TYPE: 'penalty_type',
 } as const;
 
 const GoalType = {
@@ -41,6 +42,7 @@ const GoalType = {
     LATEST_CYCLE_START: 'number',
     LAST_REFRESHED: 'number',
     REWARD_ID: 'string',
+    PENALTY_TYPE: 'string',
 } as const;
 
 const GoalSchema: ChildSchema & ActiveSchema & StateSchema & 

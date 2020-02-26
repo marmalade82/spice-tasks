@@ -13,6 +13,7 @@ import MyDate from "src/common/Date";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import { take } from "src/Models/common/logicUtils";
 import EarnedRewardLogic from "../Reward/EarnedRewardLogic";
+import { PenaltyTypes } from "../Penalty/PenaltyLogic";
 
 class GoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
@@ -38,6 +39,7 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
             active: true,
             state: "open",
             rewardType: Rewards.NONE,
+            penaltyType: PenaltyTypes.NONE,
             details: "",
             recurId: "",
             latestCycleStartDate: new Date(),
@@ -476,6 +478,7 @@ export class GoalLogic {
                 latestCycleStartDate: newStart.prevMidnight().toDate(),
                 lastRefreshed: goal.lastRefreshed,
                 rewardId: goal.rewardId,
+                penaltyType: goal.penaltyType,
             }
             return newGoal;
         } else {

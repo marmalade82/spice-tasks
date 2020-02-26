@@ -23,6 +23,7 @@ import { RewardChoices, RewardType, Rewards } from "src/Models/Reward/RewardLogi
 import { GoalChoices, GoalType } from "src/Models/Goal/GoalLogic";
 import { Validate } from "src/Components/Inputs/Validate";
 import { Observable } from "rxjs";
+import { PenaltyTypes, PenaltyChoices } from "src/Models/Penalty/PenaltyLogic";
 
 interface Props {
     navigation: Navigator
@@ -39,7 +40,7 @@ interface State {
     due_date: Date;
     reward: RewardType;
     rewardId: string;
-    penalty: Penalty
+    penalty: PenaltyTypes;
     repeats: "never" | "daily" | "weekly" | "monthly"
     //recurData: RecurringData
     streakData: StreakData
@@ -50,12 +51,6 @@ interface Navigator {
 }
 
 
-enum Penalty {
-    NONE = 1,
-    DICE,
-    ONE,
-}
-
 interface LabelValue {
     label: string,
     value: string,
@@ -63,14 +58,6 @@ interface LabelValue {
 
 }
 
-
-const penalties: LabelValue[] = [
-    { label: "none", value: Penalty.NONE.toString(), key: Penalty.NONE.toString() },
-    { label: "dice", value: Penalty.DICE.toString(), key: Penalty.DICE.toString() },
-    { label: "Choose one...", value: Penalty.ONE.toString(), key: Penalty.ONE.toString() },
-].sort((a, b) => {
-    return parseInt(a.value) - parseInt(b.value);
-});
 
 function Default(): State {
     return {
@@ -80,7 +67,7 @@ function Default(): State {
         due_date: new Date(),
         reward: Rewards.SPECIFIC,
         rewardId: "",
-        penalty: Penalty.NONE,
+        penalty: PenaltyTypes.NONE,
         //recurData: RecurringDefault(),
         streakData: StreakDefault(),
         details: "",
@@ -219,9 +206,9 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         title={"Penalty"}
                         selectedValue={this.data().penalty.toString()}
                         onValueChange={(itemValue, itemIndex) => {
-                            this.setData({penalty: parseInt(itemValue)})  
+                            this.setData({penalty: itemValue as PenaltyTypes})  
                         }}
-                        choices={penalties}
+                        choices={PenaltyChoices}
                         accessibilityLabel={"goal-penalty"}
                     />
 
