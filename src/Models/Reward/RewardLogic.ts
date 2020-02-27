@@ -34,3 +34,10 @@ export {
     Rewards,
     RewardChoices,
 }
+
+export default class RewardLogic {
+    id: string;
+    constructor(id: string) {
+        this.id = id;
+    }
+}

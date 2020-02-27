@@ -106,7 +106,7 @@ export default class StyledIcon extends React.Component<Props, State>{
             case "penalty": {
                 return (
                     <Icon
-                        name='heart'
+                        name='zap'
                         type='feather'
                         color={this.props.color ? this.props.color : SECONDARY_COLOR}
                     >

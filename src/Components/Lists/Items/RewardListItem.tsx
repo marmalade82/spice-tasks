@@ -32,7 +32,7 @@ export default class RewardListItem extends Item<Props, State, Reward> {
             <ListItem
                 navigation={this.props.navigation}
                 params={{id: id}}
-                destination={"AddReward"}
+                destination={"Reward"}
                 text={title}
                 subtext={new MyDate(expire_date).format("MMM Do")}
                 number={0}

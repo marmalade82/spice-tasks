@@ -19,6 +19,7 @@ const ScreenNavigator = createStackNavigator(
   , Streak: Screens.Streak
   , AddTask: Screens.AddTask
   , Tasks: Screens.TaskList
+  , Reward: Screens.Reward
   , Rewards: Screens.RewardList
   , AddReward: Screens.AddReward
   , Task: Screens.Task
