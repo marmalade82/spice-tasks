@@ -22,7 +22,7 @@ interface State {
 
 }
 
-export default class RewardSummary extends React.Component<Props, State> {
+export default class PenaltySummary extends React.Component<Props, State> {
     
     getFooterElements = () => {
         return [
@@ -31,12 +31,12 @@ export default class RewardSummary extends React.Component<Props, State> {
                     <IconButton type={"edit"}
                         onPress={() => {
                             this.props.navigation.push(
-                                "AddReward", {
+                                "AddPenalty", {
                                     id: this.props.navigation.getParam('id', ''),
                                 }
                             );
                         }}
-                        accessibilityLabel={"edit-reward-button"}
+                        accessibilityLabel={"edit-penalty-button"}
                         key={"edit"}
                     >
 
@@ -49,7 +49,7 @@ export default class RewardSummary extends React.Component<Props, State> {
                         onPress={() => {
                             this.props.onChoice("delete");
                         }}
-                        accessibilityLabel={"delete-reward-button"}
+                        accessibilityLabel={"delete-penalty-button"}
                         key={"complete"}
                     ></IconButton>
                 );

@@ -61,7 +61,7 @@ export default class PenaltyListItem extends Item<Props, State, Penalty> {
             <ListItem
                 navigation={this.props.navigation}
                 params={{id: id}}
-                destination={"AddPenalty"}
+                destination={"Penalty"}
                 text={title}
                 subtext={new MyDate(expire_date).format("MMM Do")}
                 number={0}

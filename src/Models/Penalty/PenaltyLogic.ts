@@ -16,3 +16,10 @@ export const PenaltyChoices: PenaltyChoice[] = [
     choice("None", PenaltyTypes.NONE),
     choice("Choose your own", PenaltyTypes.SPECIFIC),
 ]
+
+export default class PenaltyLogic {
+    id: string;
+    constructor(id: string) {
+        this.id = id;
+    }
+}

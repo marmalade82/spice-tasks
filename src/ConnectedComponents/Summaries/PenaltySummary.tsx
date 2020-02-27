@@ -4,39 +4,39 @@ import React from "react";
 
 import withObservables from "@nozbe/with-observables";
 import {
-    Reward
-} from "src/Models/Reward/Reward";
-import RewardSummary, {OnChoice} from "src/Components/Summaries/RewardSummary";
+    Penalty
+} from "src/Models/Penalty/Penalty";
+import PenaltySummary, {OnChoice} from "src/Components/Summaries/PenaltySummary";
 import { StyleProp, ViewStyle } from "react-native";
 
 
 
 interface Props {
-    reward: Reward,
+    penalty: Penalty,
     style: StyleProp<ViewStyle>;
     navigation: any;
     onChoice: OnChoice;
 }
 
-const AdaptedRewardSummary: React.FunctionComponent<Props> = (props: Props) => {
-    const reward = props.reward;
+const AdaptedPenaltySummary: React.FunctionComponent<Props> = (props: Props) => {
+    const penalty = props.penalty;
 
     return (
-        <RewardSummary
+        <PenaltySummary
             style={props.style}
-            expireDate={reward.expireDate}
+            expireDate={penalty.expireDate}
             navigation={props.navigation}
-            title={reward.title}
-            details={reward.details}
+            title={penalty.title}
+            details={penalty.details}
             onChoice={props.onChoice}
         >
-        </RewardSummary>
+        </PenaltySummary>
     )
 
 }
 
 interface InputProps {
-    reward: Reward
+    penalty: Penalty
     style: StyleProp<ViewStyle>
     navigation: any;
     onChoice: OnChoice
@@ -48,8 +48,8 @@ interface InputProps {
 
 const enhance = withObservables([], (props: InputProps) => {
     return {
-        reward: props.reward.observe(),
+        penalty: props.penalty.observe(),
     }
 });
 
-export const ConnectedRewardSummary = enhance(AdaptedRewardSummary);
+export const ConnectedPenaltySummary = enhance(AdaptedPenaltySummary);

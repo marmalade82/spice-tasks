@@ -28,6 +28,7 @@ const ScreenNavigator = createStackNavigator(
   , EarnedReward: Screens.EarnedReward
   , EarnedRewards: Screens.EarnedRewardList
   , UnusedEarnedRewards: Screens.UnusedEarnedRewards
+  , Penalty: Screens.Penalty
   , Penalties: Screens.PenaltyList
   , AddPenalty: Screens.AddPenalty
   , ClaimedRewards: Screens.ClaimedRewardList
