@@ -20,7 +20,7 @@ import { RecurringForm, RecurringData, RecurringDefault} from "src/Components/Fo
 import { StreakForm, StreakDefault, StreakData }from "src/Components/Forms/AddGoalForm/StreakForm";
 import Style from "src/Style/Style";
 import { ColumnView } from "../Basic/Basic";
-import { RewardChoices, RewardType, Rewards } from "src/Models/Reward/RewardLogic";
+import { RewardChoices, RewardType, RewardTypes } from "src/Models/Reward/RewardLogic";
 import { GoalChoices, GoalType } from "src/Models/Goal/GoalLogic";
 import { Validate } from "src/Components/Inputs/Validate";
 import { Observable } from "rxjs";
@@ -72,7 +72,7 @@ function Default(): State {
         type: GoalType.NORMAL,
         start_date: new MyDate().prevMidnight().toDate(),
         due_date: new MyDate().prevMidnight().toDate(),
-        reward: Rewards.SPECIFIC,
+        reward: RewardTypes.SPECIFIC,
         rewardId: "",
         penalty: PenaltyTypes.NONE,
         penaltyId: "",
@@ -307,7 +307,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
     };
 
     renderByRewardType = () => {
-        if(this.data().reward === Rewards.SPECIFIC) {
+        if(this.data().reward === RewardTypes.SPECIFIC) {
             return (
                 <DynamicChoiceInput
                     title={"Specific Reward"}

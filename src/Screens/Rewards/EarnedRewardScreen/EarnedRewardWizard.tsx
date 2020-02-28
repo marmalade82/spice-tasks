@@ -1,5 +1,5 @@
 import React from "react";
-import { Rewards, RewardType } from "src/Models/Reward/RewardLogic";
+import { RewardTypes, RewardType } from "src/Models/Reward/RewardLogic";
 import TwoDice, { RewardChoice as TwoDiceRewardChoice } from "src/Components/EarnedRewards/TwoDice/TwoDice";
 import RewardQuery, { Reward } from "src/Models/Reward/RewardQuery";
 import PenaltyQuery, { Penalty } from "src/Models/Penalty/PenaltyQuery";
@@ -100,7 +100,7 @@ export default class EarnedRewardWizard extends React.Component<Props, State> {
 
     render = () => {
         switch(this.props.earnedRewardType) {
-            case Rewards.TWO_DICE: {
+            case RewardTypes.TWO_DICE: {
                 return (
                     <TwoDice 
                         style={this.props.style}

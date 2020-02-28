@@ -58,7 +58,7 @@ export default class DateInput extends React.Component<Props, State> {
 
     onChangeModalDateTime = (d: Date) => {
         this.setState({
-            modalDateTime: d,
+            modalDateTime: new MyDate(d).prevMidnight().toDate(),
         })
     }
 
@@ -142,7 +142,7 @@ export default class DateInput extends React.Component<Props, State> {
                                 const date = new Date(text);
                                 if(isFinite(date.valueOf())) {
                                     //then we have a valid date
-                                    this.props.onChangeDate(date);
+                                    this.props.onChangeDate(new MyDate(date).prevMidnight().toDate());
                                 }
                             }}
                             accessibilityLabel={this.props.accessibilityLabel ? "value-input-" + this.props.accessibilityLabel : undefined}

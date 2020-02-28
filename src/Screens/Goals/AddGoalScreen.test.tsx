@@ -7,6 +7,7 @@ import AddGoalScreen from "src/Screens/Goals/AddGoalScreen";
 import { makeNavigation, destroyAllIn, createGoals } from "src/common/test-utils";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import MyDate from "src/common/Date";
+import { RewardTypes } from "src/Models/Reward/RewardLogic";
 
 
 test('User view all desired initial fields for a normal goal', async () => {
@@ -174,4 +175,17 @@ describe("Validation", () => {
             expect(createdGoals.length).toEqual(0);
         })
     }, 20000)
+
+    test("User must choose a specific reward", async () => {
+        const { getByLabelText, queryByLabelText, getByText, queryByText } = 
+                    render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
+        const toast = queryByLabelText('toast');
+        expect(toast).toEqual(null);
+
+        const summaryInput = getByLabelText("input-goal-summary");
+        fireEvent.changeText(summaryInput, "Dummy value");
+
+        const rewardChoice = getByLabelText("input-" + RewardTypes.SPECIFIC + "-goal-reward");
+        fireEvent.press(rewardChoice);
+    })
 })

@@ -1,6 +1,6 @@
 import { choice } from "src/Models/common/logicUtils";
 
-enum Rewards {
+enum RewardTypes {
     NONE = "none",
     TWO_DICE = "two_dice",
     LOOTBOX = "lootbox",
@@ -11,8 +11,8 @@ enum Rewards {
 
 
 type RewardType = 
-    Rewards.TWO_DICE | Rewards.LOOTBOX | Rewards.COIN_FLIP | 
-    Rewards.WHEEL | Rewards.SPECIFIC | Rewards.NONE;
+    RewardTypes.TWO_DICE | RewardTypes.LOOTBOX | RewardTypes.COIN_FLIP | 
+    RewardTypes.WHEEL | RewardTypes.SPECIFIC | RewardTypes.NONE;
 
 type RewardChoice = {
     label: string;
@@ -21,17 +21,17 @@ type RewardChoice = {
 }
 
 const RewardChoices: RewardChoice[] = [
-    choice("None", Rewards.NONE, Rewards.NONE),
-    choice("Dice", Rewards.TWO_DICE, Rewards.TWO_DICE),
-    choice("Lootbox", Rewards.LOOTBOX),
-    choice("Coin flip", Rewards.COIN_FLIP),
-    choice("Spin the wheel", Rewards.WHEEL),
-    choice("Choose my own", Rewards.SPECIFIC, Rewards.SPECIFIC)
+    choice("None", RewardTypes.NONE, RewardTypes.NONE),
+    choice("Dice", RewardTypes.TWO_DICE, RewardTypes.TWO_DICE),
+    choice("Lootbox", RewardTypes.LOOTBOX),
+    choice("Coin flip", RewardTypes.COIN_FLIP),
+    choice("Spin the wheel", RewardTypes.WHEEL),
+    choice("Choose my own", RewardTypes.SPECIFIC, RewardTypes.SPECIFIC)
 ]
 
 export {
     RewardType,
-    Rewards,
+    RewardTypes as RewardTypes,
     RewardChoices,
 }
 

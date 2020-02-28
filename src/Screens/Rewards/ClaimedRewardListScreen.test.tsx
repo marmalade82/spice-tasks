@@ -12,7 +12,7 @@ import MyDate from "src/common/Date";
 import ClaimedRewardSchema from "src/Models/Reward/ClaimedRewardSchema";
 
 import ClaimedRewardListScreen from "src/Screens/Rewards/ClaimedRewardListScreen";
-import { Rewards } from "src/Models/Reward/RewardLogic";
+import { RewardTypes } from "src/Models/Reward/RewardLogic";
 
 
 

@@ -11,7 +11,7 @@ import {
     createGoals, createTasks, createRewards, createPenalties,
 } from "src/common/test-utils";
 import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
-import { Rewards } from "src/Models/Reward/RewardLogic";
+import { RewardTypes } from "src/Models/Reward/RewardLogic";
 import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 import { PenaltyTypes } from "src/Models/Penalty/PenaltyLogic";
@@ -112,7 +112,7 @@ describe("Using the complete button", () => {
         await wait(async () => {
             const earned = await new EarnedRewardQuery().all();
             expect(earned.length).toEqual(1);
-            expect(earned[0].type).toEqual(Rewards.TWO_DICE);
+            expect(earned[0].type).toEqual(RewardTypes.TWO_DICE);
         });
         
         await teardown(); 
@@ -125,7 +125,7 @@ describe("Using the complete button", () => {
                 const goal = (await createGoals({
                     active: true,
                     title: "Test goal",
-                    rewardType: Rewards.TWO_DICE,
+                    rewardType: RewardTypes.TWO_DICE,
                 }, 1))[0];
                 opts.id = goal.id;
             });
@@ -174,7 +174,7 @@ describe("Using the complete button", () => {
                 const goal = (await createGoals({
                     active: true,
                     title: "Test goal",
-                    rewardType: Rewards.WHEEL,
+                    rewardType: RewardTypes.WHEEL,
                 }, 1))[0];
                 opts.id = goal.id;
             });
@@ -220,7 +220,7 @@ describe("Using the complete button", () => {
                 const goal = (await createGoals({
                     active: true,
                     title: "Test goal",
-                    rewardType: Rewards.COIN_FLIP,
+                    rewardType: RewardTypes.COIN_FLIP,
                 }, 1))[0];
                 opts.id = goal.id;
             });
@@ -267,7 +267,7 @@ describe("Using the complete button", () => {
                 const goal = (await createGoals({
                     active: true,
                     title: "Test goal",
-                    rewardType: Rewards.LOOTBOX,
+                    rewardType: RewardTypes.LOOTBOX,
                 }, 1))[0];
                 opts.id = goal.id;
             });
@@ -319,7 +319,7 @@ describe("Using the complete button", () => {
                     const goal = (await createGoals({
                         active: true,
                         title: "Test goal",
-                        rewardType: Rewards.SPECIFIC,
+                        rewardType: RewardTypes.SPECIFIC,
                     }, 1))[0];
                     opts.id = goal.id;
                 });
@@ -352,7 +352,7 @@ describe("Using the complete button", () => {
 
             await wait(async () => {
                 const earned = (await new EarnedRewardQuery().all())[0];
-                expect(earned.type).toEqual(Rewards.SPECIFIC);
+                expect(earned.type).toEqual(RewardTypes.SPECIFIC);
                 expect(earned.title).toEqual("I am a reward");
                 expect(earned.details).toEqual("I am some details");
             });
@@ -373,7 +373,7 @@ describe("Using the complete button", () => {
                     const goal = (await createGoals({
                         active: true,
                         title: "Test goal",
-                        rewardType: Rewards.SPECIFIC,
+                        rewardType: RewardTypes.SPECIFIC,
                         rewardId: opts.rewardId,
                     }, 1))[0];
                     opts.goalId = goal.id;
@@ -418,7 +418,7 @@ describe("Using the complete button", () => {
                 const goal = (await createGoals({
                     active: true,
                     title: "Test goal",
-                    rewardType: Rewards.NONE,
+                    rewardType: RewardTypes.NONE,
                 }, 1))[0];
                 opts.id = goal.id;
             });

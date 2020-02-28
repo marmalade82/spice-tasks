@@ -7,7 +7,7 @@ import ModelQuery from "src/Models/base/Query";
 import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils";
 import { Q, Database, Model } from "@nozbe/watermelondb";
 import { GoalType } from "src/Models/Goal/GoalLogic";
-import { Rewards } from "src/Models/Reward/RewardLogic";
+import { RewardTypes } from "src/Models/Reward/RewardLogic";
 import EarnedRewardQuery from "../Reward/EarnedRewardQuery";
 import MyDate from "src/common/Date";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
@@ -40,7 +40,7 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
             parentId: "",
             active: true,
             state: "open",
-            rewardType: Rewards.NONE,
+            rewardType: RewardTypes.NONE,
             penaltyType: PenaltyTypes.NONE,
             details: "",
             recurId: "",
@@ -303,10 +303,10 @@ export class GoalLogic {
         const goal: IGoal | null = await new GoalQuery().get(this.id);
         if(goal) {
             switch(goal.rewardType) {
-                case Rewards.NONE: {
+                case RewardTypes.NONE: {
                     // If none, do nothing. No reward was earned.
                 } break;
-                case Rewards.SPECIFIC: {
+                case RewardTypes.SPECIFIC: {
                     await EarnedRewardLogic.earnSpecific(goal.rewardId, this.id);
                 };
                 default: {

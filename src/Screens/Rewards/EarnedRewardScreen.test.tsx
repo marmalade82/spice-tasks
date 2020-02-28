@@ -11,7 +11,7 @@ import {
     createPenalties,
 } from "src/common/test-utils";
 import EarnedRewardScreen from "src/Screens/Rewards/EarnedRewardScreen";
-import { Rewards } from "src/Models/Reward/RewardLogic";
+import { RewardTypes } from "src/Models/Reward/RewardLogic";
 import MyDate from "src/common/Date";
 import ClaimedRewardQuery from "src/Models/Reward/ClaimedRewardQuery";
 
@@ -49,7 +49,7 @@ test.skip("User can view the summary of the earned reward", async() => {
 
             const earned = (await createEarnedRewards({
                 goalId: goal.id,
-                type: Rewards.TWO_DICE,
+                type: RewardTypes.TWO_DICE,
                 earnedDate: new MyDate().add(1, "days").toDate(),
             }, 1))[0];
 
@@ -90,7 +90,7 @@ describe.skip("Earned reward is two dice", () => {
 
                 const earned = (await createEarnedRewards({
                     goalId: goal.id,
-                    type: Rewards.TWO_DICE,
+                    type: RewardTypes.TWO_DICE,
                     earnedDate: new MyDate().add(1, "days").toDate(),
                 }, 1))[0];
 
@@ -144,7 +144,7 @@ describe.skip("Earned reward is two dice", () => {
 
                 const earned = (await createEarnedRewards({
                     goalId: goal.id,
-                    type: Rewards.TWO_DICE,
+                    type: RewardTypes.TWO_DICE,
                     earnedDate: new MyDate().subtract(1, "days").toDate(),
                 }, 1))[0];
 

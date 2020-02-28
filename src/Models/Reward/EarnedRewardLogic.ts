@@ -3,7 +3,7 @@ import ClaimedRewardQuery from "src/Models/Reward/ClaimedRewardQuery";
 import EarnedRewardQuery, { EarnedReward } from "src/Models/Reward/EarnedRewardQuery";
 import MyDate from "src/common/Date";
 import PenaltyQuery from "src/Models/Penalty/PenaltyQuery";
-import { Rewards } from "./RewardLogic";
+import { RewardTypes } from "./RewardLogic";
 import { isBuffer } from "util";
 
 
@@ -23,7 +23,7 @@ export default class EarnedRewardLogic {
                 title: title,
                 details: details,
                 goalId: goalId,
-                type: Rewards.SPECIFIC
+                type: RewardTypes.SPECIFIC
             });
         }
     }
