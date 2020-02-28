@@ -156,8 +156,8 @@ export default class RecurringForm extends DataComponent<Props, State, Data> {
                 <DateTimeInput
                     title={"When?"}
                     type={"time"}
-                    onValueChange={this.onTimeChange}
-                    value={this.data().time}
+                    onDataChange={this.onTimeChange}
+                    data={this.data().time}
                     accessibilityLabel={"recurring-daily-date"}
                 >
 

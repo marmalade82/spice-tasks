@@ -1,8 +1,9 @@
 import React from "react";
 import TaskQuery from "src/Models/Task/TaskQuery";
+import { Observable } from "rxjs";
 
 interface ComponentProps<Data> {
-    success?: string;
+    success?: boolean;
     failure?: string;
     onDataChange: (d: Data) => void
     onBlur?: () => void;
@@ -13,43 +14,75 @@ interface Props<Data> {
     onValidDataChange: (d: Data) => void;
     onInvalidDataChange: (d: Data) => void;
     data: Data
+    revalidate?: Observable<boolean>
 }
 
 interface State<Data> {
-    validated: boolean;
+    errorMessage?: string;
 }
 
 type FullProps<T, Data> = Props<Data> & Omit<T, keyof ComponentProps<Data>>
 
+/**
+ * HOC that generates a new component with the correct logic for doing validation
+ * according to the provided functions.
+*/
 export function Validate<Data, T extends ComponentProps<Data>>(
         Child: new (props: T) => React.Component<T>, 
-        validateOnInput: (d: Data) => boolean ,
-        validateOnBlur: (d: Data) => boolean,
-        validMessage: (d: Data) => string,
-        invalidMessage: (d: Data) => string,
+        validateOnInput: (d: Data) => string | undefined ,
+        validateOnBlur: (d: Data) => string | undefined,
     ) {
 
     return class Validated extends React.Component< FullProps<T, Data>, State<Data>> {
+
+        unsub: () => void;
         constructor(props: FullProps<T, Data>) {
             super(props);
             this.state = {
-                validated: validateOnInput(this.props.data)
+                errorMessage: validateOnInput(this.props.data)
             };
+            this.unsub = () => {};
+        }
+
+        componentDidMount = () => {
+            const revalidate = this.props.revalidate;
+            if(revalidate) {
+                let sub = revalidate.subscribe((doRevalidate) => {
+                    // If we are told to revalidate, we revalidate, since
+                    // something external to this component might have changed.
+                    if(doRevalidate) {
+                        this.onDataChange(this.props.data)
+                    }
+                });
+
+                this.unsub = () => {
+                    sub.unsubscribe();
+                }
+            }
+        }
+
+        componentWillUnmount = () => {
+            this.unsub();
         }
        
         onDataChange = (d: Data) => {
-            if(!validateOnInput(d)) {
+            let message = validateOnInput(d);
+            if(message !== undefined) {
                 this.props.onInvalidDataChange(d);
                 this.setState({
-                    validated: false
+                    errorMessage: message
                 })
             } else {
-                if(!validateOnBlur(d)) {
+                let message = validateOnBlur(d);
+                if( message !== undefined ) {
                     this.props.onInvalidDataChange(d);
+                    this.setState({
+                        errorMessage: message
+                    })
                 } else {
                     this.props.onValidDataChange(d);
                     this.setState({
-                        validated: true
+                        errorMessage: undefined
                     })
                 }
             }
@@ -57,15 +90,16 @@ export function Validate<Data, T extends ComponentProps<Data>>(
         
         onBlur = () => {
             const d = this.props.data;
-            if(validateOnBlur(d)) {
-                this.props.onValidDataChange(d);
-                this.setState({
-                    validated: true
-                })
-            } else {
+            let message = validateOnInput(d);
+            if(message !== undefined) {
                 this.props.onInvalidDataChange(d);
                 this.setState({
-                    validated: false
+                    errorMessage: message
+                })
+            } else {
+                this.props.onValidDataChange(d);
+                this.setState({
+                    errorMessage: undefined
                 })
             }
         }
@@ -74,14 +108,14 @@ export function Validate<Data, T extends ComponentProps<Data>>(
             const { onValidDataChange, data, onInvalidDataChange, ...rest} = this.props;
             return (
                 <Child
-                    success={this.state.validated ? validMessage(this.props.data) : undefined}
-                    failure={!this.state.validated ? invalidMessage(this.props.data) : undefined}
+                    success={this.state.errorMessage === undefined }
+                    failure={this.state.errorMessage }
                     data={this.props.data}
                     onDataChange={this.onDataChange}
+                    onBlur={this.onBlur}
 
                     {...rest as any}
 
-                    onBlur={this.onBlur}
                 ></Child>
             )
         }

@@ -161,9 +161,9 @@ export default class TestScreen extends React.Component<Props, State> {
                     
                     <DateTimeInput
                         title={"Starts on"} 
-                        value={this.state.date}
+                        data={this.state.date}
                         type={"date"}
-                        onValueChange={(d: Date) => {
+                        onDataChange={(d: Date) => {
                             this.setState({
                                 date: d
                             })

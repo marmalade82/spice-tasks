@@ -94,16 +94,16 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                 <DateTimeInput
                     title={"Starts on"}
                     type={"date"}
-                    value={this.data().start_date}
-                    onValueChange={this.onChangeStart}
+                    data={this.data().start_date}
+                    onDataChange={this.onChangeStart}
                     accessibilityLabel={"task-start-date"}
                 />
 
                 <DateTimeInput
                     title={"Due on"}
                     type={"date"} 
-                    value={this.data().due_date}
-                    onValueChange={ this.onChangeDue }
+                    data={this.data().due_date}
+                    onDataChange={ this.onChangeDue }
                     accessibilityLabel={"task-due-date"}
                 />
 

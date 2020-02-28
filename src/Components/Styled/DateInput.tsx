@@ -4,14 +4,16 @@ import { RowView, ColumnView, HeaderText, TouchableView } from "src/Components/B
 import { 
     LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, Styles, 
     TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
-    PLACEHOLDER_GREY,
+    PLACEHOLDER_GREY, PRIMARY_COLOR, ICON_CONTAINER_WIDTH,
     CONTAINER_VERTICAL_MARGIN,
+    TEXT_HORIZONTAL_MARGIN,
 } from "src/Components/Styled/Styles";
 import { StyleProp, Button, ViewStyle, TextInput as Input, Text } from "react-native";
 import MyDate from "src/common/Date";
-import { Icon } from "react-native-elements";
 import Modal from "src/Components/Styled/Modal";
 import DateTimePicker from "src/Components/Inputs/DateTimePicker";
+import { View } from "react-native";
+import { Icon } from "./Icon";
 
 interface Props {
     style?: StyleProp<ViewStyle>;
@@ -23,6 +25,8 @@ interface Props {
     onChangeDate: (s : Date) => void;
     accessibilityLabel?: string;
     format: "january 1st, 2020"
+    onBlur?: () => void;
+    icon?: "mandatory" | "attention";
 }
 
 interface State {
@@ -39,6 +43,19 @@ export default class DateInput extends React.Component<Props, State> {
         };
     }
 
+    iconType = (): "mandatory" | "attention" => {
+        switch(this.props.icon) {
+            case "mandatory": {
+                return "mandatory"
+            } break;
+            case "attention": {
+                return "attention"
+            } break;
+        }
+
+        return "attention";
+    }
+
     onChangeModalDateTime = (d: Date) => {
         this.setState({
             modalDateTime: d,
@@ -51,7 +68,7 @@ export default class DateInput extends React.Component<Props, State> {
             <RowView style={[{
                     flex: 0,
                     backgroundColor: "transparent",
-                    paddingLeft: LEFT_SECOND_MARGIN,
+                    paddingLeft: LEFT_FIRST_MARGIN,
                     paddingRight: RIGHT_SECOND_MARGIN,
                     justifyContent: "flex-start",
                     alignItems: "flex-end",
@@ -59,11 +76,13 @@ export default class DateInput extends React.Component<Props, State> {
                 }, this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}
             >
+                {this.renderLeftIcon()}
                 <ColumnView style={{
                     flex: 1,
                     backgroundColor: "transparent",
                     borderColor: this.props.underlineColor ? this.props.underlineColor : TEXT_GREY,
                     borderBottomWidth: 1,
+                    marginLeft: TEXT_HORIZONTAL_MARGIN,
                 }}>
                     <TouchableView style={{
                             flex: 1,
@@ -149,6 +168,31 @@ export default class DateInput extends React.Component<Props, State> {
         }
     }
 
+    renderLeftIcon = () => {
+        if(this.props.icon) {
+            let type = this.iconType();
+            return(
+                <Icon
+                    type={type}
+                    backgroundColor={"transparent"}
+                    color={PRIMARY_COLOR}
+                    accessibilityLabel={this.props.accessibilityLabel ? type + this.props.accessibilityLabel : type}
+                ></Icon>
+            )    
+        } else {
+            return (
+                <View
+                    style={{
+                        flex: 0,
+                        height: ICON_CONTAINER_WIDTH,
+                        width: ICON_CONTAINER_WIDTH,
+                        backgroundColor:"transparent"
+                    }}
+                ></View>
+            )
+        }
+    }
+
     renderDate = () => {
         const date = new MyDate(this.props.value)
         switch(this.props.format) {
@@ -164,12 +208,8 @@ export default class DateInput extends React.Component<Props, State> {
     renderIcon = () => {
         return (
             <Icon
-                name={"chevron-right"}
-                type={"feather"}
-                color={TEXT_GREY}
-                size={20}
-                style={{
-                }}
+                type={"right"}
+                backgroundColor={"transparent"}
             ></Icon>
         );
     }

@@ -15,6 +15,7 @@ import {
 } from "src/Components/Inputs";
 
 import { Props as SummaryProps } from "src/Components/Inputs/StringInput";
+import { Props as DateProps } from "src/Components/inputs/DateTimeInput";
 import { RecurringForm, RecurringData, RecurringDefault} from "src/Components/Forms/RecurringForm";
 import { StreakForm, StreakDefault, StreakData }from "src/Components/Forms/AddGoalForm/StreakForm";
 import Style from "src/Style/Style";
@@ -23,7 +24,11 @@ import { RewardChoices, RewardType, Rewards } from "src/Models/Reward/RewardLogi
 import { GoalChoices, GoalType } from "src/Models/Goal/GoalLogic";
 import { Validate } from "src/Components/Inputs/Validate";
 import { Observable } from "rxjs";
+import { mapTo } from "rxjs/operators";
 import { PenaltyTypes, PenaltyChoices } from "src/Models/Penalty/PenaltyLogic";
+import MyDate from "src/common/Date";
+import { EventDispatcher, IEventDispatcher, fromEvent } from "src/common/EventDispatcher";
+import { start } from "repl";
 
 interface Props {
     navigation: Navigator
@@ -65,31 +70,48 @@ function Default(): State {
     return {
         title: "",
         type: GoalType.NORMAL,
-        start_date: new Date(),
-        due_date: new Date(),
+        start_date: new MyDate().prevMidnight().toDate(),
+        due_date: new MyDate().prevMidnight().toDate(),
         reward: Rewards.SPECIFIC,
         rewardId: "",
         penalty: PenaltyTypes.NONE,
         penaltyId: "",
-        //recurData: RecurringDefault(),
         streakData: StreakDefault(),
         details: "",
         repeats: "never",
     } as const
 }
 
+const DUE_DATE_CHANGE = 'due_date_change';
+const START_DATE_CHANGE = 'start_date_change';
+
 export default class AddGoalForm extends DataComponent<Props, State, State> {
     SummaryInput = Validate<string, SummaryProps>(
                         StringInput, 
-                        (d: string) => { return d.length > 0 },
-                        (d: string) => { return d.length > 0},
-                        (d: string) => "",
-                        (d: string) => ""
+                        (d: string) => d.length > 0 ? undefined : "" ,
+                        (d: string) => d.length > 0 ? undefined : "",
                    )
+    StartDateInput = Validate<Date, DateProps>(
+                        DateTimeInput,
+                        (d: Date) => d > this.data().due_date ? "" : undefined ,
+                        (d: Date) => d > this.data().due_date ? "" : undefined ,
+                    );
+    DueDateInput = Validate<Date, DateProps>(
+                        DateTimeInput,
+                        (d: Date) => d < this.data().start_date ? "" : undefined,
+                        (d: Date) => d < this.data().start_date ? "" : undefined
+                    );
+    dispatcher: IEventDispatcher;
+    startDateRefresh : Observable<boolean>;
+    dueDateRefresh : Observable<boolean>;
+
     constructor(props: Props) {
         super(props);
 
         this.state = Default();
+        this.dispatcher = new EventDispatcher();
+        this.startDateRefresh = fromEvent(this.dispatcher, DUE_DATE_CHANGE).pipe(mapTo(true));
+        this.dueDateRefresh = fromEvent(this.dispatcher, START_DATE_CHANGE).pipe(mapTo(true)); 
     }
 
     onChangeTitle = (text: string) => {
@@ -109,12 +131,17 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         this.setData({
             start_date: date
         });
+
+        this.dispatcher.fireEvent(START_DATE_CHANGE);
     }
 
     onChangeDueDate = (date: Date) => {
         this.setData({
             due_date: date
         });
+
+        // Put this lower so that setData goes on the event queue first.
+        this.dispatcher.fireEvent(DUE_DATE_CHANGE);
     }
 
     onChangeType = (type: string) => {
@@ -175,21 +202,25 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
                     { this.renderStreakForm() }
 
-                    <DateTimeInput
+                    <this.StartDateInput
                         title={"Starts on"}
                         type={"date"}
-                        value={ this.data().start_date }
-                        onValueChange={ this.onChangeStartDate }
+                        data={ this.data().start_date }
+                        onValidDataChange={ this.onChangeStartDate }
+                        onInvalidDataChange={ this.onChangeStartDate }
                         accessibilityLabel={ "goal-start-date" }
-                    />
+                        revalidate={this.startDateRefresh}
+                    ></this.StartDateInput>
 
-                    <DateTimeInput
+                    <this.DueDateInput
                         title={"Due on"} 
                         type={"date"}
-                        value={ this.data().due_date }
-                        onValueChange={ this.onChangeDueDate }
+                        data={ this.data().due_date }
+                        onInvalidDataChange={ this.onChangeDueDate }
+                        onValidDataChange={this.onChangeDueDate}
                         accessibilityLabel = { "goal-due-date" }
-                    />
+                        revalidate={this.dueDateRefresh}
+                    ></this.DueDateInput>
 
                     <ChoiceInput
                         title={"Reward"}

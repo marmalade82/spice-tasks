@@ -8,13 +8,16 @@ import { ColumnView } from "src/Components/Basic/Basic";
 import { Label, DateInput } from "src/Components/Styled/Styled";
 import { CONTAINER_VERTICAL_MARGIN } from "src/Components/Styled/Styles";
 
-interface Props {
+export interface Props {
     title: string;
     type: "date" | "time" | "both"
-    value: Date
-    onValueChange: (date: Date) => void;
+    data: Date
+    onDataChange: (date: Date) => void;
     accessibilityLabel: string;
     style?: StyleProp<ViewStyle>;
+    success ? : boolean;
+    failure ? : string;
+    onBlur?: () => void;
 }
 
 interface State {
@@ -30,6 +33,11 @@ export default class DateTimeInput extends React.Component<Props,State> {
 
     }
 
+    icon = () => {
+        if(this.props.failure !== undefined) {
+            return "attention";
+        }
+    }
 
     render = () => {
         return (
@@ -41,10 +49,12 @@ export default class DateTimeInput extends React.Component<Props,State> {
             >
                 <Label text={this.props.title}></Label>
                 <DateInput
-                    value={this.props.value}
-                    onChangeDate={this.props.onValueChange}
+                    value={this.props.data}
+                    onChangeDate={this.props.onDataChange}
                     format={"january 1st, 2020"}
                     accessibilityLabel={this.props.accessibilityLabel}
+                    onBlur={this.props.onBlur}
+                    icon={this.icon()}
                 ></DateInput>
             </ColumnView>
         );

@@ -6,14 +6,14 @@ import {
     LEFT_SECOND_MARGIN, ICON_CONTAINER_WIDTH, PRIMARY_COLOR, 
     RIGHT_SECOND_MARGIN, TEXT_HORIZONTAL_MARGIN, SECONDARY_COLOR, 
     PRIMARY_COLOR_LIGHT, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION, 
-    LEFT_FIRST_MARGIN, Styles, TEXT_VERTICAL_MARGIN, ROW_HEIGHT
+    LEFT_FIRST_MARGIN, Styles, TEXT_VERTICAL_MARGIN, ROW_HEIGHT, TEXT_GREY,
 } from "src/Components/Styled/Styles";
 
 
 interface Props {
     type: "complete" | "delete" | "goal" | "task" | 
         "reward" | "penalty" | "mandatory" | "attention" | "info" | "recur"| 
-        "earned_reward" | "earned_penalty";
+        "earned_reward" | "earned_penalty" | "right";
     accessibilityLabel?: string;
     backgroundColor?: string;
     color?: string;
@@ -171,6 +171,18 @@ export default class StyledIcon extends React.Component<Props, State>{
                         name="thumbs-up"
                         type="feather"
                         color={this.props.color ? this.props.color : SECONDARY_COLOR}
+                    ></Icon>
+                );
+            } break;
+            case "right": {
+                return (
+                    <Icon
+                        name={"chevron-right"}
+                        type={"feather"}
+                        color={TEXT_GREY}
+                        size={20}
+                        style={{
+                        }}
                     ></Icon>
                 );
             } break;

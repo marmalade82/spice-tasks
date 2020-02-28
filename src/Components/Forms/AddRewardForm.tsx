@@ -77,8 +77,8 @@ export default class AddRewardForm extends DataComponent<Props, State, State> {
                 <DateTimeInput
                     title={"Expires on"}
                     type={"date"}
-                    value={this.data().expire_date}
-                    onValueChange={this.onChangeExpire}
+                    data={this.data().expire_date}
+                    onDataChange={this.onChangeExpire}
                     accessibilityLabel={"reward-expire-date"}
                 />
             </ColumnView>

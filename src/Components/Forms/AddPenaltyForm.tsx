@@ -80,8 +80,8 @@ export default class AddPenaltyForm extends DataComponent<Props, State, State> {
                 <DateTimeInput
                     title={"Expires on"}
                     type={"date"}
-                    value={this.data().expire_date}
-                    onValueChange={this.onChangeExpire}
+                    data={this.data().expire_date}
+                    onDataChange={this.onChangeExpire}
                     accessibilityLabel={"penalty-expire-date"}
                 />
             </ColumnView>

@@ -14,7 +14,7 @@ export interface Props {
     accessibilityLabel: string;
     style?: StyleProp<ViewStyle>;
     multiline?: boolean;
-    success ? : string;
+    success ? : boolean;
     failure ? : string;
     onBlur?: () => void;
 }
