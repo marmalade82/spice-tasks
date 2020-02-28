@@ -8,7 +8,7 @@ import {
     CONTAINER_VERTICAL_MARGIN,
     TEXT_HORIZONTAL_MARGIN,
 } from "src/Components/Styled/Styles";
-import { StyleProp, Button, ViewStyle, TextInput as Input, Text } from "react-native";
+import { StyleProp, Button, ViewStyle, TextInput as TInput, Text } from "react-native";
 import MyDate from "src/common/Date";
 import Modal from "src/Components/Styled/Modal";
 import DateTimePicker from "src/Components/Inputs/DateTimePicker";
@@ -132,6 +132,22 @@ export default class DateInput extends React.Component<Props, State> {
                         >
                         </Button>
                     </Modal>
+                    <View style={{
+                        flex: 0,
+                        height: 0,
+                        width: 0,
+                    }}>
+                        <TInput
+                            onChangeText={(text) => {
+                                const date = new Date(text);
+                                if(isFinite(date.valueOf())) {
+                                    //then we have a valid date
+                                    this.props.onChangeDate(date);
+                                }
+                            }}
+                            accessibilityLabel={this.props.accessibilityLabel ? "value-input-" + this.props.accessibilityLabel : undefined}
+                        ></TInput>
+                    </View>
                 </ColumnView>
             </RowView>
         );

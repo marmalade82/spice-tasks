@@ -6,6 +6,7 @@ import { fireEvent, render, wait, waitForElement } from '@testing-library/react-
 import AddGoalScreen from "src/Screens/Goals/AddGoalScreen";
 import { makeNavigation, destroyAllIn, createGoals } from "src/common/test-utils";
 import GoalQuery from "src/Models/Goal/GoalQuery";
+import MyDate from "src/common/Date";
 
 
 test('User view all desired initial fields for a normal goal', async () => {
@@ -131,3 +132,46 @@ test("User can fill out all fields of a streak goal and have them saved to datab
 
     await destroyAllIn('goals');
 });
+
+describe("Validation", () => {
+    test("No summary is provided", async () => {
+        const { getByLabelText, queryByLabelText, getByText, queryByText } = 
+                    render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
+        const toast = queryByLabelText('toast');
+        expect(toast).toEqual(null);
+
+        const saveButton = getByLabelText("input-save-button");
+        fireEvent.press(saveButton);
+
+        await wait(async () => {
+            const toast = getByLabelText("toast");
+            const createdGoals = (await new GoalQuery().all())
+            expect(createdGoals.length).toEqual(0);
+        })
+    })
+
+    test("Start date is after due date", async () => {
+        const { getByLabelText, queryByLabelText, getByText, queryByText } = 
+                    render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
+        const toast = queryByLabelText('toast');
+        expect(toast).toEqual(null);
+
+        const summaryInput = getByLabelText("input-goal-summary");
+        fireEvent.changeText(summaryInput, "Dummy value");
+
+        const dueInput = getByLabelText("value-input-goal-due-date");
+        fireEvent.changeText(dueInput, new MyDate().toDate().toString());
+
+        const startInput = getByLabelText("value-input-goal-start-date");
+        fireEvent.changeText(startInput, new MyDate().add(1, "days").toDate().toString());
+
+        const saveButton = getByLabelText("input-save-button");
+        fireEvent.press(saveButton);
+
+        await wait(async () => {
+            const toast = getByLabelText("toast");
+            const createdGoals = (await new GoalQuery().all())
+            expect(createdGoals.length).toEqual(0);
+        })
+    }, 20000)
+})

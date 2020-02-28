@@ -1,11 +1,11 @@
 import React from "react";
 import { View, ScrollView, SafeAreaView, Button } from "react-native";
-import { AddGoalForm, AddGoalData, AddGoalDefault } from "src/Components/Forms/AddGoalForm";
+import { AddGoalForm, AddGoalData, AddGoalDefault, ValidateGoalForm } from "src/Components/Forms/AddGoalForm";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { GoalQuery, Goal, IGoal } from "src/Models/Goal/GoalQuery";
 import { ColumnView } from "src/Components/Basic/Basic";
-import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
+import { DocumentView, ScreenHeader, Toast } from "src/Components/Styled/Styled";
 import { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 import Recur from "src/Models/Recurrence/Recur";
 import MyDate from "src/common/Date";
@@ -22,6 +22,8 @@ interface Props {
 interface State { 
     data: AddGoalData
     goal?: Goal
+    toast: string;
+    showToast: boolean;
 }
 
 type OmitFromGoal = "parentId" | "state" | "active" | "lastRefreshed" | 
@@ -29,11 +31,15 @@ type OmitFromGoal = "parentId" | "state" | "active" | "lastRefreshed" |
                     "streakWeeklyStart" | "streakMonthlyStart"
 
 export default class AddGoalScreen extends React.Component<Props, State> {
+    goalFormRef: React.RefObject<AddGoalForm>;
     constructor(props) {
         super(props);
         this.state = {
             data: AddGoalDefault(),
+            toast: "",
+            showToast: false,
         }
+        this.goalFormRef = React.createRef();
     }
     static navigationOptions = ({navigation}) => {
         return {
@@ -74,44 +80,56 @@ export default class AddGoalScreen extends React.Component<Props, State> {
 
 
     onSave = async () => {
-        const data = this.state.data;
-        const streak = data.streakData;
-        const goalData: Partial<IGoal> = {
-            title: data.title,
-            goalType: data.type,
-            startDate: data.start_date,
-            dueDate: data.due_date,
-            streakMinimum: streak.minimum,
-            streakType: streak.type,
-            rewardType: data.reward,
-            penaltyType: data.penalty,
-            details: data.details,
-            rewardId: data.rewardId,
-            penaltyId: data.penaltyId,
-        };
+        let message : string | undefined = undefined;
+        if(this.goalFormRef.current) {
+            message = ValidateGoalForm(this.goalFormRef.current);
+        }
 
-        if(this.state.goal) {
-            goalData.latestCycleStartDate = new MyDate(goalData.startDate).prevMidnight().toDate();
-            void new GoalQuery().update(this.state.goal, goalData)
-                .catch((reason) => {
-                    console.log("Failed to update existing goal with reason: " + reason);
-                });
-
-            this.props.navigation.goBack();
+        if(message !== undefined) {
+            this.setState({
+                showToast: true,
+                toast: message,
+            });
         } else {
-            // Whether a goal is recurring can only be set in this form on creation. Otherwise it needs to be handled elsewhere.
-            let recur: Recur | null = await RecurLogic.createForGoal(data.repeats);
+            const data = this.state.data;
+            const streak = data.streakData;
+            const goalData: Partial<IGoal> = {
+                title: data.title,
+                goalType: data.type,
+                startDate: data.start_date,
+                dueDate: data.due_date,
+                streakMinimum: streak.minimum,
+                streakType: streak.type,
+                rewardType: data.reward,
+                penaltyType: data.penalty,
+                details: data.details,
+                rewardId: data.rewardId,
+                penaltyId: data.penaltyId,
+            };
 
-            if(recur) {
-                goalData.recurId = recur.id;
+            if(this.state.goal) {
+                goalData.latestCycleStartDate = new MyDate(goalData.startDate).prevMidnight().toDate();
+                void new GoalQuery().update(this.state.goal, goalData)
+                    .catch((reason) => {
+                        console.log("Failed to update existing goal with reason: " + reason);
+                    });
+
+                this.props.navigation.goBack();
+            } else {
+                // Whether a goal is recurring can only be set in this form on creation. Otherwise it needs to be handled elsewhere.
+                let recur: Recur | null = await RecurLogic.createForGoal(data.repeats);
+
+                if(recur) {
+                    goalData.recurId = recur.id;
+                }
+
+                void new GoalQuery().create(goalData)
+                    .catch((reason) => {
+                        console.log("Failed to create goal with reason: " + reason);
+                    });  
+
+                this.props.navigation.goBack();
             }
-
-            void new GoalQuery().create(goalData)
-                .catch((reason) => {
-                    console.log("Failed to create goal with reason: " + reason);
-                });  
-
-            this.props.navigation.goBack();
         }
     }
  
@@ -128,6 +146,15 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                     onPress={this.onSave}
                     accessibilityLabel={"input-save-button"}
                 />
+                <Toast
+                    visible={this.state.showToast}
+                    message={this.state.toast}
+                    onToastDisplay={() => {
+                        this.setState({
+                            showToast: false
+                        });
+                    }}
+                ></Toast>
             </DocumentView>
         );
     }
@@ -176,6 +203,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 data={this.state.data}
                 rewardChoices={this.rewardChoices()}
                 penaltyChoices={this.penaltyChoices()}
+                ref={this.goalFormRef}
             ></AddGoalForm>
         );
     }

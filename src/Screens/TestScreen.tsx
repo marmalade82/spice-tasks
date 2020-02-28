@@ -10,7 +10,7 @@ import {
     TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
     PLACEHOLDER_GREY,
 } from "src/Components/Styled/Styles";
-import { ScrollView, DeviceEventEmitter, Button} from "react-native";
+import { ScrollView, DeviceEventEmitter, Button, TextInput as TInput} from "react-native";
 import SpiceDBService from "src/Services/DBService";
 import TimeQuery from "src/Models/Time/TimeQuery";
 import PushNotification from "src/Notification";
@@ -105,7 +105,24 @@ export default class TestScreen extends React.Component<Props, State> {
                     marginBottom: 60
                 }}>{"Test Screen: " + this.state.count.toString()}</ScreenHeader>
 
+
                 <ScrollView>
+                    <TInput
+                        value={this.state.text}
+                        onChangeText={() => {
+                            console.log("SOMEONE CHANGED MY TEXT")
+                        }}
+                    ></TInput>
+                    
+                    <Button
+                        title="Add Period"
+                        onPress={() => {
+                            this.setState({
+                                text: this.state.text + "."
+                            });
+                        }}
+                    ></Button>
+
                     <Button
                         title="Start"
                         onPress={() => {

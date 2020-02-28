@@ -12,10 +12,21 @@ export default class Toast extends React.Component<Props> {
         super(props);
     }
 
+    componentDidMount = () => {
+        if(this.props.visible) {
+            this.props.onToastDisplay();
+        }
+    }
+
+    componentDidUpdate = () => {
+        if(this.props.visible) {
+            this.props.onToastDisplay();
+        }
+    }
+
     render = () => {
         if(this.props.visible) {
             ToastAndroid.showWithGravity(this.props.message, ToastAndroid.LONG, ToastAndroid.CENTER)
-            this.props.onToastDisplay();
         }
 
         if(this.props.message) {

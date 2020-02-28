@@ -82,24 +82,35 @@ function Default(): State {
     } as const
 }
 
+export function ValidateGoalForm(form: AddGoalForm): string | undefined {
+    const state = form.data();
+
+    const titleMessage = form.validateTitle(state.title)
+    if(titleMessage !== undefined) {
+        return titleMessage;
+    }
+
+    const startDateMessage = form.validateStartDate(state.start_date);
+    if(startDateMessage !== undefined) {
+        return startDateMessage;
+    }
+
+    return undefined;
+};
+
 const DUE_DATE_CHANGE = 'due_date_change';
 const START_DATE_CHANGE = 'start_date_change';
 
 export default class AddGoalForm extends DataComponent<Props, State, State> {
     SummaryInput = Validate<string, SummaryProps>(
                         StringInput, 
-                        (d: string) => d.length > 0 ? undefined : "" ,
-                        (d: string) => d.length > 0 ? undefined : "",
+                        (d: string) => this.validateTitle(d) ,
+                        (d: string) => this.validateTitle(d),
                    )
     StartDateInput = Validate<Date, DateProps>(
                         DateTimeInput,
-                        (d: Date) => d > this.data().due_date ? "" : undefined ,
-                        (d: Date) => d > this.data().due_date ? "" : undefined ,
-                    );
-    DueDateInput = Validate<Date, DateProps>(
-                        DateTimeInput,
-                        (d: Date) => d < this.data().start_date ? "" : undefined,
-                        (d: Date) => d < this.data().start_date ? "" : undefined
+                        (d: Date) => this.validateStartDate(d) ,
+                        (d: Date) => this.validateStartDate(d) ,
                     );
     dispatcher: IEventDispatcher;
     startDateRefresh : Observable<boolean>;
@@ -113,13 +124,28 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         this.startDateRefresh = fromEvent(this.dispatcher, DUE_DATE_CHANGE).pipe(mapTo(true));
         this.dueDateRefresh = fromEvent(this.dispatcher, START_DATE_CHANGE).pipe(mapTo(true)); 
     }
+    
+    /*******************************************
+     * Validation functions
+     */
+
+    validateTitle = (title: string) => {
+        return title.length > 0 ? undefined : "Please provide a summary";
+    }
+
+    validateStartDate = (start: Date) => {
+        return start > this.data().due_date ? "Start date cannot be after end date" : undefined
+    }
+
+    /******************************************
+     * Event handling functions
+     */
 
     onChangeTitle = (text: string) => {
         this.setData({
             title: text
         })
     }
-
 
     onChangeStreak = (data: StreakData ) => {
         this.setData({
@@ -165,6 +191,10 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
             details: dets
         })
     }
+
+    /********************************************************************
+     * Render functions
+     */
 
     render = () => {
         return (
@@ -212,15 +242,13 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         revalidate={this.startDateRefresh}
                     ></this.StartDateInput>
 
-                    <this.DueDateInput
+                    <DateTimeInput
                         title={"Due on"} 
                         type={"date"}
                         data={ this.data().due_date }
-                        onInvalidDataChange={ this.onChangeDueDate }
-                        onValidDataChange={this.onChangeDueDate}
+                        onDataChange={ this.onChangeDueDate }
                         accessibilityLabel = { "goal-due-date" }
-                        revalidate={this.dueDateRefresh}
-                    ></this.DueDateInput>
+                    ></DateTimeInput>
 
                     <ChoiceInput
                         title={"Reward"}
