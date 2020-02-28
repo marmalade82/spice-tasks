@@ -5,14 +5,15 @@ import {
     LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, Styles, 
     TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
     PLACEHOLDER_GREY,
-    CONTAINER_VERTICAL_MARGIN,
+    CONTAINER_VERTICAL_MARGIN, PRIMARY_COLOR, ICON_CONTAINER_WIDTH, TEXT_HORIZONTAL_MARGIN,
 } from "src/Components/Styled/Styles";
 import Modal from "src/Components/Styled/Modal";
 import ModalRow from "src/Components/Styled/ModalRow";
 import { StyleProp, ViewStyle, TextInput as Input, Picker, Text } from "react-native";
 import { Icon } from "react-native-elements";
 import { Observable } from "rxjs";
-
+import { View } from "react-native";
+import { Icon as StyledIcon } from "./Icon";
 
 interface Props {
     style?: StyleProp<ViewStyle>
@@ -24,6 +25,8 @@ interface Props {
     choices: Observable<LabelValue[]>
     accessibilityLabel?: string;
     onValueChange: (itemValue: string, itemPosition: number) => void
+    onBlur?: () => void;
+    icon?: "mandatory" | "attention";
 }
 
 interface LabelValue {
@@ -77,12 +80,25 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
 
     }
 
+    iconType = () => {
+        switch(this.props.icon) {
+            case "mandatory": {
+                return "mandatory"
+            } break;
+            case "attention": {
+                return "attention"
+            } break;
+        }
+
+        return "attention";
+    }
+
     render = () => {
         return (
             <RowView style={[{
                     flex: 0,
                     backgroundColor: "transparent",
-                    paddingLeft: LEFT_SECOND_MARGIN,
+                    paddingLeft: LEFT_FIRST_MARGIN,
                     paddingRight: RIGHT_SECOND_MARGIN,
                     justifyContent: "flex-start",
                     alignItems: "flex-end",
@@ -90,11 +106,13 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
                 }, this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}
             >
+                {this.renderLeftIcon()}
                 <ColumnView style={{
                     flex: 1,
                     backgroundColor: "transparent",
                     borderColor: this.props.underlineColor ? this.props.underlineColor : TEXT_GREY,
                     borderBottomWidth: 1,
+                    marginLeft: TEXT_HORIZONTAL_MARGIN,
                 }}>
 
                     <TouchableView style={{
@@ -209,6 +227,31 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
                 ></ModalRow>
             );
         })
+    }
+
+    renderLeftIcon = () => {
+        if(this.props.icon) {
+            return(
+                <StyledIcon
+                    type={this.iconType()}
+                    backgroundColor={"transparent"}
+                    color={PRIMARY_COLOR}
+                    accessibilityLabel={this.props.accessibilityLabel ? "mandatory-" + this.props.accessibilityLabel : "mandatory"}
+                ></StyledIcon>
+            )    
+        } else {
+            return (
+                <View
+                    style={{
+                        flex: 0,
+                        height: ICON_CONTAINER_WIDTH,
+                        width: ICON_CONTAINER_WIDTH,
+                        backgroundColor:"transparent"
+                    }}
+                ></View>
+            )
+        }
+
     }
 
 }

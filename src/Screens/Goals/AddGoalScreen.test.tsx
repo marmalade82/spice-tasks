@@ -8,6 +8,7 @@ import { makeNavigation, destroyAllIn, createGoals } from "src/common/test-utils
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import MyDate from "src/common/Date";
 import { RewardTypes } from "src/Models/Reward/RewardLogic";
+import { PenaltyTypes } from "src/Models/Penalty/PenaltyLogic";
 
 
 test('User view all desired initial fields for a normal goal', async () => {
@@ -111,6 +112,9 @@ test("User can fill out all fields of a streak goal and have them saved to datab
     const typeChoice = getByLabelText("input-" + expected.type + "-goal-type");
     fireEvent.press(typeChoice);
 
+    const rewardChoice = getByLabelText("input-" + RewardTypes.NONE + "-goal-reward");
+    fireEvent.press(rewardChoice);
+
     const streakTypeChoice = getByLabelText("input-" + expected.streakType + "-streak-type" )
     fireEvent.press(streakTypeChoice);
 
@@ -187,5 +191,32 @@ describe("Validation", () => {
 
         const rewardChoice = getByLabelText("input-" + RewardTypes.SPECIFIC + "-goal-reward");
         fireEvent.press(rewardChoice);
-    })
+
+        const saveButton = getByLabelText("input-save-button");
+        fireEvent.press(saveButton);
+
+        await wait(async () => {
+            const toast = getByLabelText("toast");
+        })
+    }, 20000)
+
+    test("User must choose a specific penalty", async () => {
+        const { getByLabelText, queryByLabelText, getByText, queryByText } = 
+                    render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
+        const toast = queryByLabelText('toast');
+        expect(toast).toEqual(null);
+
+        const summaryInput = getByLabelText("input-goal-summary");
+        fireEvent.changeText(summaryInput, "Dummy value");
+
+        const rewardChoice = getByLabelText("input-" + PenaltyTypes.SPECIFIC + "-goal-penalty");
+        fireEvent.press(rewardChoice);
+
+        const saveButton = getByLabelText("input-save-button");
+        fireEvent.press(saveButton);
+
+        await wait(async () => {
+            const toast = getByLabelText("toast");
+        })
+    }, 20000)
 })

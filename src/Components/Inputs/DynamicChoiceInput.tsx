@@ -15,16 +15,19 @@ interface LabelValue {
     key: string,
 }
 
-interface Props {
+export interface Props {
     title: string;
-    selectedValue: string;
+    data: string;
     choices: Observable<LabelValue[]>
-    onValueChange: (itemValue: string, itemPosition: number) => void
+    onDataChange: (itemValue: string, itemPosition?: number) => void
     accessibilityLabel: string;
     style?: StyleProp<ViewStyle>;
+    success ? : boolean;
+    failure ? : string;
+    onBlur?: () => void;
 }
 
-interface State {
+export interface State {
 
 }
 
@@ -32,6 +35,12 @@ export default class DynamicChoiceInput extends Input<Props, State> {
 
     constructor(props: Props) {
         super(props);
+    }
+
+    icon = () => {
+        if(this.props.failure !== undefined) {
+            return "attention";
+        }
     }
 
     render = () => {
@@ -46,10 +55,12 @@ export default class DynamicChoiceInput extends Input<Props, State> {
                     text={this.props.title} 
                 ></Label>
                 <CInput
-                    value={this.props.selectedValue}
+                    value={this.props.data}
                     choices={this.props.choices}
-                    onValueChange={this.props.onValueChange}
+                    onValueChange={this.props.onDataChange}
                     accessibilityLabel={this.props.accessibilityLabel}
+                    onBlur={this.props.onBlur}
+                    icon={this.icon()}
                 ></CInput>
             </ColumnView>
         )

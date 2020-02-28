@@ -14,6 +14,8 @@ import {
     DynamicChoiceInput,
 } from "src/Components/Inputs";
 
+import { Props as DynamicChoiceProps } from "src/Components/Inputs/DynamicChoiceInput";
+
 import { Props as SummaryProps } from "src/Components/Inputs/StringInput";
 import { Props as DateProps } from "src/Components/inputs/DateTimeInput";
 import { RecurringForm, RecurringData, RecurringDefault} from "src/Components/Forms/RecurringForm";
@@ -95,6 +97,16 @@ export function ValidateGoalForm(form: AddGoalForm): string | undefined {
         return startDateMessage;
     }
 
+    const specificRewardMessage = form.validateSpecificReward(state.rewardId);
+    if(specificRewardMessage !== undefined) {
+        return specificRewardMessage;
+    }
+
+    const specificPenaltyMessage = form.validateSpecificPenalty(state.penaltyId);
+    if(specificPenaltyMessage !== undefined) {
+        return specificPenaltyMessage;
+    }
+
     return undefined;
 };
 
@@ -112,6 +124,16 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         (d: Date) => this.validateStartDate(d) ,
                         (d: Date) => this.validateStartDate(d) ,
                     );
+    SpecificRewardInput = Validate<string, DynamicChoiceProps>(
+                            DynamicChoiceInput,
+                            (s: string) => this.validateSpecificReward(s),
+                            (s: string) => this.validateSpecificReward(s),
+                        );
+    SpecificPenaltyInput = Validate<string, DynamicChoiceProps> (
+                            DynamicChoiceInput,
+                            (s: string) => this.validateSpecificPenalty(s),
+                            (s: string) => this.validateSpecificPenalty(s),
+                            )
     dispatcher: IEventDispatcher;
     startDateRefresh : Observable<boolean>;
     dueDateRefresh : Observable<boolean>;
@@ -135,6 +157,28 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
     validateStartDate = (start: Date) => {
         return start > this.data().due_date ? "Start date cannot be after end date" : undefined
+    }
+
+    validateSpecificReward = (rewardId: string) => {
+        switch(this.data().reward) {
+            case RewardTypes.SPECIFIC: {
+                return rewardId.length > 0 ? undefined : "Please choose a reward";
+            } break;
+            default : {
+                return undefined;
+            }
+        }
+    }
+
+    validateSpecificPenalty = (penaltyId: string) => {
+        switch(this.data().penalty) {
+            case PenaltyTypes.SPECIFIC: {
+                return penaltyId.length > 0 ? undefined : "Please choose a penalty";
+            } break;
+            default: {
+                return undefined;
+            }
+        }
     }
 
     /******************************************
@@ -189,6 +233,18 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
     onChangeDetails = (dets: string) => {
         this.setData({
             details: dets
+        })
+    }
+
+    onChangeSpecificReward = (rewardId: string) => {
+        this.setData({
+            rewardId: rewardId,
+        })
+    }
+
+    onChangeSpecificPenalty = (penaltyId: string) => {
+        this.setData({
+            penaltyId: penaltyId
         })
     }
 
@@ -309,17 +365,14 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
     renderByRewardType = () => {
         if(this.data().reward === RewardTypes.SPECIFIC) {
             return (
-                <DynamicChoiceInput
+                <this.SpecificRewardInput
                     title={"Specific Reward"}
-                    selectedValue={this.data().rewardId}
-                    onValueChange={(itemValue) => {
-                        this.setData({
-                            rewardId: itemValue
-                        })
-                    }}
+                    data={this.data().rewardId}
+                    onValidDataChange={this.onChangeSpecificReward}
+                    onInvalidDataChange={this.onChangeSpecificReward}
                     choices={this.props.rewardChoices}
                     accessibilityLabel={"goal-specific-reward"}
-                ></DynamicChoiceInput>
+                ></this.SpecificRewardInput>
             );
         }
     }
@@ -327,17 +380,14 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
     renderByPenaltyType = () => {
         if(this.data().penalty === PenaltyTypes.SPECIFIC) {
             return (
-                <DynamicChoiceInput
+                <this.SpecificPenaltyInput
                     title={"Specific Penalty"}
-                    selectedValue={this.data().penaltyId}
-                    onValueChange={(itemValue) => {
-                        this.setData({
-                            penaltyId: itemValue
-                        })
-                    }}
+                    data={this.data().penaltyId}
+                    onValidDataChange={this.onChangeSpecificPenalty}
+                    onInvalidDataChange={this.onChangeSpecificPenalty}
                     choices={this.props.penaltyChoices}
                     accessibilityLabel={"goal-specific-penalty"}
-                ></DynamicChoiceInput>
+                ></this.SpecificPenaltyInput>
             )
         }
     }
