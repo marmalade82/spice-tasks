@@ -3,10 +3,12 @@ import { ColumnType } from "@nozbe/watermelondb"
 
 interface ChildName {
     PARENT: 'parent_id';
+    PARENT_TABLE: 'parent_table';
 }
 
 interface ChildType {
     PARENT: 'string';
+    PARENT_TABLE: 'string';
 }
 
 

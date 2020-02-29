@@ -7,6 +7,7 @@ import { TaskQuery, Task } from "src/Models/Task/TaskQuery";
 import { DocumentView, ScreenHeader, Toast } from "src/Components/Styled/Styled";
 import { of } from "rxjs";
 import GoalQuery from "src/Models/Goal/GoalQuery";
+import { TaskParentTypes } from "src/Models/Task/Task";
 
 interface Props {
     navigation: any;
@@ -78,8 +79,16 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                 toast: message,
             });
         } else {
-            // Parent id only changes if task does not already have a parent id.
+            // Parent id only changes if task does not already exist
             const parentId = this.state.task ? this.state.task.parentId : this.props.navigation.getParam('parent_id', '');
+            const parentType: TaskParentTypes | string = this.state.task ? 
+                                this.state.task.parentType : 
+                                this.props.navigation.getParam('parent_type', TaskParentTypes.TASK);
+
+            if(parentType !== TaskParentTypes.GOAL && parentType !== TaskParentTypes.TASK) {
+                throw new Error("Invalid parent type for a task");
+            } 
+            
             const data = this.state.data;
             const taskData = {
                 title: data.name,
@@ -87,6 +96,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                 startDate: data.start_date,
                 instructions: data.description,
                 parentId: parentId,
+                parentType: parentType,
             };
 
             if(this.state.task) {

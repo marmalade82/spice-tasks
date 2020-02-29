@@ -1,6 +1,6 @@
 import ModelQuery from "src/Models/base/Query";
 import {
-    Task, ITask,
+    Task, ITask, TaskParentTypes,
 } from "src/Models/Task/Task";
 import TaskSchema from "src/Models/Task/TaskSchema";
 import { Q, Database, Model } from "@nozbe/watermelondb";
@@ -28,6 +28,7 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
             state: 'open',
             completedDate: MyDate.Zero().toDate(),
             createdAt: new MyDate().toDate(),
+            parentType: TaskParentTypes.TASK,
         } as const;
     }
 
@@ -286,6 +287,7 @@ export class TaskLogic {
                 state: 'open',
                 startDate: new MyDate(newDate).add( new MyDate(task.startDate).diff(oldDate, "minutes"), "minutes").toDate(),
                 dueDate: new MyDate(newDate).add( new MyDate(task.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
+                parentType: task.parentType,
             }
             return newTask;
         } else {

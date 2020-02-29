@@ -4,6 +4,10 @@ import { field, date, relation, action, readonly} from "@nozbe/watermelondb/deco
 import TaskSchema from "src/Models/Task/TaskSchema";
 import GoalSchema from "src/Models/Goal/GoalSchema";
 
+export enum TaskParentTypes {
+    GOAL = "goal",
+    TASK = "task",
+}
 
 interface ITask {
     title: string;
@@ -11,6 +15,7 @@ interface ITask {
     dueDate: Date;
     instructions: string;
     parentId: string;
+    parentType: TaskParentTypes
     active: boolean;
     state: 'open' | 'in_progress' | 'complete' | 'cancelled';
     completedDate: Date;
@@ -41,6 +46,7 @@ export default class Task extends Model implements ITask {
     @field(name.STATE) state! : 'open' | 'in_progress' | 'complete' | 'cancelled';
     @date(name.COMPLETED_ON) completedDate! : Date
     @date(name.CREATED_ON) createdAt!: Date
+    @field(name.PARENT_TABLE) parentType!: TaskParentTypes;
 
     /* Relations */
     @relation(GoalSchema.table, name.PARENT) parentGoal
