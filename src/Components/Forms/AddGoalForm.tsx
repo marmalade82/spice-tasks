@@ -20,7 +20,6 @@ import { Props as SummaryProps } from "src/Components/Inputs/StringInput";
 import { Props as DateProps } from "src/Components/inputs/DateTimeInput";
 import { RecurringForm, RecurringData, RecurringDefault} from "src/Components/Forms/RecurringForm";
 import { StreakForm, StreakDefault, StreakData }from "src/Components/Forms/AddGoalForm/StreakForm";
-import Style from "src/Style/Style";
 import { ColumnView } from "../Basic/Basic";
 import { RewardChoices, RewardType, RewardTypes } from "src/Models/Reward/RewardLogic";
 import { GoalChoices, GoalType } from "src/Models/Goal/GoalLogic";
@@ -30,7 +29,6 @@ import { mapTo } from "rxjs/operators";
 import { PenaltyTypes, PenaltyChoices } from "src/Models/Penalty/PenaltyLogic";
 import MyDate from "src/common/Date";
 import { EventDispatcher, IEventDispatcher, fromEvent } from "src/common/EventDispatcher";
-import { start } from "repl";
 
 interface Props {
     navigation: Navigator
@@ -136,7 +134,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                             )
     dispatcher: IEventDispatcher;
     startDateRefresh : Observable<boolean>;
-    dueDateRefresh : Observable<boolean>;
 
     constructor(props: Props) {
         super(props);
@@ -144,7 +141,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         this.state = Default();
         this.dispatcher = new EventDispatcher();
         this.startDateRefresh = fromEvent(this.dispatcher, DUE_DATE_CHANGE).pipe(mapTo(true));
-        this.dueDateRefresh = fromEvent(this.dispatcher, START_DATE_CHANGE).pipe(mapTo(true)); 
     }
     
     /*******************************************
@@ -156,7 +152,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
     }
 
     validateStartDate = (start: Date) => {
-        return start > this.data().due_date ? "Start date cannot be after end date" : undefined
+        return start > this.data().due_date ? "Start date cannot be after due date" : undefined
     }
 
     validateSpecificReward = (rewardId: string) => {

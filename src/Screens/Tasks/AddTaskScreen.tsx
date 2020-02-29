@@ -1,10 +1,11 @@
 import React from "react";
 import { View, ScrollView, SafeAreaView, Button } from "react-native";
-import { AddTaskForm, AddTaskData, AddTaskDefault } from "src/Components/Forms/AddTaskForm";
+import { AddTaskForm, AddTaskData, AddTaskDefault, ValidateTaskForm } from "src/Components/Forms/AddTaskForm";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { TaskQuery, Task } from "src/Models/Task/TaskQuery";
-import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
+import { DocumentView, ScreenHeader, Toast } from "src/Components/Styled/Styled";
+import { of } from "rxjs";
 
 interface Props {
     navigation: any;
@@ -13,14 +14,20 @@ interface Props {
 interface State { 
     data: AddTaskData;
     task?: Task;
+    showToast: boolean;
+    toast: string;
 }
 
 export default class AddTaskScreen extends React.Component<Props, State> {
+    taskFormRef: React.RefObject<AddTaskForm>
     constructor(props: Props) {
         super(props);
         this.state = {
             data: AddTaskDefault(),
+            showToast: false,
+            toast: "",
         }
+        this.taskFormRef = React.createRef()
     }
 
     static navigationOptions = ({navigation}) => {
@@ -51,24 +58,36 @@ export default class AddTaskScreen extends React.Component<Props, State> {
     }
 
     onSave = () => {
-        // Parent id only changes if task does not already have a parent id.
-        const parentId = this.state.task ? this.state.task.parentId : this.props.navigation.getParam('parent_id', '');
-        const data = this.state.data;
-        const taskData = {
-            title: data.name,
-            dueDate: data.due_date,
-            startDate: data.start_date,
-            instructions: data.description,
-            parentId: parentId,
-        };
-
-        if(this.state.task) {
-            (new TaskQuery().update(this.state.task, taskData)).catch();        
-        } else {
-            new TaskQuery().create(taskData).catch();
+        let message: string | undefined = undefined;
+        if(this.taskFormRef.current) {
+            message = ValidateTaskForm(this.taskFormRef.current);
         }
 
-        this.props.navigation.goBack();
+        if(message !== undefined) {
+            this.setState({
+                showToast: true,
+                toast: message,
+            });
+        } else {
+            // Parent id only changes if task does not already have a parent id.
+            const parentId = this.state.task ? this.state.task.parentId : this.props.navigation.getParam('parent_id', '');
+            const data = this.state.data;
+            const taskData = {
+                title: data.name,
+                dueDate: data.due_date,
+                startDate: data.start_date,
+                instructions: data.description,
+                parentId: parentId,
+            };
+
+            if(this.state.task) {
+                (new TaskQuery().update(this.state.task, taskData)).catch();        
+            } else {
+                new TaskQuery().create(taskData).catch();
+            }
+
+            this.props.navigation.goBack();
+        }
     }
 
     render = () => {
@@ -81,10 +100,20 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                     { this.renderTaskForm() }
                 </ScrollView>
 
-                    <Button
-                        title={"SAVE"}
-                        onPress={this.onSave}
-                    />
+                <Button
+                    title={"SAVE"}
+                    onPress={this.onSave}
+                    accessibilityLabel={"input-save-button"}
+                />
+                <Toast
+                    visible={this.state.showToast}
+                    message={this.state.toast}
+                    onToastDisplay={() => {
+                        this.setState({
+                            showToast: false
+                        });
+                    }}
+                ></Toast>
             </DocumentView>
         );
     }
@@ -99,6 +128,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                         });
                     }}
                     style={{}}
+                    ref={this.taskFormRef}
                 ></AddTaskForm>
         );
     }

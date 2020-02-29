@@ -5,15 +5,23 @@ import {
     DateTimeInput,
 
 } from "src/Components/Inputs";
+import { Props as StringInputProps } from "src/Components/Inputs/StringInput";
 import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import DataComponent from "src/Components/base/DataComponent";
 import Style from "src/Style/Style"
 import { ColumnView } from "../Basic/Basic";
+import { Validate } from "src/Components/Inputs/Validate";
+import { Observable } from "rxjs";
+import { mapTo } from "rxjs/operators";
+import MyDate from "src/common/Date";
+import { EventDispatcher, IEventDispatcher, fromEvent } from "src/common/EventDispatcher";
+import { Props as DateProps } from "src/Components/inputs/DateTimeInput";
 
 interface Props {
     data: State | false
     onDataChange: (d: State) => void;
     style: StyleProp<ViewStyle>;
+    dateRange?: [Date, Date]
 }
 
 interface State {
@@ -32,19 +40,60 @@ function Default(): State {
     };
 }
 
-const localStyle = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "flex-start"
+const DUE_DATE_CHANGE = 'due_date_change';
+
+export function ValidateTaskForm(form: AddTaskForm) {
+    const state = form.data();
+    const nameMessage = form.validateName(state.name);
+    if(nameMessage !== undefined) {
+        return nameMessage;
     }
-})
+
+    const startDateMessage = form.validateStartDate(state.start_date);
+    if(startDateMessage !== undefined) {
+        return startDateMessage;
+    }
+
+    return undefined;
+}
 
 export default class AddTaskForm extends DataComponent<Props, State, State> {
+    SummaryInput = Validate<string, StringInputProps>(
+                        StringInput,
+                        (s: string) => this.validateName(s),
+                        (s: string) => this.validateName(s)
+                   )
+    StartDateInput = Validate<Date, DateProps>(
+                        DateTimeInput,
+                        (d: Date) => this.validateStartDate(d) ,
+                        (d: Date) => this.validateStartDate(d) ,
+                    );
+    dispatcher: IEventDispatcher;
+    startDateRefresh : Observable<boolean>;
     constructor(props: Props) {
         super(props);
 
         this.state = Default();
+        this.dispatcher = new EventDispatcher();
+        this.startDateRefresh = fromEvent(this.dispatcher, DUE_DATE_CHANGE).pipe(mapTo(true));
     }
+
+    /***********************
+     * Validation
+     */
+
+    validateName = (summary : string) => {
+        return summary.length > 0 ? undefined : "Please provide a name";
+    }
+
+    validateStartDate = (start: Date) => {
+        return start > this.data().due_date ? "Start date cannot be after due date" : undefined
+    }
+    
+
+    /**********************
+     *  Event handling
+     */
 
     onChangeName = (name: string) => {
         this.setData({
@@ -68,6 +117,8 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
         this.setData({
             due_date: date
         });
+
+        this.dispatcher.fireEvent(DUE_DATE_CHANGE);
     }
 
     render = () => {
@@ -75,13 +126,15 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
             <ColumnView style={[{
                 backgroundColor: "transparent",
             },this.props.style]}>
-                <StringInput
+
+                <this.SummaryInput
                     title={"Name"} 
                     data={this.data().name}
                     placeholder={"Name of this task"}
-                    onDataChange={this.onChangeName}
+                    onValidDataChange={this.onChangeName}
+                    onInvalidDataChange={this.onChangeName}
                     accessibilityLabel={"task-name"}
-                />
+                ></this.SummaryInput>
 
                 <StringInput
                     title={"Description"}
@@ -91,13 +144,15 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                     accessibilityLabel={"task-description"}
                 />
 
-                <DateTimeInput
+                <this.StartDateInput
                     title={"Starts on"}
                     type={"date"}
                     data={this.data().start_date}
-                    onDataChange={this.onChangeStart}
+                    onValidDataChange={this.onChangeStart}
+                    onInvalidDataChange={this.onChangeStart}
                     accessibilityLabel={"task-start-date"}
-                />
+                    revalidate={this.startDateRefresh}
+                ></this.StartDateInput>
 
                 <DateTimeInput
                     title={"Due on"}
