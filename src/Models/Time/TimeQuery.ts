@@ -76,7 +76,7 @@ export function observableWithRefreshTimer<T>( gen: () => Observable<T>, minutes
             subscriber.next(val);
         })
 
-        Timer.subscribe((_n) => {
+        let timerSub = Timer.subscribe((_n) => {
             // Every time the timer emits, we generate a new observable to refresh any conditions that depend on time.
             internalSub.unsubscribe();
             internalObs = gen();
@@ -84,6 +84,12 @@ export function observableWithRefreshTimer<T>( gen: () => Observable<T>, minutes
                 subscriber.next(val);
             })
         });
+
+        // Cleans up the two internal subscriptions.
+        return () => {
+            internalSub.unsubscribe();
+            timerSub.unsubscribe();
+        }
     })
 
     return obs;

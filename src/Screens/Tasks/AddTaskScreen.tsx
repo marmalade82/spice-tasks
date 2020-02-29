@@ -6,6 +6,7 @@ import { StyleSheet } from "react-native";
 import { TaskQuery, Task } from "src/Models/Task/TaskQuery";
 import { DocumentView, ScreenHeader, Toast } from "src/Components/Styled/Styled";
 import { of } from "rxjs";
+import GoalQuery from "src/Models/Goal/GoalQuery";
 
 interface Props {
     navigation: any;
@@ -46,10 +47,18 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                 due_date: task.dueDate,
                 description: task.instructions,
             }
+            let parentGoal = await new GoalQuery().get(task.parentId);
+
+            if(parentGoal) {
+                data.start_date = parentGoal.startDate;
+                data.due_date = parentGoal.dueDate;
+            }
+
             this.setState({
                 task: task,
                 data: data,
             })
+
         } else {
             this.setState({
                 task: undefined

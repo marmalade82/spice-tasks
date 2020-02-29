@@ -68,6 +68,11 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                         (d: Date) => this.validateStartDate(d) ,
                         (d: Date) => this.validateStartDate(d) ,
                     );
+    DueDateInput = Validate<Date, DateProps>(
+                        DateTimeInput, 
+                        (d: Date) => this.validateDueDate(d) ,
+                        (d: Date) => this.validateDueDate(d) ,
+                    )
     dispatcher: IEventDispatcher;
     startDateRefresh : Observable<boolean>;
     constructor(props: Props) {
@@ -87,7 +92,29 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
     }
 
     validateStartDate = (start: Date) => {
-        return start > this.data().due_date ? "Start date cannot be after due date" : undefined
+        if(start > this.data().due_date) {
+            return "Start date cannot be after due date";
+        }
+
+        if(this.props.dateRange ) {
+            const startMin = this.props.dateRange[0];
+            if(start < startMin) {
+                return "Start date cannot be before " + startMin.toString();
+            }
+        }
+
+        return undefined;
+    }
+
+    validateDueDate = (due: Date) => {
+        if(this.props.dateRange) {
+            const dueMax = this.props.dateRange[1];
+            if(due > dueMax) {
+                return "Due date cannot be after " + dueMax.toString();
+            }
+        }
+
+        return undefined;
     }
     
 
