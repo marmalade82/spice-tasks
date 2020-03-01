@@ -4,19 +4,19 @@ import {
     StateSchema,
 } from "src/Models/base/SharedSchema"
 
-const TimeName = {
+const GlobalName = {
     CURRENT: "current_at",
     COUNT: "count",
 } as const;
 
-const TimeType = {
+const GlobalType = {
     CURRENT: "number",
     COUNT: "number",
 } as const;
 
 
-export const TimeSchema: Schema<typeof TimeName> = {
-    name: TimeName,
-    type: TimeType,
-    table: "timing",
+export const GlobalSchema: Schema<typeof GlobalName> = {
+    name: GlobalName,
+    type: GlobalType,
+    table: "global",
 }

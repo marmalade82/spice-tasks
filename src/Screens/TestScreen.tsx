@@ -12,7 +12,7 @@ import {
 } from "src/Components/Styled/Styles";
 import { ScrollView, DeviceEventEmitter, Button, TextInput as TInput} from "react-native";
 import SpiceDBService from "src/Services/DBService";
-import TimeQuery from "src/Models/Global/GlobalQuery";
+import GlobalQuery from "src/Models/Global/GlobalQuery";
 import PushNotification from "src/Notification";
 import { Observable } from "rxjs";
 import { LabelValue } from "src/common/types";
@@ -55,7 +55,7 @@ export default class TestScreen extends React.Component<Props, State> {
     }
 
     componentDidMount = async () => {
-        const time = await new TimeQuery().currentTime();
+        const time = await new GlobalQuery().currentTime();
         SpiceDBService.stopService();
         if(time) {
             const timeSub = time.observe().subscribe((time) => {

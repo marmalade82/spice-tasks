@@ -1,21 +1,21 @@
 
 import ModelQuery from "src/Models/base/Query";
 import {
-    Time, ITime,
+    Global, IGlobal,
 } from "src/Models/Global/Global";
-import { TimeSchema } from "src/Models/Global/GlobalSchema";
+import { GlobalSchema } from "src/Models/Global/GlobalSchema";
 import { Q, Database, Model } from "@nozbe/watermelondb";
 import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils"
 import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
 import { Observable, interval, timer } from "rxjs";
 
-const name = TimeSchema.name
+const name = GlobalSchema.name
 
-export default class TimeQuery extends ModelQuery<Time, ITime> {
+export default class GlobalQuery extends ModelQuery<Global, IGlobal> {
 
     constructor() {
-        super(TimeSchema.table);
+        super(GlobalSchema.table);
     }
 
     queries = () => {
@@ -39,20 +39,20 @@ export default class TimeQuery extends ModelQuery<Time, ITime> {
     }
 }
 
-export class TimeLogic {
+export class GlobalLogic {
     constructor() {
 
     }
 
     refreshCurrentTime = async () => {
-        const time = await new TimeQuery().currentTime()
+        const time = await new GlobalQuery().currentTime()
 
         if(time) {
-            await new TimeQuery().update(time, {
+            await new GlobalQuery().update(time, {
                 current: new Date(),
             });
         } else {
-            await new TimeQuery().create({
+            await new GlobalQuery().create({
                 current: new Date(),
             });
         }
