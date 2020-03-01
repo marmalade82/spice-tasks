@@ -3,7 +3,7 @@ import DB from "src/Models/Database";
 import GoalQuery, { Goal, GoalLogic } from 'src/Models/Goal/GoalQuery';
 import Recur from "src/Models/Recurrence/Recur";
 import RecurQuery, { RecurLogic } from "src/Models/Recurrence/RecurQuery";
-import TimeQuery, { TimeLogic } from "src/Models/Time/TimeQuery";
+import TimeQuery, { TimeLogic } from "src/Models/Global/GlobalQuery";
 
 /**Don't use */
 async function scheduleStreakGoalRefresh(mins: number, cancel: () => boolean, timeUntilNext?: number)  {

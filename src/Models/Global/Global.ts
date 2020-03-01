@@ -1,7 +1,7 @@
 
 import { Model } from "@nozbe/watermelondb";
 import { field, date, relation, action, readonly} from "@nozbe/watermelondb/decorators";
-import { TimeSchema } from "src/Models/Time/TimeSchema";
+import { TimeSchema } from "src/Models/Global/GlobalSchema";
 
 export interface ITime {
     current: Date,

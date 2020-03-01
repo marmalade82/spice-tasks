@@ -20,8 +20,7 @@ import TaskQuery from "src/Models/Task/TaskQuery";
 import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
 import { Schedule } from "Schedule";
-import Time from "src/Models/Time/Time";
-import TimeQuery, { TimeLogic, Global_Timer, observableWithRefreshTimer } from "src/Models/Time/TimeQuery";
+import TimeQuery, { TimeLogic, Global_Timer, observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
 import { Subscription } from "rxjs";
 import EarnedPenaltyQuery from "src/Models/Penalty/EarnedPenaltyQuery";
 

@@ -9,7 +9,7 @@ import EarnedReward from "src/Models/Reward/EarnedReward";
 import ClaimedReward from "src/Models/Reward/ClaimedReward";
 import Penalty from "src/Models/Penalty/Penalty";
 import Recur from "src/Models/Recurrence/Recur";
-import Time from "src/Models/Time/Time";
+import Time from "src/Models/Global/Global";
 
 class DB {
     static database: Database | undefined;

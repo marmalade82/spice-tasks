@@ -12,7 +12,7 @@ import {
 } from "src/Components/Styled/Styles";
 import { ScrollView, DeviceEventEmitter, Button, TextInput as TInput} from "react-native";
 import SpiceDBService from "src/Services/DBService";
-import TimeQuery from "src/Models/Time/TimeQuery";
+import TimeQuery from "src/Models/Global/GlobalQuery";
 import PushNotification from "src/Notification";
 import { Observable } from "rxjs";
 import { LabelValue } from "src/common/types";

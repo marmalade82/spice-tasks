@@ -2,8 +2,8 @@
 import ModelQuery from "src/Models/base/Query";
 import {
     Time, ITime,
-} from "src/Models/Time/Time";
-import { TimeSchema } from "src/Models/Time/TimeSchema";
+} from "src/Models/Global/Global";
+import { TimeSchema } from "src/Models/Global/GlobalSchema";
 import { Q, Database, Model } from "@nozbe/watermelondb";
 import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils"
 import DB from "src/Models/Database";
