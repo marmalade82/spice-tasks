@@ -1,4 +1,6 @@
-jest.mock('src/Notification');
+if( typeof jest !== 'undefined' ) {
+    jest.mock('src/Notification');
+}
 import ModelQuery from "src/Models/base/Query";
 import {
     Global, IGlobal,
