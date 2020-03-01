@@ -16,6 +16,8 @@ import { IReward, Reward } from "src/Models/Reward/Reward";
 import Recur, { IRecur } from "src/Models/Recurrence/Recur";
 import { RecurSchema } from "src/Models/Recurrence/RecurSchema";
 import { GlobalSchema } from "src/Models/Global/GlobalSchema";
+import Global, { IGlobal } from "src/Models/Global/Global";
+import GlobalQuery from "src/Models/Global/GlobalQuery";
 
 function makeNavigation(params: {}) {
     const navigation = {
@@ -47,6 +49,10 @@ async function destroyAllIn(table: string) {
     models = await DB.get().collections.get(table).query().fetch();
 
     expect(models.length).toEqual(0);
+}
+
+export async function createGlobal(data: Partial<IGlobal>) {
+    return await _create(GlobalSchema.table, data) as Global;
 }
 
 async function _create(table: string, data: any ) {

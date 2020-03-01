@@ -55,7 +55,7 @@ export default class TestScreen extends React.Component<Props, State> {
     }
 
     componentDidMount = async () => {
-        const time = await new GlobalQuery().currentTime();
+        const time = await new GlobalQuery().current();
         SpiceDBService.stopService();
         if(time) {
             const timeSub = time.observe().subscribe((time) => {

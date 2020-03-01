@@ -7,11 +7,13 @@ import {
 const GlobalName = {
     CURRENT: "current_at",
     COUNT: "count",
+    LAST_NOTIFIED: "last_notified_at",
 } as const;
 
 const GlobalType = {
     CURRENT: "number",
     COUNT: "number",
+    LAST_NOTIFIED: "number",
 } as const;
 
 

@@ -8,7 +8,7 @@ import { RecurSchema } from 'src/Models/Recurrence/RecurSchema';
 import { GlobalSchema } from 'src/Models/Global/GlobalSchema';
 
 const Schema = appSchema({
-    version: 1,
+    version: 2,
     tables: [
         generateTableSchema(GoalSchema),
         generateTableSchema(TaskSchema),

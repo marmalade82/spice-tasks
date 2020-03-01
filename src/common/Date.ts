@@ -40,6 +40,12 @@ export default class MyDate {
         return this;
     }
 
+    isSomeTimeToday = () => {
+        const start = new MyDate().prevMidnight().toDate();
+        const end = new MyDate().nextMidnight().toDate();
+        return this.m.isSameOrAfter(start) && this.m.isBefore(end);
+    }
+
     toDate = (): Date => {
         return this.m.toDate();
     }

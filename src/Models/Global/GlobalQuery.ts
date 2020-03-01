@@ -1,4 +1,4 @@
-
+jest.mock('src/Notification');
 import ModelQuery from "src/Models/base/Query";
 import {
     Global, IGlobal,
@@ -9,6 +9,9 @@ import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils"
 import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
 import { Observable, interval, timer } from "rxjs";
+import Notification from "src/Notification";
+import TaskQuery from "../Task/TaskQuery";
+import GoalQuery from "../Goal/GoalQuery";
 
 const name = GlobalSchema.name
 
@@ -26,15 +29,21 @@ export default class GlobalQuery extends ModelQuery<Global, IGlobal> {
         return {
             current: new Date(),
             count: 0,
+            lastNotifiedDate: new Date(),
         }
     }
 
-    currentTime = async () => { 
-        const times = await this.all()
-        if(times.length > 0) {
-            return times[0];
+    current = async () => { 
+        const all = await this.all()
+        if(all.length > 0) {
+            return all[0];
         } else {
-            return null;
+            const global = await new GlobalQuery().create({})
+            if(global) {
+                return global;
+            } else {
+                throw new Error("failed to initialize global record in DB");
+            }
         }
     }
 }
@@ -44,8 +53,40 @@ export class GlobalLogic {
 
     }
 
+    runDailyNotifications = async () => {
+        let global = await new GlobalQuery().current();
+
+        if( !new MyDate(global.lastNotifiedDate).isSomeTimeToday() ) {
+            // Notify count of all due tasks
+            const countDue = await new TaskQuery().queryActiveAndDueToday().fetchCount();
+
+            // Notify count of all overdue goals/tasks.
+            const countOverdueGoals = await new GoalQuery().queryActiveAndOverdue().fetchCount();
+            const countOverdueTasks = await new TaskQuery().queryActiveAndOverdue().fetchCount();
+
+            Notification.localNotification({
+                message: "Due today: " + countDue.toString(),
+            })
+
+            Notification.localNotification({
+                message: "Overdue: " + (countOverdueGoals + countOverdueTasks).toString(),
+            })
+
+            await this.refreshNotificationDates();
+        }
+
+    }
+
+    refreshNotificationDates = async () => {
+        const current = await new GlobalQuery().current();
+
+        await new GlobalQuery().update(current, {
+            lastNotifiedDate: new Date(),
+        });
+    }
+
     refreshCurrentTime = async () => {
-        const time = await new GlobalQuery().currentTime()
+        const time = await new GlobalQuery().current()
 
         if(time) {
             await new GlobalQuery().update(time, {

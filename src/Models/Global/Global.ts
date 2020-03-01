@@ -6,6 +6,7 @@ import { GlobalSchema } from "src/Models/Global/GlobalSchema";
 export interface IGlobal {
     current: Date,
     count: number,
+    lastNotifiedDate: Date,
 }
 
 const name = GlobalSchema.name;
@@ -15,6 +16,7 @@ export default class Global extends Model implements IGlobal {
 
     @date(name.CURRENT) current!: Date;
     @field(name.COUNT) count!: number;
+    @date(name.LAST_NOTIFIED) lastNotifiedDate!: Date;
 }
 
 export {
