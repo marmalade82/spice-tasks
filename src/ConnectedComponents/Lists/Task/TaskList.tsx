@@ -11,41 +11,75 @@ import {
 } from "src/Models/Task/Task";
 import TaskQuery from "src/Models/Task/TaskQuery";
 import List from "src/Components/Lists/base/List";
+import { PagedList } from "src/Components/Styled/Styled";
+import { View } from "react-native";
+import { observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
+import EmptyListItem from "src/Components/Lists/Items/EmptyListItem";
+import SwipeRow from "src/Components/Basic/SwipeRow";
+import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
 
 interface Props {
     tasks: Task[];
     navigation: any;
+    paginate?: number;
+    onSwipeRight?: (id: string) => void;
 }
 
 const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
     
     const renderTask = (item: Task) => {
         return (
+            <SwipeRow
+                renderSwipeRight={() => {
+                    return (
+                        <View style={{
+                            backgroundColor: PRIMARY_COLOR,
+                            flex: 0,
+                            height: ROW_CONTAINER_HEIGHT,
+                            width: "100%",
+                        }}>
+                        </View>
+                    )
+                }}
+                onSwipeRightOpen={() => { props.onSwipeRight ? props.onSwipeRight(item.id): null }}
+                key={item.id}
+            >
                     <ConnectedTaskListItem
                         task={item}
                         navigation={props.navigation}
                     ></ConnectedTaskListItem>
+            </SwipeRow>
         );
         
     }
 
-    return (
-        <List
-            items={props.tasks} 
-            renderItem={renderTask}
-        >
-        </List>
-    )
+    if(props.paginate) {
+        return (
+            <PagedList
+                items={props.tasks}
+                pageMax={props.paginate}
+                renderItem={renderTask}
+                renderEmptyItem={() => {return <EmptyListItem></EmptyListItem>}}
+            ></PagedList>
+        )
+    } else {
+        return (
+            <List
+                items={props.tasks} 
+                renderItem={renderTask}
+            >
+            </List>
+        )
+    }
 }
 
 
-interface InputProps {
-    navigation: any;
+interface InputProps extends Omit<Props, "tasks"> {
     type: 
         "all" | "parent-active" | "parent-inactive" | 
         "parent-all" | "active" | "active-due-soon-today" |
         "completed-today" | "in-progress-but-not-due-today" |
-        "overdue";
+        "overdue" | "remaining-today";
     parentId: string  // shows all tasks that have this parent
 }
 
@@ -90,6 +124,11 @@ const enhance = withObservables(['type'], (props: InputProps) => {
                 tasks: new TaskQuery().queryActiveAndOverdue().observe()
             }
         } break;
+        case "remaining-today": {
+            return {
+                tasks: observableWithRefreshTimer( () => new TaskQuery().queryRemainingToday().observe()),
+            }
+        }
         default: {
             return {
                 tasks: new TaskQuery().queryAll().observe(),

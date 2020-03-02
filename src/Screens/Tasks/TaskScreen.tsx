@@ -2,7 +2,7 @@ import React from "react";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList"
 import { ConnectedTaskSummary } from "src/ConnectedComponents/Summaries/TaskSummary";
 import Task from "src/Models/Task/Task";
-import TaskQuery from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import {
     ColumnView, RowView, Button as MyButton,
     ViewPicker,
@@ -51,10 +51,7 @@ export default class TaskScreen extends React.Component<Props, State> {
     }
 
     onCompleteTask = () => {
-        // asynchronously complete task and descendants
-        void new TaskQuery().completeTaskAndDescendants({
-            id: this.props.navigation.getParam("id", "")
-        });
+        void new TaskLogic(this.props.navigation.getParam("id", "")).complete();
     }
 
     onModalChoice = (str: "complete" | "delete") => {

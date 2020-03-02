@@ -16,13 +16,14 @@ import {
 } from "src/Components/Styled/Styles";
 import withObservables from "@nozbe/with-observables";
 import GoalQuery from "src/Models/Goal/GoalQuery";
-import TaskQuery from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
 import { Schedule } from "Schedule";
 import GlobalQuery, { GlobalLogic, Global_Timer, observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
 import { Subscription } from "rxjs";
 import EarnedPenaltyQuery from "src/Models/Penalty/EarnedPenaltyQuery";
+import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 
 interface Props {
     navigation: any;
@@ -79,10 +80,27 @@ export default class AppStartScreen extends React.Component<Props, State> {
                     { new MyDate(this.state.currentDate).format("MMMM Do, HH:mm") }
                 </ScreenHeader>
                 <ScrollView>
+
+                    <BackgroundTitle title={"Remaining Today"}
+                        style={{
+                        }}
+                    ></BackgroundTitle>
+                    <ConnectedTaskList
+                        navigation={this.props.navigation}
+                        type={"remaining-today"}
+                        parentId={""}
+                        paginate={4}
+                        onSwipeRight={(id: string) => {
+                            console.log("swiped right!")
+                            void new TaskLogic(id).complete()
+                        }}
+                    ></ConnectedTaskList>
+
                     <BackgroundTitle title={"Today"}
                         style={{
                         }}
                     ></BackgroundTitle>
+
 
                     <ConnectedStatusList
                         navigation={this.props.navigation}

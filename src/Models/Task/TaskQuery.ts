@@ -72,7 +72,7 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
         return this.store().query(
             Q.or(
                 Q.and(
-                    ...[...Conditions.active(), ...Conditions.dueToday(), ...Conditions.dueInFuture()]
+                    ...[...Conditions.active(), ...Conditions.dueToday()]
                 ),
                 Q.and(
                     ...[...Conditions.active(), ...Conditions.started(), ...Conditions.notDue()]
@@ -294,5 +294,9 @@ export class TaskLogic {
             console.log("no clone created")
             throw new Error()
         }
+    }
+
+    complete = async () => {
+        await new TaskQuery().completeTaskAndDescendants({ id: this.id });
     }
 }

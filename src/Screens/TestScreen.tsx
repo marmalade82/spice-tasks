@@ -11,12 +11,13 @@ import {
     TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
     PLACEHOLDER_GREY,
 } from "src/Components/Styled/Styles";
-import { ScrollView, DeviceEventEmitter, Button, Text, TextInput as TInput, View} from "react-native";
+import { ScrollView, DeviceEventEmitter, Button, Text, TextInput as TInput, View, Animated} from "react-native";
 import SpiceDBService from "src/Services/DBService";
 import GlobalQuery from "src/Models/Global/GlobalQuery";
 import PushNotification from "src/Notification";
 import { Observable } from "rxjs";
 import { LabelValue } from "src/common/types";
+import Swipeable from "react-native-gesture-handler/Swipeable";
 
 interface Props {
     navigation: any;
@@ -128,13 +129,34 @@ export default class TestScreen extends React.Component<Props, State> {
                         items={things}
                         renderItem={(thing) => {
                             return (
-                                <View>
-                                    <Text>{thing.first}</Text>
-                                    <Text>{thing.last}</Text>
-                                </View>
+                                <Swipeable
+                                    friction={1}
+                                    leftThreshold={100}
+                                    renderLeftActions={(progress, dragX) => {
+                                        const trans = dragX.interpolate({
+                                            inputRange: [0, 50, 100, 101],
+                                            outputRange: [-20, 0, 0, 1],
+                                          });
+                                        return (
+                                            <Animated.View
+                                                style={[
+                                                    {
+                                                    transform: [{ translateX: trans }],
+                                                    },
+                                                ]}
+                                            >
+                                                <Text>{thing.first}</Text>
+                                            </Animated.View>
+                                        ) 
+                                    }}
+                                >
+                                    <View>
+                                        <Button title={thing.last} onPress={() => {}}></Button>
+                                    </View>
+                                </Swipeable>
                             );
                         }}
-                        renderEmpty = {() => {
+                        renderEmptyItem = {() => {
                             return (
                                 <View style={{flex: 0, height: 2 * 17, borderColor: "black", borderWidth: 1}}></View>
                             );

@@ -6,13 +6,17 @@ import { Icon } from "src/Components/Styled/Icon";
 
 
 
+interface Keyed {
+    key: string;
+}
 
 export interface Props<Item> {
-    items: Item[],
+    items: (Item)[],
     renderItem: (item: Item) => JSX.Element,
-    renderEmpty: () => JSX.Element
+    renderEmptyItem: () => JSX.Element
     pageMax: number,
     style?: StyleProp<ViewStyle>
+    renderEmptyList?: () => JSX.Element
 }
 
 export interface State {
@@ -129,15 +133,21 @@ export default class PagedList<Item> extends React.Component<Props<Item>, State>
     }
 
     renderItems = (items: Item[]) => {
-        let rendered = items.map((item) => {
-            return this.props.renderItem(item);
-        })
+        if(items.length > 0) {
+            let rendered = items.map((item) => {
+                return this.props.renderItem(item);
+            })
 
-        while(rendered.length < this.props.pageMax) {
-            rendered.push(this.props.renderEmpty())
+            while(rendered.length < this.props.pageMax && this.props.items.length > this.props.pageMax) {
+                rendered.push(this.props.renderEmptyItem())
+            }
+
+            return rendered;
+        } else if (this.props.renderEmptyList) {
+            return this.props.renderEmptyList();
         }
 
-        return rendered;
+        return null;
     }
 
     renderFooter = () => {
