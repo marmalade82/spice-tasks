@@ -13,7 +13,7 @@ import {
 interface Props {
     type: "complete" | "delete" | "goal" | "task" | 
         "reward" | "penalty" | "mandatory" | "attention" | "info" | "recur"| 
-        "earned_reward" | "earned_penalty" | "right";
+        "earned_reward" | "earned_penalty" | "right" | "left" | "first" | "last" ;
     accessibilityLabel?: string;
     backgroundColor?: string;
     color?: string;
@@ -178,6 +178,42 @@ export default class StyledIcon extends React.Component<Props, State>{
                 return (
                     <Icon
                         name={"chevron-right"}
+                        type={"feather"}
+                        color={TEXT_GREY}
+                        size={20}
+                        style={{
+                        }}
+                    ></Icon>
+                );
+            } break;
+            case "left": {
+                return (
+                    <Icon
+                        name={"chevron-left"}
+                        type={"feather"}
+                        color={TEXT_GREY}
+                        size={20}
+                        style={{
+                        }}
+                    ></Icon>
+                );
+            } break;
+            case "first": {
+                return (
+                    <Icon
+                        name={"chevrons-right"}
+                        type={"feather"}
+                        color={TEXT_GREY}
+                        size={20}
+                        style={{
+                        }}
+                    ></Icon>
+                );
+            } break;
+            case "last": {
+                return (
+                    <Icon
+                        name={"chevrons-left"}
                         type={"feather"}
                         color={TEXT_GREY}
                         size={20}

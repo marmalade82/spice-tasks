@@ -19,6 +19,7 @@ import DateInput from "src/Components/Styled/DateInput";
 import Modal from "src/Components/Styled/Modal";
 import Toast from "src/Components/Styled/Toast";
 import DynamicChoiceInput from "src/Components/Styled/DynamicChoiceInput";
+import PagedList from "src/Components/Styled/PagedList"
 
 
 export {
@@ -43,4 +44,5 @@ export {
     Modal,
     Toast,
     DynamicChoiceInput,
+    PagedList,
 }

@@ -3,6 +3,7 @@ import { RowView, ColumnView, HeaderText } from "src/Components/Basic/Basic";
 import { 
     DocumentView, ScreenHeader, Label, TextInput, 
     MultiLineInput,  DateInput, DynamicChoiceInput,
+    PagedList,
 } from "src/Components/Styled/Styled";
 import { StringInput, ChoiceInput, DateTimeInput } from "src/Components/Inputs";
 import { 
@@ -10,7 +11,7 @@ import {
     TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
     PLACEHOLDER_GREY,
 } from "src/Components/Styled/Styles";
-import { ScrollView, DeviceEventEmitter, Button, TextInput as TInput} from "react-native";
+import { ScrollView, DeviceEventEmitter, Button, Text, TextInput as TInput, View} from "react-native";
 import SpiceDBService from "src/Services/DBService";
 import GlobalQuery from "src/Models/Global/GlobalQuery";
 import PushNotification from "src/Notification";
@@ -29,6 +30,24 @@ interface State {
     dynChoice: string;
 }
 
+const things = [
+    { first: "Jam", last: "Spedie" },
+    { first: "Jam", last: "Spedie" },
+    { first: "Jam", last: "Spedie" },
+    { first: "Jam", last: "Spedie" },
+    { first: "Jam", last: "Spedie" },
+    { first: "Jam", last: "Spedie" },
+    { first: "Jam", last: "Spedie" },
+    { first: "Jam2", last: "Spedie" },
+    { first: "Jam2", last: "Spedie" },
+    { first: "Jam2", last: "Spedie" },
+    { first: "Jam2", last: "Spedie" },
+    { first: "Jam2", last: "Spedie" },
+    { first: "Jam2", last: "Spedie" },
+    { first: "Jam2", last: "Spedie" },
+    { first: "Jam2", last: "Spedie" },
+    { first: "Jam2", last: "Spedie" },
+]
 
 export default class TestScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
@@ -105,6 +124,23 @@ export default class TestScreen extends React.Component<Props, State> {
                     marginBottom: 60
                 }}>{"Test Screen: " + this.state.count.toString()}</ScreenHeader>
 
+                    <PagedList
+                        items={things}
+                        renderItem={(thing) => {
+                            return (
+                                <View>
+                                    <Text>{thing.first}</Text>
+                                    <Text>{thing.last}</Text>
+                                </View>
+                            );
+                        }}
+                        renderEmpty = {() => {
+                            return (
+                                <View style={{flex: 0, height: 2 * 17, borderColor: "black", borderWidth: 1}}></View>
+                            );
+                        }}
+                        pageMax={5}
+                    ></PagedList>
 
                 <ScrollView>
                     <TInput
@@ -138,57 +174,7 @@ export default class TestScreen extends React.Component<Props, State> {
                         }}
                     ></Button>
 
-                    <Label
-                        text={"Database Choice"}
-                    ></Label>
-                    <DynamicChoiceInput
-                        value={this.state.dynChoice}
-                        choices={obs}
-                        onValueChange={(val) => {
-                            this.setState({
-                                dynChoice: val
-                            })
-                        }}
-                    ></DynamicChoiceInput>
 
-                    <ChoiceInput
-                        title={"Goal Type"}
-                        selectedValue={this.state.choice}
-                        onValueChange={(val, pos) => {
-                            this.setState({
-                                choice: val,
-                            })
-                        }}
-                        choices={[
-                            { label: "1", value: "1", key: "1"},
-                            { label: "2", value: "2", key: "2"},
-                            { label: "3", value: "3", key: "3"},
-                            { label: "4", value: "4", key: "4"},
-                            { label: "4", value: "5", key: "5"},
-                            { label: "4", value: "6", key: "6"},
-                            { label: "4", value: "7", key: "7"},
-                            { label: "4", value: "8", key: "8"},
-                            { label: "4", value: "9", key: "9"},
-                        ]}
-                        accessibilityLabel={"test"}
-                        style={{
-                            marginBottom: 60
-                        }}
-                    ></ChoiceInput>
-                    
-                    <DateTimeInput
-                        title={"Starts on"} 
-                        data={this.state.date}
-                        type={"date"}
-                        onDataChange={(d: Date) => {
-                            this.setState({
-                                date: d
-                            })
-                        }}
-                        accessibilityLabel={"date input"}
-                    >
-
-                    </DateTimeInput>
 
                 </ScrollView>
 
