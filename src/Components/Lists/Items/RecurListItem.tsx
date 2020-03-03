@@ -40,6 +40,7 @@ export default class RecurListItem extends Item<Props, State, Recur> {
                 subtext={ type }
                 number={0}
                 key={id}
+                type={"recur"}
             >
             </ListItem>
         )

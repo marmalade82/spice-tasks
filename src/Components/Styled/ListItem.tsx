@@ -4,7 +4,8 @@ import {
     HeaderText, BodyText, TouchableView as TouchableOpacity 
 } from "src/Components/Basic/Basic";
 import { View, Text } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon as NIcon } from "react-native-elements";
+import { Icon } from "src/Components/Styled/Styled";
 
 interface Props {
     navigation: any;
@@ -15,6 +16,7 @@ interface Props {
     number: number;
     key: string;
     accessibilityLabel?: string;
+    type?: "goal" | "task" | "reward" | "penalty" | "recur" | "earned_reward" | "earned_penalty";
 }
 
 export default class ListItem extends React.Component<Props> {
@@ -51,21 +53,10 @@ export default class ListItem extends React.Component<Props> {
                             justifyContent: "flex-start",
                             alignItems: "center",
                         }}>
-                            <View style={{
-                                height: "100%",
-                                width: 37,
-                                borderRadius: 37/2,
-                                justifyContent: "flex-start",
-                                alignItems: "center",
-                                marginTop: 33,
-                            }}>
-                                <Icon
-                                    name='sc-telegram'
-                                    type='evilicon'
-                                    color='darkgreen'
-                                ></Icon>
-                                
-                            </View>
+                            <Icon
+                                type={this.props.type ? this.props.type : "none"}
+                                backgroundColor={"transparent"}
+                            ></Icon>
                             <Text style={{
                                     margin: 15,
                                     marginLeft: 9,

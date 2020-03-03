@@ -83,50 +83,7 @@ export default class PagedList<Item> extends React.Component<Props<Item>, State>
                 }, this.props.style]}
             >
                 {this.renderItems(this.getItems())}
-
-                <ColumnView style={{flex: 0, height: ROW_CONTAINER_HEIGHT, justifyContent: "center"}}>
-                    <RowView style={{
-                        flex: 0,
-                    }}
-                        
-                    >
-                        <TouchableView style={{}}
-                            onPress={() => this.firstPage()}
-                        >
-                            <Icon
-                                type={"last"}
-                                backgroundColor={"transparent"}
-                            ></Icon>
-                        </TouchableView>
-                        <TouchableView style={{}}
-                            onPress={() => this.prevPage()}
-                        >
-                            <Icon
-                                type={"left"}
-                                backgroundColor={"transparent"}
-                            ></Icon>
-                        </TouchableView>
-
-                        {this.renderFooter()}
-
-                        <TouchableView style={{}}
-                            onPress={() => this.nextPage()}
-                        >
-                            <Icon
-                                type={"right"}
-                                backgroundColor={"transparent"}
-                            ></Icon>
-                        </TouchableView>
-                        <TouchableView style={{}}
-                            onPress={() => this.lastPage()}
-                        >
-                            <Icon
-                                type={"first"}
-                                backgroundColor={"transparent"}
-                            ></Icon>
-                        </TouchableView>
-                    </RowView>
-                </ColumnView>
+                {this.renderFooter()}
             </ColumnView>
 
         );
@@ -151,6 +108,58 @@ export default class PagedList<Item> extends React.Component<Props<Item>, State>
     }
 
     renderFooter = () => {
+        if(this.props.items.length > this.props.pageMax) {
+            return (
+                <ColumnView style={{flex: 0, height: ROW_CONTAINER_HEIGHT, justifyContent: "center"}}>
+                    <RowView style={{
+                        flex: 0,
+                    }}
+                        
+                    >
+                        <TouchableView style={{}}
+                            onPress={() => this.firstPage()}
+                        >
+                            <Icon
+                                type={"last"}
+                                backgroundColor={"transparent"}
+                            ></Icon>
+                        </TouchableView>
+                        <TouchableView style={{}}
+                            onPress={() => this.prevPage()}
+                        >
+                            <Icon
+                                type={"left"}
+                                backgroundColor={"transparent"}
+                            ></Icon>
+                        </TouchableView>
+
+                        {this.renderPageContainer()}
+
+                        <TouchableView style={{}}
+                            onPress={() => this.nextPage()}
+                        >
+                            <Icon
+                                type={"right"}
+                                backgroundColor={"transparent"}
+                            ></Icon>
+                        </TouchableView>
+                        <TouchableView style={{}}
+                            onPress={() => this.lastPage()}
+                        >
+                            <Icon
+                                type={"first"}
+                                backgroundColor={"transparent"}
+                            ></Icon>
+                        </TouchableView>
+                    </RowView>
+                </ColumnView>
+            );
+        }
+
+        return null;
+    }
+
+    renderPageContainer = () => {
         if(this.props.items.length > this.props.pageMax) {
             return (
                 <ColumnView 

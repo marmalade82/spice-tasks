@@ -47,6 +47,7 @@ export default class EarnedPenaltyListItem extends Item<Props, State, EarnedPena
                 number={0}
                 key={id}
                 accessibilityLabel={this.props.accessibilityLabel}
+                type={"earned_penalty"}
             ></ListItem>
         )
     }

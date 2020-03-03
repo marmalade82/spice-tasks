@@ -17,12 +17,15 @@ import { observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
 import EmptyListItem from "src/Components/Lists/Items/EmptyListItem";
 import SwipeRow from "src/Components/Basic/SwipeRow";
 import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
+import EmptyList from "src/Components/Lists/EmptyList";
+import { prependToMemberExpression } from "@babel/types";
 
 interface Props {
     tasks: Task[];
     navigation: any;
     paginate?: number;
     onSwipeRight?: (id: string) => void;
+    emptyText?: string;
 }
 
 const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
@@ -60,6 +63,13 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                 pageMax={props.paginate}
                 renderItem={renderTask}
                 renderEmptyItem={() => {return <EmptyListItem></EmptyListItem>}}
+                renderEmptyList={() => { 
+                    return (
+                        <EmptyList
+                            text={props.emptyText ? props.emptyText : "Congrats! No tasks here." }
+                        ></EmptyList>
+                    );
+                }}
             ></PagedList>
         )
     } else {
@@ -131,7 +141,7 @@ const enhance = withObservables(['type'], (props: InputProps) => {
         } break;
         case "overdue": {
             return {
-                tasks: new TaskQuery().queryActiveAndOverdue().observe()
+                tasks: observableWithRefreshTimer( () => new TaskQuery().queryActiveAndOverdue().observe())
             }
         } break;
         case "remaining-today": {

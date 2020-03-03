@@ -38,6 +38,7 @@ export default class RewardListItem extends Item<Props, State, Reward> {
                 number={0}
                 key={id}
                 accessibilityLabel={this.props.accessibilityLabel}
+                type={"reward"}
             ></ListItem>
         )
     }

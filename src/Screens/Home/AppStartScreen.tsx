@@ -24,6 +24,7 @@ import GlobalQuery, { GlobalLogic, Global_Timer, observableWithRefreshTimer } fr
 import { Subscription } from "rxjs";
 import EarnedPenaltyQuery from "src/Models/Penalty/EarnedPenaltyQuery";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
+import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 
 interface Props {
     navigation: any;
@@ -34,6 +35,10 @@ interface State {
     currentDate: Date,
     showMore: boolean;
     showAdd: boolean;
+    dueTodayCount: number;
+    inProgressCount: number;
+    overdueCount: number;
+    ongoingGoalsCount: number;
 }
 
 export default class AppStartScreen extends React.Component<Props, State> {
@@ -50,6 +55,10 @@ export default class AppStartScreen extends React.Component<Props, State> {
             currentDate: new Date(),
             showMore: false,
             showAdd: false,
+            dueTodayCount: 0,
+            inProgressCount: 0,
+            overdueCount: 0,
+            ongoingGoalsCount: 0,
         }
         this.unsub = () => {}
     }
@@ -61,8 +70,40 @@ export default class AppStartScreen extends React.Component<Props, State> {
             })
         });
 
+        let dueTodaySub: Subscription = observableWithRefreshTimer(
+            () => new TaskQuery().queryActiveAndDueToday().observeCount() ).subscribe((count) => {
+                this.setState({
+                    dueTodayCount: count,
+                })
+            })
+
+        let inProgressSub: Subscription = observableWithRefreshTimer(
+            () => new TaskQuery().queryInProgress().observeCount()).subscribe((count) => {
+                this.setState({
+                    inProgressCount: count
+                })
+            });
+
+        let overdueSub: Subscription = observableWithRefreshTimer(
+            () => new TaskQuery().queryActiveAndOverdue().observeCount()).subscribe((count) => {
+                this.setState({
+                    overdueCount: count
+                })
+            });
+
+        let ongoingGoalsSub: Subscription = observableWithRefreshTimer(
+            () => new GoalQuery().queryActiveAndStarted().observeCount()).subscribe((count) => {
+                this.setState({
+                    ongoingGoalsCount: count
+                })
+            }) ;
+
         this.unsub = () => {
             timeSub.unsubscribe();
+            dueTodaySub.unsubscribe();
+            inProgressSub.unsubscribe();
+            overdueSub.unsubscribe();
+            ongoingGoalsSub.unsubscribe();
         }
     }
 
@@ -81,7 +122,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                 </ScreenHeader>
                 <ScrollView>
 
-                    <BackgroundTitle title={"Due Today"}
+                    <BackgroundTitle title={`Due Today (${this.state.dueTodayCount})`}
                         style={{
                         }}
                     ></BackgroundTitle>
@@ -93,41 +134,30 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         onSwipeRight={(id: string) => {
                             void new TaskLogic(id).complete()
                         }}
+                        emptyText={"Congrats! You're done for today."}
                     ></ConnectedTaskList>
 
-                    <BackgroundTitle title={"In Progress"}
-                        style={{
-                        }}
-                    ></BackgroundTitle>
-                    <ConnectedTaskList
-                        navigation={this.props.navigation}
-                        type={"in-progress-but-not-due-today"}
-                        parentId={""}
-                        paginate={4}
-                        onSwipeRight={(id: string) => {
-                            void new TaskLogic(id).complete()
-                        }}
-                    ></ConnectedTaskList>
+                    { this.renderInProgress() }
 
-                    <BackgroundTitle title={"Overdue"}
-                        style={{ 
-                        }}
-                    ></BackgroundTitle>
-                    <ConnectedTaskList
-                        navigation={this.props.navigation}
-                        type={"overdue"}
-                        parentId={""}
-                        paginate={4}
-                        onSwipeRight={(id: string) => {
-                            void new TaskLogic(id).complete()
-                        }}
-                    ></ConnectedTaskList>
+                    {this.renderOverdue()}
 
-                    <BackgroundTitle title={"Today"}
-                        style={{
-                        }}
-                    ></BackgroundTitle>
+                    {this.renderOngoingGoals()}
 
+                    <View style={{flex: 0, marginBottom: ROW_CONTAINER_HEIGHT}}></View>
+                </ScrollView>
+            </DocumentView>
+            /* In all likelihood, the app start page will consist of three lists, showing the user what he
+                could potentially due -- dismissing tasks due today, overdue, or in progress, or settling ongoing goals,
+                since there's no need to mark a goal overdue, since there isn't anything that needs to be "done", per se.
+                Anymore than this, and the first screen might be overcrowded in terms of lists. However, we might provide
+                some sort of reporting here, so that it is easy for the user to see how they've been doing recently.
+
+                We will also need to provide fixed buttons for adding goals/rewards/penalties/tasks, and for accessing 
+                a more extensive menu (for thiings like full lists of goals, recurring goals, etc). 
+
+                We will probably want to separate out things like earned rewards and earned penalties
+                to be part of some sort of reporting UI, since earned rewards/penalties are also important for determining
+                how one is doing.
 
                     <ConnectedStatusList
                         navigation={this.props.navigation}
@@ -238,9 +268,77 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         navigation={this.props.navigation}
                     ></NavigationList>
                 </ScrollView>
-            </DocumentView>
+            </DocumentView>   */
         );
     }
+
+    renderInProgress = () => {
+        if( this.state.inProgressCount > 0) {
+            return (
+                <View style={{flex: 0}}>
+                    <BackgroundTitle title={`In Progress (${this.state.inProgressCount})`}
+                        style={{
+                        }}
+                    ></BackgroundTitle>
+                    <ConnectedTaskList
+                        navigation={this.props.navigation}
+                        type={"in-progress-but-not-due-today"}
+                        parentId={""}
+                        paginate={4}
+                        onSwipeRight={(id: string) => {
+                            void new TaskLogic(id).complete()
+                        }}
+                    ></ConnectedTaskList>
+                </View>
+            )
+        }
+        return null;
+    }
+
+    renderOverdue = () => {
+        if( this.state.overdueCount > 0) {
+            return (
+                <View style={{flex: 0}}>
+                    <BackgroundTitle title={`Overdue (${this.state.overdueCount})`}
+                        style={{ 
+                        }}
+                    ></BackgroundTitle>
+                    <ConnectedTaskList
+                        navigation={this.props.navigation}
+                        type={"overdue"}
+                        parentId={""}
+                        paginate={4}
+                        onSwipeRight={(id: string) => {
+                            void new TaskLogic(id).complete()
+                        }}
+                    ></ConnectedTaskList>
+                </View>
+            );
+        }
+        return null;
+    }
+
+    renderOngoingGoals = () => {
+        if( this.state.ongoingGoalsCount > 0) {
+            return (
+                <View style={{flex: 0}}>
+                    <BackgroundTitle title={`Ongoing Goals (${this.state.ongoingGoalsCount})`}
+                        style={{
+                        }}
+                    ></BackgroundTitle>
+
+                    <ConnectedGoalList
+                        navigation={this.props.navigation}
+                        type={"ongoing"}
+                        paginate={4}
+                    ></ConnectedGoalList>
+                </View>
+            );
+        }
+
+        return null;
+    }
+
 }
 
 

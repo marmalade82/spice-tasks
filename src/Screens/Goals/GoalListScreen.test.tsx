@@ -1,4 +1,5 @@
 jest.mock("src/Models/Database");
+jest.mock('src/Notification');
 import DB from "src/Models/Database";
 import React from "react";
 import GoalListScreen from "src/Screens/Goals/GoalListScreen";

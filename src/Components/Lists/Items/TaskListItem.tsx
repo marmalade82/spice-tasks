@@ -40,6 +40,7 @@ export default class TaskListItem extends Item<Props, State, Task> {
                 number={0}
                 key={id}
                 accessibilityLabel={this.props.accessibilityLabel}
+                type={"task"}
             >
 
             </ListItem>

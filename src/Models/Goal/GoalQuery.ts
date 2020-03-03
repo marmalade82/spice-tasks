@@ -100,6 +100,14 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
         }
     }
 
+    queryActiveAndStarted = () => {
+        return this.query(
+            ...[
+                ...Conditions.started(), ...Conditions.active()
+            ]
+        )
+    }
+
     queryInRecentRecurrence = (recurId: string) => {
         return this.store().query(
             ...[ Q.where(GoalSchema.name.RECUR_ID, recurId),

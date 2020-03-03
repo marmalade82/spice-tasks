@@ -39,6 +39,7 @@ export default class GoalListItem extends Item<Props, State, Goal> {
                 subtext={ new MyDate(due_date).format("MMM Do")}
                 number={0}
                 key={id}
+                type={"goal"}
             >
             </ListItem>
         )

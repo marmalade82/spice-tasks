@@ -28,30 +28,6 @@ interface State {
 
 }
 
-const localStyle = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "pink",
-        borderColor: "black",
-        borderWidth: 1,
-        flexDirection: 'column'
-    },
-    title: {
-        paddingTop: "2%",
-        paddingBottom: "2%",
-        paddingLeft: "2%",
-        paddingRight: "2%",
-    },
-    details: {
-        paddingTop: "2%",
-        paddingLeft: "2%",
-        paddingRight: "2%",
-        paddingBottom: "2%",
-        backgroundColor: "white",
-        flexWrap: 'wrap',
-    },
-});
-
 
 export default class EarnedRewardListItem extends Item<Props, State, EarnedReward> {
     constructor(props: Props) {
@@ -71,6 +47,7 @@ export default class EarnedRewardListItem extends Item<Props, State, EarnedRewar
                 number={0}
                 key={id}
                 accessibilityLabel={this.props.accessibilityLabel}
+                type={"earned_reward"}
             ></ListItem>
         )
     }
