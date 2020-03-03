@@ -71,7 +71,7 @@ function dueInFutureConditions() {
 
 function overdueConditions() {
     return [
-        Q.where(name.DUE_ON, Q.lt(new MyDate().toDate().valueOf())),
+        Q.where(name.DUE_ON, Q.lt(new MyDate().prevMidnight().toDate().valueOf())),
     ];
 }
 

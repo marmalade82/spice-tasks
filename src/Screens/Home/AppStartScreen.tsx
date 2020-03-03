@@ -81,17 +81,44 @@ export default class AppStartScreen extends React.Component<Props, State> {
                 </ScreenHeader>
                 <ScrollView>
 
-                    <BackgroundTitle title={"Remaining Today"}
+                    <BackgroundTitle title={"Due Today"}
                         style={{
                         }}
                     ></BackgroundTitle>
                     <ConnectedTaskList
                         navigation={this.props.navigation}
-                        type={"remaining-today"}
+                        type={"due-today"}
                         parentId={""}
                         paginate={4}
                         onSwipeRight={(id: string) => {
-                            console.log("swiped right!")
+                            void new TaskLogic(id).complete()
+                        }}
+                    ></ConnectedTaskList>
+
+                    <BackgroundTitle title={"In Progress"}
+                        style={{
+                        }}
+                    ></BackgroundTitle>
+                    <ConnectedTaskList
+                        navigation={this.props.navigation}
+                        type={"in-progress-but-not-due-today"}
+                        parentId={""}
+                        paginate={4}
+                        onSwipeRight={(id: string) => {
+                            void new TaskLogic(id).complete()
+                        }}
+                    ></ConnectedTaskList>
+
+                    <BackgroundTitle title={"Overdue"}
+                        style={{ 
+                        }}
+                    ></BackgroundTitle>
+                    <ConnectedTaskList
+                        navigation={this.props.navigation}
+                        type={"overdue"}
+                        parentId={""}
+                        paginate={4}
+                        onSwipeRight={(id: string) => {
                             void new TaskLogic(id).complete()
                         }}
                     ></ConnectedTaskList>

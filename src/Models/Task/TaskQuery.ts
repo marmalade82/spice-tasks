@@ -150,6 +150,17 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
         );
     }
 
+    queryInProgress = () => {
+        return this.query(
+            Q.and(
+                ...[
+                    ...Conditions.active(), ...Conditions.started()
+                ],
+                Q.or( Q.and(...Conditions.notDue()), Q.and(...Conditions.dueToday()))
+            )
+        )
+    }
+
     queryInactive = () => {
         return this.store().query(
             Q.where('is_active', false)

@@ -79,7 +79,7 @@ interface InputProps extends Omit<Props, "tasks"> {
         "all" | "parent-active" | "parent-inactive" | 
         "parent-all" | "active" | "active-due-soon-today" |
         "completed-today" | "in-progress-but-not-due-today" |
-        "overdue" | "remaining-today";
+        "overdue" | "remaining-today" | "due-today" | "in-progress";
     parentId: string  // shows all tasks that have this parent
 }
 
@@ -116,7 +116,17 @@ const enhance = withObservables(['type'], (props: InputProps) => {
         } break;
         case "in-progress-but-not-due-today": {
             return {
-                tasks: new TaskQuery().queryActiveAndStartedButNotDue().observe()
+                tasks: observableWithRefreshTimer(() => new TaskQuery().queryActiveAndStartedButNotDue().observe()),
+            }
+        } break;
+        case "in-progress": {
+            return {
+                tasks: observableWithRefreshTimer(() => new TaskQuery().queryInProgress().observe() )
+            }
+        } break;
+        case "due-today": {
+            return {
+                tasks: observableWithRefreshTimer( () => new TaskQuery().queryActiveAndDueToday().observe() )
             }
         } break;
         case "overdue": {
