@@ -2,7 +2,7 @@ import React from "react";
 import { ColumnView, RowView, RowReverseView, HeaderText } from "src/Components/Basic/Basic";
 import { ScreenHeader, DocumentView, ClickRow, ListPicker, ListItem } from "src/Components/Styled/Styled";
 import List from "src/Components/Lists/base/List";
-import TaskQuery from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 
 interface Props {
@@ -65,6 +65,17 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
         this.unsubscribe();
     }
 
+    onTaskAction = (id: string, action: "complete" | "fail") => {
+        switch(action) {
+            case "complete": {
+                void new TaskLogic(id).complete();
+            } break; 
+            case "fail": {
+                void new TaskLogic(id).fail();
+            } break;
+        }
+    }
+
     render = () => {
         return (
             <DocumentView>
@@ -101,6 +112,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
                         navigation={this.props.navigation}
                         type={"active-due-soon-today"}
                         parentId={""}
+                        onTaskAction={this.onTaskAction}
                     ></ConnectedTaskList>
                   );
               }
@@ -115,6 +127,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
                         navigation={this.props.navigation}
                         type={"in-progress-but-not-due-today"}
                         parentId={""}
+                        onTaskAction={this.onTaskAction}
                       >
                       </ConnectedTaskList>
                   )
@@ -130,8 +143,8 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
                         navigation={this.props.navigation}
                         type={"completed-today"}
                         parentId={""}
+                        onTaskAction={this.onTaskAction}
                     >
-
                     </ConnectedTaskList>
                   )
               }

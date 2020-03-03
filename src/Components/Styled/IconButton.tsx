@@ -14,6 +14,7 @@ interface Props {
     type: "add" | "edit" | "more" | "settings" | "enable" | "disable" | "complete" | "delete";
     onPress?: () => void;
     accessibilityLabel?: string;
+    backgroundColor?: string;
 }
 
 interface State {
@@ -42,7 +43,7 @@ export default class IconButton extends React.Component<Props, State> {
                         height: ICON_CONTAINER_WIDTH,
                         width: ICON_CONTAINER_WIDTH,
                         borderRadius: ICON_CONTAINER_WIDTH/2,
-                        backgroundColor: PRIMARY_COLOR,
+                        backgroundColor: this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR,
                         marginLeft: RIGHT_SECOND_MARGIN/2,
                     }, Styles.CENTERED]}
                     accessibilityLabel={this.props.accessibilityLabel}

@@ -310,4 +310,26 @@ export class TaskLogic {
     complete = async () => {
         await new TaskQuery().completeTaskAndDescendants({ id: this.id });
     }
+
+    fail = async () => {
+        try {
+            const parent: Task | null = await new TaskQuery().get(this.id);
+            if(parent) {
+                const allTasks: Task[] = await findAllChildrenIn(TaskSchema.table, parent.id, [parent]);
+                const allTasksPrep = allTasks.map((task: Task) => {
+                    return task.prepareUpdate((t: ITask) => {
+                        t.active = false;
+                        t.state = "cancelled";
+                    });
+                });
+
+                await DB.get().action(async() => {
+                    await DB.get().batch(...allTasksPrep);
+                })
+            }
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
 }

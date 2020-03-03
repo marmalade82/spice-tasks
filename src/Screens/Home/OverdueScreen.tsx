@@ -4,7 +4,7 @@ import { ColumnView, RowView, RowReverseView, HeaderText } from "src/Components/
 import { ScreenHeader, DocumentView, ClickRow, ListPicker, ListItem } from "src/Components/Styled/Styled";
 import List from "src/Components/Lists/base/List";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
-import TaskQuery from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 
@@ -62,6 +62,17 @@ export default class OverdueScreen extends React.Component<Props, State> {
         }
     }
 
+    onTaskAction = (id: string, action: "complete" | "fail") => {
+        switch(action) {
+            case "complete": {
+                void new TaskLogic(id).complete();
+            } break; 
+            case "fail": {
+                void new TaskLogic(id).fail();
+            } break;
+        }
+    }
+
     render = () => {
         return (
             <DocumentView>
@@ -97,6 +108,7 @@ export default class OverdueScreen extends React.Component<Props, State> {
                         navigation={this.props.navigation}
                         type={"overdue"}
                         parentId={""}
+                        onTaskAction={this.onTaskAction}
                     ></ConnectedTaskList>
                   );
               }

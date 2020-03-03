@@ -5,6 +5,7 @@ import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 import { DocumentView } from "src/Components/Styled/Styled";
+import { TaskLogic } from "src/Models/Task/TaskQuery";
 
 interface Props {
     navigation: any;
@@ -40,6 +41,17 @@ export default class TaskListScreen extends React.Component<Props, State> {
         }
     }
 
+    onTaskAction = (id: string, action: "complete" | "fail") => {
+        switch(action) {
+            case "complete": {
+                void new TaskLogic(id).complete();
+            } break; 
+            case "fail": {
+                void new TaskLogic(id).fail();
+            } break;
+        }
+    }
+
     render = () => {
         return (
             <DocumentView>
@@ -47,6 +59,7 @@ export default class TaskListScreen extends React.Component<Props, State> {
                     navigation={this.props.navigation}
                     parentId={""}
                     type={"all"}
+                    onTaskAction={this.onTaskAction}
                 ></ConnectedTaskList>
                 <View style={[localStyle.button]}>
                     <Button

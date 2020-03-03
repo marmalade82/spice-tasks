@@ -10,6 +10,7 @@ interface Props {
     accessibilityLabel?: string;
     data: State | false;
     onDataChange: (d: State) => void;
+    backgroundColor?: string;
 }
 
 interface State {
@@ -45,6 +46,7 @@ export default class ModalIconButton extends DataComponent<Props, State, State> 
                         })
                     }}
                     accessibilityLabel={this.props.accessibilityLabel}
+                    backgroundColor={this.props.backgroundColor}
                 >
                 </IconButton>
                 {this.renderModal()}

@@ -10,7 +10,7 @@ import { LEFT_FIRST_MARGIN, MODAL_ROW_HEIGHT, Styles, TEXT_HORIZONTAL_MARGIN } f
 interface Props {
     text: string;
     iconType: "complete" | "delete" | "goal" | "task" | 
-        "reward" | "penalty" | "none";
+        "reward" | "penalty" | "fail" | "none";
     iconBackground?: string;
     accessibilityLabel?: string;
     onPress: () => void;

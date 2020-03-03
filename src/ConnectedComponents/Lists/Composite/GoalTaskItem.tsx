@@ -13,6 +13,7 @@ interface Props {
     model: Goal | Task;
     accessibilityLabel?: string;
     navigation: any,
+    onItemAction: (action: "complete" | "fail") => void;
 }
 
 
@@ -30,6 +31,7 @@ const AdaptedGoalTaskItem: React.FunctionComponent<Props> = function(props: Prop
                 item={mappedTask}
                 accessibilityLabel={props.accessibilityLabel ? props.accessibilityLabel : "task-list-item"}
                 navigation={props.navigation}
+                onTaskAction={props.onItemAction}
             >
 
             </TaskListItem>

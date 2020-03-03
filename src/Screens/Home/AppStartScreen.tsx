@@ -111,6 +111,17 @@ export default class AppStartScreen extends React.Component<Props, State> {
         this.unsub();
     }
 
+    onTaskAction = (id: string, action: "complete" | "fail") => {
+        switch(action) {
+            case "complete": {
+                void new TaskLogic(id).complete();
+            } break; 
+            case "fail": {
+                void new TaskLogic(id).fail();
+            } break;
+        }
+    }
+
     render = () => {
         return (
             <DocumentView>
@@ -134,7 +145,8 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         onSwipeRight={(id: string) => {
                             void new TaskLogic(id).complete()
                         }}
-                        emptyText={"Congrats! You're done for today."}
+                        emptyText={"Congrats! You're done with your tasks for today."}
+                        onTaskAction={this.onTaskAction}
                     ></ConnectedTaskList>
 
                     { this.renderInProgress() }
@@ -143,7 +155,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
 
                     {this.renderOngoingGoals()}
 
-                    <View style={{flex: 0, marginBottom: ROW_CONTAINER_HEIGHT}}></View>
+                    <View style={{flex: 0, marginBottom: ROW_CONTAINER_HEIGHT / 2}}></View>
                 </ScrollView>
             </DocumentView>
             /* In all likelihood, the app start page will consist of three lists, showing the user what he
@@ -288,6 +300,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         onSwipeRight={(id: string) => {
                             void new TaskLogic(id).complete()
                         }}
+                        onTaskAction={this.onTaskAction}
                     ></ConnectedTaskList>
                 </View>
             )
@@ -311,6 +324,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         onSwipeRight={(id: string) => {
                             void new TaskLogic(id).complete()
                         }}
+                        onTaskAction={this.onTaskAction}
                     ></ConnectedTaskList>
                 </View>
             );

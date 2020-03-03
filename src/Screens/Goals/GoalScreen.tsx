@@ -11,7 +11,7 @@ import {
 import NavigationButton from "src/Components/Navigation/NavigationButton";
 import { DocumentView, ScreenHeader, ListPicker, Toast } from "src/Components/Styled/Styled";
 import { ScrollView } from "react-native-gesture-handler";
-import TaskQuery from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 
 
 interface Props {
@@ -159,6 +159,17 @@ export default class GoalScreen extends React.Component<Props, State> {
         );
     }
 
+    onTaskAction = (id: string, action: "complete" | "fail") => {
+        switch(action) {
+            case "complete": {
+                void new TaskLogic(id).complete();
+            } break; 
+            case "fail": {
+                void new TaskLogic(id).fail();
+            } break;
+        }
+    }
+
     renderSummary = () => {
         if(this.state.goal) {
             return (
@@ -186,6 +197,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                             navigation={this.props.navigation}
                             parentId={this.props.navigation.getParam('id', '')}
                             type={"parent-active"}
+                            onTaskAction={this.onTaskAction}
                         ></ConnectedTaskList>
                     );
                 }
@@ -200,6 +212,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                             navigation={this.props.navigation}
                             parentId={this.props.navigation.getParam('id', '')}
                             type={"parent-inactive"}
+                            onTaskAction={this.onTaskAction}
                         ></ConnectedTaskList>
                     );
                 }

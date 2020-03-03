@@ -4,6 +4,7 @@ import React from "react";
 import {
     TaskListItem,
     Task as ITask,
+    OnTaskAction,
 } from "src/Components/Lists/Items/TaskListItem";
 
 import Task from "src/Models/Task/Task";
@@ -12,6 +13,7 @@ import withObservables from "@nozbe/with-observables";
 interface Props {
     task: Task
     navigation: any
+    onTaskAction: OnTaskAction;
 }
 
 const AdaptedTaskListItem: React.FunctionComponent<Props> = function(props: Props) {
@@ -28,6 +30,7 @@ const AdaptedTaskListItem: React.FunctionComponent<Props> = function(props: Prop
             item={mappedTask}
             accessibilityLabel={"task-list-item"}
             navigation={props.navigation}
+            onTaskAction={props.onTaskAction}
         ></TaskListItem>
     );
 }

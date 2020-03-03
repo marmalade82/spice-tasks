@@ -71,6 +71,7 @@ test("User can mark a task (and its children) as Complete/Inactive in the databa
                 navigation={makeNavigation({})}
                 parentId={""}
                 type={"active"}
+                onTaskAction={() => {}}
             ></ConnectedTaskList>
         );
 
@@ -113,6 +114,7 @@ test("User can mark a task (and its children) as Complete/Inactive in the databa
                 navigation={makeNavigation({})}
                 parentId={""}
                 type={"active"}
+                onTaskAction={() => {}}
             ></ConnectedTaskList>
         );
 

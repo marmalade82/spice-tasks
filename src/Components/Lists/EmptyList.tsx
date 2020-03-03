@@ -1,6 +1,6 @@
 import React from "react";
 import { RowView, HeaderText } from "../Basic/Basic";
-import { ROW_CONTAINER_HEIGHT, LEFT_SECOND_MARGIN, TEXT_GREY, LEFT_FIRST_MARGIN, TEXT_HORIZONTAL_MARGIN } from "../Styled/Styles";
+import { ROW_CONTAINER_HEIGHT, LEFT_SECOND_MARGIN, TEXT_GREY, LEFT_FIRST_MARGIN, TEXT_HORIZONTAL_MARGIN, RIGHT_SECOND_MARGIN } from "../Styled/Styles";
 import { Icon } from "../Styled/Icon";
 
 export interface Props {
@@ -26,6 +26,7 @@ export default class EmptyList extends React.Component<Props, State> {
                     alignItems: "center",
                     justifyContent: "flex-start",
                     paddingLeft: LEFT_FIRST_MARGIN,
+                    paddingRight: RIGHT_SECOND_MARGIN,
                 }}
                 accessibilityLabel={"empty-list"}
             >

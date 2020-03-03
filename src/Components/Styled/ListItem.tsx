@@ -17,6 +17,7 @@ interface Props {
     key: string;
     accessibilityLabel?: string;
     type?: "goal" | "task" | "reward" | "penalty" | "recur" | "earned_reward" | "earned_penalty";
+    footerIcons? : (() => JSX.Element)[]
 }
 
 export default class ListItem extends React.Component<Props> {
@@ -84,24 +85,24 @@ export default class ListItem extends React.Component<Props> {
                             minWidth: 60,
                             alignItems: "center",
                         }}>
-                            <View style={{
-                                height: 37,
-                                width: 37,
-                                borderRadius: 37/2,
-                                backgroundColor: "rgb(191,38,0)",
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}>
-                                <HeaderText level={3} style={{
-                                    color: "white",
-                                }}>
-                                    { number }
-                                </HeaderText>
-                            </View>
+                            {this.renderFooterIcons()}
                         </RowReverseView>
                     </RowView>
                 </TouchableOpacity>
             </ColumnView>
         )
+    }
+
+    renderFooterIcons = () => {
+        if(this.props.footerIcons) {
+            return this.props.footerIcons.map((render) => render());
+        } else {
+            return (
+                <Icon
+                    type={"none"}
+                    backgroundColor={"transparent"}
+                ></Icon>
+            )
+        }
     }
 }

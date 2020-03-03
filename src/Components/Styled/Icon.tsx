@@ -13,7 +13,8 @@ import {
 interface Props {
     type: "complete" | "delete" | "goal" | "task" | 
         "reward" | "penalty" | "mandatory" | "attention" | "info" | "recur"| 
-        "earned_reward" | "earned_penalty" | "right" | "left" | "first" | "last" | "none";
+        "earned_reward" | "earned_penalty" | "right" | "left" | "first" | "last" | "none" | 
+        "fail";
     accessibilityLabel?: string;
     backgroundColor?: string;
     color?: string;
@@ -233,6 +234,18 @@ export default class StyledIcon extends React.Component<Props, State>{
                     ></Icon>
                 );
             } break;
+            case "fail" : {
+                return (
+                    <Icon
+                        name={"x"}
+                        type={"feather"}
+                        color={TEXT_GREY}
+                        size={this.props.size ? this.props.size : 20}
+                        style={{
+                        }}
+                    ></Icon>
+                )
+            }
             default: {
                 return null
             }

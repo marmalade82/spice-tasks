@@ -19,6 +19,7 @@ import SwipeRow from "src/Components/Basic/SwipeRow";
 import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
 import EmptyList from "src/Components/Lists/EmptyList";
 import { prependToMemberExpression } from "@babel/types";
+import { OnTaskAction } from "src/Components/Lists/Items/TaskListItem";
 
 interface Props {
     tasks: Task[];
@@ -26,6 +27,7 @@ interface Props {
     paginate?: number;
     onSwipeRight?: (id: string) => void;
     emptyText?: string;
+    onTaskAction: OnTaskAction;
 }
 
 const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
@@ -50,6 +52,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                     <ConnectedTaskListItem
                         task={item}
                         navigation={props.navigation}
+                        onTaskAction={props.onTaskAction}
                     ></ConnectedTaskListItem>
             </SwipeRow>
         );
