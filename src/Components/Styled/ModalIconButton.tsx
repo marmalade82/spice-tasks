@@ -48,7 +48,7 @@ export default class ModalIconButton extends DataComponent<Props, State, State> 
                         })
                     }}
                     size={this.props.size}
-                    overlaySize={50}
+                    overlaySize={this.props.overlaySize}
                     accessibilityLabel={this.props.accessibilityLabel}
                     backgroundColor={this.props.backgroundColor}
                 >

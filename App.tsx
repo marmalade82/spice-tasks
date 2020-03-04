@@ -2,13 +2,14 @@ import React from 'react';
 import * as Screens from "src/Screens";
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
+import { createDrawerNavigator } from "react-navigation-drawer";
+import { createBottomTabNavigator } from "react-navigation-tabs";
 import { Button, AppState } from "react-native";
 import { Schedule } from "./Schedule";
 import SpiceDBService from 'src/Services/DBService';
 
-
-const ScreenNavigator = createStackNavigator(
-  { Home: {
+const ScreenDirectory = {
+  Home: {
       screen: Screens.Home,
     }
   , Goal: Screens.Goal
@@ -45,9 +46,35 @@ const ScreenNavigator = createStackNavigator(
   , EarnedPenalties: Screens.EarnedPenaltyList
   , EarnedPenalty: Screens.EarnedPenalty
   , UnusedEarnedPenalties: Screens.UnusedEarnedPenalties
+  , Lists: Screens.Lists
   , Test: Screens.Test
-  },
+  
+};
+
+const ScreenNavigator = createStackNavigator(
+  ScreenDirectory,
   { initialRouteName: 'Home'
+  , defaultNavigationOptions: ({navigation}) => {
+      return {
+        headerRight: () => { return <Button
+                onPress={() => {
+                    //navigation.navigate('Menu');
+                    navigation.toggleDrawer();
+                }}
+                title="Menu"
+                color="lightgreen"
+            
+            />
+        }
+      }
+    }
+
+  }
+);
+
+const DashNavigator = createStackNavigator(
+  ScreenDirectory,
+  { initialRouteName: 'AppStart'
   , defaultNavigationOptions: ({navigation}) => {
       return {
         headerRight: () => { return <Button
@@ -65,6 +92,48 @@ const ScreenNavigator = createStackNavigator(
   }
 );
 
+const ListNavigator = createStackNavigator(
+  ScreenDirectory,
+  { initialRouteName: 'Lists'
+  , defaultNavigationOptions: ({navigation}) => {
+      return {
+        headerRight: () => { return <Button
+                onPress={() => {
+                    navigation.navigate('Menu');
+                }}
+                title="Menu"
+                color="lightgreen"
+            
+            />
+        }
+      }
+    }
+
+  }
+)
+
+const AppNavigator = createBottomTabNavigator(
+  {
+    Dash: DashNavigator,
+    Lists: ListNavigator
+  }
+);
+
+/*const AppNavigator = createDrawerNavigator(
+  { Main: ScreenNavigator,
+    AppStart: Screens.AppStart,
+    Tasks: Screens.TaskList,
+    Goals: Screens.GoalList,
+    Rewards: Screens.RewardList,
+    Penalties: Screens.PenaltyList,
+    EarnedRewards: Screens.EarnedRewardList,
+    EarnedPenalties: Screens.EarnedPenaltyList,
+  },
+  { drawerPosition: "left"
+
+  }
+);*/
+/*
 const AppNavigator = createStackNavigator(
   { Main: ScreenNavigator,
     Recurring: Screens.Recurring,
@@ -73,7 +142,7 @@ const AppNavigator = createStackNavigator(
     mode: "modal",
     headerMode: "none",
   }
-)
+)*/
 
 const AppContainer = createAppContainer(AppNavigator);
 
@@ -83,7 +152,6 @@ export default class App extends React.Component {
     AppState.addEventListener('change', this.handleAppStateChange);
 
     void Schedule.refresh(1, () => false);
-    //void Schedule.refreshStreakGoals(15, () => false );
   }
 
   componentWillUnmount = () => {

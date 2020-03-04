@@ -173,7 +173,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         flex: 0,
                         position: "absolute",
                         right: 50,
-                        bottom: 50,
+                        bottom: 20,
                     }}
                 >
                     <ModalIconButton type={"add"}
@@ -451,60 +451,3 @@ const enhance = withObservables([], (_props: AllStatusListProps) => {
 
 var ConnectedStatusList = enhance(AdaptedStatusList);
 
-
-interface NavListProps {
-    navigation: any;
-}
-
-class NavigationList extends React.Component<NavListProps> {
-
-    render = () => {
-        return (
-            <NavigationGroup
-                navigation={this.props.navigation}
-                style={{
-                    marginBottom: ROW_HEIGHT + 20,
-                }}
-                rows={[
-                    { text: "Goals"
-                    , icon: "goal"
-                    , navParams: {}
-                    , navDestination: "Goals"
-                    },
-                    { text: "Tasks"
-                    , icon: "task"
-                    , navParams: {}
-                    , navDestination: "Tasks"
-                    },
-                    { text: "Rewards"
-                    , icon: "reward"
-                    , navParams: {}
-                    , navDestination: "Rewards"
-                    },
-                    { text: "Penalties"
-                    , icon: "penalty"
-                    , navParams: {}
-                    , navDestination: "Penalties"
-                    },
-                    { text: "Recurring Goals"
-                    , icon: "recur"
-                    , navParams: {}
-                    , navDestination: "Recurrings"
-                    },
-                    { text: "Earned Rewards"
-                    , icon: "earned_reward"
-                    , navParams: {}
-                    , navDestination: "EarnedRewards"
-                    },
-                    { text: "Earned Penalties"
-                    , icon: "earned_penalty"
-                    , navParams: {}
-                    , navDestination: "EarnedPenalties"
-                    }
-
-                ]}
-            >
-            </NavigationGroup>
-        )
-    }
-}

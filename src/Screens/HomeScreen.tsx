@@ -51,6 +51,12 @@ export default class HomeScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <View style={[Style.container, localStyle.container]}>
+                <Button
+                    title={"Drawer"}
+                    onPress={() => {
+                        this.props.navigation.toggleDrawer()
+                    }}
+                ></Button>
                 {this.renderScreenButtons()}
             </View>
         )
