@@ -14,17 +14,11 @@ import {
     CONTAINER_VERTICAL_MARGIN, ROW_CONTAINER_HEIGHT, Styles, 
     LEFT_SECOND_MARGIN, PRIMARY_COLOR_LIGHT, LEFT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, RIGHT_SECOND_MARGIN, ROW_HEIGHT
 } from "src/Components/Styled/Styles";
-import withObservables from "@nozbe/with-observables";
-import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
-import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
-import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
-import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
-import { Schedule } from "Schedule";
-import GlobalQuery, { GlobalLogic, Global_Timer, observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
 import { Subscription } from "rxjs";
+import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import EarnedPenaltyQuery from "src/Models/Penalty/EarnedPenaltyQuery";
-import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
-import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
+import { ConnectedEarnedRewardList } from "src/ConnectedComponents/Lists/Reward/EarnedRewardList";
+import { ConnectedEarnedPenaltyList } from "src/ConnectedComponents/Lists/Penalty/EarnedPenaltyList";
 
 interface Props {
     navigation: any;
@@ -32,6 +26,8 @@ interface Props {
 
 interface State {
     showAdd: boolean;
+    earnedRewardsCount: number;
+    earnedPenaltiesCount: number;
 }
 
 
@@ -42,12 +38,40 @@ export default class ListsScreen extends React.Component<Props, State> {
         }
     }
     
+    unsub: () => void;
     constructor(props: Props) {
         super(props);
 
         this.state = {
             showAdd: true,
+            earnedRewardsCount: 0,
+            earnedPenaltiesCount: 0,
         }
+
+        this.unsub = () => {};
+    }
+
+    componentDidMount = () => {
+        const earnedRewardSub = new EarnedRewardQuery().queryUnused().observeCount().subscribe((count) => {
+            this.setState({
+                earnedRewardsCount: count,
+            })
+        })
+
+        const earnedPenaltiesSub = new EarnedPenaltyQuery().queryUnused().observeCount().subscribe((count) => {
+            this.setState({
+                earnedPenaltiesCount: count,
+            })
+        })
+
+        this.unsub = () => {
+            earnedRewardSub.unsubscribe();
+            earnedPenaltiesSub.unsubscribe();
+        }
+    }
+
+    componentWillUnmount = () => {
+        this.unsub();
     }
 
     render = () => {
@@ -60,6 +84,26 @@ export default class ListsScreen extends React.Component<Props, State> {
                     { "Lists" }
                 </ScreenHeader>
                 <ScrollView>
+                    <BackgroundTitle
+                        title={`Unused Rewards (${this.state.earnedRewardsCount})`}
+                    ></BackgroundTitle>
+
+                    <ConnectedEarnedRewardList
+                        navigation={this.props.navigation}
+                        paginate={4}
+                        type={"unused"}
+                    ></ConnectedEarnedRewardList>
+
+                    <BackgroundTitle
+                        title={`Pending Penalties (${this.state.earnedRewardsCount})`}
+                    ></BackgroundTitle>
+
+                    <ConnectedEarnedPenaltyList
+                        navigation={this.props.navigation}
+                        paginate={4}
+                        type={"unused"}
+                    ></ConnectedEarnedPenaltyList>
+
                     <BackgroundTitle title={"Full Lists"}
                         style={{
                             marginTop: 2 * CONTAINER_VERTICAL_MARGIN,

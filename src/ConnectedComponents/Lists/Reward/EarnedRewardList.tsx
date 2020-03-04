@@ -8,10 +8,15 @@ import withObservables from "@nozbe/with-observables";
 import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import List from "src/Components/Lists/base/List";
 import { ConnectedEarnedRewardListItem } from "src/ConnectedComponents/Lists/Reward/EarnedRewardListItem";
+import { PagedList } from "src/Components/Styled/Styled";
+import EmptyListItem from "src/Components/Lists/Items/EmptyListItem";
+import EmptyList from "src/Components/Lists/EmptyList";
 
 interface Props {
     earned: EarnedReward[];
     navigation: any;
+    paginate?: number;
+    emptyText?: string;
 }
 
 const AdaptedEarnedRewardList: React.FunctionComponent<Props> = (props: Props) => {
@@ -26,18 +31,35 @@ const AdaptedEarnedRewardList: React.FunctionComponent<Props> = (props: Props) =
         )
     }
 
-    return (
-        <List
-            items={props.earned} 
-            renderItem={renderEarnedReward}
-        >
-        </List>
-    )
+    if(props.paginate) {
+        return (
+            <PagedList
+                items={props.earned}
+                pageMax={props.paginate}
+                renderItem={renderEarnedReward}
+                renderEmptyItem={() => {return <EmptyListItem></EmptyListItem>}}
+                renderEmptyList={() => { 
+                    return (
+                        <EmptyList
+                            text={props.emptyText ? props.emptyText : "You haven't earned any rewards" }
+                        ></EmptyList>
+                    );
+                }}
+            ></PagedList>
+        )
+    } else {
+        return (
+            <List
+                items={props.earned} 
+                renderItem={renderEarnedReward}
+            >
+            </List>
+        )
+    }
 }
 
-interface InputProps {
-    navigation: any,
-    type? : "active",
+interface InputProps extends Omit<Props, "earned"> {
+    type? : "active" | "unused",
 }
 
 /**
@@ -48,6 +70,11 @@ const enhance = withObservables([], (props: InputProps) => {
     if(type) {
         switch(type) {
             case "active": {
+                return {
+                    earned: new EarnedRewardQuery().queryUnused().observe()
+                }
+            } break;
+            case "unused": {
                 return {
                     earned: new EarnedRewardQuery().queryUnused().observe()
                 }

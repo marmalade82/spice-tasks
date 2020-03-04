@@ -18,8 +18,6 @@ import withObservables from "@nozbe/with-observables";
 import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
-import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
-import { Schedule } from "Schedule";
 import GlobalQuery, { GlobalLogic, Global_Timer, observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
 import { Subscription } from "rxjs";
 import EarnedPenaltyQuery from "src/Models/Penalty/EarnedPenaltyQuery";
