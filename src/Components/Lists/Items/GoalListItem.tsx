@@ -1,17 +1,20 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import Item from "src/Components/Lists/Items/base/Item";
-import { ListItem } from "src/Components/Styled/Styled";
+import { ListItem, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
 
 interface Props {
     item: Goal
     accessibilityLabel: string
     navigation: any
+    onAction: OnGoalAction
 }
 
-interface State {
+export type OnGoalAction = (id: string, action: "complete" | "fail") => void;
 
+interface State {
+    showMore: boolean;
 }
 
 interface Goal {
@@ -24,6 +27,10 @@ interface Goal {
 export default class GoalListItem extends Item<Props, State, Goal> {
     constructor(props: Props) {
         super(props);
+
+        this.state = {
+            showMore: false,
+        }
     }
     
     render = () => {
@@ -40,6 +47,44 @@ export default class GoalListItem extends Item<Props, State, Goal> {
                 number={0}
                 key={id}
                 type={"goal"}
+                footerIcons={[
+                    () => {
+                        return (
+                            <ModalIconButton
+                                type={"more"}
+                                data={{
+                                    showModal: this.state.showMore,
+                                }}
+                                onDataChange={({showModal}) => {
+                                    this.setState({
+                                        showMore: showModal
+                                    })
+                                }}
+                            >
+                                <ModalRow
+                                    text={"Mark complete"}
+                                    iconType={"complete"}
+                                    onPress={() => {
+                                        this.setState({
+                                            showMore: false,
+                                        });
+                                        this.props.onAction(id, "complete");
+                                    }}
+                                ></ModalRow>
+                                <ModalRow
+                                    text={"Mark failed"}
+                                    iconType={"fail"}
+                                    onPress={() => {
+                                        this.setState({
+                                            showMore: false,
+                                        });
+                                        this.props.onAction(id, "fail");
+                                    }}
+                                ></ModalRow>
+                            </ModalIconButton>
+                        )
+                    }
+                ]}
             >
             </ListItem>
         )

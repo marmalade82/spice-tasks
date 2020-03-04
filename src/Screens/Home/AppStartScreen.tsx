@@ -15,7 +15,7 @@ import {
     LEFT_SECOND_MARGIN, PRIMARY_COLOR_LIGHT, LEFT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, RIGHT_SECOND_MARGIN, ROW_HEIGHT
 } from "src/Components/Styled/Styles";
 import withObservables from "@nozbe/with-observables";
-import GoalQuery from "src/Models/Goal/GoalQuery";
+import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
@@ -118,6 +118,17 @@ export default class AppStartScreen extends React.Component<Props, State> {
             } break; 
             case "fail": {
                 void new TaskLogic(id).fail();
+            } break;
+        }
+    }
+
+    onGoalAction = (id: string, action: "complete" | "fail") => {
+        switch(action) {
+            case "complete": {
+                void new GoalLogic(id).complete();
+            } break;
+            case "fail":{
+                void new GoalLogic(id).fail();
             } break;
         }
     }
@@ -345,6 +356,10 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         navigation={this.props.navigation}
                         type={"ongoing"}
                         paginate={4}
+                        onSwipeRight={(id: string) => {
+                            void new GoalLogic(id).complete();
+                        }}
+                        onGoalAction={this.onGoalAction}
                     ></ConnectedGoalList>
                 </View>
             );

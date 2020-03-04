@@ -4,7 +4,7 @@ import { ColumnView, RowView, RowReverseView, HeaderText } from "src/Components/
 import { ScreenHeader, DocumentView, ClickRow, ListPicker, ListItem } from "src/Components/Styled/Styled";
 import List from "src/Components/Lists/base/List";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
-import GoalQuery from "src/Models/Goal/GoalQuery";
+import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
 
 
 interface Props {
@@ -52,6 +52,17 @@ export default class InProgressGoalListScreen extends React.Component<Props, Sta
         this.unsubscribe();
     }
 
+    onGoalAction = (id: string, action: "complete" | "fail") => {
+        switch(action) {
+            case "complete": {
+                new GoalLogic(id).complete();
+            } break;
+            case "fail" : {
+                new GoalLogic(id).fail();
+            } break;
+        }
+    }
+
     render = () => {
         return (
             <DocumentView>
@@ -87,6 +98,7 @@ export default class InProgressGoalListScreen extends React.Component<Props, Sta
                       <ConnectedGoalList
                         navigation={this.props.navigation}
                         type={"in-progress-not-due"}
+                        onGoalAction={this.onGoalAction}
                       ></ConnectedGoalList>
                   )
               }

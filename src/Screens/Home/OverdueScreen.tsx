@@ -6,7 +6,7 @@ import List from "src/Components/Lists/base/List";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
-import GoalQuery from "src/Models/Goal/GoalQuery";
+import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
 
 
 interface Props {
@@ -73,6 +73,17 @@ export default class OverdueScreen extends React.Component<Props, State> {
         }
     }
 
+    onGoalAction = (id: string, action: "complete" | "fail") => {
+        switch(action) {
+            case "complete": {
+                new GoalLogic(id).complete();
+            } break;
+            case "fail" : {
+                new GoalLogic(id).fail();
+            } break;
+        }
+    }
+
     render = () => {
         return (
             <DocumentView>
@@ -122,6 +133,7 @@ export default class OverdueScreen extends React.Component<Props, State> {
                       <ConnectedGoalList
                         navigation={this.props.navigation}
                         type={"overdue"}
+                        onGoalAction={this.onGoalAction}
                       > </ConnectedGoalList>
                   )
               }

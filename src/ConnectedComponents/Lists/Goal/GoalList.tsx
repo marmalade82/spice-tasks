@@ -16,12 +16,14 @@ import EmptyListItem from "src/Components/Lists/Items/EmptyListItem";
 import SwipeRow from "src/Components/Basic/SwipeRow";
 import { View } from "react-native"
 import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
+import { OnGoalAction } from "src/Components/Lists/Items/GoalListItem";
 
 interface Props {
     goals: Goal[];
     navigation: any;
     paginate?: number;
     onSwipeRight?: (id: string) => void;
+    onGoalAction: OnGoalAction;
 }
 
 const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
@@ -46,6 +48,7 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
                 <ConnectedGoalListItem
                     goal={item}
                     navigation={props.navigation}
+                    onGoalAction={props.onGoalAction}
                 ></ConnectedGoalListItem>
             </SwipeRow>
         );

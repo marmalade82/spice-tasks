@@ -13,11 +13,17 @@ interface Props {
     model: Goal | Task;
     accessibilityLabel?: string;
     navigation: any,
-    onItemAction: (action: "complete" | "fail") => void;
+    onItemAction: (id: string, action: "complete" | "fail", item: "goal" | "task") => void;
 }
 
 
 const AdaptedGoalTaskItem: React.FunctionComponent<Props> = function(props: Props) {
+    const createItemAction = (item: "goal" | "task") => {
+        return (id: string, action: "complete" | "fail") => {
+            props.onItemAction(id, action, item);
+        }
+    }
+
     if(props.model instanceof Task) {
         const task = props.model
         const mappedTask: ITask = {
@@ -31,7 +37,7 @@ const AdaptedGoalTaskItem: React.FunctionComponent<Props> = function(props: Prop
                 item={mappedTask}
                 accessibilityLabel={props.accessibilityLabel ? props.accessibilityLabel : "task-list-item"}
                 navigation={props.navigation}
-                onTaskAction={props.onItemAction}
+                onTaskAction={createItemAction("task")}
             >
 
             </TaskListItem>
@@ -50,6 +56,7 @@ const AdaptedGoalTaskItem: React.FunctionComponent<Props> = function(props: Prop
                 item={mappedGoal}
                 accessibilityLabel={props.accessibilityLabel ? props.accessibilityLabel : "goal-list-item"}
                 navigation={props.navigation}
+                onAction={createItemAction("goal")}
             >
 
             </GoalListItem>

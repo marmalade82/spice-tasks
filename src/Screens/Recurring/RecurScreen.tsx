@@ -69,6 +69,10 @@ export default class RecurScreen extends React.Component<Props, State> {
         }
     }
 
+    onGoalAction = (id: string, action: "complete" | "fail") => {
+
+    }
+
     render = () => {
         return (
             <DocumentView>
@@ -112,6 +116,7 @@ export default class RecurScreen extends React.Component<Props, State> {
                             navigation={this.props.navigation}
                             parentId={this.props.navigation.getParam('id', '')}
                             type={"recurring"}
+                            onGoalAction={this.onGoalAction}
                         ></ConnectedGoalList>
                     );
                 }
