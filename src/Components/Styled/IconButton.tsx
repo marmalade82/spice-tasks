@@ -15,6 +15,8 @@ interface Props {
     onPress?: () => void;
     accessibilityLabel?: string;
     backgroundColor?: string;
+    overlaySize?: number;
+    size?: number;
 }
 
 interface State {
@@ -28,6 +30,7 @@ export default class IconButton extends React.Component<Props, State> {
     }
 
     render = () => {
+        const height = this.props.overlaySize ? this.props.overlaySize : ICON_CONTAINER_WIDTH;
         return (
             <TouchableView
                 style={{
@@ -40,9 +43,9 @@ export default class IconButton extends React.Component<Props, State> {
             >
                 <View 
                     style={[{
-                        height: ICON_CONTAINER_WIDTH,
-                        width: ICON_CONTAINER_WIDTH,
-                        borderRadius: ICON_CONTAINER_WIDTH/2,
+                        height: height,
+                        width: height,
+                        borderRadius: height/2,
                         backgroundColor: this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR,
                         marginLeft: RIGHT_SECOND_MARGIN/2,
                     }, Styles.CENTERED]}
@@ -62,6 +65,7 @@ export default class IconButton extends React.Component<Props, State> {
                         name={"plus"}
                         type={"feather"}
                         color={"white"}
+                        size={this.props.size ? this.props.size : 20}
                     >
                     </Icon>
                 );
@@ -72,7 +76,7 @@ export default class IconButton extends React.Component<Props, State> {
                         name={"edit"}
                         type={"feather"}
                         color={"white"}
-                        size={20}
+                        size={this.props.size ? this.props.size : 20}
                     >
                     </Icon>
                 );
@@ -83,6 +87,7 @@ export default class IconButton extends React.Component<Props, State> {
                         name={"more-horizontal"}
                         type={"feather"}
                         color={"white"}
+                        size={this.props.size ? this.props.size : 20}
                     >
                     </Icon>
                 );
@@ -93,7 +98,7 @@ export default class IconButton extends React.Component<Props, State> {
                         name={"settings"}
                         type={"feather"}
                         color={"white"}
-                        size={20}
+                        size={this.props.size ? this.props.size : 20}
                     >
                     </Icon>
                 );
@@ -104,7 +109,7 @@ export default class IconButton extends React.Component<Props, State> {
                         name={"play"}
                         type={"feather"}
                         color={"white"}
-                        size={20}
+                        size={this.props.size ? this.props.size : 20}
                     >
                     </Icon>
                 );
@@ -115,7 +120,7 @@ export default class IconButton extends React.Component<Props, State> {
                         name={"pause"}
                         type={"feather"}
                         color={"white"}
-                        size={20}
+                        size={this.props.size ? this.props.size : 20}
                     >
                     </Icon>
                 );
@@ -128,7 +133,7 @@ export default class IconButton extends React.Component<Props, State> {
                         name={"trash"}
                         type={"feather"}
                         color={"white"}
-                        size={20}
+                        size={this.props.size ? this.props.size : 20}
                     >
                     </Icon>
                 );

@@ -168,6 +168,72 @@ export default class AppStartScreen extends React.Component<Props, State> {
 
                     <View style={{flex: 0, marginBottom: ROW_CONTAINER_HEIGHT / 2}}></View>
                 </ScrollView>
+                <View
+                    style={{
+                        flex: 0,
+                        position: "absolute",
+                        right: 50,
+                        bottom: 50,
+                    }}
+                >
+                    <ModalIconButton type={"add"}
+                        data={{
+                            showModal: this.state.showAdd
+                        }}
+                        onDataChange={({ showModal }) => {
+                            this.setState({
+                                showAdd: showModal
+                            })
+                        }}
+                        size={30}
+                        overlaySize={50}
+                    >
+                        <ModalRow
+                            text={"Goal"}
+                            iconType={"goal"}
+                            iconBackground={"white"}
+                            onPress={() => {
+                                this.props.navigation.navigate("AddGoal")
+                                this.setState({
+                                    showAdd: false,
+                                })
+                            }}
+                        ></ModalRow>
+                        <ModalRow
+                            text={"Task"}
+                            iconType={"task"}
+                            iconBackground={"white"}
+                            onPress={() => {
+                                this.props.navigation.navigate("AddTask")
+                                this.setState({
+                                    showAdd: false,
+                                })
+                            }}
+                        ></ModalRow>
+                        <ModalRow
+                            text={"Reward"}
+                            iconType={"reward"}
+                            iconBackground={"white"}
+                            onPress={() => {
+                                this.props.navigation.navigate("AddReward")
+                                this.setState({
+                                    showAdd: false,
+                                })
+                            }}
+                        ></ModalRow>
+                        <ModalRow
+                            text={"Penalty"}
+                            iconType={"penalty"}
+                            iconBackground={"white"}
+                            onPress={() => {
+                                this.props.navigation.navigate("AddPenalty")
+                                this.setState({
+                                    showAdd: false,
+                                })
+                            }}
+                        ></ModalRow>
+                    </ModalIconButton>
+                </View>
             </DocumentView>
             /* In all likelihood, the app start page will consist of three lists, showing the user what he
                 could potentially due -- dismissing tasks due today, overdue, or in progress, or settling ongoing goals,
@@ -230,61 +296,6 @@ export default class AppStartScreen extends React.Component<Props, State> {
                                 }} 
                             >
                             </IconButton> 
-                            <ModalIconButton type={"add"}
-                                data={{
-                                    showModal: this.state.showAdd
-                                }}
-                                onDataChange={({ showModal }) => {
-                                    this.setState({
-                                        showAdd: showModal
-                                    })
-                                }}
-                            >
-                                <ModalRow
-                                    text={"Goal"}
-                                    iconType={"goal"}
-                                    iconBackground={"white"}
-                                    onPress={() => {
-                                        this.props.navigation.navigate("AddGoal")
-                                        this.setState({
-                                            showAdd: false,
-                                        })
-                                    }}
-                                ></ModalRow>
-                                <ModalRow
-                                    text={"Task"}
-                                    iconType={"task"}
-                                    iconBackground={"white"}
-                                    onPress={() => {
-                                        this.props.navigation.navigate("AddTask")
-                                        this.setState({
-                                            showAdd: false,
-                                        })
-                                    }}
-                                ></ModalRow>
-                                <ModalRow
-                                    text={"Reward"}
-                                    iconType={"reward"}
-                                    iconBackground={"white"}
-                                    onPress={() => {
-                                        this.props.navigation.navigate("AddReward")
-                                        this.setState({
-                                            showAdd: false,
-                                        })
-                                    }}
-                                ></ModalRow>
-                                <ModalRow
-                                    text={"Penalty"}
-                                    iconType={"penalty"}
-                                    iconBackground={"white"}
-                                    onPress={() => {
-                                        this.props.navigation.navigate("AddPenalty")
-                                        this.setState({
-                                            showAdd: false,
-                                        })
-                                    }}
-                                ></ModalRow>
-                            </ModalIconButton>
                         </RowReverseView>
                     </RowView>
                     <NavigationList
