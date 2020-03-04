@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useRef } from "react";
 
 import {
     ConnectedTaskListItem
@@ -31,10 +31,12 @@ interface Props {
 }
 
 const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
+    let swipeRef = useRef<SwipeRow>(null);
     
     const renderTask = (item: Task) => {
         return (
             <SwipeRow
+                ref={swipeRef}
                 renderSwipeRight={() => {
                     return (
                         <View style={{
@@ -52,7 +54,13 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                     <ConnectedTaskListItem
                         task={item}
                         navigation={props.navigation}
-                        onTaskAction={props.onTaskAction}
+                        onTaskAction={(id: string, action: "complete" | "fail") => {
+                            if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.swipeRight) {
+                                swipeRef.current.swipeRight();
+                            } else {
+                                props.onTaskAction(id, action);
+                            }
+                        }}
                     ></ConnectedTaskListItem>
             </SwipeRow>
         );
@@ -69,7 +77,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                 renderEmptyList={() => { 
                     return (
                         <EmptyList
-                            text={props.emptyText ? props.emptyText : "Congrats! No tasks here." }
+                            text={props.emptyText ? props.emptyText : "No tasks here." }
                         ></EmptyList>
                     );
                 }}

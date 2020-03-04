@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 
 import {
     ConnectedGoalListItem
@@ -27,10 +27,11 @@ interface Props {
 }
 
 const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
-    
+    let swipeRef = useRef<SwipeRow>(null);
     const renderGoal = (item: Goal) => {
         return (
             <SwipeRow
+                ref={swipeRef}
                 renderSwipeRight={() => {
                     return (
                         <View style={{
@@ -48,7 +49,13 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
                 <ConnectedGoalListItem
                     goal={item}
                     navigation={props.navigation}
-                    onGoalAction={props.onGoalAction}
+                    onGoalAction={(id: string, action: "complete" | "fail") => {
+                        if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.swipeRight) {
+                            swipeRef.current.swipeRight();
+                        } else {
+                            props.onGoalAction(id, action);
+                        }
+                    }}
                 ></ConnectedGoalListItem>
             </SwipeRow>
         );
