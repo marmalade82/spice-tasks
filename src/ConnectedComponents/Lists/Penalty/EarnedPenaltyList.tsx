@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useRef } from "react";
 import EarnedPenalty from "src/Models/Penalty/EarnedPenalty";
 import withObservables from "@nozbe/with-observables";
 
@@ -9,23 +9,45 @@ import { ConnectedEarnedPenaltyListItem } from "src/ConnectedComponents/Lists/Pe
 import { PagedList } from "src/Components/Styled/Styled";
 import EmptyListItem from "src/Components/Lists/Items/EmptyListItem";
 import EmptyList from "src/Components/Lists/EmptyList";
+import SwipeRow from "src/Components/Basic/SwipeRow";
+import { View } from "react-native";
+import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
 
 interface Props {
     earned: EarnedPenalty[];
     navigation: any;
     paginate?: number;
     emptyText?: string;
+    onSwipeRight?: (id: string) => void;
 }
 
 const AdaptedEarnedPenaltyList: React.FunctionComponent<Props> = (props: Props) => {
     
+    const swipeRef = useRef(null);
     const renderEarnedPenalty = (item: EarnedPenalty) => {
         return (
-            <ConnectedEarnedPenaltyListItem
-                earned={item}
-                navigation={props.navigation}
+            <SwipeRow
+                ref={swipeRef}
+                renderSwipeRight={() => {
+                    return (
+                        <View style={{
+                            backgroundColor: PRIMARY_COLOR,
+                            flex: 0,
+                            height: ROW_CONTAINER_HEIGHT,
+                            width: "100%",
+                        }}>
+                        </View>
+                    )
+                }}
+                onSwipeRightOpen={() => { props.onSwipeRight ? props.onSwipeRight(item.id): null }}
+                key={item.id}
             >
-            </ConnectedEarnedPenaltyListItem>
+                <ConnectedEarnedPenaltyListItem
+                    earned={item}
+                    navigation={props.navigation}
+                >
+                </ConnectedEarnedPenaltyListItem>
+            </SwipeRow>
         )
     }
 
