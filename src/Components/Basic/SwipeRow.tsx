@@ -32,6 +32,10 @@ export default class SwipeRow extends React.Component<Props> {
         this.swipeRef.current && this.swipeRef.current.openRight ? this.swipeRef.current.openRight() : null
     }
 
+    notMocked = () => {
+        return this.swipeRef.current && this.swipeRef.current.openRight;
+    }
+
     render = () => {
         return (
             <Swipeable

@@ -147,3 +147,176 @@ describe("Viewing data", () => {
         }
     })
 });
+
+
+describe("Using lists", () => {
+    afterEach(async () => {
+        await destroyAll();
+    })
+
+
+
+    test("Can complete a task", async () => {
+        const { id } = await setup();
+
+        const { getByLabelText, queryByLabelText, queryAllByLabelText } = render(
+            <AppStartScreen navigation={makeNavigation({})}></AppStartScreen>
+        );
+
+        let completeButton;
+        await wait(async () => {
+            completeButton = getByLabelText( "input-complete-" + id);
+            fireEvent.press(completeButton)
+        })
+
+        await wait(async () => {
+            const tasks = queryAllByLabelText("task-list-item");
+            expect(tasks.length).toEqual(2);
+        })
+
+        async function setup() {
+            const opts = {
+                id: "",
+            }
+            await DB.get().action(async () => {
+                opts.id = (await createTasks({
+                    active: true,
+                    dueDate: new MyDate().subtract(1, "days").toDate(),
+                }, 1))[0].id;
+                await createTasks({
+                    active: true,
+                    dueDate: new MyDate().subtract(1, "days").prevMidnight().toDate(),
+                }, 1)
+                await createTasks({
+                    active: true,
+                    dueDate: new MyDate().subtract(1, "days").nextMidnight().subtract(1, "minutes").toDate(),
+                }, 1)
+            });
+
+            return opts;
+        }
+    }, 10000);
+
+    test("Can fail a task", async () => {
+        const { id } = await setup();
+
+        const { getByLabelText, queryByLabelText, queryAllByLabelText } = render(
+            <AppStartScreen navigation={makeNavigation({})}></AppStartScreen>
+        );
+
+        let failButton;
+        await wait(async () => {
+            failButton = getByLabelText( "input-fail-" + id);
+            fireEvent.press(failButton)
+        })
+
+        await wait(async () => {
+            const tasks = queryAllByLabelText("task-list-item");
+            expect(tasks.length).toEqual(2);
+        })
+
+        async function setup() {
+            const opts = {
+                id: "",
+            }
+            await DB.get().action(async () => {
+                opts.id = (await createTasks({
+                    active: true,
+                    dueDate: new MyDate().subtract(1, "days").toDate(),
+                }, 1))[0].id;
+                await createTasks({
+                    active: true,
+                    dueDate: new MyDate().subtract(1, "days").prevMidnight().toDate(),
+                }, 1)
+                await createTasks({
+                    active: true,
+                    dueDate: new MyDate().subtract(1, "days").nextMidnight().subtract(1, "minutes").toDate(),
+                }, 1)
+            });
+
+            return opts;
+        }
+    }, 10000);
+
+    test("Can complete a goal", async () => {
+        const { id } = await setup();
+
+        const { getByLabelText, queryByLabelText, queryAllByLabelText } = render(
+            <AppStartScreen navigation={makeNavigation({})}></AppStartScreen>
+        );
+
+        let completeButton;
+        await wait(async () => {
+            completeButton = getByLabelText( "input-complete-" + id);
+            fireEvent.press(completeButton)
+        })
+
+        await wait(async () => {
+            const tasks = queryAllByLabelText("goal-list-item");
+            expect(tasks.length).toEqual(2);
+        })
+
+        async function setup() {
+            const opts = { id: "" }
+            await DB.get().action(async () => {
+                opts.id = (await createGoals({
+                    active: true,
+                    startDate: new MyDate().subtract(1, "days").toDate(),
+                    dueDate: new MyDate().toDate(),
+                }, 1))[0].id
+                await createGoals({
+                    active: true,
+                    startDate: new MyDate().subtract(1, "days").toDate(),
+                    dueDate: new MyDate().add(1, "days").toDate(),
+                }, 1)
+                await createGoals({
+                    active: true,
+                    startDate: new MyDate().subtract(2, "days").toDate(),
+                    dueDate: new MyDate().subtract(1, "days").toDate(),
+                }, 1)
+            });
+            return opts;
+        }
+    }, 10000);
+
+    test("Can fail a goal", async () => {
+        const { id } = await setup();
+
+        const { getByLabelText, queryByLabelText, queryAllByLabelText } = render(
+            <AppStartScreen navigation={makeNavigation({})}></AppStartScreen>
+        );
+
+        let failButton;
+        await wait(async () => {
+            failButton = getByLabelText( "input-fail-" + id);
+            fireEvent.press(failButton)
+        })
+
+        await wait(async () => {
+            const tasks = queryAllByLabelText("goal-list-item");
+            expect(tasks.length).toEqual(2);
+        })
+
+        async function setup() {
+            const opts = { id: "" }
+            await DB.get().action(async () => {
+                opts.id = (await createGoals({
+                    active: true,
+                    startDate: new MyDate().subtract(1, "days").toDate(),
+                    dueDate: new MyDate().toDate(),
+                }, 1))[0].id
+                await createGoals({
+                    active: true,
+                    startDate: new MyDate().subtract(1, "days").toDate(),
+                    dueDate: new MyDate().add(1, "days").toDate(),
+                }, 1)
+                await createGoals({
+                    active: true,
+                    startDate: new MyDate().subtract(2, "days").toDate(),
+                    dueDate: new MyDate().subtract(1, "days").toDate(),
+                }, 1)
+            });
+            return opts;
+        }
+    }, 10000);
+})

@@ -55,7 +55,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                         task={item}
                         navigation={props.navigation}
                         onTaskAction={(id: string, action: "complete" | "fail") => {
-                            if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.swipeRight) {
+                            if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
                                 swipeRef.current.swipeRight();
                             } else {
                                 props.onTaskAction(id, action);

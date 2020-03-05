@@ -70,6 +70,7 @@ export default class GoalListItem extends Item<Props, State, Goal> {
                                         });
                                         this.props.onAction(id, "complete");
                                     }}
+                                    accessibilityLabel={"complete-" + id}
                                 ></ModalRow>
                                 <ModalRow
                                     text={"Mark failed"}
@@ -80,6 +81,7 @@ export default class GoalListItem extends Item<Props, State, Goal> {
                                         });
                                         this.props.onAction(id, "fail");
                                     }}
+                                    accessibilityLabel={"fail-" + id}
                                 ></ModalRow>
                             </ModalIconButton>
                         )

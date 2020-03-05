@@ -50,7 +50,7 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
                     goal={item}
                     navigation={props.navigation}
                     onGoalAction={(id: string, action: "complete" | "fail") => {
-                        if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.swipeRight) {
+                        if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
                             swipeRef.current.swipeRight();
                         } else {
                             props.onGoalAction(id, action);

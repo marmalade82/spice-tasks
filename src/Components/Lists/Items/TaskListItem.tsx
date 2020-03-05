@@ -70,6 +70,7 @@ export default class TaskListItem extends Item<Props, State, Task> {
                                         });
                                         this.props.onTaskAction(id, "complete");
                                     }}
+                                    accessibilityLabel={"complete-" + id}
                                 ></ModalRow>
                                 <ModalRow
                                     text={"Mark failed"}
@@ -80,6 +81,7 @@ export default class TaskListItem extends Item<Props, State, Task> {
                                         });
                                         this.props.onTaskAction(id, "fail");
                                     }}
+                                    accessibilityLabel={"fail-" + id}
                                 ></ModalRow>
                             </ModalIconButton>
                         )
