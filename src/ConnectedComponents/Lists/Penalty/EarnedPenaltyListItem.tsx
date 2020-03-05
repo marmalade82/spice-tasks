@@ -4,6 +4,7 @@ import React from "react";
 import {
     EarnedPenaltyListItem,
     EarnedPenalty as IEarnedPenalty,
+    OnEarnedPenaltyAction,
 } from "src/Components/Lists/Items/EarnedPenaltyListItem";
 
 import EarnedPenalty from "src/Models/Penalty/EarnedPenalty";
@@ -13,6 +14,7 @@ import withObservables from "@nozbe/with-observables";
 interface Props {
     earned: EarnedPenalty
     navigation: any;
+    onEarnedPenaltyAction: OnEarnedPenaltyAction;
 }
 
 const AdaptedEarnedPenaltyListItem: React.FunctionComponent<Props> = function(props: Props) {
@@ -31,14 +33,14 @@ const AdaptedEarnedPenaltyListItem: React.FunctionComponent<Props> = function(pr
             item={mappedEarnedPenalty}
             accessibilityLabel={"earned-penalty-list-item"}
             navigation={props.navigation}
+            onAction={props.onEarnedPenaltyAction}
         ></EarnedPenaltyListItem>
     );
 }
 
 
-interface InputProps {
-    earned: EarnedPenalty
-    navigation: any;
+interface InputProps extends Props {
+
 }
 
 /**

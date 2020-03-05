@@ -12,6 +12,7 @@ import EmptyList from "src/Components/Lists/EmptyList";
 import SwipeRow from "src/Components/Basic/SwipeRow";
 import { View } from "react-native";
 import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
+import { OnEarnedPenaltyAction } from "src/Components/Lists/Items/EarnedPenaltyListItem";
 
 interface Props {
     earned: EarnedPenalty[];
@@ -19,11 +20,12 @@ interface Props {
     paginate?: number;
     emptyText?: string;
     onSwipeRight?: (id: string) => void;
+    onEarnedPenaltyAction: OnEarnedPenaltyAction;
 }
 
 const AdaptedEarnedPenaltyList: React.FunctionComponent<Props> = (props: Props) => {
     
-    const swipeRef = useRef(null);
+    const swipeRef = useRef<SwipeRow>(null);
     const renderEarnedPenalty = (item: EarnedPenalty) => {
         return (
             <SwipeRow
@@ -45,6 +47,13 @@ const AdaptedEarnedPenaltyList: React.FunctionComponent<Props> = (props: Props) 
                 <ConnectedEarnedPenaltyListItem
                     earned={item}
                     navigation={props.navigation}
+                    onEarnedPenaltyAction={(id: string, action: "use") => {
+                        if(action === "use" && props.onSwipeRight && swipeRef.current) {
+                            swipeRef.current.swipeRight();
+                        } else {
+                            props.onEarnedPenaltyAction(id, action);
+                        }
+                    }}
                 >
                 </ConnectedEarnedPenaltyListItem>
             </SwipeRow>

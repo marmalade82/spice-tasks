@@ -21,15 +21,15 @@ export default class SwipeRow extends React.Component<Props> {
     }
 
     close = () => {
-        this.swipeRef.current ? this.swipeRef.current.close() : null
+        this.swipeRef.current && this.swipeRef.current.close ? this.swipeRef.current.close() : null
     }
 
     swipeRight = () => {
-        this.swipeRef.current ? this.swipeRef.current.openLeft() : null
+        this.swipeRef.current && this.swipeRef.current.openLeft ? this.swipeRef.current.openLeft() : null
     }
 
     swipeLeft = () => {
-        this.swipeRef.current ? this.swipeRef.current.openRight() : null
+        this.swipeRef.current && this.swipeRef.current.openRight ? this.swipeRef.current.openRight() : null
     }
 
     render = () => {

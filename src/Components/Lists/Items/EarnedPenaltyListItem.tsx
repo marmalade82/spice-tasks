@@ -7,7 +7,7 @@ import {
 } from "src/Components/Basic/Basic";
 import Item from "src/Components/Lists/Items/base/Item";
 import { PenaltyTypes } from "src/Models/Penalty/PenaltyLogic";
-import { ListItem } from "src/Components/Styled/Styled";
+import { ListItem, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
 
 interface EarnedPenalty {
@@ -23,15 +23,22 @@ interface Props {
     item: EarnedPenalty;
     accessibilityLabel: string
     navigation: any;
+    onAction: OnEarnedPenaltyAction
 }
 
-interface State {
+export type OnEarnedPenaltyAction = (id: string, action: "use") => void;
 
+interface State {
+    showMore: boolean;
 }
 
 export default class EarnedPenaltyListItem extends Item<Props, State, EarnedPenalty> {
     constructor(props: Props) {
         super(props);
+
+        this.state = {
+            showMore: false,
+        }
     }
     
     render = () => {
@@ -48,6 +55,34 @@ export default class EarnedPenaltyListItem extends Item<Props, State, EarnedPena
                 key={id}
                 accessibilityLabel={this.props.accessibilityLabel}
                 type={"earned_penalty"}
+                footerIcons={[
+                    () => {
+                        return (
+                            <ModalIconButton
+                                type={"more"}
+                                data={{
+                                    showModal: this.state.showMore,
+                                }}
+                                onDataChange={({showModal}) => {
+                                    this.setState({
+                                        showMore: showModal
+                                    })
+                                }}
+                            >
+                                <ModalRow
+                                    text={"Mark used"}
+                                    iconType={"complete"}
+                                    onPress={() => {
+                                        this.setState({
+                                            showMore: false,
+                                        });
+                                        this.props.onAction(id, "use");
+                                    }}
+                                ></ModalRow>
+                            </ModalIconButton>
+                        )
+                    }
+                ]}
             ></ListItem>
         )
     }

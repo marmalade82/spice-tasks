@@ -6,7 +6,7 @@ import {
 } from "src/Components/Basic/Basic";
 import Item from "src/Components/Lists/Items/base/Item";
 import { RewardType } from "src/Models/Reward/RewardLogic";
-import { ListItem } from "src/Components/Styled/Styled";
+import { ListItem, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
 
 interface EarnedReward {
@@ -18,20 +18,26 @@ interface EarnedReward {
     details: string;
 }
 
-interface Props {
+export type OnEarnedRewardAction = (id: string, action: "use") => void;
+
+export interface Props {
     item: EarnedReward;
     accessibilityLabel: string
     navigation: any;
+    onAction: OnEarnedRewardAction;
 }
 
-interface State {
-
+export interface State {
+    showMore: boolean;
 }
 
 
 export default class EarnedRewardListItem extends Item<Props, State, EarnedReward> {
     constructor(props: Props) {
         super(props);
+        this.state = {
+            showMore: false,
+        }
     }
     
     render = () => {
@@ -48,6 +54,34 @@ export default class EarnedRewardListItem extends Item<Props, State, EarnedRewar
                 key={id}
                 accessibilityLabel={this.props.accessibilityLabel}
                 type={"earned_reward"}
+                footerIcons={[
+                    () => {
+                        return (
+                            <ModalIconButton
+                                type={"more"}
+                                data={{
+                                    showModal: this.state.showMore,
+                                }}
+                                onDataChange={({showModal}) => {
+                                    this.setState({
+                                        showMore: showModal
+                                    })
+                                }}
+                            >
+                                <ModalRow
+                                    text={"Mark used"}
+                                    iconType={"complete"}
+                                    onPress={() => {
+                                        this.setState({
+                                            showMore: false,
+                                        });
+                                        this.props.onAction(id, "use");
+                                    }}
+                                ></ModalRow>
+                            </ModalIconButton>
+                        )
+                    }
+                ]}
             ></ListItem>
         )
     }

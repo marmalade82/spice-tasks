@@ -14,6 +14,7 @@ import EmptyList from "src/Components/Lists/EmptyList";
 import SwipeRow from "src/Components/Basic/SwipeRow";
 import { View } from "react-native";
 import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
+import { OnEarnedRewardAction } from "src/Components/Lists/Items/EarnedRewardListItem";
 
 interface Props {
     earned: EarnedReward[];
@@ -21,10 +22,11 @@ interface Props {
     paginate?: number;
     emptyText?: string;
     onSwipeRight?: (id: string) => void;
+    onEarnedRewardAction: OnEarnedRewardAction;
 }
 
 const AdaptedEarnedRewardList: React.FunctionComponent<Props> = (props: Props) => {
-    const swipeRef = useRef(null);
+    const swipeRef = useRef<SwipeRow>(null);
     
     const renderEarnedReward = (item: EarnedReward) => {
         return (
@@ -47,6 +49,13 @@ const AdaptedEarnedRewardList: React.FunctionComponent<Props> = (props: Props) =
                 <ConnectedEarnedRewardListItem
                     earned={item}
                     navigation={props.navigation}
+                    onAction={(id: string, action: "use") => {
+                        if(action === "use" && props.onSwipeRight && swipeRef.current && swipeRef.current.swipeRight) {
+                            swipeRef.current.swipeRight();
+                        } else {
+                            props.onEarnedRewardAction(id, action);
+                        }
+                    }}
                 >
                 </ConnectedEarnedRewardListItem>
             </SwipeRow>

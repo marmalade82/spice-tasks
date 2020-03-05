@@ -4,6 +4,7 @@ import React from "react";
 import {
     EarnedRewardListItem,
     EarnedReward as IEarnedReward,
+    OnEarnedRewardAction,
 } from "src/Components/Lists/Items/EarnedRewardListItem";
 
 import EarnedReward from "src/Models/Reward/EarnedReward";
@@ -13,6 +14,7 @@ import withObservables from "@nozbe/with-observables";
 interface Props {
     earned: EarnedReward
     navigation: any;
+    onAction: OnEarnedRewardAction,
 }
 
 const AdaptedEarnedRewardListItem: React.FunctionComponent<Props> = function(props: Props) {
@@ -31,14 +33,14 @@ const AdaptedEarnedRewardListItem: React.FunctionComponent<Props> = function(pro
             item={mappedEarnedReward}
             accessibilityLabel={"earned-reward-list-item"}
             navigation={props.navigation}
+            onAction={props.onAction}
         ></EarnedRewardListItem>
     );
 }
 
 
-interface InputProps {
-    earned: EarnedReward
-    navigation: any;
+interface InputProps extends Props {
+
 }
 
 /**

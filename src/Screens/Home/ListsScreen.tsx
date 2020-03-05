@@ -19,6 +19,8 @@ import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import EarnedPenaltyQuery from "src/Models/Penalty/EarnedPenaltyQuery";
 import { ConnectedEarnedRewardList } from "src/ConnectedComponents/Lists/Reward/EarnedRewardList";
 import { ConnectedEarnedPenaltyList } from "src/ConnectedComponents/Lists/Penalty/EarnedPenaltyList";
+import EarnedRewardLogic from "src/Models/Reward/EarnedRewardLogic";
+import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
 
 interface Props {
     navigation: any;
@@ -74,6 +76,22 @@ export default class ListsScreen extends React.Component<Props, State> {
         this.unsub();
     }
 
+    onEarnedRewardAction = (id: string, action: "use") => {
+        switch(action) {
+            case "use": {
+                void new EarnedRewardLogic(id).use();
+            } break;
+        }
+    }
+
+    onEarnedPenaltyAction = (id: string, action: "use") => {
+        switch(action) {
+            case "use": {
+                void new EarnedPenaltyLogic(id).use();
+            } break;
+        }
+    }
+
     render = () => {
         return (
             <DocumentView>
@@ -92,6 +110,10 @@ export default class ListsScreen extends React.Component<Props, State> {
                         navigation={this.props.navigation}
                         paginate={4}
                         type={"unused"}
+                        onSwipeRight={(id) => {
+                            this.onEarnedRewardAction(id, "use");
+                        }}
+                        onEarnedRewardAction={this.onEarnedRewardAction}
                     ></ConnectedEarnedRewardList>
 
                     <BackgroundTitle
@@ -102,6 +124,10 @@ export default class ListsScreen extends React.Component<Props, State> {
                         navigation={this.props.navigation}
                         paginate={4}
                         type={"unused"}
+                        onEarnedPenaltyAction={this.onEarnedPenaltyAction}
+                        onSwipeRight={(id: string) => {
+                            this.onEarnedPenaltyAction(id, "use")
+                        }}
                     ></ConnectedEarnedPenaltyList>
 
                     <BackgroundTitle title={"Full Lists"}
