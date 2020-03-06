@@ -4,10 +4,11 @@ import { AddTaskForm, AddTaskData, AddTaskDefault, ValidateTaskForm } from "src/
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { TaskQuery, Task } from "src/Models/Task/TaskQuery";
-import { DocumentView, ScreenHeader, Toast } from "src/Components/Styled/Styled";
+import { DocumentView, ScreenHeader, Toast, IconButton } from "src/Components/Styled/Styled";
 import { of } from "rxjs";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import { TaskParentTypes } from "src/Models/Task/Task";
+import SaveButton from "src/Components/Basic/SaveButton";
 
 interface Props {
     navigation: any;
@@ -119,11 +120,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                     { this.renderTaskForm() }
                 </ScrollView>
 
-                <Button
-                    title={"SAVE"}
-                    onPress={this.onSave}
-                    accessibilityLabel={"input-save-button"}
-                />
+                <SaveButton onSave={this.onSave}></SaveButton>
                 <Toast
                     visible={this.state.showToast}
                     message={this.state.toast}

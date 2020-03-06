@@ -5,7 +5,7 @@ import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { GoalQuery, Goal, IGoal } from "src/Models/Goal/GoalQuery";
 import { ColumnView } from "src/Components/Basic/Basic";
-import { DocumentView, ScreenHeader, Toast } from "src/Components/Styled/Styled";
+import { DocumentView, ScreenHeader, Toast, IconButton } from "src/Components/Styled/Styled";
 import { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 import Recur from "src/Models/Recurrence/Recur";
 import MyDate from "src/common/Date";
@@ -14,6 +14,7 @@ import Reward from "src/Models/Reward/Reward";
 import { Observable } from "rxjs";
 import { LabelValue } from "src/common/types";
 import PenaltyQuery, { Penalty } from "src/Models/Penalty/PenaltyQuery";
+import SaveButton from "src/Components/Basic/SaveButton";
 
 interface Props {
     navigation: any;
@@ -141,11 +142,9 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                     marginBottom: 20
                 }}>Add/Edit Goal</ScreenHeader>
                 { this.renderGoalForm() }
-                <Button
-                    title={"SAVE"}
-                    onPress={this.onSave}
-                    accessibilityLabel={"input-save-button"}
-                />
+                <SaveButton
+                    onSave={this.onSave}
+                ></SaveButton>
                 <Toast
                     visible={this.state.showToast}
                     message={this.state.toast}

@@ -6,7 +6,7 @@ import {
 
 } from "src/Components/Inputs";
 import { Props as StringInputProps } from "src/Components/Inputs/StringInput";
-import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import { View, StyleSheet, StyleProp, ViewStyle, ScrollView } from "react-native";
 import DataComponent from "src/Components/base/DataComponent";
 import Style from "src/Style/Style"
 import { ColumnView } from "../Basic/Basic";
@@ -16,6 +16,7 @@ import { mapTo } from "rxjs/operators";
 import MyDate from "src/common/Date";
 import { EventDispatcher, IEventDispatcher, fromEvent } from "src/common/EventDispatcher";
 import { Props as DateProps } from "src/Components/inputs/DateTimeInput";
+import { ROW_CONTAINER_HEIGHT } from "../Styled/Styles";
 
 interface Props {
     data: State | false
@@ -154,41 +155,44 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                 backgroundColor: "transparent",
             },this.props.style]}>
 
-                <this.SummaryInput
-                    title={"Name"} 
-                    data={this.data().name}
-                    placeholder={"Name of this task"}
-                    onValidDataChange={this.onChangeName}
-                    onInvalidDataChange={this.onChangeName}
-                    accessibilityLabel={"task-name"}
-                ></this.SummaryInput>
+                <ScrollView>
+                    <this.SummaryInput
+                        title={"Name"} 
+                        data={this.data().name}
+                        placeholder={"Name of this task"}
+                        onValidDataChange={this.onChangeName}
+                        onInvalidDataChange={this.onChangeName}
+                        accessibilityLabel={"task-name"}
+                    ></this.SummaryInput>
 
-                <StringInput
-                    title={"Description"}
-                    data={this.data().description}
-                    placeholder={"Description of this task"}
-                    onDataChange={this.onChangeDescription}
-                    accessibilityLabel={"task-description"}
-                />
+                    <StringInput
+                        title={"Description"}
+                        data={this.data().description}
+                        placeholder={"Description of this task"}
+                        onDataChange={this.onChangeDescription}
+                        accessibilityLabel={"task-description"}
+                    />
 
-                <this.StartDateInput
-                    title={"Starts on"}
-                    type={"date"}
-                    data={this.data().start_date}
-                    onValidDataChange={this.onChangeStart}
-                    onInvalidDataChange={this.onChangeStart}
-                    accessibilityLabel={"task-start-date"}
-                    revalidate={this.startDateRefresh}
-                ></this.StartDateInput>
+                    <this.StartDateInput
+                        title={"Starts on"}
+                        type={"date"}
+                        data={this.data().start_date}
+                        onValidDataChange={this.onChangeStart}
+                        onInvalidDataChange={this.onChangeStart}
+                        accessibilityLabel={"task-start-date"}
+                        revalidate={this.startDateRefresh}
+                    ></this.StartDateInput>
 
-                <DateTimeInput
-                    title={"Due on"}
-                    type={"date"} 
-                    data={this.data().due_date}
-                    onDataChange={ this.onChangeDue }
-                    accessibilityLabel={"task-due-date"}
-                />
+                    <DateTimeInput
+                        title={"Due on"}
+                        type={"date"} 
+                        data={this.data().due_date}
+                        onDataChange={ this.onChangeDue }
+                        accessibilityLabel={"task-due-date"}
+                    />
 
+                    <View style={{flex: 0, marginBottom: ROW_CONTAINER_HEIGHT / 2}}></View>
+                </ScrollView>
             </ColumnView>
         );
     }
