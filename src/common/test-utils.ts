@@ -18,6 +18,7 @@ import { RecurSchema } from "src/Models/Recurrence/RecurSchema";
 import { GlobalSchema } from "src/Models/Global/GlobalSchema";
 import Global, { IGlobal } from "src/Models/Global/Global";
 import GlobalQuery from "src/Models/Global/GlobalQuery";
+import EarnedPenalty, { IEarnedPenalty } from "src/Models/Penalty/EarnedPenalty";
 
 function makeNavigation(params: {}) {
     const navigation = {
@@ -95,6 +96,11 @@ async function createEarnedRewards(data: Partial<IEarnedReward>, count: number) 
 
 }
 
+async function createEarnedPenalties(data: Partial<IEarnedPenalty>, count: number) {
+    data.classType = "penalty";
+    return (await _createModels(EarnedRewardSchema.table, data, count)) as EarnedPenalty[];
+}
+
 async function createClaimedRewards(data: Partial<IClaimedReward>, count: number) {
     return (await _createModels(ClaimedRewardSchema.table, data, count)) as ClaimedReward[];
 }
@@ -133,6 +139,7 @@ export {
     createTasks,
     createGoals,
     createEarnedRewards,
+    createEarnedPenalties,
     createClaimedRewards,
     createPenalties,
     createRewards,

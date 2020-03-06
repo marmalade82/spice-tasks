@@ -45,7 +45,7 @@ export default class ListsScreen extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            showAdd: true,
+            showAdd: false,
             earnedRewardsCount: 0,
             earnedPenaltiesCount: 0,
         }
