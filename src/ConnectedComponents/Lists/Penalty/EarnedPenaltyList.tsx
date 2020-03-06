@@ -48,7 +48,7 @@ const AdaptedEarnedPenaltyList: React.FunctionComponent<Props> = (props: Props) 
                     earned={item}
                     navigation={props.navigation}
                     onEarnedPenaltyAction={(id: string, action: "use") => {
-                        if(action === "use" && props.onSwipeRight && swipeRef.current) {
+                        if(action === "use" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
                             swipeRef.current.swipeRight();
                         } else {
                             props.onEarnedPenaltyAction(id, action);

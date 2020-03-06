@@ -70,3 +70,75 @@ describe("viewing data", () => {
         }
     }, 10000)
 })
+
+describe("using lists", () => {
+    afterEach(async () => {
+        await destroyAll();
+    })
+
+    test("can use a reward", async () => {
+        const { id } = await setup();
+
+        const { getByLabelText, queryByLabelText, queryAllByLabelText } = render(
+            <ListsScreen navigation={makeNavigation({})}></ListsScreen>
+        );
+
+        let useButton;
+        await wait(async () => {
+            useButton = getByLabelText("input-use-" + id);
+            fireEvent.press(useButton);
+        })
+
+        await wait(async () => {
+            const earned = queryAllByLabelText("earned-reward-list-item");
+            expect(earned.length).toEqual(1);
+        })
+
+        async function setup() {
+            let opts = { id: "" }
+            await DB.get().action(async () => {
+                opts.id = (await createEarnedRewards({
+                    active: true,
+                }, 2))[0].id;
+                await createEarnedRewards({
+                    active: false,
+                }, 1)
+            })
+
+            return opts;
+        }
+    }, 10000)
+
+    test("can use a penalty", async () => {
+        const { id } = await setup();
+
+        const { getByLabelText, queryByLabelText, queryAllByLabelText } = render(
+            <ListsScreen navigation={makeNavigation({})}></ListsScreen>
+        );
+
+        let useButton;
+        await wait(async () => {
+            useButton = getByLabelText("input-use-" + id);
+            fireEvent.press(useButton);
+        })
+
+        await wait(async () => {
+            const earned = queryAllByLabelText("earned-penalty-list-item");
+            expect(earned.length).toEqual(1);
+        })
+
+        async function setup() {
+            let opts = { id: "" }
+            await DB.get().action(async () => {
+                opts.id = (await createEarnedPenalties({
+                    active: true,
+                }, 2))[0].id;
+                await createEarnedPenalties({
+                    active: false,
+                }, 1)
+            })
+
+            return opts;
+        }
+    }, 10000);
+})

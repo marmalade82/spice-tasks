@@ -50,7 +50,7 @@ const AdaptedEarnedRewardList: React.FunctionComponent<Props> = (props: Props) =
                     earned={item}
                     navigation={props.navigation}
                     onAction={(id: string, action: "use") => {
-                        if(action === "use" && props.onSwipeRight && swipeRef.current && swipeRef.current.swipeRight) {
+                        if(action === "use" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
                             swipeRef.current.swipeRight();
                         } else {
                             props.onEarnedRewardAction(id, action);

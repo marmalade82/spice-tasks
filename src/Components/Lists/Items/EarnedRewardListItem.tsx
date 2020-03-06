@@ -77,6 +77,7 @@ export default class EarnedRewardListItem extends Item<Props, State, EarnedRewar
                                         });
                                         this.props.onAction(id, "use");
                                     }}
+                                    accessibilityLabel={"use-" + id}
                                 ></ModalRow>
                             </ModalIconButton>
                         )
