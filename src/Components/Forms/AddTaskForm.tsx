@@ -18,6 +18,7 @@ import { EventDispatcher, IEventDispatcher, fromEvent } from "src/common/EventDi
 import { Props as DateProps } from "src/Components/inputs/DateTimeInput";
 import { ROW_CONTAINER_HEIGHT } from "../Styled/Styles";
 import FootSpacer from "../Basic/FootSpacer";
+import { dueDate, startDate } from "./common/utils";
 
 interface Props {
     data: State | false
@@ -37,8 +38,8 @@ function Default(): State {
     return {
         name: "",
         description: "",
-        start_date: new Date(),
-        due_date: new Date(),
+        start_date: startDate(new Date()),
+        due_date: dueDate(new Date()),
     };
 }
 
@@ -138,13 +139,13 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
 
     onChangeStart = (date: Date) => {
         this.setData({
-            start_date: date
+            start_date: startDate(date),
         });
     }
 
     onChangeDue = (date: Date) => {
         this.setData({
-            due_date: date
+            due_date: dueDate(date),
         });
 
         this.dispatcher.fireEvent(DUE_DATE_CHANGE);

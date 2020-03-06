@@ -18,7 +18,6 @@ import { Props as DynamicChoiceProps } from "src/Components/Inputs/DynamicChoice
 
 import { Props as SummaryProps } from "src/Components/Inputs/StringInput";
 import { Props as DateProps } from "src/Components/inputs/DateTimeInput";
-import { RecurringForm, RecurringData, RecurringDefault} from "src/Components/Forms/RecurringForm";
 import { StreakForm, StreakDefault, StreakData }from "src/Components/Forms/AddGoalForm/StreakForm";
 import { ColumnView } from "../Basic/Basic";
 import { RewardChoices, RewardType, RewardTypes } from "src/Models/Reward/RewardLogic";
@@ -32,6 +31,7 @@ import { EventDispatcher, IEventDispatcher, fromEvent } from "src/common/EventDi
 import { ROW_CONTAINER_HEIGHT } from "../Styled/Styles";
 import FootSpacer from "../Basic/FootSpacer";
 import { ModalRow } from "../Styled/Styled";
+import { startDate, dueDate } from "./common/utils";
 
 interface Props {
     navigation: Navigator
@@ -73,8 +73,8 @@ function Default(): State {
     return {
         title: "",
         type: GoalType.NORMAL,
-        start_date: new MyDate().prevMidnight().toDate(),
-        due_date: new MyDate().prevMidnight().toDate(),
+        start_date: startDate(new Date()),
+        due_date: dueDate(new Date()),
         reward: RewardTypes.SPECIFIC,
         rewardId: "",
         penalty: PenaltyTypes.NONE,
@@ -198,7 +198,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
     onChangeStartDate = (date: Date) => {
         this.setData({
-            start_date: date
+            start_date: startDate(date)
         });
 
         this.dispatcher.fireEvent(START_DATE_CHANGE);
@@ -206,7 +206,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
     onChangeDueDate = (date: Date) => {
         this.setData({
-            due_date: date
+            due_date: dueDate(date),
         });
 
         // Put this lower so that setData goes on the event queue first.

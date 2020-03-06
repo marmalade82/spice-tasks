@@ -7,6 +7,7 @@ import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import DataComponent from "src/Components/base/DataComponent";
 import Style from "src/Style/Style"
 import { ColumnView } from "../Basic/Basic";
+import { dueDate } from "./common/utils";
 
 interface Props {
     data: State | false
@@ -24,7 +25,7 @@ function Default(): State {
     return {
         name: "",
         details: "",
-        expire_date: new Date(),
+        expire_date: dueDate(new Date()),
     };
 }
 
@@ -49,7 +50,7 @@ export default class AddRewardForm extends DataComponent<Props, State, State> {
 
     onChangeExpire = (date: Date) => {
         this.setData({
-            expire_date: date
+            expire_date: dueDate(date)
         });
     }
 

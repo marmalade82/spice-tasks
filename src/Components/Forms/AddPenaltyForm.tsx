@@ -9,6 +9,7 @@ import DataComponent from "src/Components/base/DataComponent";
 import Style from "src/Style/Style"
 import { ColumnView } from "src/Components/Basic/Basic";
 import { ScreenHeader } from "src/Components/Styled/Styled";
+import { dueDate } from "./common/utils";
 
 interface Props {
     data: State | false
@@ -26,7 +27,7 @@ function Default(): State {
     return {
         name: "",
         details: "",
-        expire_date: new Date(),
+        expire_date: dueDate (new Date),
     };
 }
 
