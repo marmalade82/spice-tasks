@@ -18,9 +18,9 @@ test('User view all desired initial fields for a normal goal', async () => {
 
     const typeInput = getByLabelText("input-goal-type");
 
-    const dueDateInput = getByLabelText("modal-goal-start-date");
+    const dueDateInput = getByLabelText("value-input-goal-start-date");
 
-    const startDateInput = getByLabelText("modal-goal-due-date");
+    const startDateInput = getByLabelText("value-input-goal-due-date");
 
     const rewardInput = getByLabelText("input-goal-reward");
 
@@ -62,9 +62,9 @@ test("User can fill out all fields of a normal goal and have them saved to datab
     const typeChoice = getByLabelText("input-" + expected.type + "-goal-type");
     fireEvent.press(typeChoice);
 
-    const dueDateInput = getByLabelText("modal-goal-start-date");
+    const dueDateInput = getByLabelText("value-input-goal-start-date");
 
-    const startDateInput = getByLabelText("modal-goal-due-date");
+    const startDateInput = getByLabelText("value-input-goal-due-date");
 
     const rewardInput = getByLabelText("input-goal-reward");
     fireEvent.press(rewardInput);

@@ -29,7 +29,7 @@ test("User has access to fields for entering/editing data on the penalty", async
 
         const inputDescription = getByLabelText("input-penalty-description");
 
-        const modalExpireDate = getByLabelText("modal-penalty-expire-date");
+        const modalExpireDate = getByLabelText("value-input-penalty-expire-date");
     })
 
     await teardown();
