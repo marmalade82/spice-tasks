@@ -25,6 +25,8 @@ export interface Props {
     success ? : boolean;
     failure ? : string;
     onBlur?: () => void;
+    emptyType? : "earned-penalty" | "earned-reward";
+    onEmptyPress?: () => void;
 }
 
 export interface State {
@@ -61,17 +63,10 @@ export default class DynamicChoiceInput extends Input<Props, State> {
                     accessibilityLabel={this.props.accessibilityLabel}
                     onBlur={this.props.onBlur}
                     icon={this.icon()}
+                    emptyType={this.props.emptyType}
+                    onEmptyPress={this.props.onEmptyPress}
                 ></CInput>
             </ColumnView>
         )
     }
-
-    renderChoices = (choices: LabelValue[]) => {
-        return choices.map((choice: LabelValue) => {
-            return (
-                <Picker.Item label={choice.label} value={choice.value} key={choice.key}/>
-            );
-        })
-    }
-
 }

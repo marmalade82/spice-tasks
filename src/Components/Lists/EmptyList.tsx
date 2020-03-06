@@ -1,10 +1,11 @@
 import React from "react";
-import { RowView, HeaderText } from "../Basic/Basic";
+import { RowView, HeaderText, TouchableView } from "../Basic/Basic";
 import { ROW_CONTAINER_HEIGHT, LEFT_SECOND_MARGIN, TEXT_GREY, LEFT_FIRST_MARGIN, TEXT_HORIZONTAL_MARGIN, RIGHT_SECOND_MARGIN } from "../Styled/Styles";
 import { Icon } from "../Styled/Icon";
 
 export interface Props {
     text: string;
+    type?: "add" | "complete"
 }
 
 export interface State {
@@ -30,7 +31,7 @@ export default class EmptyList extends React.Component<Props, State> {
                 }}
                 accessibilityLabel={"empty-list"}
             >
-                <Icon type={"complete"}
+                <Icon type={this.props.type ? this.props.type :"complete"}
                     accessibilityLabel={"empty-list-icon"}
                     color={"green"}
                     backgroundColor={"transparent"}
@@ -47,5 +48,26 @@ export default class EmptyList extends React.Component<Props, State> {
                 </HeaderText>
             </RowView>
         );
+    }
+}
+
+interface PlusProps extends Props {
+    onPress: () => void;
+}
+
+export class PlusEmptyList extends React.Component<PlusProps> {
+
+    render = () => {
+        return (
+            <TouchableView
+                style={{}}
+                onPress={this.props.onPress}
+            >
+                <EmptyList
+                    text={this.props.text}
+                    type={this.props.type}
+                ></EmptyList>
+            </TouchableView>
+        )
     }
 }

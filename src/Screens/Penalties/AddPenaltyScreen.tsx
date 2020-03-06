@@ -62,10 +62,12 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
         };
 
         if(this.state.penalty) {
-            (new PenaltyQuery().update(this.state.penalty, penaltyData)).catch();        
+            void (new PenaltyQuery().update(this.state.penalty, penaltyData)).catch();        
         } else {
-            new PenaltyQuery().create(penaltyData).catch();
+            void new PenaltyQuery().create(penaltyData).catch();
         }
+
+        this.props.navigation.goBack();
     }
 
     render = () => {

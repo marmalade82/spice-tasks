@@ -14,6 +14,7 @@ import { Icon } from "react-native-elements";
 import { Observable } from "rxjs";
 import { View } from "react-native";
 import { Icon as StyledIcon } from "./Icon";
+import EmptyList, { PlusEmptyList } from "../Lists/EmptyList";
 
 interface Props {
     style?: StyleProp<ViewStyle>
@@ -27,6 +28,8 @@ interface Props {
     onValueChange: (itemValue: string, itemPosition: number) => void
     onBlur?: () => void;
     icon?: "mandatory" | "attention";
+    emptyType?: "earned-reward" | "earned-penalty";
+    onEmptyPress?: () => void;
 }
 
 interface LabelValue {
@@ -208,25 +211,60 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
     }
 
     renderChoices = (choices: LabelValue[]) => {
-        return choices.map((choice: LabelValue, index: number) => {
-            return (
-                <ModalRow
-                    text={choice.label}
-                    onPress={() => {
-                        this.setState({
-                            showModal: false,
-                        })
-                        this.props.onValueChange(choice.value, index);
-                    }}
-                    accessibilityLabel={
-                        choice.value +
-                        (this.props.accessibilityLabel ? ("-" + this.props.accessibilityLabel) : "")
-                    }
-                    iconType={"none"}
-                    key={choice.value}
-                ></ModalRow>
-            );
-        })
+        if(choices.length > 0) {
+            return choices.map((choice: LabelValue, index: number) => {
+                return (
+                    <ModalRow
+                        text={choice.label}
+                        onPress={() => {
+                            this.setState({
+                                showModal: false,
+                            })
+                            this.props.onValueChange(choice.value, index);
+                        }}
+                        accessibilityLabel={
+                            choice.value +
+                            (this.props.accessibilityLabel ? ("-" + this.props.accessibilityLabel) : "")
+                        }
+                        iconType={"none"}
+                        key={choice.value}
+                    ></ModalRow>
+                );
+            })
+        } else if(this.props.emptyType)  {
+            switch(this.props.emptyType) {
+                case "earned-reward": {
+                    return (
+                        <PlusEmptyList
+                            text={"You haven't created any rewards yet"}
+                            type={"add"}
+                            onPress={() => {
+                                this.setState({
+                                    showModal: false,
+                                })
+                                this.props.onEmptyPress ? this.props.onEmptyPress() : null;
+                            }}
+                        ></PlusEmptyList>
+                    );
+                } break;
+                case "earned-penalty": { 
+                    return (
+                        <PlusEmptyList
+                            text={"You haven't created any penalties yet"}
+                            type={"add"}
+                            onPress={() => {
+                                this.setState({
+                                    showModal: false,
+                                })
+                                this.props.onEmptyPress ? this.props.onEmptyPress() : null;
+                            }}
+                        ></PlusEmptyList>
+                    );
+                } break;
+            }
+        } else {
+            return null;
+        }
     }
 
     renderLeftIcon = () => {

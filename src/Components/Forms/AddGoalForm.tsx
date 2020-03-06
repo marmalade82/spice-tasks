@@ -31,6 +31,7 @@ import MyDate from "src/common/Date";
 import { EventDispatcher, IEventDispatcher, fromEvent } from "src/common/EventDispatcher";
 import { ROW_CONTAINER_HEIGHT } from "../Styled/Styles";
 import FootSpacer from "../Basic/FootSpacer";
+import { ModalRow } from "../Styled/Styled";
 
 interface Props {
     navigation: Navigator
@@ -372,6 +373,10 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     onInvalidDataChange={this.onChangeSpecificReward}
                     choices={this.props.rewardChoices}
                     accessibilityLabel={"goal-specific-reward"}
+                    emptyType={"earned-reward"}
+                    onEmptyPress={() => {
+                        this.props.navigation.navigate("AddReward")
+                    }}
                 ></this.SpecificRewardInput>
             );
         }
@@ -387,6 +392,10 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     onInvalidDataChange={this.onChangeSpecificPenalty}
                     choices={this.props.penaltyChoices}
                     accessibilityLabel={"goal-specific-penalty"}
+                    emptyType={"earned-penalty"}
+                    onEmptyPress={() => {
+                        this.props.navigation.navigate("AddPenalty")
+                    }}
                 ></this.SpecificPenaltyInput>
             )
         }

@@ -66,10 +66,12 @@ export default class AddRewardScreen extends React.Component<Props, State> {
 
         debugger;
         if(this.state.reward) {
-            (new RewardQuery().update(this.state.reward, rewardData)).catch();        
+            void (new RewardQuery().update(this.state.reward, rewardData)).catch();        
         } else {
-            new RewardQuery().create(rewardData).catch();
+            void new RewardQuery().create(rewardData).catch();
         }
+
+        this.props.navigation.goBack();
     }
 
     render = () => {
