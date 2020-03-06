@@ -5,6 +5,7 @@ import { AddPenaltyForm, AddPenaltyData, AddPenaltyDefault } from "src/Component
 import { PenaltyQuery, Penalty } from "src/Models/Penalty/PenaltyQuery";
 import { DocumentView } from "src/Components/Styled/Styled";
 import { ScrollView } from "react-native";
+import SaveButton from "src/Components/Basic/SaveButton";
 
 
 
@@ -73,12 +74,9 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
                 <ScrollView>
                     { this.renderPenaltyForm() }
                 </ScrollView>
-
-                <Button
-                    title={"SAVE"}
-                    onPress={this.onSave}
-                    accessibilityLabel={"input-save-button"}
-                />
+                <SaveButton
+                    onSave={this.onSave}
+                ></SaveButton>
             </DocumentView>
         );
     }

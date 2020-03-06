@@ -22,6 +22,8 @@ export default class SaveButton extends React.Component<Props> {
                         type={"save"}
                         accessibilityLabel={"save-button"}
                         onPress={this.props.onSave}
+                        size={30}
+                        overlaySize={50}
                     ></IconButton>
                 </View>
         )
