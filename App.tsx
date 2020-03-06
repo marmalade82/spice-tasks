@@ -16,7 +16,6 @@ const ScreenDirectory = {
   , Goals: Screens.GoalList
   , Menu: Screens.Menu
   , AddGoal: Screens.AddGoal
-  , Recurring: Screens.Recurring
   , Streak: Screens.Streak
   , AddTask: Screens.AddTask
   , Tasks: Screens.TaskList

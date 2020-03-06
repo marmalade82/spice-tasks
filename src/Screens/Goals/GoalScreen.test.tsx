@@ -445,26 +445,8 @@ test("User can view active and inactive tasks", async () => {
     {
         await wait(() => {
             const active = queryAllByLabelText("task-list-item");
-            expect(active.length).toEqual(3);
+            expect(active.length).toEqual(5);
         })
-    }
-
-    {
-        const viewTwo = getByLabelText("input-view-2");
-        fireEvent.press(viewTwo);
-        await wait(() => {
-            const inactive = queryAllByLabelText("task-list-item");
-            expect(inactive.length).toEqual(2);
-        })
-    }
-
-    {
-        const viewOne = getByLabelText("input-view-1");
-        fireEvent.press(viewOne);
-        await wait(() => {
-            const active = queryAllByLabelText("task-list-item");
-            expect(active.length).toEqual(3);
-        });
     }
 
     await teardown()

@@ -76,22 +76,6 @@ export default class GoalSummary extends React.Component<Props, State> {
                             </IconButton>
                         );
                     },
-                    () => { 
-                        return (
-                            <IconButton type={"add"}
-                                onPress={() => {
-                                    this.props.navigation.push(
-                                        "AddTask", {
-                                            id: "", // The goal is new, so no id.
-                                            parent_id: this.props.navigation.getParam("id", ""), // id of the goal, since it is this new task's parent.
-                                        }
-                                    );
-                                }}
-                                accessibilityLabel={"add-goal-button"}
-                                key={"add"}
-                            ></IconButton>
-                        );
-                    },
                     () => { return (
                                     <ModalIconButton type={"more"}
                                         data={{

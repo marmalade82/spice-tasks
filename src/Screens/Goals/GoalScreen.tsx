@@ -9,9 +9,10 @@ import {
     ColumnView, RowView, Button as MyButton, ViewPicker,
 } from "src/Components/Basic/Basic";
 import NavigationButton from "src/Components/Navigation/NavigationButton";
-import { DocumentView, ScreenHeader, ListPicker, Toast } from "src/Components/Styled/Styled";
-import { ScrollView } from "react-native-gesture-handler";
+import { DocumentView, ScreenHeader, ListPicker, Toast, BackgroundTitle, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
+import { ScrollView } from "react-native";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
+import FootSpacer from "src/Components/Basic/FootSpacer";
 
 
 interface Props {
@@ -25,6 +26,7 @@ interface State {
     inactiveCount: number;
     toastVisible: boolean;
     toastMessage: string;
+    showAdd: boolean;
 }
 
 export default class GoalScreen extends React.Component<Props, State> {
@@ -45,6 +47,7 @@ export default class GoalScreen extends React.Component<Props, State> {
             inactiveCount: 0,
             toastVisible: false,
             toastMessage: "",
+            showAdd: false,
         }
 
         this.unsubscribe = () => {};
@@ -130,22 +133,38 @@ export default class GoalScreen extends React.Component<Props, State> {
         return (
             <DocumentView>
                 <ScreenHeader>Goal Summary</ScreenHeader>
-                {this.renderSummary()}
-                <ListPicker
-                    data={{
-                        current: this.state.currentList
-                    }}
-                    onDataChange={({ current }) => {
-                        this.setState({
-                            currentList: current
-                        })
-                    }}
-                    lists={this.renderTaskLists()}
-                    layout={"top"}
-                    key="list"
-                >
 
-                </ListPicker>
+                <ScrollView>
+                    {this.renderSummary()}
+                    <BackgroundTitle title={`Active (${this.state.activeCount})`}
+                        style={{
+                        }}
+                    ></BackgroundTitle>
+                    <ConnectedTaskList
+                        navigation={this.props.navigation}
+                        parentId={this.props.navigation.getParam('id', '')}
+                        type={"parent-active"}
+                        paginate={4}
+                        onSwipeRight={(id: string) => {
+                            this.onTaskAction(id, "complete")
+                        }}
+                        emptyText={"No active subtasks"}
+                        onTaskAction={this.onTaskAction}
+                    ></ConnectedTaskList>
+                    <BackgroundTitle title={`Inactive (${this.state.inactiveCount})`}
+                        style={{
+                        }}
+                    ></BackgroundTitle>
+                    <ConnectedTaskList
+                        navigation={this.props.navigation}
+                        parentId={this.props.navigation.getParam('id', '')}
+                        paginate={4}
+                        emptyText={"No inactive subtasks"}
+                        type={"parent-inactive"}
+                        onTaskAction={this.onTaskAction}
+                    ></ConnectedTaskList>
+                    <FootSpacer></FootSpacer>
+                </ScrollView>
                 <Toast
                     visible={this.state.toastVisible}
                     message={this.state.toastMessage}
@@ -155,6 +174,43 @@ export default class GoalScreen extends React.Component<Props, State> {
                         })
                     }}
                 ></Toast>
+                <View
+                    style={{
+                        flex: 0,
+                        position: "absolute",
+                        right: 50,
+                        bottom: 20,
+                    }}
+                >
+                    <ModalIconButton type={"add"}
+                        data={{
+                            showModal: this.state.showAdd
+                        }}
+                        onDataChange={({ showModal }) => {
+                            this.setState({
+                                showAdd: showModal
+                            })
+                        }}
+                        size={30}
+                        overlaySize={50}
+                    >
+                        <ModalRow
+                            text={"Task"}
+                            iconType={"task"}
+                            iconBackground={"white"}
+                            onPress={() => {
+                                this.props.navigation.push("AddTask", {
+                                    id: this.props.navigation.getParam("id", "")
+                                })
+                                this.setState({
+                                    showAdd: false,
+                                })
+                            }}
+                            accessibilityLabel={"add-goal-button"}
+                            key={"add"}
+                        ></ModalRow>
+                    </ModalIconButton>
+                </View>
             </DocumentView>
         );
     }

@@ -20,6 +20,7 @@ export default class BackgroundTitle extends React.Component<Props> {
     render = () => {
         return (
             <RowView style={[{
+                flex: 0,
                 height: 50,
                 backgroundColor: PRIMARY_COLOR_LIGHT,
                 paddingLeft: LEFT_SECOND_MARGIN, //LEFT_FIRST_MARGIN + (ICON_CONTAINER_WIDTH / 2),
