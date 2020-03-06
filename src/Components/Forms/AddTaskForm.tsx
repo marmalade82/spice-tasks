@@ -17,6 +17,7 @@ import MyDate from "src/common/Date";
 import { EventDispatcher, IEventDispatcher, fromEvent } from "src/common/EventDispatcher";
 import { Props as DateProps } from "src/Components/inputs/DateTimeInput";
 import { ROW_CONTAINER_HEIGHT } from "../Styled/Styles";
+import FootSpacer from "../Basic/FootSpacer";
 
 interface Props {
     data: State | false
@@ -191,7 +192,7 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                         accessibilityLabel={"task-due-date"}
                     />
 
-                    <View style={{flex: 0, marginBottom: ROW_CONTAINER_HEIGHT / 2}}></View>
+                    <FootSpacer></FootSpacer>
                 </ScrollView>
             </ColumnView>
         );

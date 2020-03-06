@@ -23,6 +23,7 @@ import { Subscription } from "rxjs";
 import EarnedPenaltyQuery from "src/Models/Penalty/EarnedPenaltyQuery";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
+import FootSpacer from "src/Components/Basic/FootSpacer";
 
 interface Props {
     navigation: any;
@@ -164,7 +165,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
 
                     {this.renderOngoingGoals()}
 
-                    <View style={{flex: 0, marginBottom: ROW_CONTAINER_HEIGHT / 2}}></View>
+                    <FootSpacer></FootSpacer>
                 </ScrollView>
                 <View
                     style={{

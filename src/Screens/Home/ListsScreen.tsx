@@ -21,6 +21,7 @@ import { ConnectedEarnedRewardList } from "src/ConnectedComponents/Lists/Reward/
 import { ConnectedEarnedPenaltyList } from "src/ConnectedComponents/Lists/Penalty/EarnedPenaltyList";
 import EarnedRewardLogic from "src/Models/Reward/EarnedRewardLogic";
 import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
+import FootSpacer from "src/Components/Basic/FootSpacer";
 
 interface Props {
     navigation: any;
@@ -138,7 +139,7 @@ export default class ListsScreen extends React.Component<Props, State> {
                     <NavigationList
                         navigation={this.props.navigation}
                     ></NavigationList>
-                    <View style={{flex: 0, marginBottom: ROW_CONTAINER_HEIGHT / 2}}></View>
+                    <FootSpacer></FootSpacer>
                 </ScrollView>
                 <View
                     style={{
@@ -223,7 +224,6 @@ class NavigationList extends React.Component<NavListProps> {
             <NavigationGroup
                 navigation={this.props.navigation}
                 style={{
-                    marginBottom: ROW_HEIGHT + 20,
                 }}
                 rows={[
                     { text: "Goals"
