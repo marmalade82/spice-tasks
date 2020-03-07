@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 
 import withObservables from "@nozbe/with-observables";
@@ -8,6 +8,8 @@ import {
 } from "src/Models/Goal/Goal";
 import GoalSummary, { ModalChoices } from "src/Components/Summaries/GoalSummary";
 import { GoalType } from "src/Models/Goal/GoalLogic";
+import { RewardTypes } from "src/Models/Reward/RewardLogic";
+import { PenaltyTypes } from "src/Models/Penalty/PenaltyLogic";
 
 interface Props {
     goal: Goal,
@@ -16,6 +18,9 @@ interface Props {
 }
 
 const AdaptedGoalSummary: React.FunctionComponent<Props> = (props: Props) => {
+    const [reward, setReward ] = useState("None");
+    const [penalty, setPenalty ] = useState("None");
+
     const goal = props.goal;
     let type: "normal" | "streak";
     switch(goal.goalType) {
@@ -34,19 +39,38 @@ const AdaptedGoalSummary: React.FunctionComponent<Props> = (props: Props) => {
         state = "failed"
     }
 
+
+    useEffect(() => {
+        const rewardSub = goal.reward.subscribe((r) => {
+            setReward(r.title);
+        })
+
+        const penaltySub = goal.penalty.subscribe((p) => {
+            setPenalty(p.title);
+        })
+        return () => {
+            rewardSub.unsubscribe();
+            penaltySub.unsubscribe();
+        }
+    }, [])
+
     const mappedGoal = {
         title: goal.title,
         details: goal.details,
         start_date: goal.startDate,
         due_date: goal.dueDate, 
         type: type,
-        state: state
+        state: state,
+        reward: reward,
+        penalty: penalty,
     }
 
     return (
         <GoalSummary
             goal={mappedGoal}
             navigation={props.navigation}
+            showReward={goal.rewardType === RewardTypes.SPECIFIC}
+            showPenalty={goal.penaltyType === PenaltyTypes.SPECIFIC}
             onModalChoice={props.onModalChoice}
         >
         </GoalSummary>

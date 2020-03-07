@@ -39,6 +39,7 @@ interface Props {
     rewardChoices: Observable<LabelValue[]>
     penaltyChoices: Observable<LabelValue[]>
     data: State | false;
+    formType?: "create" | "update";
 }
 
 interface State {
@@ -52,9 +53,9 @@ interface State {
     penalty: PenaltyTypes;
     penaltyId: string;
     repeats: "never" | "daily" | "weekly" | "monthly"
-    //recurData: RecurringData
-    streakData: StreakData
+    streakData: StreakData;
 }
+
 
 interface Navigator {
     navigate: (screen: string) => void
@@ -329,18 +330,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     />
 
                     { this.renderByPenaltyType() }
-
-                    <ChoiceInput
-                        title={"Repeats"}
-                        selectedValue={this.data().repeats.toString()}
-                        onValueChange={(itemValue, itemIndex) => {
-                            this.setData({
-                                repeats: itemValue as "never" | "daily" | "weekly" | "monthly"
-                            })
-                        }}
-                        choices={RecurTypeChoices}
-                        accessibilityLabel={"goal-repeat"}
-                    ></ChoiceInput>
+                    { this.renderRepeats() }
                     
                     <FootSpacer></FootSpacer>
                 </ScrollView>
@@ -399,6 +389,26 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                 ></this.SpecificPenaltyInput>
             )
         }
+    }
+
+    renderRepeats = () => {
+        if(this.props.formType !== "update") {
+            return (
+                    <ChoiceInput
+                        title={"Repeats"}
+                        selectedValue={this.data().repeats.toString()}
+                        onValueChange={(itemValue, itemIndex) => {
+                            this.setData({
+                                repeats: itemValue as "never" | "daily" | "weekly" | "monthly"
+                            })
+                        }}
+                        choices={RecurTypeChoices}
+                        accessibilityLabel={"goal-repeat"}
+                    ></ChoiceInput>
+            );
+        }
+
+        return null;
     }
 }
 

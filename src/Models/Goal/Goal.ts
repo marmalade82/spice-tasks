@@ -1,12 +1,17 @@
 
 
-import { Model } from "@nozbe/watermelondb";
+import { Model, Relation } from "@nozbe/watermelondb";
 import { field, date, children, relation } from "@nozbe/watermelondb/decorators";
 import GoalSchema from "src/Models/Goal/GoalSchema";
 import TaskSchema from "src/Models/Task/TaskSchema";
 import { RewardType } from "src/Models/Reward/RewardLogic";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 import { PenaltyTypes } from "src/Models/Penalty/PenaltyLogic";
+import RewardSchema from "../Reward/RewardSchema";
+import { Reward } from "src/Models/Reward/Reward";
+import Penalty from "../Penalty/Penalty";
+import { Observable } from "rxjs";
+import { filter } from "rxjs/operators";
 
 
 interface IGoal extends IStreak{
@@ -69,10 +74,22 @@ export default class Goal extends Model implements IGoal {
     @field(name.REWARD_ID) rewardId!: string;
     @field(name.PENALTY_TYPE) penaltyType!: PenaltyTypes;
     @field(name.PENALTY_ID) penaltyId!: string;
+    get reward() {
+        return this.rewardRelation.observe().pipe(filter((r) => {
+            return r ? true : false;
+        }));
+    }
+    get penalty() {
+        return this.penaltyRelation.observe().pipe(filter((r) => {
+            return r ? true : false;
+        }));
+    }
 
     /*Relations*/
     @children('tasks') tasks
     @relation(GoalSchema.table, name.PARENT) parentGoal
+    @relation(RewardSchema.table, name.REWARD_ID) rewardRelation!: Relation<Reward>;
+    @relation(RewardSchema.table, name.PENALTY_ID) penaltyRelation!: Relation<Penalty>;
 }
 
 export {

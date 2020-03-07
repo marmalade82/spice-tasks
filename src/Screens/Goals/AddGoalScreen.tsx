@@ -191,6 +191,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
     }
 
     renderGoalForm = () => {
+        const id = this.props.navigation.getParam('id', '');
         return (
             <AddGoalForm
                 navigation={this.props.navigation}
@@ -203,6 +204,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 rewardChoices={this.rewardChoices()}
                 penaltyChoices={this.penaltyChoices()}
                 ref={this.goalFormRef}
+                formType={ id ? "update" : "create"}
             ></AddGoalForm>
         );
     }

@@ -15,6 +15,8 @@ interface Props {
     goal: Goal
     navigation: any;
     onModalChoice: (s: ModalChoices) => void;
+    showReward: boolean;
+    showPenalty: boolean;
 }
 
 interface State {
@@ -28,6 +30,8 @@ interface Goal {
     due_date: Date;
     type: "streak" | "normal"
     state: "open" | "completed" | "failed"
+    reward: string;
+    penalty: string;
 }
 
 
@@ -42,9 +46,10 @@ export default class GoalSummary extends React.Component<Props, State> {
 
 
     render = () => {
-        const { title, due_date } = this.props.goal;
+        const { title, start_date, due_date, details, reward, penalty  } = this.props.goal;
         return (
             <Summary
+                iconType={"goal"}
                 style={{}}
                 headerText={title}
                 bodyText={() => {
@@ -53,7 +58,12 @@ export default class GoalSummary extends React.Component<Props, State> {
                             <BodyText
                                 style={{}}
                             >
-                                {new MyDate(due_date).format("MMM Do")}
+                                {details ? details + '\n': ""}
+                                {`${new MyDate(start_date).format("MMMM Do")} - ${new MyDate(due_date).format("MMMM Do")}\n`}
+                                {`Due ${new MyDate(due_date).timeToNow()}\n`}
+                                {`\n`}
+                                {`Reward: ${this.props.showReward ? reward : "None"}\n`}
+                                {`Penalty: ${this.props.showPenalty ? penalty : "None"}\n`}
                             </BodyText>
                         </Text>
                     );

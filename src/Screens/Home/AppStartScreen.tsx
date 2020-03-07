@@ -77,7 +77,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
             })
 
         let inProgressSub: Subscription = observableWithRefreshTimer(
-            () => new TaskQuery().queryInProgress().observeCount()).subscribe((count) => {
+            () => new TaskQuery().queryActiveAndStartedButNotDue().observeCount()).subscribe((count) => {
                 this.setState({
                     inProgressCount: count
                 })

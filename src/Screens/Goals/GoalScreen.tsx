@@ -13,6 +13,7 @@ import { DocumentView, ScreenHeader, ListPicker, Toast, BackgroundTitle, ModalIc
 import { ScrollView } from "react-native";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import FootSpacer from "src/Components/Basic/FootSpacer";
+import { TaskParentTypes } from "src/Models/Task/Task";
 
 
 interface Props {
@@ -200,7 +201,8 @@ export default class GoalScreen extends React.Component<Props, State> {
                             iconBackground={"white"}
                             onPress={() => {
                                 this.props.navigation.push("AddTask", {
-                                    id: this.props.navigation.getParam("id", "")
+                                    parent_id: this.props.navigation.getParam("id", ""),
+                                    parent_type: TaskParentTypes.GOAL,
                                 })
                                 this.setState({
                                     showAdd: false,
@@ -239,40 +241,5 @@ export default class GoalScreen extends React.Component<Props, State> {
         } else {
             return <View></View>
         }
-    }
-
-    renderTaskLists = () => {
-        return [
-            {   selector: {
-                    number: this.state.activeCount,
-                    text: "Active",
-                }
-            ,   list: () => {
-                    return (
-                        <ConnectedTaskList
-                            navigation={this.props.navigation}
-                            parentId={this.props.navigation.getParam('id', '')}
-                            type={"parent-active"}
-                            onTaskAction={this.onTaskAction}
-                        ></ConnectedTaskList>
-                    );
-                }
-            },
-            {   selector: {
-                    number: this.state.inactiveCount,
-                    text: "Inactive"
-                }
-            ,   list: () => {
-                    return (
-                        <ConnectedTaskList
-                            navigation={this.props.navigation}
-                            parentId={this.props.navigation.getParam('id', '')}
-                            type={"parent-inactive"}
-                            onTaskAction={this.onTaskAction}
-                        ></ConnectedTaskList>
-                    );
-                }
-            }
-        ]
     }
 }

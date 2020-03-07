@@ -24,6 +24,10 @@ export default class MyDate {
         return new MyDate();
     }
 
+    timeToNow = () => {
+        return this.m.toNow();
+    }
+
     format = (format: string) => {
         return this.m.format(format);
     }
