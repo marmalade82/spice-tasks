@@ -67,22 +67,6 @@ export default class TaskSummary extends React.Component<Props, State> {
                             </IconButton>
                         );
                     },
-                    () => { 
-                        return (
-                            <IconButton type={"add"}
-                                onPress={() => {
-                                    this.props.navigation.push(
-                                        "AddTask", {
-                                            id: "", // The task is new, so no id.
-                                            parent_id: this.props.navigation.getParam("id", ""), // id of the task, since it is this task's parent.
-                                        }
-                                    );
-                                }}
-                                accessibilityLabel={"add-task-button"}
-                                key={"add"}
-                            ></IconButton>
-                        );
-                    },
                     () => { return (
                                     <ModalIconButton type={"more"}
                                         data={{
