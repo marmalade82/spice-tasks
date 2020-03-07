@@ -843,3 +843,93 @@ describe("streak goal tests", () => {
     }, 20000);
 
 })
+
+describe("list interactions", () => {
+    afterEach(async () => {
+        await destroyAll();
+    })
+
+    test("Can complete an active subtask without the task disappearing from screen", async () => {
+        const { goalId, taskId } = await setup();
+
+        const { getByLabelText, queryByLabelText, queryAllByLabelText } = render(
+            <GoalScreen navigation={makeNavigation({id: goalId})}></GoalScreen>
+        );
+
+        let taskComplete;
+        await wait(async () => {
+            taskComplete = await getByLabelText("input-complete-" + taskId);
+            fireEvent.press(taskComplete);
+        })
+
+        await wait(async () => {
+            const goals = queryAllByLabelText("task-list-item");
+            expect(goals.length).toEqual(2);
+        })
+
+        const activeTasks = await new TaskQuery().queryActiveHasParent(goalId).fetch();
+        expect(activeTasks.length).toEqual(1);
+
+        async function setup() {
+            const opts = {
+                taskId: "",
+                goalId: "",
+            }
+
+            await DB.get().action(async () => {
+                opts.goalId = (await createGoals({
+                    active: true,
+                }, 1))[0].id;
+
+                opts.taskId=(await createTasks({
+                    parentId: opts.goalId,
+                    active: true,
+                }, 2))[0].id
+            });
+
+            return opts;
+        }
+    }, 10000)
+
+    test("Can fail an active subtask without task disappearing from screen", async () => {
+        const { goalId, taskId } = await setup();
+
+        const { getByLabelText, queryByLabelText, queryAllByLabelText } = render(
+            <GoalScreen navigation={makeNavigation({id: goalId})}></GoalScreen>
+        );
+
+        let taskFail;
+        await wait(async () => {
+            taskFail = await getByLabelText("input-fail-" + taskId);
+            fireEvent.press(taskFail);
+        })
+
+        await wait(async () => {
+            const goals = queryAllByLabelText("task-list-item");
+            expect(goals.length).toEqual(2);
+        })
+
+        const activeTasks = await new TaskQuery().queryActiveHasParent(goalId).fetch();
+        expect(activeTasks.length).toEqual(1);
+
+        async function setup() {
+            const opts = {
+                taskId: "",
+                goalId: "",
+            }
+
+            await DB.get().action(async () => {
+                opts.goalId = (await createGoals({
+                    active: true,
+                }, 1))[0].id;
+
+                opts.taskId=(await createTasks({
+                    parentId: opts.goalId,
+                    active: true,
+                }, 2))[0].id
+            });
+
+            return opts;
+        }
+    }, 10000)
+})

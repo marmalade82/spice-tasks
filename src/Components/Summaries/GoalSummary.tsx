@@ -58,7 +58,7 @@ export default class GoalSummary extends React.Component<Props, State> {
                             <BodyText
                                 style={{}}
                             >
-                                {details ? details + '\n': ""}
+                                {details ? details + '\n\n': ""}
                                 {`${new MyDate(start_date).format("MMMM Do")} - ${new MyDate(due_date).format("MMMM Do")}\n`}
                                 {`Due ${new MyDate(due_date).timeToNow()}\n`}
                                 {`\n`}
