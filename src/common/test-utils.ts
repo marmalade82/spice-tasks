@@ -20,7 +20,7 @@ import Global, { IGlobal } from "src/Models/Global/Global";
 import GlobalQuery from "src/Models/Global/GlobalQuery";
 import EarnedPenalty, { IEarnedPenalty } from "src/Models/Penalty/EarnedPenalty";
 
-function makeNavigation(params: {}) {
+function makeNavigation(params: {}): any {
     const navigation = {
         navigate: jest.fn(),
         getParam: jest.fn((param: string, fallback: any) => {

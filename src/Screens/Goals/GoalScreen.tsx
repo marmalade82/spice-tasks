@@ -14,14 +14,13 @@ import { ScrollView } from "react-native";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import FootSpacer from "src/Components/Basic/FootSpacer";
 import { TaskParentTypes } from "src/Models/Task/Task";
-import { NavigationStackScreenProps } from "react-navigation-stack";
+import {  NavigationStackProp } from "react-navigation-stack";
 import { Single, Child, None } from "App";
 
 
-type Props = NavigationStackScreenProps<Single, ScreenProps>
 
-interface ScreenProps {
-
+interface Props {
+    navigation: NavigationStackProp<Single>
 }
 
 interface State {

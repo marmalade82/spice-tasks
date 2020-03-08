@@ -3,9 +3,10 @@ import {
     StringInput,
     DateTimeInput,
 } from "src/Components/Inputs";
+import { Props as StringInputProps } from "src/Components/Inputs/StringInput";
 import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import DataComponent from "src/Components/base/DataComponent";
-import Style from "src/Style/Style"
+import { Validate } from "src/Components/Inputs/Validate";
 import { ColumnView } from "../Basic/Basic";
 import { dueDate } from "./common/utils";
 
@@ -30,11 +31,28 @@ function Default(): State {
 }
 
 export default class AddRewardForm extends DataComponent<Props, State, State> {
+    NameInput = Validate<string, StringInputProps>(
+                    StringInput,
+                    (s: string) => this.validateName(s),
+                    (s: string) => this.validateName(s),
+    )
+
     constructor(props: Props) {
         super(props);
 
         this.state = Default();
     }
+
+    /****************************
+     * Validation functions
+     */
+    validateName = (s: string) => {
+        return s.length > 0 ? undefined : "Please enter a name";
+    }
+
+    /***************************
+     * Event handling
+     */
 
     onChangeName = (name: string) => {
         this.setData({
@@ -59,13 +77,14 @@ export default class AddRewardForm extends DataComponent<Props, State, State> {
             <ColumnView style={[{
                 backgroundColor: "transparent",
             }, this.props.style]}>
-                <StringInput
+                <this.NameInput
                     title={"Name"} 
                     data={this.data().name}
                     placeholder={"Name of this reward"}
-                    onDataChange={this.onChangeName}
+                    onValidDataChange={this.onChangeName}
+                    onInvalidDataChange={this.onChangeName}
                     accessibilityLabel={"reward-name"}
-                />
+                ></this.NameInput>
 
                 <StringInput
                     title={"Details"}
