@@ -1,6 +1,6 @@
 
 import DB from "src/Models/Database";
-import { Model as M } from "@nozbe/watermelondb";
+import { Model as M, Query, Q } from "@nozbe/watermelondb";
 import { Exact } from "src/common/types";
 import { Condition } from "@nozbe/watermelondb/QueryDescription";
 
@@ -13,6 +13,7 @@ interface IModelQuery<Model extends M & IModel, IModel> {
     create: (p: Exact<Partial<IModel>>) => any;
     update: (m: Model, p: Exact<Partial<IModel>>) => any;
     queries: () => Condition[];
+    queryId: (id) => Query<M>;
 }
 
 export default abstract class ModelQuery<Model extends M & IModel, IModel> implements IModelQuery<Model, IModel> {
@@ -25,6 +26,12 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
         const db = DB.get();
         const collection = db.collections.get(this.table);
         return collection;
+    }
+
+    queryId = (id: string) => {
+        return this.query(
+            Q.where("id", id)
+        )
     }
 
     queryAll = () => {

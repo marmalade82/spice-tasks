@@ -9,6 +9,7 @@ import {
 } from "src/Components/Basic/Basic";
 import { DocumentView, ScreenHeader, BackgroundTitle, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
 import { View, ScrollView } from "react-native";
+import ConnectedSingleList from "src/ConnectedComponents/Lists/SingleList";
 
 
 interface Props {
@@ -114,6 +115,7 @@ export default class TaskScreen extends React.Component<Props, State> {
                 </ScreenHeader>
 
                 <ScrollView>
+
                     {this.renderSummary()}
 
                     <BackgroundTitle title={`Active (${this.state.activeCount})`}
