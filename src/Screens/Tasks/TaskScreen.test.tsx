@@ -3,7 +3,10 @@ jest.mock('src/Notification');
 
 import React from "react";
 import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cleanup } from '@testing-library/react-native';
-import { makeNavigation, destroyAllIn, destroyAll } from "src/common/test-utils";
+import { 
+    makeNavigation, destroyAllIn, destroyAll,
+    createTasks,
+} from "src/common/test-utils";
 import TaskScreen from "src/Screens/Tasks/TaskScreen";
 import { TaskQuery, Task, ITask } from "src/Models/Task/TaskQuery";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
@@ -236,3 +239,93 @@ test.skip("User can view both active and inactive tasks", async () => {
         await destroyAllIn('tasks')
     }
 }, 20000)
+
+describe("list interactions", () => {
+    afterEach(async () => {
+        destroyAll();
+    })
+
+    test("Can complete an active subtask without the task disappearing from screen", async () => {
+        const { parentId, taskId } = await setup();
+
+        const { getByLabelText, queryByLabelText, queryAllByLabelText } = render(
+            <TaskScreen navigation={makeNavigation({id: parentId})}></TaskScreen>
+        );
+
+        let taskComplete;
+        await wait(async () => {
+            taskComplete = await getByLabelText("input-complete-" + taskId);
+            fireEvent.press(taskComplete);
+        })
+
+        await wait(async () => {
+            const tasks = queryAllByLabelText("task-list-item");
+            expect(tasks.length).toEqual(2);
+        })
+
+        const activeTasks = await new TaskQuery().queryActiveHasParent(parentId).fetch();
+        expect(activeTasks.length).toEqual(1);
+
+        async function setup() {
+            const opts = {
+                taskId: "",
+                parentId: "",
+            }
+
+            await DB.get().action(async () => {
+                opts.parentId = (await createTasks({
+                    active: true,
+                }, 1))[0].id;
+
+                opts.taskId=(await createTasks({
+                    parentId: opts.parentId,
+                    active: true,
+                }, 2))[0].id
+            });
+
+            return opts;
+        }
+    }, 10000)
+
+    test("Can fail an active subtask without the task disappearing from screen", async () => {
+        const { parentId, taskId } = await setup();
+
+        const { getByLabelText, queryByLabelText, queryAllByLabelText } = render(
+            <TaskScreen navigation={makeNavigation({id: parentId})}></TaskScreen>
+        );
+
+        let taskFail;
+        await wait(async () => {
+            taskFail = await getByLabelText("input-fail-" + taskId);
+            fireEvent.press(taskFail);
+        })
+
+        await wait(async () => {
+            const tasks = queryAllByLabelText("task-list-item");
+            expect(tasks.length).toEqual(2);
+        })
+
+        const activeTasks = await new TaskQuery().queryActiveHasParent(parentId).fetch();
+        expect(activeTasks.length).toEqual(1);
+
+        async function setup() {
+            const opts = {
+                taskId: "",
+                parentId: "",
+            }
+
+            await DB.get().action(async () => {
+                opts.parentId = (await createTasks({
+                    active: true,
+                }, 1))[0].id;
+
+                opts.taskId=(await createTasks({
+                    parentId: opts.parentId,
+                    active: true,
+                }, 2))[0].id
+            });
+
+            return opts;
+        }
+    }, 10000)
+})

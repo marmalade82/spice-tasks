@@ -36,6 +36,7 @@ export default class TaskSummary extends React.Component<Props, State> {
         const { title, due_date } = this.props.task
         return (
             <Summary
+                iconType={"task"}
                 style={{}}
                 headerText={this.props.task.title}
                 bodyText={() => {
