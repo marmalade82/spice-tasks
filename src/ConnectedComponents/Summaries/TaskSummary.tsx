@@ -18,7 +18,10 @@ const AdaptedTaskSummary: React.FunctionComponent<Props> = (props: Props) => {
     const task = props.task;
     const mappedTask = {
         title: task.title,
+        start_date: task.startDate,
         due_date: task.dueDate, 
+        instructions: task.instructions,
+        active: task.active, 
     }
 
     return (

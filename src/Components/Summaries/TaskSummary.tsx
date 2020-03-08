@@ -20,7 +20,10 @@ interface State {
 
 interface Task {
     title: string;
+    instructions: string;
+    start_date: Date;
     due_date: Date;
+    active: boolean;
 }
 
 
@@ -33,19 +36,21 @@ export default class TaskSummary extends React.Component<Props, State> {
     }
 
     render = () => {
-        const { title, due_date } = this.props.task
+        const { title, due_date, start_date, instructions, active } = this.props.task
         return (
             <Summary
                 iconType={"task"}
                 style={{}}
-                headerText={this.props.task.title}
+                headerText={title}
                 bodyText={() => {
                     return (
                         <Text>
                             <BodyText
                                 style={{}}
                             >
-                                {new MyDate(due_date).format("MMM Do")}
+                                {instructions ? `${instructions}\n\n` : null}
+                                {`Starts on ${new MyDate(start_date).format("MMMM Do")}.\n`}
+                                {`Due ${new MyDate(due_date).timeFromNow()}, on ${new MyDate(due_date).format("MMMM Do")}.`}
                             </BodyText>
                         </Text>
                     );

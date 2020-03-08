@@ -3,9 +3,13 @@ import {View, Button, Text, StyleSheet } from "react-native";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import { DocumentView } from "src/Components/Styled/Styled";
 import { GoalLogic } from "src/Models/Goal/GoalQuery";
+import { NavigationStackScreenProps } from "react-navigation-stack";
+import { Single, Child, None } from "App";
 
-interface Props {
-    navigation: any
+
+type Props = NavigationStackScreenProps<None, ScreenProps>
+
+interface ScreenProps {
 }
 
 const style = StyleSheet.create({

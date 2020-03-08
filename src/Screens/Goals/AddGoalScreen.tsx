@@ -16,8 +16,13 @@ import { LabelValue } from "src/common/types";
 import PenaltyQuery, { Penalty } from "src/Models/Penalty/PenaltyQuery";
 import SaveButton from "src/Components/Basic/SaveButton";
 
-interface Props {
-    navigation: any;
+import { NavigationStackScreenProps } from "react-navigation-stack";
+import { Single, Child, None } from "App";
+
+
+type Props = NavigationStackScreenProps<Child, ScreenProps>
+
+interface ScreenProps {
 }
 
 interface State { 

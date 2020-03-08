@@ -28,6 +28,10 @@ export default class MyDate {
         return this.m.toNow();
     }
 
+    timeFromNow = () => {
+        return this.m.fromNow();
+    }
+
     format = (format: string) => {
         return this.m.format(format);
     }
