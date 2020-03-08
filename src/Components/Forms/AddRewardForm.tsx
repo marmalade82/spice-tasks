@@ -30,6 +30,17 @@ function Default(): State {
     };
 }
 
+export function ValidateRewardForm(form: AddRewardForm) {
+
+    const state = form.data();
+    let error = form.validateName(state.name);
+    if(error !== undefined) {
+        return error;
+    }
+
+    return undefined;
+}
+
 export default class AddRewardForm extends DataComponent<Props, State, State> {
     NameInput = Validate<string, StringInputProps>(
                     StringInput,

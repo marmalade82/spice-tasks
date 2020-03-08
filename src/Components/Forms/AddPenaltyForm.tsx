@@ -8,8 +8,10 @@ import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import DataComponent from "src/Components/base/DataComponent";
 import Style from "src/Style/Style"
 import { ColumnView } from "src/Components/Basic/Basic";
+import { Validate } from "src/Components/Inputs/Validate";
 import { ScreenHeader } from "src/Components/Styled/Styled";
 import { dueDate } from "./common/utils";
+import { Props as StringInputProps } from "src/Components/Inputs/StringInput";
 
 interface Props {
     data: State | false
@@ -31,12 +33,40 @@ function Default(): State {
     };
 }
 
+export function ValidatePenaltyForm(form: AddPenaltyForm) {
+    const state = form.data();
+    let error = form.validateName(state.name);
+    if(error !== undefined) {
+        return error;
+    }
+
+    return undefined;
+}
+
 export default class AddPenaltyForm extends DataComponent<Props, State, State> {
+
+    NameInput = Validate<string, StringInputProps>(
+                    StringInput,
+                    (s: string) => this.validateName(s),
+                    (s: string) => this.validateName(s),
+    )
+
     constructor(props: Props) {
         super(props);
 
         this.state = Default();
     }
+
+    /****************************
+     * Validation functions
+     */
+    validateName = (s: string) => {
+        return s.length > 0 ? undefined : "Please enter a name";
+    }
+
+    /***************************
+     * Event handling
+     */
 
     onChangeName = (name: string) => {
         this.setData({
@@ -62,13 +92,14 @@ export default class AddPenaltyForm extends DataComponent<Props, State, State> {
                 backgroundColor: "transparent",
             }, this.props.style]}>
                 <ScreenHeader>Add/Edit Penalty</ScreenHeader>
-                <StringInput
+                <this.NameInput
                     title={"Name"} 
                     data={this.data().name}
                     placeholder={"Name of this penalty"}
-                    onDataChange={this.onChangeName}
+                    onValidDataChange={this.onChangeName}
+                    onInvalidDataChange={this.onChangeName}
                     accessibilityLabel={"penalty-name"}
-                />
+                ></this.NameInput>
 
                 <StringInput
                     title={"Details"}

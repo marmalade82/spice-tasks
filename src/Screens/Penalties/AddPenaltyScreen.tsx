@@ -1,9 +1,9 @@
 import React from "react";
 import { ColumnView } from "src/Components/Basic/Basic";
 import { Button } from "react-native";
-import { AddPenaltyForm, AddPenaltyData, AddPenaltyDefault } from "src/Components/Forms/AddPenaltyForm";
+import { AddPenaltyForm, AddPenaltyData, AddPenaltyDefault, ValidatePenaltyForm } from "src/Components/Forms/AddPenaltyForm";
 import { PenaltyQuery, Penalty } from "src/Models/Penalty/PenaltyQuery";
-import { DocumentView } from "src/Components/Styled/Styled";
+import { DocumentView, Toast } from "src/Components/Styled/Styled";
 import { ScrollView } from "react-native";
 import SaveButton from "src/Components/Basic/SaveButton";
 
@@ -16,6 +16,8 @@ interface Props {
 interface State {
     data: AddPenaltyData;
     penalty?: Penalty;
+    toast: string;
+    showToast: boolean;
 }
 
 
@@ -26,11 +28,16 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
         }
     }
 
+    penaltyFormRef: React.RefObject<AddPenaltyForm>
     constructor(props: Props) {
         super(props);
         this.state = {
             data: AddPenaltyDefault(),
+            toast: "",
+            showToast: false,
         }
+
+        this.penaltyFormRef = React.createRef();
     }
 
     componentDidMount = async () => {
@@ -54,20 +61,32 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
     }
 
     onSave = () => {
-        const data = this.state.data;
-        const penaltyData = {
-            title: data.name,
-            expireDate: data.expire_date,
-            details: data.details,
-        };
-
-        if(this.state.penalty) {
-            void (new PenaltyQuery().update(this.state.penalty, penaltyData)).catch();        
-        } else {
-            void new PenaltyQuery().create(penaltyData).catch();
+        let message : string | undefined = undefined;
+        if(this.penaltyFormRef.current) {
+            message = ValidatePenaltyForm(this.penaltyFormRef.current);
         }
+        
+        if(message !== undefined) {
+            this.setState({
+                toast: message,
+                showToast: true,
+            })
+        } else {
+            const data = this.state.data;
+            const penaltyData = {
+                title: data.name,
+                expireDate: data.expire_date,
+                details: data.details,
+            };
 
-        this.props.navigation.goBack();
+            if(this.state.penalty) {
+                void (new PenaltyQuery().update(this.state.penalty, penaltyData)).catch();        
+            } else {
+                void new PenaltyQuery().create(penaltyData).catch();
+            }
+
+            this.props.navigation.goBack();
+        }
     }
 
     render = () => {
@@ -79,6 +98,15 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
                 <SaveButton
                     onSave={this.onSave}
                 ></SaveButton>
+                <Toast
+                    visible={this.state.showToast}
+                    message={this.state.toast}
+                    onToastDisplay={() => {
+                        this.setState({
+                            showToast: false,
+                        })
+                    }}
+                ></Toast>
             </DocumentView>
         );
     }
@@ -86,6 +114,7 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
     renderPenaltyForm = () => {
         return (
             <AddPenaltyForm
+                ref={this.penaltyFormRef}
                 data={this.state.data}
                 onDataChange={(d: AddPenaltyData) => {
                     this.setState({

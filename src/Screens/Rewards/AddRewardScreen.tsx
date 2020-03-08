@@ -1,11 +1,11 @@
 
 import React from "react";
 import { View, ScrollView, SafeAreaView, Button } from "react-native";
-import { AddRewardForm, AddRewardData, AddRewardDefault } from "src/Components/Forms/AddRewardForm";
+import { AddRewardForm, AddRewardData, AddRewardDefault, ValidateRewardForm } from "src/Components/Forms/AddRewardForm";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { RewardQuery, Reward } from "src/Models/Reward/RewardQuery";
-import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
+import { DocumentView, ScreenHeader, Toast } from "src/Components/Styled/Styled";
 import SaveButton from "src/Components/Basic/SaveButton";
 
 interface Props {
@@ -15,6 +15,8 @@ interface Props {
 interface State { 
     data: AddRewardData;
     reward?: Reward;
+    toast: string;
+    showToast: boolean;
 }
 
 const localStyle = StyleSheet.create({
@@ -23,11 +25,15 @@ const localStyle = StyleSheet.create({
 });
 
 export default class AddRewardScreen extends React.Component<Props, State> {
+    rewardFormRef: React.RefObject<AddRewardForm>
     constructor(props: Props) {
         super(props);
         this.state = {
             data: AddRewardDefault(),
+            toast: "",
+            showToast: false,
         }
+        this.rewardFormRef = React.createRef();
     }
 
     static navigationOptions = ({navigation}) => {
@@ -57,21 +63,34 @@ export default class AddRewardScreen extends React.Component<Props, State> {
     }
 
     onSave = () => {
-        const data = this.state.data;
-        const rewardData = {
-            title: data.name,
-            expireDate: data.expire_date,
-            details: data.details,
-        };
-
-        debugger;
-        if(this.state.reward) {
-            void (new RewardQuery().update(this.state.reward, rewardData)).catch();        
-        } else {
-            void new RewardQuery().create(rewardData).catch();
+        let message : string | undefined = undefined;
+        if(this.rewardFormRef.current) {
+            message = ValidateRewardForm(this.rewardFormRef.current);
         }
 
-        this.props.navigation.goBack();
+        if(message !== undefined) {
+            this.setState({
+                showToast: true,
+                toast: message,
+            })
+        } else {
+            const data = this.state.data;
+            const rewardData = {
+                title: data.name,
+                expireDate: data.expire_date,
+                details: data.details,
+            };
+
+            debugger;
+            if(this.state.reward) {
+                void (new RewardQuery().update(this.state.reward, rewardData)).catch();        
+            } else {
+                void new RewardQuery().create(rewardData).catch();
+            }
+
+            this.props.navigation.goBack();
+        }
+
     }
 
     render = () => {
@@ -85,6 +104,15 @@ export default class AddRewardScreen extends React.Component<Props, State> {
                 <SaveButton
                     onSave={this.onSave}
                 ></SaveButton>
+                <Toast
+                    visible={this.state.showToast}
+                    message={this.state.toast}
+                    onToastDisplay={() => {
+                        this.setState({
+                            showToast: false,
+                        })
+                    }}
+                ></Toast>
             </DocumentView>
         );
     }
@@ -92,6 +120,7 @@ export default class AddRewardScreen extends React.Component<Props, State> {
     renderRewardForm = () => {
         return (
             <AddRewardForm
+                ref={this.rewardFormRef}
                 data={this.state.data}
                 onDataChange={(d: AddRewardData) => {
                     this.setState({
