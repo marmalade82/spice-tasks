@@ -24,7 +24,7 @@ export default class BackgroundTitle extends React.Component<Props> {
                 height: 50,
                 backgroundColor: PRIMARY_COLOR_LIGHT,
                 paddingLeft: LEFT_SECOND_MARGIN, //LEFT_FIRST_MARGIN + (ICON_CONTAINER_WIDTH / 2),
-                marginTop: 0,
+                marginTop: CONTAINER_VERTICAL_MARGIN,
             }, Styles.CENTERED_SECONDARY, this.props.style]}>
                 <HeaderText level={2} style={{
                     color: TEXT_GREY,

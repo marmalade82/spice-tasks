@@ -33,7 +33,6 @@ export default class Summary extends React.Component<Props, State> {
                     justifyContent: "flex-start",
                     marginBottom: CONTAINER_VERTICAL_MARGIN,
                     flex: 0,
-                    maxHeight: "66%",
                     overflow: "hidden",
                     elevation: CONTAINER_ELEVATION,
                 }, this.props.style]}>

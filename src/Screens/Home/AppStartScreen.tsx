@@ -145,6 +145,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
 
                     <BackgroundTitle title={`Due Today (${this.state.dueTodayCount})`}
                         style={{
+                            marginTop: 0,
                         }}
                     ></BackgroundTitle>
                     <ConnectedTaskList

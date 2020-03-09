@@ -105,6 +105,9 @@ export default class ListsScreen extends React.Component<Props, State> {
                 <ScrollView>
                     <BackgroundTitle
                         title={`Unused Rewards (${this.state.earnedRewardsCount})`}
+                        style={{
+                            marginTop: 0,
+                        }}
                     ></BackgroundTitle>
 
                     <ConnectedEarnedRewardList
@@ -133,7 +136,6 @@ export default class ListsScreen extends React.Component<Props, State> {
 
                     <BackgroundTitle title={"Full Lists"}
                         style={{
-                            marginTop: 2 * CONTAINER_VERTICAL_MARGIN,
                         }}
                     ></BackgroundTitle>
                     <NavigationList
