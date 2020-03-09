@@ -96,7 +96,6 @@ export default class AddRewardScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <DocumentView >
-                <ScreenHeader>Add/Edit Reward</ScreenHeader>
                 <ScrollView style={{
                 }}>
                     { this.renderRewardForm() }

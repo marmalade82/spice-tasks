@@ -66,9 +66,6 @@ export default class InProgressGoalListScreen extends React.Component<Props, Sta
     render = () => {
         return (
             <DocumentView>
-                <ScreenHeader>
-                    {"Goals In Progress"}
-                </ScreenHeader>
                 <ListPicker
                     data={{
                         current: this.state.currentList

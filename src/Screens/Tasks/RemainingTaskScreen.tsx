@@ -79,9 +79,6 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <DocumentView>
-                <ScreenHeader>
-                    {"Tasks Remaining"}
-                </ScreenHeader>
                 <ListPicker
                     data={{
                         current: this.state.currentList

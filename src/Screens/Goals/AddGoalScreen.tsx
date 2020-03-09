@@ -142,9 +142,6 @@ export default class AddGoalScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <DocumentView>
-                <ScreenHeader style={{
-                    marginBottom: 20
-                }}>Add/Edit Goal</ScreenHeader>
                 { this.renderGoalForm() }
                 <SaveButton
                     onSave={this.onSave}

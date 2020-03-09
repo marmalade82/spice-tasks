@@ -50,7 +50,6 @@ export default class PenaltyScreen extends React.Component<Props, State> {
         
         return (
             <DocumentView>
-                <ScreenHeader>Penalty</ScreenHeader>
                 {this.renderSummary()}
             </DocumentView>
 

@@ -91,7 +91,6 @@ export default class AddPenaltyForm extends DataComponent<Props, State, State> {
             <ColumnView style={[{
                 backgroundColor: "transparent",
             }, this.props.style]}>
-                <ScreenHeader>Add/Edit Penalty</ScreenHeader>
                 <this.NameInput
                     title={"Name"} 
                     data={this.data().name}

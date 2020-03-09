@@ -35,9 +35,6 @@ export default class SpecificTaskListScreen extends React.Component<Props, State
     render = () => {
         return (
             <DocumentView>
-                <ScreenHeader>
-                    Child Tasks 
-                </ScreenHeader>
                 <ListPicker
                     data={{
                         current: this.state.current

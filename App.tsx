@@ -1,12 +1,17 @@
 import React from 'react';
 import * as Screens from "src/Screens";
 import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import { createStackNavigator, HeaderBackButton } from 'react-navigation-stack';
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { Button, AppState } from "react-native";
 import { Schedule } from "./Schedule";
 import SpiceDBService from 'src/Services/DBService';
+import { 
+  PRIMARY_COLOR_LIGHT, PRIMARY_COLOR, LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN,
+  Styles, ROW_CONTAINER_HEIGHT,
+} from 'src/Components/Styled/Styles';
+import { IconButton, Icon } from 'src/Components/Styled/Styled';
 
 const ScreenDirectory = {
   Home: {
@@ -130,7 +135,11 @@ const ScreenNavigator = createStackNavigator(
                 color="lightgreen"
             
             />
+        },
+        headerStyle: {
+          backgroundColor: PRIMARY_COLOR,
         }
+
       }
     }
 
@@ -150,7 +159,26 @@ const DashNavigator = createStackNavigator(
                 color="lightgreen"
             
             />
-        }
+        },
+        /*headerLeft: () => {
+          return (
+            <Icon type={"left"}></Icon>
+          )
+        },*/
+        headerStyle: {
+          backgroundColor: PRIMARY_COLOR,
+          height: ROW_CONTAINER_HEIGHT,
+        },
+        headerTitleStyle: {
+          color: "white",
+          ...Styles.HEADER_1,
+        },
+        headerBackTitleStyle: {
+          color: "white",
+          marginLeft: 0,
+          backgroundColor: "green",
+        },
+        headerTintColor: "white",
       }
     }
 
@@ -170,6 +198,9 @@ const ListNavigator = createStackNavigator(
                 color="lightgreen"
             
             />
+        },
+        headerStyle: {
+          backgroundColor: PRIMARY_COLOR,
         }
       }
     }

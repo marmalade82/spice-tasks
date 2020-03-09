@@ -28,9 +28,6 @@ export default class HomePageScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <DocumentView>
-                <ScreenHeader>
-                    { new MyDate().format("MMMM Do, YYYY") }
-                </ScreenHeader>
 
                 <NavigationRow
                     number={4}

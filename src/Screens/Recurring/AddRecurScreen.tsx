@@ -68,7 +68,6 @@ export default class AddRecurScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <DocumentView>
-                <ScreenHeader>Add/Edit Recur</ScreenHeader>
                 <ScrollView style={{
                     backgroundColor: "transparent",
                 }}>

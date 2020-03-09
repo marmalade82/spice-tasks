@@ -41,9 +41,6 @@ export default class SpecificTaskScreen extends React.Component<Props, State> {
 
         return (
             <DocumentView>
-                <ScreenHeader>
-                    {"Summary"}
-                </ScreenHeader>
                 <ScrollView>
                     <Summary
                         style={{}}

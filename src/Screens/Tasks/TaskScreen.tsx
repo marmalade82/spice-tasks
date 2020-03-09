@@ -110,10 +110,6 @@ export default class TaskScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <DocumentView>
-                <ScreenHeader>
-                    Task Summary
-                </ScreenHeader>
-
                 <ScrollView>
 
                     {this.renderSummary()}

@@ -60,7 +60,6 @@ export default class EarnedPenaltyScreen extends React.Component<Props, State> {
         
         return (
             <DocumentView>
-                <ScreenHeader>Earned Penalty</ScreenHeader>
                 {this.renderSummary()}
             </DocumentView>
 

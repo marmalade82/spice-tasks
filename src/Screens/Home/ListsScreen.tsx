@@ -96,12 +96,6 @@ export default class ListsScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <DocumentView>
-                <ScreenHeader
-                    style={{
-                    }}
-                >
-                    { "Lists" }
-                </ScreenHeader>
                 <ScrollView>
                     <BackgroundTitle
                         title={`Unused Rewards (${this.state.earnedRewardsCount})`}

@@ -136,8 +136,6 @@ export default class GoalScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <DocumentView>
-                <ScreenHeader>Goal Summary</ScreenHeader>
-
                 <ScrollView>
                     {this.renderSummary()}
                     <BackgroundTitle title={`Active (${this.state.activeCount})`}

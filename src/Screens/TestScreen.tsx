@@ -121,10 +121,6 @@ export default class TestScreen extends React.Component<Props, State> {
         })
         return (
             <DocumentView>
-                <ScreenHeader style={{
-                    marginBottom: 60
-                }}>{"Test Screen: " + this.state.count.toString()}</ScreenHeader>
-
                     <PagedList
                         items={things}
                         renderItem={(thing) => {

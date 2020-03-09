@@ -135,12 +135,6 @@ export default class AppStartScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <DocumentView>
-                <ScreenHeader
-                    style={{
-                    }}
-                >
-                    { new MyDate(this.state.currentDate).format("MMMM Do, HH:mm") }
-                </ScreenHeader>
                 <ScrollView>
 
                     <BackgroundTitle title={`Due Today (${this.state.dueTodayCount})`}

@@ -113,7 +113,6 @@ export default class AddTaskScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <DocumentView>
-                <ScreenHeader>Add/Edit Task</ScreenHeader>
                 <ScrollView style={{
                     backgroundColor: "transparent",
                 }}>

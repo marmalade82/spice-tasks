@@ -9,7 +9,8 @@ import { Icon } from "react-native-elements";
 import { View, StyleProp, ViewStyle } from "react-native";
 
 interface Props {
-    style?: StyleProp<ViewStyle>
+    style?: StyleProp<ViewStyle>;
+    thing: string;
 }
 
 export default class ScreenHeader extends React.Component<Props> {

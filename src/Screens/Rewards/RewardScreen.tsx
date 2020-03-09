@@ -49,7 +49,6 @@ export default class RewardScreen extends React.Component<Props, State> {
         
         return (
             <DocumentView>
-                <ScreenHeader>Reward</ScreenHeader>
                 {this.renderSummary()}
             </DocumentView>
 

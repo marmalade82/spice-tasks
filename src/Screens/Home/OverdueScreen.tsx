@@ -87,7 +87,6 @@ export default class OverdueScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <DocumentView>
-                <ScreenHeader>Overdue</ScreenHeader>
 
                 <ListPicker
                     data={{
