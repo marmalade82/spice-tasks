@@ -217,8 +217,8 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     queryActiveTasks = () => {
-        const active = this.store().query(
-            Q.where('is_active', true) 
+        const active = this.query(
+            ...Conditions.active()
         );
 
         return active;
@@ -229,8 +229,8 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     queryInactiveTasks = () => {
-        const inactive = this.store().query(
-            Q.where('is_active', false) 
+        const inactive = this.query(
+            ...Conditions.inactive()
         );
 
         return inactive;
@@ -262,9 +262,10 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
         }
 
         return this.store().query(
-            ...[ ...Conditions.startsOnOrAfter(start),
-                ...Conditions.startsBefore(new MyDate(start).add(1, unit).toDate()),
-            ]
+            Q.and( Q.and(...Conditions.startsOnOrAfter(start)),
+                    Q.and(...Conditions.startsBefore(new MyDate(start).add(1, unit).toDate()))
+                  )
+            
         )
     }
 
@@ -294,7 +295,7 @@ export class TaskLogic {
                 title: task.title,
                 parentId: task.parentId,
                 instructions: task.instructions,
-                active: task.active,
+                active: true,
                 state: 'open',
                 startDate: new MyDate(newDate).add( new MyDate(task.startDate).diff(oldDate, "minutes"), "minutes").toDate(),
                 dueDate: new MyDate(newDate).add( new MyDate(task.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),

@@ -15,6 +15,7 @@ import GoalQuery, { GoalLogic } from "../Goal/GoalQuery";
 import { GoalType } from "./GoalLogic";
 import TaskQuery from "../Task/TaskQuery";
 
+
 describe("streak tasks recur despite being very far in past" , () => {
     beforeEach(async() => {
         await destroyAll();
@@ -293,4 +294,55 @@ describe("Processing partially processed streak goals", () => {
             return opts;
         }
     });
+});
+
+describe("streak tasks have proper values", () => {
+    afterEach(async () => {
+        await destroyAll();
+    })
+
+    test("generated tasks are active", async () => {
+        await setup();
+
+        await wait(async () => {
+            const goals = await new GoalQuery().unprocessed();
+            expect(goals.length).toEqual(1)
+        });
+
+        await wait(async () => {
+            const tasks = await new TaskQuery().activeTasks();
+            expect(tasks.length).toEqual(0);
+        })
+
+        await GoalLogic.processSomeStreaks(2);
+
+        await wait(async () => {
+            const goals = await new GoalQuery().unprocessed();
+            expect(goals.length).toEqual(0)
+        });
+
+        await wait(async () => {
+            const tasks = await new TaskQuery().activeTasks();
+            expect(tasks.length).toEqual(1);
+        })
+
+        async function setup() {
+            await DB.get().action(async () => {
+                const goal_1 = (await createGoals({
+                    streakType: "daily",
+                    goalType: GoalType.STREAK,
+                    active: true,
+                    latestCycleStartDate: new MyDate().subtract(1, "days").toDate(),
+                    lastRefreshed: new MyDate().subtract(1, "days").toDate(),
+                }, 1))[0];
+                await createTasks({
+                    title: "middle", 
+                    active: false,
+                    startDate: new MyDate().subtract(1, "days").toDate(),
+                    parentId: goal_1.id,
+                }, 1)
+            });
+
+        }
+    })
 });

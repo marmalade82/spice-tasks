@@ -405,7 +405,7 @@ export class GoalLogic {
             const latestCycleTasks: Task[] = await new TaskQuery().inStreakCycle(latest.toDate(), goal.streakType );
             if(latestCycleTasks.length > 0) {
                 await this._generateNextStreakTasks(latestCycleTasks, goal.id, goal.latestCycleStartDate, unit);
-            }
+            } 
 
             // once we've processed everything, the latest cycle start date should be updated to be latest
             // relative to TODAY's date.
