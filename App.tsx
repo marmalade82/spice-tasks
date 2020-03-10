@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Screens from "src/Screens";
 import { createAppContainer } from 'react-navigation';
-import { createStackNavigator, HeaderBackButton } from 'react-navigation-stack';
+import { createStackNavigator, HeaderBackButton, HeaderProps } from 'react-navigation-stack';
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { Button, AppState } from "react-native";
@@ -11,7 +11,7 @@ import {
   PRIMARY_COLOR_LIGHT, PRIMARY_COLOR, LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN,
   Styles, ROW_CONTAINER_HEIGHT,
 } from 'src/Components/Styled/Styles';
-import { IconButton, Icon } from 'src/Components/Styled/Styled';
+import { IconButton, Icon, ScreenHeader } from 'src/Components/Styled/Styled';
 
 const ScreenDirectory = {
   Home: {
@@ -146,39 +146,28 @@ const ScreenNavigator = createStackNavigator(
   }
 );
 
+const header = ({scene, navigation}) => {
+  const { options } = scene.descriptor;
+  const title =
+    options.headerTitle !== undefined
+      ? options.headerTitle
+      : options.title !== undefined
+      ? options.title : "";
+  return (
+    <ScreenHeader
+      navigation={navigation}
+      showBack={ navigation.state.index !== 0 }
+    >{title}</ScreenHeader>
+  );
+};
+
+
 const DashNavigator = createStackNavigator(
   ScreenDirectory,
   { initialRouteName: 'AppStart'
   , defaultNavigationOptions: ({navigation}) => {
       return {
-        headerRight: () => { return <Button
-                onPress={() => {
-                    navigation.navigate('Menu');
-                }}
-                title="Menu"
-                color="lightgreen"
-            
-            />
-        },
-        /*headerLeft: () => {
-          return (
-            <Icon type={"left"}></Icon>
-          )
-        },*/
-        headerStyle: {
-          backgroundColor: PRIMARY_COLOR,
-          height: ROW_CONTAINER_HEIGHT,
-        },
-        headerTitleStyle: {
-          color: "white",
-          ...Styles.HEADER_1,
-        },
-        headerBackTitleStyle: {
-          color: "white",
-          marginLeft: 0,
-          backgroundColor: "green",
-        },
-        headerTintColor: "white",
+        header: header        
       }
     }
 
@@ -190,18 +179,7 @@ const ListNavigator = createStackNavigator(
   { initialRouteName: 'Lists'
   , defaultNavigationOptions: ({navigation}) => {
       return {
-        headerRight: () => { return <Button
-                onPress={() => {
-                    navigation.navigate('Menu');
-                }}
-                title="Menu"
-                color="lightgreen"
-            
-            />
-        },
-        headerStyle: {
-          backgroundColor: PRIMARY_COLOR,
-        }
+        header: header,
       }
     }
 

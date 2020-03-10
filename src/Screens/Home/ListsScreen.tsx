@@ -256,8 +256,12 @@ class NavigationList extends React.Component<NavListProps> {
                     , icon: "earned_penalty"
                     , navParams: {}
                     , navDestination: "EarnedPenalties"
+                    },
+                    { text: "Menu"
+                    , icon: "goal"
+                    , navParams: {}
+                    , navDestination: "Menu"
                     }
-
                 ]}
             >
             </NavigationGroup>

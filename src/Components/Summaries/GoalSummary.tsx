@@ -59,7 +59,7 @@ export default class GoalSummary extends React.Component<Props, State> {
                                 style={{}}
                             >
                                 {details ? details + '\n\n': ""}
-                                {`Starts on ${new MyDate(start_date).format("MMMM Do")}.`}
+                                {`Starts on ${new MyDate(start_date).format("MMMM Do")}.\n`}
                                 {`Due ${new MyDate(due_date).timeFromNow()}, on ${new MyDate(due_date).format("MMMM Do")}.\n`}
                                 {`\n`}
                                 {`Reward: ${this.props.showReward ? reward : "None"}\n`}

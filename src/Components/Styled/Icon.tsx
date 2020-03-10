@@ -14,7 +14,7 @@ interface Props {
     type: "complete" | "delete" | "goal" | "task" | 
         "reward" | "penalty" | "mandatory" | "attention" | "info" | "recur"| 
         "earned_reward" | "earned_penalty" | "right" | "left" | "first" | "last" | "none" | 
-        "fail" | "add";
+        "fail" | "add" | "arrow-left";
     accessibilityLabel?: string;
     backgroundColor?: string;
     color?: string;
@@ -258,6 +258,18 @@ export default class StyledIcon extends React.Component<Props, State>{
                     ></Icon>
                 )
             } break;
+            case "arrow-left": {
+                return (
+                    <Icon
+                        name={"arrow-left"}
+                        type={"feather"}
+                        color={this.props.color ? this.props.color : TEXT_GREY}
+                        size={this.props.size ? this.props.size : 20}
+                        style={{
+                        }}
+                    ></Icon>
+                )
+            }
             default: {
                 return null
             }
