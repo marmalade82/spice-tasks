@@ -7,7 +7,7 @@ import { ScrollView } from "react-native";
 import { 
     NavigationRow, ScreenHeader, DocumentView, 
     NavigationGroup, BackgroundTitle, Summary ,
-    IconButton, ModalRow, ModalIconButton,
+    IconButton, ModalRow, ModalIconButton, Icon, Modal,
 } from "src/Components/Styled/Styled";
 
 import { 
@@ -24,6 +24,7 @@ import EarnedPenaltyQuery from "src/Models/Penalty/EarnedPenaltyQuery";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import FootSpacer from "src/Components/Basic/FootSpacer";
+import { EventDispatcher } from "src/common/EventDispatcher";
 
 interface Props {
     navigation: any;
@@ -40,10 +41,28 @@ interface State {
     ongoingGoalsCount: number;
 }
 
+const dispatcher = new EventDispatcher();
+
 export default class AppStartScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
             title: 'App Start!',
+            right: [
+                () => { return (
+                    <TouchableView
+                        style={{}}
+                        onPress={() => {
+                            console.log(navigation);
+                            dispatcher.fireEvent(navigation.state.key)
+                        }}
+                        accessibilityLabel={"add-button"}
+                    >
+                        <Icon type={"add"} color="white" backgroundColor="transparent"
+                            size={23}
+                        ></Icon> 
+                    </TouchableView>
+                )}
+            ],
         }
     }
 
@@ -96,8 +115,9 @@ export default class AppStartScreen extends React.Component<Props, State> {
                     ongoingGoalsCount: count
                 })
             }) ;
-
+        dispatcher.addEventListener(this.props.navigation.state.key, this.onClickAdd)
         this.unsub = () => {
+            dispatcher.removeEventListener(this.props.navigation.state.key, this.onClickAdd)
             timeSub.unsubscribe();
             dueTodaySub.unsubscribe();
             inProgressSub.unsubscribe();
@@ -108,6 +128,12 @@ export default class AppStartScreen extends React.Component<Props, State> {
 
     componentWillUnmount = () => {
         this.unsub();
+    }
+
+    onClickAdd = () => {
+        this.setState({
+            showAdd: true,
+        })
     }
 
     onTaskAction = (id: string, action: "complete" | "fail") => {
@@ -162,26 +188,10 @@ export default class AppStartScreen extends React.Component<Props, State> {
 
                     <FootSpacer></FootSpacer>
                 </ScrollView>
-                <View
-                    style={{
-                        flex: 0,
-                        position: "absolute",
-                        right: 50,
-                        bottom: 20,
-                    }}
+                <Modal
+                    visible={this.state.showAdd}
+                    onRequestClose={() => this.setState({ showAdd: false})}
                 >
-                    <ModalIconButton type={"add"}
-                        data={{
-                            showModal: this.state.showAdd
-                        }}
-                        onDataChange={({ showModal }) => {
-                            this.setState({
-                                showAdd: showModal
-                            })
-                        }}
-                        size={30}
-                        overlaySize={50}
-                    >
                         <ModalRow
                             text={"Goal"}
                             iconType={"goal"}
@@ -226,77 +236,8 @@ export default class AppStartScreen extends React.Component<Props, State> {
                                 })
                             }}
                         ></ModalRow>
-                    </ModalIconButton>
-                </View>
+                </Modal>
             </DocumentView>
-            /* In all likelihood, the app start page will consist of three lists, showing the user what he
-                could potentially due -- dismissing tasks due today, overdue, or in progress, or settling ongoing goals,
-                since there's no need to mark a goal overdue, since there isn't anything that needs to be "done", per se.
-                Anymore than this, and the first screen might be overcrowded in terms of lists. However, we might provide
-                some sort of reporting here, so that it is easy for the user to see how they've been doing recently.
-
-                We will also need to provide fixed buttons for adding goals/rewards/penalties/tasks, and for accessing 
-                a more extensive menu (for thiings like full lists of goals, recurring goals, etc). 
-
-                We will probably want to separate out things like earned rewards and earned penalties
-                to be part of some sort of reporting UI, since earned rewards/penalties are also important for determining
-                how one is doing.
-
-                    <ConnectedStatusList
-                        navigation={this.props.navigation}
-                    ></ConnectedStatusList>
-
-                    <RowView
-                        style={{
-                            justifyContent: "flex-start",
-                            backgroundColor: PRIMARY_COLOR_LIGHT,
-                            paddingRight: RIGHT_SECOND_MARGIN,
-                        }}
-                    >
-                        <BackgroundTitle title={"Lists"}
-                            style={{
-                                marginTop: 2 * CONTAINER_VERTICAL_MARGIN,
-                                alignSelf: "flex-end",
-                            }}
-                        ></BackgroundTitle>
-                        <RowReverseView
-                            style={[{
-                                backgroundColor: PRIMARY_COLOR_LIGHT,
-                            }, Styles.CENTERED_SECONDARY]}
-                        >
-                            <ModalIconButton type={"more"}
-                                data={{
-                                    showModal: this.state.showMore
-                                }}
-                                onDataChange={({ showModal }) => {
-                                    this.setState({
-                                        showMore: showModal
-                                    })
-                                }}
-                            >
-                                <ModalRow
-                                    text={"Add Goal"}
-                                    iconType={"complete"}
-                                    onPress={() => {
-                                        this.setState({
-                                            showMore: false,
-                                        })
-                                    }}
-                                ></ModalRow>
-                            </ModalIconButton>
-                            <IconButton type={"settings"}
-                                onPress={() => {
-                                    this.props.navigation.navigate("Settings")
-                                }} 
-                            >
-                            </IconButton> 
-                        </RowReverseView>
-                    </RowView>
-                    <NavigationList
-                        navigation={this.props.navigation}
-                    ></NavigationList>
-                </ScrollView>
-            </DocumentView>   */
         );
     }
 

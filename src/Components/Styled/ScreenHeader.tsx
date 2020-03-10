@@ -12,6 +12,7 @@ interface Props {
     style?: StyleProp<ViewStyle>;
     navigation: any;
     showBack: boolean;
+    right?: (() => JSX.Element)[]
 }
 
 export default class ScreenHeader extends React.Component<Props> {
@@ -27,7 +28,7 @@ export default class ScreenHeader extends React.Component<Props> {
                 backgroundColor: PRIMARY_COLOR,
                 elevation: CONTAINER_ELEVATION,
                 paddingLeft: LEFT_FIRST_MARGIN,
-                paddingRight: RIGHT_FIRST_MARGIN,
+                paddingRight: RIGHT_SECOND_MARGIN,
             }, Styles.CENTERED_SECONDARY, this.props.style]}>
                 {this.renderBack()}
                 <HeaderText level={1} style={{
@@ -46,16 +47,7 @@ export default class ScreenHeader extends React.Component<Props> {
                     justifyContent: "flex-start",
                     backgroundColor: PRIMARY_COLOR,
                 }}>
-                    <View
-                        style={{
-                            width: 37,
-                            height: 37,
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }} 
-                    >
-                    </View>
-                    
+                    {this.renderRight()}
                 </RowReverseView>
             </RowView>
         )
@@ -86,5 +78,13 @@ export default class ScreenHeader extends React.Component<Props> {
                     ></Icon>
             );
         }
+    }
+
+    renderRight = () => {
+        if(this.props.right) {
+            return this.props.right.map((render) => render())
+        }
+
+        return null;
     }
 }

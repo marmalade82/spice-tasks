@@ -153,10 +153,12 @@ const header = ({scene, navigation}) => {
       ? options.headerTitle
       : options.title !== undefined
       ? options.title : "";
+  const right = options.right;
   return (
     <ScreenHeader
       navigation={navigation}
       showBack={ navigation.state.index !== 0 }
+      right={right}
     >{title}</ScreenHeader>
   );
 };
