@@ -6,6 +6,9 @@ import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { RecurQuery, Recur } from "src/Models/Recurrence/RecurQuery";
 import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
+import { EventDispatcher } from "src/common/EventDispatcher";
+import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
+import { getKey } from "../common/screenUtils";
 
 
 interface Props {
@@ -16,6 +19,8 @@ interface State {
     data: AddRecurData;
     recur?: Recur;
 }
+
+const dispatcher = new EventDispatcher();
 
 export default class AddRecurScreen extends React.Component<Props, State> {
     constructor(props: Props) {
@@ -28,6 +33,16 @@ export default class AddRecurScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
             title: 'Recur',
+            right: [
+                () => {
+                    return (
+                        <HeaderSaveButton
+                            dispatcher={dispatcher}
+                            eventName={getKey(navigation)}
+                        ></HeaderSaveButton>
+                    )
+                }
+            ]
         }
     }
 
@@ -47,6 +62,11 @@ export default class AddRecurScreen extends React.Component<Props, State> {
                 recur: undefined
             })
         }
+        dispatcher.addEventListener(getKey(this.props.navigation), this.onSave)
+    }
+
+    componentWillUnmount = () => {
+        dispatcher.removeEventListener(getKey(this.props.navigation), this.onSave)
     }
 
     onSave = () => {
@@ -73,11 +93,6 @@ export default class AddRecurScreen extends React.Component<Props, State> {
                 }}>
                     { this.renderRecurForm() }
                 </ScrollView>
-
-                    <Button
-                        title={"SAVE"}
-                        onPress={this.onSave}
-                    />
             </DocumentView>
         );
     }
