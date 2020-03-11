@@ -19,8 +19,10 @@ import { GlobalSchema } from "src/Models/Global/GlobalSchema";
 import Global, { IGlobal } from "src/Models/Global/Global";
 import GlobalQuery from "src/Models/Global/GlobalQuery";
 import EarnedPenalty, { IEarnedPenalty } from "src/Models/Penalty/EarnedPenalty";
+var chance = require("chance");
+var Chance = new chance();
 
-function makeNavigation(params: {}): any {
+function makeNavigation(params: {}, key?: string): any {
     const navigation = {
         navigate: jest.fn(),
         getParam: jest.fn((param: string, fallback: any) => {
@@ -31,6 +33,9 @@ function makeNavigation(params: {}): any {
             }
         }),
         goBack: jest.fn(),
+        state: {
+            key: Chance.guid(),
+        }
     }
     return navigation;
 }
@@ -143,4 +148,12 @@ export {
     createClaimedRewards,
     createPenalties,
     createRewards,
+}
+
+export function waitForAsyncLifecycleMethods(time?: number) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, time ? time : 1000);
+    })
 }

@@ -28,6 +28,7 @@ export class EventDispatcher implements IEventDispatcher {
             this.handlers[s] = handlers;
         } else {
             this.handlers[s] = [handler]
+            //throw new Error(JSON.stringify(this.handlers));
         }
     }
 
@@ -49,8 +50,10 @@ export class EventDispatcher implements IEventDispatcher {
         const handlers = this.handlers[s];
         if(handlers) {
             handlers.forEach((handler) => {
-                handler(payload);
+                setTimeout(() => handler(payload));
             })
+        } else {
+
         }
     }
 }
@@ -59,9 +62,7 @@ export function fromEvent(dispatcher: IEventDispatcher, event: string): Observab
 
     return new Observable<any>((subscriber) => {
         dispatcher.addEventListener(event, (payload) => {
-            setTimeout(() => {
-                subscriber.next(payload);
-            })
+            subscriber.next(payload);
         })
     })
 }

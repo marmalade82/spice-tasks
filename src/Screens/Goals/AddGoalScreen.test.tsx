@@ -4,11 +4,13 @@ import DB from "src/Models/Database";
 import React from "react";
 import { fireEvent, render, wait, waitForElement } from '@testing-library/react-native';
 import AddGoalScreen from "src/Screens/Goals/AddGoalScreen";
-import { makeNavigation, destroyAllIn, createGoals } from "src/common/test-utils";
+import { makeNavigation, destroyAllIn, createGoals, waitForAsyncLifecycleMethods } from "src/common/test-utils";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import MyDate from "src/common/Date";
 import { RewardTypes } from "src/Models/Reward/RewardLogic";
 import { PenaltyTypes } from "src/Models/Penalty/PenaltyLogic";
+import { renderWithNavigation } from "src/common/FakeTestFile.test";
+import { View } from "react-native";
 
 
 test('User view all desired initial fields for a normal goal', async () => {
@@ -42,7 +44,8 @@ test('User can set type of goal to streak if desired', async () => {
 
 test("User can fill out all fields of a normal goal and have them saved to database after 'Complete'" +
                     "is clicked", async () => {
-    const { getByLabelText, queryByLabelText, getByText, queryByText } = render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
+    const navigation = makeNavigation({}, "a")
+    const { getByLabelText, queryByLabelText, getByText, queryByText } = render(<AddGoalScreen navigation={navigation}></AddGoalScreen>)
 
     const expected = {
         summary: "test summary",
@@ -73,9 +76,13 @@ test("User can fill out all fields of a normal goal and have them saved to datab
 
     const penaltyInput = getByLabelText("input-goal-penalty");
 
-
-    const saveButton = getByLabelText("input-save-button");
-    fireEvent.press(saveButton);
+        {
+            // render the save button, which shares an event dispatcher with the goal screen.
+            const { getByLabelText } = render(AddGoalScreen.navigationOptions({ navigation: navigation}).right[0]())
+            await waitForAsyncLifecycleMethods();
+            const saveButton = getByLabelText("input-save-button");
+            fireEvent.press(saveButton);
+        }
 
     await wait(async () => {
         const createdGoals = (await new GoalQuery().all())
@@ -92,7 +99,8 @@ test("User can fill out all fields of a normal goal and have them saved to datab
 
 test("User can fill out all fields of a streak goal and have them saved to database after 'Complete'" +
                     "is clicked", async () => {
-    const { getByLabelText, queryByLabelText, getByText, queryByText } = render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
+    const navigation = makeNavigation({}, "b")
+    const { getByLabelText, queryByLabelText, getByText, queryByText } = render(<AddGoalScreen navigation={navigation}></AddGoalScreen>)
 
     const expected = {
         summary: "test summary",
@@ -121,8 +129,13 @@ test("User can fill out all fields of a streak goal and have them saved to datab
     const streakMinimumInput = getByLabelText("input-streak-minimum");
     fireEvent.changeText(streakMinimumInput, expected.streakMinimum);
 
-    const saveButton = getByLabelText("input-save-button");
-    fireEvent.press(saveButton);
+        {
+            // render the save button, which shares an event dispatcher with the goal screen.
+            const { getByLabelText } = render(AddGoalScreen.navigationOptions({ navigation: navigation}).right[0]())
+            await waitForAsyncLifecycleMethods();
+            const saveButton = getByLabelText("input-save-button");
+            fireEvent.press(saveButton);
+        }
 
     await wait(async () => {
         const createdGoals = (await new GoalQuery().all())
@@ -140,24 +153,31 @@ test("User can fill out all fields of a streak goal and have them saved to datab
 
 describe("Validation", () => {
     test("No summary is provided", async () => {
+        const navigation = makeNavigation({}, "c")
         const { getByLabelText, queryByLabelText, getByText, queryByText } = 
-                    render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
+                    render(<AddGoalScreen navigation={navigation}></AddGoalScreen>)
         const toast = queryByLabelText('toast');
         expect(toast).toEqual(null);
 
-        const saveButton = getByLabelText("input-save-button");
-        fireEvent.press(saveButton);
+        {
+            // render the save button, which shares an event dispatcher with the goal screen.
+            const { getByLabelText } = render(AddGoalScreen.navigationOptions({ navigation: navigation}).right[0]())
+            await waitForAsyncLifecycleMethods();
+            const saveButton = getByLabelText("input-save-button");
+            fireEvent.press(saveButton);
+        }
 
         await wait(async () => {
             const toast = getByLabelText("toast");
             const createdGoals = (await new GoalQuery().all())
             expect(createdGoals.length).toEqual(0);
         })
-    })
+    }, 10000)
 
     test("Start date is after due date", async () => {
+        const navigation = makeNavigation({}, "d")
         const { getByLabelText, queryByLabelText, getByText, queryByText } = 
-                    render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
+                    render(<AddGoalScreen navigation={navigation}></AddGoalScreen>)
         const toast = queryByLabelText('toast');
         expect(toast).toEqual(null);
 
@@ -170,8 +190,13 @@ describe("Validation", () => {
         const startInput = getByLabelText("value-input-goal-start-date");
         fireEvent.changeText(startInput, new MyDate().add(1, "days").toDate().toString());
 
-        const saveButton = getByLabelText("input-save-button");
-        fireEvent.press(saveButton);
+        {
+            // render the save button, which shares an event dispatcher with the goal screen.
+            const { getByLabelText } = render(AddGoalScreen.navigationOptions({ navigation: navigation}).right[0]())
+            await waitForAsyncLifecycleMethods();
+            const saveButton = getByLabelText("input-save-button");
+            fireEvent.press(saveButton);
+        }
 
         await wait(async () => {
             const toast = getByLabelText("toast");
@@ -181,8 +206,9 @@ describe("Validation", () => {
     }, 20000)
 
     test("User must choose a specific reward", async () => {
+        const navigation = makeNavigation({}, "e")
         const { getByLabelText, queryByLabelText, getByText, queryByText } = 
-                    render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
+                    render(<AddGoalScreen navigation={navigation}></AddGoalScreen>)
         const toast = queryByLabelText('toast');
         expect(toast).toEqual(null);
 
@@ -192,8 +218,13 @@ describe("Validation", () => {
         const rewardChoice = getByLabelText("input-" + RewardTypes.SPECIFIC + "-goal-reward");
         fireEvent.press(rewardChoice);
 
-        const saveButton = getByLabelText("input-save-button");
-        fireEvent.press(saveButton);
+        {
+            // render the save button, which shares an event dispatcher with the goal screen.
+            const { getByLabelText } = render(AddGoalScreen.navigationOptions({ navigation: navigation}).right[0]())
+            await waitForAsyncLifecycleMethods();
+            const saveButton = getByLabelText("input-save-button");
+            fireEvent.press(saveButton);
+        }
 
         await wait(async () => {
             const toast = getByLabelText("toast");
@@ -201,19 +232,32 @@ describe("Validation", () => {
     }, 20000)
 
     test("User must choose a specific penalty", async () => {
+        const navigation = makeNavigation({}, "f")
         const { getByLabelText, queryByLabelText, getByText, queryByText } = 
-                    render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
+                    render(
+                            <AddGoalScreen navigation={navigation}></AddGoalScreen>
+                    );
+                    
         const toast = queryByLabelText('toast');
         expect(toast).toEqual(null);
 
         const summaryInput = getByLabelText("input-goal-summary");
         fireEvent.changeText(summaryInput, "Dummy value");
 
-        const rewardChoice = getByLabelText("input-" + PenaltyTypes.SPECIFIC + "-goal-penalty");
+        const rewardChoice = getByLabelText("input-" + RewardTypes.NONE + "-goal-reward");
         fireEvent.press(rewardChoice);
 
-        const saveButton = getByLabelText("input-save-button");
-        fireEvent.press(saveButton);
+        const penaltyChoice = getByLabelText("input-" + PenaltyTypes.SPECIFIC + "-goal-penalty");
+        fireEvent.press(penaltyChoice);
+
+        {
+            // render the save button, which shares an event dispatcher with the goal screen.
+            const { getByLabelText } = render(AddGoalScreen.navigationOptions({ navigation: navigation}).right[0]())
+            await waitForAsyncLifecycleMethods();
+            const saveButton = getByLabelText("input-save-button");
+            fireEvent.press(saveButton);
+        }
+
 
         await wait(async () => {
             const toast = getByLabelText("toast");

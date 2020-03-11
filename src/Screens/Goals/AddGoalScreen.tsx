@@ -4,8 +4,8 @@ import { AddGoalForm, AddGoalData, AddGoalDefault, ValidateGoalForm } from "src/
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { GoalQuery, Goal, IGoal } from "src/Models/Goal/GoalQuery";
-import { ColumnView } from "src/Components/Basic/Basic";
-import { DocumentView, ScreenHeader, Toast, IconButton } from "src/Components/Styled/Styled";
+import { ColumnView, TouchableView } from "src/Components/Basic/Basic";
+import { DocumentView, ScreenHeader, Toast, IconButton, Icon } from "src/Components/Styled/Styled";
 import { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 import Recur from "src/Models/Recurrence/Recur";
 import MyDate from "src/common/Date";
@@ -18,6 +18,7 @@ import SaveButton from "src/Components/Basic/SaveButton";
 
 import { NavigationStackProp} from "react-navigation-stack";
 import { Single, Child, None } from "App";
+import { EventDispatcher } from "src/common/EventDispatcher";
 
 
 interface Props {
@@ -34,6 +35,9 @@ interface State {
 type OmitFromGoal = "parentId" | "state" | "active" | "lastRefreshed" | 
                      "streakDailyStart" | 
                     "streakWeeklyStart" | "streakMonthlyStart"
+var d = 0;
+
+var dispatcher = new EventDispatcher();
 
 export default class AddGoalScreen extends React.Component<Props, State> {
     goalFormRef: React.RefObject<AddGoalForm>;
@@ -49,6 +53,23 @@ export default class AddGoalScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
             title: 'Goal',
+            right: [
+                () => {
+                    return (
+                        <TouchableView
+                            style={{}}
+                            onPress={() => {
+                                dispatcher.fireEvent(navigation.state.key)
+                            }}
+                            accessibilityLabel={"save-button"}
+                        >
+                            <Icon type={"save"} color="white" backgroundColor="transparent"
+                                size={23}
+                            ></Icon> 
+                        </TouchableView>
+                    )
+                }
+            ]
         }
     }
 
@@ -81,6 +102,11 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 goal: undefined
             })
         }
+        dispatcher.addEventListener(this.props.navigation.state["key"], this.onSave);
+    }
+
+    componentWillUnmount = () => {
+        dispatcher.removeEventListener(this.props.navigation.state["key"], this.onSave);
     }
 
 
@@ -143,9 +169,6 @@ export default class AddGoalScreen extends React.Component<Props, State> {
         return (
             <DocumentView>
                 { this.renderGoalForm() }
-                <SaveButton
-                    onSave={this.onSave}
-                ></SaveButton>
                 <Toast
                     visible={this.state.showToast}
                     message={this.state.toast}
