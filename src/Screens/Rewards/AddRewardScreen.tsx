@@ -6,7 +6,9 @@ import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { RewardQuery, Reward } from "src/Models/Reward/RewardQuery";
 import { DocumentView, ScreenHeader, Toast } from "src/Components/Styled/Styled";
-import SaveButton from "src/Components/Basic/SaveButton";
+import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
+import { EventDispatcher } from "src/common/EventDispatcher";
+import { getKey } from "../common/screenUtils";
 
 interface Props {
     navigation: any;
@@ -19,12 +21,26 @@ interface State {
     showToast: boolean;
 }
 
-const localStyle = StyleSheet.create({
-    container: {
-    }
-});
+
+const dispatcher = new EventDispatcher();
 
 export default class AddRewardScreen extends React.Component<Props, State> {
+    static navigationOptions = ({navigation}) => {
+        return {
+            title: 'Reward',
+            right: [
+                () => {
+                    return (
+                        <HeaderSaveButton
+                            dispatcher={dispatcher}
+                            eventName={getKey(navigation)}
+                        ></HeaderSaveButton>
+                    )
+                }
+            ]
+        }
+    }
+
     rewardFormRef: React.RefObject<AddRewardForm>
     constructor(props: Props) {
         super(props);
@@ -34,12 +50,6 @@ export default class AddRewardScreen extends React.Component<Props, State> {
             showToast: false,
         }
         this.rewardFormRef = React.createRef();
-    }
-
-    static navigationOptions = ({navigation}) => {
-        return {
-            title: 'Reward',
-        }
     }
 
     componentDidMount = async () => {
@@ -60,6 +70,11 @@ export default class AddRewardScreen extends React.Component<Props, State> {
                 reward: undefined
             })
         }
+        dispatcher.addEventListener(getKey(this.props.navigation), this.onSave);
+    }
+
+    componentWillUnmount = () => {
+        dispatcher.removeEventListener(getKey(this.props.navigation), this.onSave);
     }
 
     onSave = () => {
@@ -100,9 +115,6 @@ export default class AddRewardScreen extends React.Component<Props, State> {
                 }}>
                     { this.renderRewardForm() }
                 </ScrollView>
-                <SaveButton
-                    onSave={this.onSave}
-                ></SaveButton>
                 <Toast
                     visible={this.state.showToast}
                     message={this.state.toast}

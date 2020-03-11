@@ -1,14 +1,9 @@
 import React from "react";
-import { TouchableOpacity } from "react-native";
-import { ColumnView, RowView, Image, HeaderText, BodyText, } from "src/Components/Basic/Basic";
-import Style from "src/Style/Style";
 import EarnedRewardQuery, { EarnedReward } from "src/Models/Reward/EarnedRewardQuery";
 import EarnedRewardLogic from "src/Models/Reward/EarnedRewardLogic";
-import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
 import { ConnectedEarnedRewardSummary } from "src/ConnectedComponents/Summaries/EarnedRewardSummary";
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery from "src/Models/Goal/GoalQuery";
-import EarnedRewardWizard from "src/Screens/Rewards/EarnedRewardScreen/EarnedRewardWizard";
 import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
 
 
@@ -83,15 +78,6 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
             </DocumentView>
 
         );
-        return (
-            <ColumnView style={{
-                justifyContent: "flex-start"
-            }}>
-                {this.renderSummary()}
-                {this.renderWizard()}
-            </ColumnView>
-
-        );
     }
 
     onChoice = (choice: "use") => {
@@ -120,46 +106,5 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
                 </ConnectedEarnedRewardSummary>
             );
         }
-    }
-
-    renderWizard = () => {
-        if(this.state.earnedReward) {
-            return (
-                <EarnedRewardWizard
-                    earnedRewardType={this.state.earnedReward.type}
-                    onComplete={this.onCompleteWizard}
-                    style={{ flex: 16}}
-                ></EarnedRewardWizard>
-            );
-        }         
-        return (
-            <RowView style={{
-                flex: 10
-            }}>
-                <ColumnView style={{
-                    justifyContent: "flex-start",
-                    alignItems: "center"
-                }}>
-                    <TouchableOpacity style={{
-                        flex:0,
-                        height: 150,
-                        width: 150,
-                        margin: 0,
-                        padding: 10,
-                    }}>
-                        <ColumnView style={{
-                            borderRadius: 65,
-                            height: 130,
-                            width: 130,
-                            alignItems: "center",
-                            backgroundColor: "pink",
-                            elevation: 4,
-                        }}>
-                                <BodyText style={{}}>CLAIM</BodyText>
-                        </ColumnView>
-                    </TouchableOpacity>
-                </ColumnView>
-            </RowView>
-        );
     }
 }

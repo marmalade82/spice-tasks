@@ -3,10 +3,6 @@ import { ColumnView, ViewPicker } from "src/Components/Basic/Basic";
 import { ConnectedGoalTaskList } from "src/ConnectedComponents/Lists/Composite/GoalTaskList";
 import NavigationButton from "src/Components/Navigation/NavigationButton";
 
-
-
-
-
 interface Props {
     navigation: any;
 }

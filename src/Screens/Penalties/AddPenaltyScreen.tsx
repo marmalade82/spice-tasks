@@ -6,6 +6,9 @@ import { PenaltyQuery, Penalty } from "src/Models/Penalty/PenaltyQuery";
 import { DocumentView, Toast } from "src/Components/Styled/Styled";
 import { ScrollView } from "react-native";
 import SaveButton from "src/Components/Basic/SaveButton";
+import { EventDispatcher } from "src/common/EventDispatcher";
+import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
+import { getKey } from "../common/screenUtils";
 
 
 
@@ -20,11 +23,22 @@ interface State {
     showToast: boolean;
 }
 
+const dispatcher = new EventDispatcher();
 
 export default class AddPenaltyScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
             title: 'Add Penalty',
+            right: [
+                () => {
+                    return (
+                        <HeaderSaveButton
+                            dispatcher={dispatcher}
+                            eventName={getKey(navigation)}
+                        ></HeaderSaveButton>
+                    )
+                }
+            ]
         }
     }
 
@@ -58,6 +72,11 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
                 penalty: undefined
             })
         }
+        dispatcher.addEventListener(getKey(this.props.navigation), this.onSave)
+    }
+
+    componentWillUnmount = () => {
+        dispatcher.removeEventListener(getKey(this.props.navigation), this.onSave)
     }
 
     onSave = () => {
@@ -95,9 +114,6 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
                 <ScrollView>
                     { this.renderPenaltyForm() }
                 </ScrollView>
-                <SaveButton
-                    onSave={this.onSave}
-                ></SaveButton>
                 <Toast
                     visible={this.state.showToast}
                     message={this.state.toast}

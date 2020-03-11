@@ -10,7 +10,7 @@ import {
 
 import MyDate from "src/common/Date";
 
-import DashboardScreen from "src/Screens/Dashboard/DashboardScreen";
+import DashboardScreen from "src/Screens/Prototypes/Dashboard/DashboardScreen";
 import TaskQuery from "src/Models/Task/TaskQuery";
 
 describe("First view: Due", () => {

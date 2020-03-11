@@ -11,7 +11,7 @@ import {
 import MyDate from "src/common/Date";
 import ClaimedRewardSchema from "src/Models/Reward/ClaimedRewardSchema";
 
-import ClaimedRewardListScreen from "src/Screens/Rewards/ClaimedRewardListScreen";
+import ClaimedRewardListScreen from "src/Screens/Prototypes/ClaimedRewardListScreen";
 import { RewardTypes } from "src/Models/Reward/RewardLogic";
 
 

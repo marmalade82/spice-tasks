@@ -7,6 +7,7 @@ import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cle
 import { 
     makeNavigation, destroyAll,
     createPenalties,
+    waitForAsyncLifecycleMethods,
 } from "src/common/test-utils";
 import MyDate from "src/common/Date";
 import PenaltyQuery from "src/Models/Penalty/PenaltyQuery";
@@ -44,18 +45,22 @@ test("User has access to fields for entering/editing data on the penalty", async
 }, 20000)
 
 test("Using the save button when the screen has no id will create a new penalty", async () => {
-
+    const navigation = makeNavigation({})
     const { getByLabelText } = render(
         <AddPenaltyScreen
-            navigation={makeNavigation({})}
+            navigation={navigation}
         ></AddPenaltyScreen>
     );
 
     const inputName = getByLabelText("input-penalty-name");
     fireEvent.changeText(inputName, "Hello!");
 
-    const save = getByLabelText("input-save-button")
-    fireEvent.press(save)
+    {
+        const { getByLabelText } = render(AddPenaltyScreen.navigationOptions({navigation}).right[0]());
+        await waitForAsyncLifecycleMethods();
+        const save = getByLabelText("input-save-button")
+        fireEvent.press(save)
+    }
 
     await wait(async () => {
         const penalties = await new PenaltyQuery().all();
@@ -71,15 +76,16 @@ test("Using the save button when the screen has no id will create a new penalty"
 
 test("Using the save button when the screen has an id will edit the existing penalty", async () => {
     const { id } = await setup();
-    console.log("ID WAS " + id);
 
     await wait(async () => {
         const penalties = await new PenaltyQuery().all();
         expect(penalties.length).toEqual(1);
     })
+
+    const navigation = makeNavigation({ id: id });
     const { getByText, getByDisplayValue, getByLabelText } = render(
         <AddPenaltyScreen
-            navigation={makeNavigation({ id: id })}
+            navigation={navigation}
         ></AddPenaltyScreen>
     );
 
@@ -90,8 +96,12 @@ test("Using the save button when the screen has an id will edit the existing pen
     const inputName = getByLabelText("input-penalty-name");
     fireEvent.changeText(inputName, "Hello!");
 
-    const save = getByLabelText("input-save-button")
-    fireEvent.press(save)
+    {
+        const { getByLabelText } = render(AddPenaltyScreen.navigationOptions({navigation}).right[0]());
+        await waitForAsyncLifecycleMethods();
+        const save = getByLabelText("input-save-button")
+        fireEvent.press(save)
+    }
 
     await wait(async () => {
         const penalties = await new PenaltyQuery().all();

@@ -1,8 +1,8 @@
 
 
-import HomeScreen from "src/Screens/HomeScreen";
+import HomeScreen from "src/Screens/Prototypes/HomeScreen";
 import GoalScreen from "src/Screens/Goals/GoalScreen";
-import MenuScreen from 'src/Screens/MenuScreen';
+import MenuScreen from 'src/Screens/Prototypes/MenuScreen';
 import GoalListScreen from "src/Screens/Goals/GoalListScreen";
 import AddGoalScreen from "src/Screens/Goals/AddGoalScreen";
 import StreakGoalScreen from "src/Screens/Prototypes/StreakGoalScreen";
@@ -11,13 +11,13 @@ import TaskListScreen from "src/Screens/Tasks/TaskListScreen";
 import RewardListScreen from "src/Screens/Rewards/RewardListScreen";
 import AddRewardScreen from "src/Screens/Rewards/AddRewardScreen";
 import TaskScreen from "src/Screens/Tasks/TaskScreen";
-import DashboardScreen from "src/Screens/Dashboard/DashboardScreen";
-import RewardOptionsScreen from "src/Screens/Rewards/RewardOptionsScreen";
+import DashboardScreen from "src/Screens/Prototypes/Dashboard/DashboardScreen";
+import RewardOptionsScreen from "src/Screens/Prototypes/RewardOptionsScreen";
 import EarnedRewardScreen from "src/Screens/Rewards/EarnedRewardScreen";
 import EarnedRewardListScreen from "src/Screens/Rewards/EarnedRewardListScreen";
 import PenaltyListScreen from "src/Screens/Penalties/PenaltyListScreen";
 import AddPenaltyScreen from "src/Screens/Penalties/AddPenaltyScreen";
-import ClaimedRewardListScreen from "src/Screens/Rewards/ClaimedRewardListScreen";
+import ClaimedRewardListScreen from "src/Screens/Prototypes/ClaimedRewardListScreen";
 import HomePageScreen from "src/Screens/Prototypes/HomePageScreen";
 import RemainingTaskScreen from "src/Screens/Tasks/RemainingTaskScreen";
 import SpecificTaskScreen from "src/Screens/Prototypes/SpecificTaskScreen";
@@ -28,7 +28,7 @@ import InProgressGoalListScreen from "src/Screens/Goals/InProgressGoalListScreen
 import RecurringListScreen from "src/Screens/Recurring/RecurringListScreen";
 import RecurScreen from "src/Screens/Recurring/RecurScreen";
 import AddRecurScreen from "src/Screens/Recurring/AddRecurScreen";
-import TestScreen from "src/Screens/TestScreen";
+import TestScreen from "src/Screens/Prototypes/TestScreen";
 import EarnedPenaltyListScreen from "src/Screens/Penalties/EarnedPenaltyListScreen";
 import EarnedPenaltyScreen from "src/Screens/Penalties/EarnedPenaltyScreen";
 import UnusedEarnedRewardsScreen from "src/Screens/Rewards/UnusedEarnedRewardsScreen";
