@@ -9,13 +9,17 @@ import {
     ColumnView, RowView, Button as MyButton, ViewPicker,
 } from "src/Components/Basic/Basic";
 import NavigationButton from "src/Components/Navigation/NavigationButton";
-import { DocumentView, ScreenHeader, ListPicker, Toast, BackgroundTitle, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
+import { DocumentView, ScreenHeader, ListPicker, Toast, BackgroundTitle, ModalIconButton, ModalRow, Modal } from "src/Components/Styled/Styled";
 import { ScrollView } from "react-native";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import FootSpacer from "src/Components/Basic/FootSpacer";
 import { TaskParentTypes } from "src/Models/Task/Task";
 import {  NavigationStackProp } from "react-navigation-stack";
 import { Single, Child, None } from "App";
+import { EventDispatcher } from "src/common/EventDispatcher";
+import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
+import { getEventHandlerName } from "@testing-library/react-native";
+import { getKey } from "../common/screenUtils";
 
 
 
@@ -33,11 +37,23 @@ interface State {
     showAdd: boolean;
 }
 
+const dispatcher = new EventDispatcher();
+
 export default class GoalScreen extends React.Component<Props, State> {
 
     static navigationOptions = ({navigation}) => {
         return {
             title: 'Goal',
+            right: [
+                () => {
+                    return (
+                        <HeaderAddButton
+                            dispatcher={dispatcher}
+                            eventName={getKey(navigation)}
+                        ></HeaderAddButton>
+                    )
+                }
+            ]
         }
     }
 
@@ -86,10 +102,18 @@ export default class GoalScreen extends React.Component<Props, State> {
             });
         }
 
+        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd)
     }
 
     componentWillUnmount = () => {
+        dispatcher.removeEventListener(getKey(this.props.navigation), this.onClickAdd)
         this.unsubscribe()
+    }
+
+    onClickAdd = () => {
+        this.setState({
+            showAdd: true,
+        })
     }
 
     onEditGoal = () => {
@@ -176,26 +200,14 @@ export default class GoalScreen extends React.Component<Props, State> {
                         })
                     }}
                 ></Toast>
-                <View
-                    style={{
-                        flex: 0,
-                        position: "absolute",
-                        right: 50,
-                        bottom: 20,
+                <Modal
+                    visible={this.state.showAdd}
+                    onRequestClose={() => {
+                        this.setState({
+                            showAdd: false,
+                        })
                     }}
                 >
-                    <ModalIconButton type={"add"}
-                        data={{
-                            showModal: this.state.showAdd
-                        }}
-                        onDataChange={({ showModal }) => {
-                            this.setState({
-                                showAdd: showModal
-                            })
-                        }}
-                        size={30}
-                        overlaySize={50}
-                    >
                         <ModalRow
                             text={"Task"}
                             iconType={"task"}
@@ -212,8 +224,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                             accessibilityLabel={"add-goal-button"}
                             key={"add"}
                         ></ModalRow>
-                    </ModalIconButton>
-                </View>
+                </Modal>
             </DocumentView>
         );
     }

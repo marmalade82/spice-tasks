@@ -19,6 +19,8 @@ import SaveButton from "src/Components/Basic/SaveButton";
 import { NavigationStackProp} from "react-navigation-stack";
 import { Single, Child, None } from "App";
 import { EventDispatcher } from "src/common/EventDispatcher";
+import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
+import { getKey } from "src/Screens/common/screenUtils";
 
 
 interface Props {
@@ -35,7 +37,6 @@ interface State {
 type OmitFromGoal = "parentId" | "state" | "active" | "lastRefreshed" | 
                      "streakDailyStart" | 
                     "streakWeeklyStart" | "streakMonthlyStart"
-var d = 0;
 
 var dispatcher = new EventDispatcher();
 
@@ -56,17 +57,10 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             right: [
                 () => {
                     return (
-                        <TouchableView
-                            style={{}}
-                            onPress={() => {
-                                dispatcher.fireEvent(navigation.state.key)
-                            }}
-                            accessibilityLabel={"save-button"}
-                        >
-                            <Icon type={"save"} color="white" backgroundColor="transparent"
-                                size={23}
-                            ></Icon> 
-                        </TouchableView>
+                        <HeaderSaveButton
+                            eventName={getKey(navigation)}
+                            dispatcher={dispatcher}
+                        ></HeaderSaveButton>
                     )
                 }
             ]
@@ -102,11 +96,11 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 goal: undefined
             })
         }
-        dispatcher.addEventListener(this.props.navigation.state["key"], this.onSave);
+        dispatcher.addEventListener(getKey(this.props.navigation), this.onSave);
     }
 
     componentWillUnmount = () => {
-        dispatcher.removeEventListener(this.props.navigation.state["key"], this.onSave);
+        dispatcher.removeEventListener(getKey(this.props.navigation), this.onSave);
     }
 
 

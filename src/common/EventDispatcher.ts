@@ -28,7 +28,6 @@ export class EventDispatcher implements IEventDispatcher {
             this.handlers[s] = handlers;
         } else {
             this.handlers[s] = [handler]
-            //throw new Error(JSON.stringify(this.handlers));
         }
     }
 

@@ -25,6 +25,8 @@ import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import FootSpacer from "src/Components/Basic/FootSpacer";
 import { EventDispatcher } from "src/common/EventDispatcher";
+import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
+import { getKey } from "../common/screenUtils";
 
 interface Props {
     navigation: any;
@@ -49,18 +51,10 @@ export default class AppStartScreen extends React.Component<Props, State> {
             title: 'App Start!',
             right: [
                 () => { return (
-                    <TouchableView
-                        style={{}}
-                        onPress={() => {
-                            console.log(navigation);
-                            dispatcher.fireEvent(navigation.state.key)
-                        }}
-                        accessibilityLabel={"add-button"}
-                    >
-                        <Icon type={"add"} color="white" backgroundColor="transparent"
-                            size={23}
-                        ></Icon> 
-                    </TouchableView>
+                    <HeaderAddButton
+                        dispatcher={dispatcher}
+                        eventName={getKey(navigation)}
+                    ></HeaderAddButton>
                 )}
             ],
         }
@@ -115,9 +109,9 @@ export default class AppStartScreen extends React.Component<Props, State> {
                     ongoingGoalsCount: count
                 })
             }) ;
-        dispatcher.addEventListener(this.props.navigation.state.key, this.onClickAdd)
+        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd)
         this.unsub = () => {
-            dispatcher.removeEventListener(this.props.navigation.state.key, this.onClickAdd)
+            dispatcher.removeEventListener(getKey(this.props.navigation), this.onClickAdd)
             timeSub.unsubscribe();
             dueTodaySub.unsubscribe();
             inProgressSub.unsubscribe();

@@ -4,7 +4,7 @@ import DB from "src/Models/Database";
 import React from "react";
 import { fireEvent, render, wait, waitForElement } from '@testing-library/react-native';
 import AddTaskScreen from "src/Screens/Tasks/AddTaskScreen";
-import { makeNavigation, destroyAllIn, createTasks, destroyAll, createGoals } from "src/common/test-utils";
+import { makeNavigation, destroyAllIn, createTasks, destroyAll, createGoals, waitForAsyncLifecycleMethods } from "src/common/test-utils";
 import TaskQuery from "src/Models/Task/TaskQuery";
 import MyDate from "src/common/Date";
 
@@ -14,13 +14,18 @@ describe("Validation", () => {
     })
 
     test("Summary is required", async () => {
+        const navigation = makeNavigation({});
         const { getByLabelText, queryByLabelText, getByText, queryByText } = 
-                    render(<AddTaskScreen navigation={makeNavigation({})}></AddTaskScreen>)
+                    render(<AddTaskScreen navigation={navigation}></AddTaskScreen>)
         const toast = queryByLabelText('toast');
         expect(toast).toEqual(null);
 
-        const saveButton = getByLabelText("input-save-button");
-        fireEvent.press(saveButton);
+        {
+            const { getByLabelText } = render(AddTaskScreen.navigationOptions({ navigation }).right[0]())
+            await waitForAsyncLifecycleMethods();
+            const saveButton = getByLabelText("input-save-button");
+            fireEvent.press(saveButton);
+        }
 
         await wait(async () => {
             const toast = getByLabelText("toast");
@@ -28,8 +33,9 @@ describe("Validation", () => {
     })
 
     test("Start date is after due date", async () => {
+        const navigation = makeNavigation({});
         const { getByLabelText, queryByLabelText, getByText, queryByText } = 
-                    render(<AddTaskScreen navigation={makeNavigation({})}></AddTaskScreen>)
+                    render(<AddTaskScreen navigation={navigation}></AddTaskScreen>)
         const toast = queryByLabelText('toast');
         expect(toast).toEqual(null);
 
@@ -42,8 +48,12 @@ describe("Validation", () => {
         const dueInput = getByLabelText("value-input-task-due-date");
         fireEvent.changeText(dueInput, new MyDate().toDate().toString());
 
-        const saveButton = getByLabelText("input-save-button");
-        fireEvent.press(saveButton);
+        {
+            const { getByLabelText } = render(AddTaskScreen.navigationOptions({ navigation }).right[0]())
+            await waitForAsyncLifecycleMethods();
+            const saveButton = getByLabelText("input-save-button");
+            fireEvent.press(saveButton);
+        }
 
         await wait(async () => {
             const toast = getByLabelText("toast");

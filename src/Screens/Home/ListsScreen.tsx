@@ -7,7 +7,7 @@ import { ScrollView } from "react-native";
 import { 
     NavigationRow, ScreenHeader, DocumentView, 
     NavigationGroup, BackgroundTitle, Summary ,
-    IconButton, ModalRow, ModalIconButton,
+    IconButton, ModalRow, ModalIconButton, Icon, Modal,
 } from "src/Components/Styled/Styled";
 
 import { 
@@ -22,6 +22,9 @@ import { ConnectedEarnedPenaltyList } from "src/ConnectedComponents/Lists/Penalt
 import EarnedRewardLogic from "src/Models/Reward/EarnedRewardLogic";
 import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
 import FootSpacer from "src/Components/Basic/FootSpacer";
+import { EventDispatcher } from "src/common/EventDispatcher";
+import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
+import { getKey } from "../common/screenUtils";
 
 interface Props {
     navigation: any;
@@ -33,11 +36,20 @@ interface State {
     earnedPenaltiesCount: number;
 }
 
+const dispatcher = new EventDispatcher();
 
 export default class ListsScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
             title: 'Lists',
+            right: [
+                () => { return (
+                    <HeaderAddButton
+                        dispatcher={dispatcher}
+                        eventName={getKey(navigation)}
+                    ></HeaderAddButton>
+                )}
+            ],
         }
     }
     
@@ -67,7 +79,10 @@ export default class ListsScreen extends React.Component<Props, State> {
             })
         })
 
+        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd);
+
         this.unsub = () => {
+            dispatcher.removeEventListener(getKey(this.props.navigation), this.onClickAdd);
             earnedRewardSub.unsubscribe();
             earnedPenaltiesSub.unsubscribe();
         }
@@ -91,6 +106,12 @@ export default class ListsScreen extends React.Component<Props, State> {
                 void new EarnedPenaltyLogic(id).use();
             } break;
         }
+    }
+
+    onClickAdd = () => {
+        this.setState({
+            showAdd: true
+        })
     }
 
     render = () => {
@@ -137,26 +158,14 @@ export default class ListsScreen extends React.Component<Props, State> {
                     ></NavigationList>
                     <FootSpacer></FootSpacer>
                 </ScrollView>
-                <View
-                    style={{
-                        flex: 0,
-                        position: "absolute",
-                        right: 50,
-                        bottom: 20,
+                <Modal
+                    visible={this.state.showAdd}
+                    onRequestClose={() => {
+                        this.setState({
+                            showAdd: false,
+                        })
                     }}
                 >
-                    <ModalIconButton type={"add"}
-                        data={{
-                            showModal: this.state.showAdd
-                        }}
-                        onDataChange={({ showModal }) => {
-                            this.setState({
-                                showAdd: showModal
-                            })
-                        }}
-                        size={30}
-                        overlaySize={50}
-                    >
                         <ModalRow
                             text={"Goal"}
                             iconType={"goal"}
@@ -201,8 +210,7 @@ export default class ListsScreen extends React.Component<Props, State> {
                                 })
                             }}
                         ></ModalRow>
-                    </ModalIconButton>
-                </View>
+                </Modal>
             </DocumentView>
         )
     }

@@ -6,6 +6,9 @@ import { StyleSheet } from "react-native";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 import { DocumentView } from "src/Components/Styled/Styled";
 import { TaskLogic } from "src/Models/Task/TaskQuery";
+import { EventDispatcher } from "src/common/EventDispatcher";
+import { getKey } from "src/Screens/common/screenUtils";
+import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 
 interface Props {
     navigation: any;
@@ -28,6 +31,8 @@ const localStyle = StyleSheet.create({
     }
 });
 
+const dispatcher = new EventDispatcher();
+
 export default class TaskListScreen extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
@@ -38,7 +43,32 @@ export default class TaskListScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
             title: 'Task List',
+            right: [
+                () => {
+                    return (
+                        <HeaderAddButton
+                            dispatcher={dispatcher}
+                            eventName={getKey(navigation)}
+                        ></HeaderAddButton>
+                    )
+                }
+            ]
         }
+    }
+
+    componentDidMount = () => {
+        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd)
+    }
+
+    componentWillUnmount = () => {
+        dispatcher.removeEventListener(getKey(this.props.navigation), this.onClickAdd)
+    }
+
+    onClickAdd = () => {
+        const params = {
+            id: ""
+        };
+        this.props.navigation.navigate('AddTask', params);
     }
 
     onTaskAction = (id: string, action: "complete" | "fail") => {
@@ -61,17 +91,6 @@ export default class TaskListScreen extends React.Component<Props, State> {
                     type={"all"}
                     onTaskAction={this.onTaskAction}
                 ></ConnectedTaskList>
-                <View style={[localStyle.button]}>
-                    <Button
-                        title={"add"}
-                        onPress={() => {
-                            const params = {
-                                id: ""
-                            };
-                            this.props.navigation.navigate('AddTask', params);
-                        }}
-                    />
-                </View>
             </DocumentView>
         );
     }

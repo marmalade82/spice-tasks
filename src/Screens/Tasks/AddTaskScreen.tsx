@@ -9,6 +9,9 @@ import { of } from "rxjs";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import { TaskParentTypes } from "src/Models/Task/Task";
 import SaveButton from "src/Components/Basic/SaveButton";
+import { EventDispatcher } from "src/common/EventDispatcher";
+import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
+import { getKey } from "../common/screenUtils";
 
 interface Props {
     navigation: any;
@@ -21,7 +24,25 @@ interface State {
     toast: string;
 }
 
+const dispatcher = new EventDispatcher();
+
 export default class AddTaskScreen extends React.Component<Props, State> {
+    static navigationOptions = ({navigation}) => {
+        return {
+            title: 'Task',
+            right: [
+                () => {
+                    return (
+                        <HeaderSaveButton
+                            dispatcher={dispatcher}
+                            eventName={getKey(navigation)}
+                        ></HeaderSaveButton>
+                    );
+                }
+            ]
+        }
+    }
+
     taskFormRef: React.RefObject<AddTaskForm>
     constructor(props: Props) {
         super(props);
@@ -31,12 +52,6 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             toast: "",
         }
         this.taskFormRef = React.createRef()
-    }
-
-    static navigationOptions = ({navigation}) => {
-        return {
-            title: 'Task',
-        }
     }
 
     componentDidMount = async () => {
@@ -66,6 +81,12 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                 task: undefined
             })
         }
+
+        dispatcher.addEventListener(getKey(this.props.navigation), this.onSave);
+    }
+
+    componentWillUnmount = () => {
+        dispatcher.removeEventListener(getKey(this.props.navigation), this.onSave);
     }
 
     onSave = () => {
@@ -101,9 +122,9 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             };
 
             if(this.state.task) {
-                (new TaskQuery().update(this.state.task, taskData)).catch();        
+                void (new TaskQuery().update(this.state.task, taskData)).catch();        
             } else {
-                new TaskQuery().create(taskData).catch();
+                void new TaskQuery().create(taskData).catch();
             }
 
             this.props.navigation.goBack();
@@ -119,7 +140,6 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                     { this.renderTaskForm() }
                 </ScrollView>
 
-                <SaveButton onSave={this.onSave}></SaveButton>
                 <Toast
                     visible={this.state.showToast}
                     message={this.state.toast}

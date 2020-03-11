@@ -7,9 +7,12 @@ import {
     ColumnView, RowView, Button as MyButton,
     ViewPicker,
 } from "src/Components/Basic/Basic";
-import { DocumentView, ScreenHeader, BackgroundTitle, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
+import { DocumentView, ScreenHeader, BackgroundTitle, Modal, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
 import { View, ScrollView } from "react-native";
 import ConnectedSingleList from "src/ConnectedComponents/Lists/SingleList";
+import { EventDispatcher } from "src/common/EventDispatcher";
+import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
+import { getKey } from "../common/screenUtils";
 
 
 interface Props {
@@ -23,12 +26,23 @@ interface State {
     showAdd: boolean;
 }
 
+const dispatcher = new EventDispatcher();
 
 export default class TaskScreen extends React.Component<Props, State> {
 
     static navigationOptions = ({navigation}) => {
         return {
             title: 'Task',
+            right: [
+                () => {
+                    return (
+                        <HeaderAddButton
+                            dispatcher={dispatcher}
+                            eventName={getKey(navigation)}
+                        ></HeaderAddButton>
+                    )
+                }
+            ]
         }
     }
 
@@ -72,10 +86,18 @@ export default class TaskScreen extends React.Component<Props, State> {
                 task: undefined
             });
         }
+        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd)
     }
 
     componentWillUnmount = () => {
+        dispatcher.removeEventListener(getKey(this.props.navigation), this.onClickAdd)
         this.unsubscribe();
+    }
+
+    onClickAdd = () => {
+        this.setState({
+            showAdd: true,
+        })
     }
 
     onCompleteTask = () => {
@@ -142,26 +164,14 @@ export default class TaskScreen extends React.Component<Props, State> {
                         emptyText={"No inactive subtasks"}
                     ></ConnectedTaskList>
                 </ScrollView>
-                <View
-                    style={{
-                        flex: 0,
-                        position: "absolute",
-                        right: 50,
-                        bottom: 20,
+                <Modal
+                    visible={this.state.showAdd}
+                    onRequestClose={() => {
+                        this.setState({
+                            showAdd: false,
+                        })
                     }}
                 >
-                    <ModalIconButton type={"add"}
-                        data={{
-                            showModal: this.state.showAdd
-                        }}
-                        onDataChange={({ showModal }) => {
-                            this.setState({
-                                showAdd: showModal
-                            })
-                        }}
-                        size={30}
-                        overlaySize={50}
-                    >
                         <ModalRow
                             text={"Task"}
                             iconType={"task"}
@@ -178,8 +188,7 @@ export default class TaskScreen extends React.Component<Props, State> {
                             accessibilityLabel={"add-task-button"}
                             key={"add"}
                         ></ModalRow>
-                    </ModalIconButton>
-                </View>
+                </Modal>
             </DocumentView>
         );
 
