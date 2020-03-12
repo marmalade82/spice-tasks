@@ -33,7 +33,7 @@ test("a notification is generated for overdue goals/tasks", async () => {
         const global = await new GlobalQuery().current();
         expect( new MyDate(global.lastNotifiedDate).isSomeTimeToday() ).toEqual(true);
 
-        expect(Notification.localNotification.mock.calls[1][0].toString().includes("4"))
+        expect(Notification.localNotification.mock.calls[0][0].toString().includes("3"))
     })
 
     async function setup() {
@@ -48,7 +48,7 @@ test("a notification is generated for overdue goals/tasks", async () => {
 
             await createTasks({
                 dueDate: new MyDate().subtract(3, "days").toDate()
-            }, 3)
+            }, 2)
 
         } )
     }

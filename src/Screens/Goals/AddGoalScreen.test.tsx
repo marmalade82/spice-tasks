@@ -49,7 +49,7 @@ test("User can fill out all fields of a normal goal and have them saved to datab
 
     const expected = {
         summary: "test summary",
-        rewardType: "two_dice",
+        rewardType: "none",
         type: "normal",
         details: "my-dets",
     }
@@ -104,7 +104,7 @@ test("User can fill out all fields of a streak goal and have them saved to datab
 
     const expected = {
         summary: "test summary",
-        rewardType: "two_dice",
+        rewardType: "none",
         type: "streak",
         details: "my-dets",
         streakType: "daily",
@@ -120,7 +120,7 @@ test("User can fill out all fields of a streak goal and have them saved to datab
     const typeChoice = getByLabelText("input-" + expected.type + "-goal-type");
     fireEvent.press(typeChoice);
 
-    const rewardChoice = getByLabelText("input-" + RewardTypes.NONE + "-goal-reward");
+    const rewardChoice = getByLabelText("input-" + expected.rewardType + "-goal-reward");
     fireEvent.press(rewardChoice);
 
     const streakTypeChoice = getByLabelText("input-" + expected.streakType + "-streak-type" )
