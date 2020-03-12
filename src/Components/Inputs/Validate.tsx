@@ -39,7 +39,7 @@ export function Validate<Data, T extends ComponentProps<Data>>(
         constructor(props: FullProps<T, Data>) {
             super(props);
             this.state = {
-                errorMessage: validateOnInput(this.props.data)
+                errorMessage: undefined
             };
             this.unsub = () => {};
         }
@@ -59,12 +59,17 @@ export function Validate<Data, T extends ComponentProps<Data>>(
                     sub.unsubscribe();
                 }
             }
+            
+            // This allows time for data from parent to load, before we decide whether the data is invalid or not.
+            setTimeout(() => {
+                this.onDataChange(this.props.data);
+            })
         }
 
         componentWillUnmount = () => {
             this.unsub();
         }
-       
+
         onDataChange = (d: Data) => {
             let message = validateOnInput(d);
             if(message !== undefined) {

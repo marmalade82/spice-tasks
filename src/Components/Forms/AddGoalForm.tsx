@@ -23,14 +23,12 @@ import { ColumnView } from "../Basic/Basic";
 import { RewardChoices, RewardType, RewardTypes } from "src/Models/Reward/RewardLogic";
 import { GoalChoices, GoalType } from "src/Models/Goal/GoalLogic";
 import { Validate } from "src/Components/Inputs/Validate";
-import { Observable } from "rxjs";
+import { Observable, merge } from "rxjs";
 import { mapTo } from "rxjs/operators";
 import { PenaltyTypes, PenaltyChoices } from "src/Models/Penalty/PenaltyLogic";
-import MyDate from "src/common/Date";
 import { EventDispatcher, IEventDispatcher, fromEvent } from "src/common/EventDispatcher";
-import { ROW_CONTAINER_HEIGHT } from "../Styled/Styles";
+import { ROW_CONTAINER_HEIGHT, CONTAINER_VERTICAL_MARGIN } from "../Styled/Styles";
 import FootSpacer from "../Basic/FootSpacer";
-import { ModalRow } from "../Styled/Styled";
 import { startDate, dueDate } from "./common/utils";
 
 interface Props {
@@ -76,7 +74,7 @@ function Default(): State {
         type: GoalType.NORMAL,
         start_date: startDate(new Date()),
         due_date: dueDate(new Date()),
-        reward: RewardTypes.SPECIFIC,
+        reward: RewardTypes.NONE,
         rewardId: "",
         penalty: PenaltyTypes.NONE,
         penaltyId: "",
@@ -114,6 +112,7 @@ export function ValidateGoalForm(form: AddGoalForm): string | undefined {
 
 const DUE_DATE_CHANGE = 'due_date_change';
 const START_DATE_CHANGE = 'start_date_change';
+const EXTERNAL_CHANGE = 'external_change';
 
 export default class AddGoalForm extends DataComponent<Props, State, State> {
     SummaryInput = Validate<string, SummaryProps>(
@@ -144,12 +143,17 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
         this.state = Default();
         this.dispatcher = new EventDispatcher();
-        this.startDateRefresh = fromEvent(this.dispatcher, DUE_DATE_CHANGE).pipe(mapTo(true));
+
+        const startDateChange: Observable<boolean> = fromEvent(this.dispatcher, DUE_DATE_CHANGE).pipe(mapTo(true));
+        this.startDateRefresh = startDateChange
     }
     
     /*******************************************
      * Validation functions
      */
+    refreshValidation = () => {
+        this.dispatcher.fireEvent(EXTERNAL_CHANGE);
+    }
 
     validateTitle = (title: string) => {
         return title.length > 0 ? undefined : "Please provide a summary";
@@ -258,15 +262,11 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                 backgroundColor: "transparent",
             }]}>
                 <ScrollView>
-                    <ChoiceInput
-                        title={"Type"}
-                        selectedValue={this.data().type}
-                        choices={GoalChoices}
-                        onValueChange={this.onChangeType}
-                        accessibilityLabel={"goal-type"}
-                    />
 
                     <this.SummaryInput
+                        style={{
+                            marginTop: CONTAINER_VERTICAL_MARGIN,
+                        }}
                         title={"Summary"}
                         data={this.data().title}
                         placeholder={"What do you want to achieve?"}
@@ -286,6 +286,13 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     />
 
 
+                    <ChoiceInput
+                        title={"Goal Type"}
+                        selectedValue={this.data().type}
+                        choices={GoalChoices}
+                        onValueChange={this.onChangeType}
+                        accessibilityLabel={"goal-type"}
+                    />
                     { this.renderStreakForm() }
 
                     <this.StartDateInput
@@ -305,6 +312,8 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         onDataChange={ this.onChangeDueDate }
                         accessibilityLabel = { "goal-due-date" }
                     ></DateTimeInput>
+
+                    { this.renderRepeats() }
 
                     <ChoiceInput
                         title={"Reward"}
@@ -330,7 +339,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     />
 
                     { this.renderByPenaltyType() }
-                    { this.renderRepeats() }
                     
                     <FootSpacer></FootSpacer>
                 </ScrollView>
@@ -395,7 +403,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         if(this.props.formType !== "update") {
             return (
                     <ChoiceInput
-                        title={"Repeats"}
+                        title={"Goal Will Repeat"}
                         selectedValue={this.data().repeats.toString()}
                         onValueChange={(itemValue, itemIndex) => {
                             this.setData({
