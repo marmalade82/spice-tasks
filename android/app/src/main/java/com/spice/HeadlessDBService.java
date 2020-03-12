@@ -17,8 +17,8 @@ public class HeadlessDBService extends HeadlessJsTaskService {
             return new HeadlessJsTaskConfig(
                     "MyTask",
                     Arguments.fromBundle(extras),
-                    5000,
-                    true
+                    7000,
+                    false
             );
         }
         return null;

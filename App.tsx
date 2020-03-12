@@ -233,31 +233,6 @@ const AppNavigator = createBottomTabNavigator(
   }
 );
 
-/*const AppNavigator = createDrawerNavigator(
-  { Main: ScreenNavigator,
-    AppStart: Screens.AppStart,
-    Tasks: Screens.TaskList,
-    Goals: Screens.GoalList,
-    Rewards: Screens.RewardList,
-    Penalties: Screens.PenaltyList,
-    EarnedRewards: Screens.EarnedRewardList,
-    EarnedPenalties: Screens.EarnedPenaltyList,
-  },
-  { drawerPosition: "left"
-
-  }
-);*/
-/*
-const AppNavigator = createStackNavigator(
-  { Main: ScreenNavigator,
-    Recurring: Screens.Recurring,
-  },
-  {
-    mode: "modal",
-    headerMode: "none",
-  }
-)*/
-
 const AppContainer = createAppContainer(AppNavigator);
 
 export default class App extends React.Component {

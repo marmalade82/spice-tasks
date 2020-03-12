@@ -22,10 +22,10 @@ type RewardChoice = {
 
 const RewardChoices: RewardChoice[] = [
     choice("None", RewardTypes.NONE, RewardTypes.NONE),
-    choice("Dice", RewardTypes.TWO_DICE, RewardTypes.TWO_DICE),
-    choice("Lootbox", RewardTypes.LOOTBOX),
-    choice("Coin flip", RewardTypes.COIN_FLIP),
-    choice("Spin the wheel", RewardTypes.WHEEL),
+    //choice("Dice", RewardTypes.TWO_DICE, RewardTypes.TWO_DICE),
+    //choice("Lootbox", RewardTypes.LOOTBOX),
+    //choice("Coin flip", RewardTypes.COIN_FLIP),
+    //choice("Spin the wheel", RewardTypes.WHEEL),
     choice("Choose my own", RewardTypes.SPECIFIC, RewardTypes.SPECIFIC)
 ]
 

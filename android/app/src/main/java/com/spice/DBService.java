@@ -34,9 +34,9 @@ public class DBService extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void startService() {
+        stopService(); // make sure to clear any existing running work requests before starting another one.
         PeriodicWorkRequest r = new PeriodicWorkRequest.Builder(DBWorker.class, 15, TimeUnit.MINUTES).addTag("DB").build();
 
-        // Queues the activity up. We would like this to start a headlessjs service however.
         WorkManager.getInstance(getCurrentActivity()).enqueue(r);
     }
 

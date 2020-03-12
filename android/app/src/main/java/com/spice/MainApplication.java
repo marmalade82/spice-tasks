@@ -53,7 +53,6 @@ public class MainApplication extends Application implements ReactApplication {
           new WatermelonDBPackage(),
               new DBServicePackage()
       );
-      //l.add(new DBServicePackage());
       return l;
     }
 

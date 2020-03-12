@@ -67,11 +67,7 @@ export class GlobalLogic {
             const countOverdueTasks = await new TaskQuery().queryActiveAndOverdue().fetchCount();
 
             Notification.localNotification({
-                message: "Due today: " + countDue.toString(),
-            })
-
-            Notification.localNotification({
-                message: "Overdue: " + (countOverdueGoals + countOverdueTasks).toString(),
+                message: `Due today:  ${countDue.toString()}\nOverdue: ${(countOverdueGoals + countOverdueTasks).toString()}`,
             })
 
             await this.refreshNotificationDates();

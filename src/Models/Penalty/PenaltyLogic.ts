@@ -14,7 +14,7 @@ type PenaltyChoice = {
 
 export const PenaltyChoices: PenaltyChoice[] = [
     choice("None", PenaltyTypes.NONE),
-    choice("Choose your own", PenaltyTypes.SPECIFIC),
+    choice("Choose my own", PenaltyTypes.SPECIFIC),
 ]
 
 export default class PenaltyLogic {

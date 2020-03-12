@@ -78,6 +78,14 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
         return await this.get(id)
     }
 
+    prepareCreate = (schema: Exact<Partial<IModel>>) => {
+        const Default = this.default();
+        return this.store().prepareCreate((m: Model) => {
+            Object.assign(m, Default);
+            Object.assign(m, schema)
+        })
+    }
+
     createMultiple = async (models: Exact<Partial<IModel>>[]) => {
         const Default = this.default();
         await DB.get().action(async () => {
@@ -98,6 +106,16 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
                 Object.assign(m, props);
             });
         });
+    }
+
+    prepareUpdate = (model: Model, schema: Exact<Partial<IModel>>) => {
+        return model.prepareUpdate((m: Model) => {
+            Object.assign(m, schema);
+        })
+    }
+
+    prepareDelete = (model: Model) => {
+        return model.prepareDestroyPermanently();
     }
 
     delete = async(id: string) => {
