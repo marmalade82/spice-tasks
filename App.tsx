@@ -9,7 +9,7 @@ import { Schedule } from "./Schedule";
 import SpiceDBService from 'src/Services/DBService';
 import { 
   PRIMARY_COLOR_LIGHT, PRIMARY_COLOR, LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN,
-  Styles, ROW_CONTAINER_HEIGHT,
+  Styles, ROW_CONTAINER_HEIGHT, TEXT_GREY, TAB_GREY,
 } from 'src/Components/Styled/Styles';
 import { IconButton, Icon, ScreenHeader } from 'src/Components/Styled/Styled';
 
@@ -176,6 +176,20 @@ const DashNavigator = createStackNavigator(
   }
 );
 
+DashNavigator.navigationOptions = {
+  title: "Home",
+  tabBarIcon: ( { focused, horizontal, tintColor }) => {
+    return (
+      <Icon
+        type={"home"}
+        color={tintColor}
+        backgroundColor={"transparent"}
+      ></Icon>
+    )
+  },
+  showLabel: false,
+}
+
 const ListNavigator = createStackNavigator(
   ScreenDirectory,
   { initialRouteName: 'Lists'
@@ -184,14 +198,38 @@ const ListNavigator = createStackNavigator(
         header: header,
       }
     }
-
   }
 )
+ListNavigator.navigationOptions = {
+  title: "Lists",
+  tabBarIcon: ( { focused, horizontal, tintColor }) => {
+    return (
+      <Icon
+        type={"list"}
+        color={tintColor}
+        backgroundColor={"transparent"}
+      > 
+      </Icon>
+    )
+  }
+}
+
+//const backgroundTabColor = "#444444";
+const backgroundTabColor = TAB_GREY;
 
 const AppNavigator = createBottomTabNavigator(
   {
     Dash: DashNavigator,
     Lists: ListNavigator
+  },
+  { tabBarOptions: {
+      activeBackgroundColor: backgroundTabColor,
+      inactiveBackgroundColor: backgroundTabColor,
+      activeTintColor: "white",
+      inactiveTintColor: "#848484",
+      showLabel: false,
+    }
+
   }
 );
 
