@@ -62,3 +62,18 @@ export interface ProcessedSchema {
     name: ProcessedName,
     type: ProcessedType,
 }
+
+interface DueName {
+    STARTS_ON: "starts_at"
+    DUE_ON: "due_at"
+}
+
+interface DueType {
+    STARTS_ON: "number",
+    DUE_ON: "number",
+}
+
+export interface DueSchema {
+    name: DueName,
+    type: DueType,
+}

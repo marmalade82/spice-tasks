@@ -16,15 +16,21 @@ export default class Transaction {
     batch: M[] = [];
 
     addCreate = <Model extends M & IModel, IModel>(q: ModelQuery<Model, IModel>, schema: Exact<Partial<IModel>>) => {
+        let added = q.prepareCreate(schema);
         this.batch.push(
-            q.prepareCreate(schema)
+            added
         );
+
+        return added as Model;
     }
 
     addUpdate = <Model extends M & IModel, IModel>(q: ModelQuery<Model, IModel>, model: Model, schema: Exact<Partial<IModel>>) => {
+        let updated = q.prepareUpdate(model, schema)
         this.batch.push(
-            q.prepareUpdate(model, schema)
+            updated
         );
+
+        return updated as Model;
     }
 
     addDelete = <Model extends M & IModel, IModel>(q: ModelQuery<Model, IModel>, model: Model) => {
@@ -42,7 +48,6 @@ export default class Transaction {
                 ...this.batch
             )
         })
-        this.batch = [];
     }
 
     commitAndReset = () => {

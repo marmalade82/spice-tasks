@@ -51,10 +51,10 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
         }
     }
 
-    query = (...conditions: Condition[]) => {
+    protected query = (...conditions: Condition[]) => {
         return this.store().query(
             ...[...this.queries(), ...conditions]
-        )
+        ) as Query<Model>
     }
 
     /**

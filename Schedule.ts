@@ -48,7 +48,6 @@ async function scheduleRecurringGoals(mins: number, cancel: () => boolean, timeU
  * @param timeUntilNext 
  */
 async function scheduleRefresh(mins: number, cancel: () => boolean, timeUntilNext?: number) {
-    const count = 0;
     const minutes = (1000 * 60) * mins;
     async function run() {
         if(!cancel()) {

@@ -13,7 +13,8 @@ import MyDate from "src/common/Date";
 import { Observable, interval, timer } from "rxjs";
 import Notification from "src/Notification";
 import TaskQuery from "../Task/TaskQuery";
-import GoalQuery from "../Goal/GoalQuery";
+import GoalQuery, { Goal, GoalLogic } from 'src/Models/Goal/GoalQuery';
+import RecurQuery, { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 
 const name = GlobalSchema.name
 
@@ -55,6 +56,19 @@ export class GlobalLogic {
 
     }
 
+    runRefresh = async () => {
+        await this.runDailyNotifications();
+        await this.runRecordRefresh();
+    }
+
+    runRecordRefresh = async () => {
+        const count = 5;
+        // process @count of the recurring goals for the day.
+        // Keep this logic short so it doesn't take up too much resources.
+        await RecurLogic.processSomeRecurrences(count);
+        await GoalLogic.processSomeStreaks(count);
+    }
+
     runDailyNotifications = async () => {
         let global = await new GlobalQuery().current();
 
@@ -72,7 +86,6 @@ export class GlobalLogic {
 
             await this.refreshNotificationDates();
         }
-
     }
 
     refreshNotificationDates = async () => {

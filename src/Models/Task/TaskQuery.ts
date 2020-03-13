@@ -7,6 +7,10 @@ import { Q, Database, Model } from "@nozbe/watermelondb";
 import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils"
 import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
+import StreakCycleQuery from "../Group/StreakCycleQuery";
+import Transaction from "../common/Transaction";
+import GoalQuery from "../Goal/GoalQuery";
+import StreakCycle from "../Group/StreakCycle";
 
 export default class TaskQuery extends ModelQuery<Task, ITask> {
     constructor() {
@@ -30,6 +34,12 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
             createdAt: new MyDate().toDate(),
             parentType: TaskParentTypes.TASK,
         } as const;
+    }
+
+    queryInSCycle = (cycleId: string) => {
+        return this.query(
+            Q.where(TaskSchema.name.PARENT, cycleId )
+        )
     }
 
     queryCreatedBetween = (left: Date, right: Date) => {
@@ -284,6 +294,49 @@ export class TaskLogic {
     id: string;
     constructor(id: string) {
         this.id = id;
+    }
+
+    static create = async (d: Partial<ITask>) => {
+        const parentId = d.parentId ? d.parentId : ""
+        const parentGoal = await new GoalQuery().get(parentId);
+        const tx = new Transaction();
+
+
+        if(parentGoal && parentGoal.isStreak()) {
+            // We need to create a task, and add it to the current cycle
+            // We should create the CURRENT cycle if it doesn't exist yet.
+
+            let currentCycle = await new StreakCycleQuery().inGoalCurrentCycle(parentGoal.id);
+            //let latestCycle = await new StreakCycleQuery().latestInGoal(parentGoal.id);
+            let finalCurrentCycle: StreakCycle;
+            if(!currentCycle) {
+                finalCurrentCycle = tx.addCreate(new StreakCycleQuery(), {
+                    parentGoalId: parentGoal.id,
+                    startDate: parentGoal.currentCycleStart(),
+                    endDate: parentGoal.currentCycleEnd(),
+                })
+            } else {
+                finalCurrentCycle = currentCycle; 
+            }
+
+            d.parentId = finalCurrentCycle.id;  // reassign the parent field to the cycle where it belongs.
+            tx.addCreate(new TaskQuery(), d);
+            tx.commitAndReset();
+        } else {
+            // We need to create a normal single task based on the data.
+            // So we don't need to do anything here.
+            tx.addCreate(new TaskQuery(), d);
+            tx.commitAndReset();
+        }
+    }
+
+    update = async (d: Partial<ITask>) => {
+        const task = await new TaskQuery().get(this.id);
+        const tx = new Transaction();
+        if(task) {
+            tx.addUpdate(new TaskQuery(), task, d);
+            tx.commitAndReset();
+        }
     }
 
     cloneRelativeTo = async (oldDate, newDate : Date) => {

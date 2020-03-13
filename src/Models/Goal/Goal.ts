@@ -12,6 +12,8 @@ import { Reward } from "src/Models/Reward/Reward";
 import Penalty from "../Penalty/Penalty";
 import { Observable } from "rxjs";
 import { filter } from "rxjs/operators";
+import MyDate from "src/common/Date";
+import { startDate, dueDate } from "src/Components/Forms/common/utils";
 
 
 interface IGoal extends IStreak{
@@ -90,6 +92,84 @@ export default class Goal extends Model implements IGoal {
     @relation(GoalSchema.table, name.PARENT) parentGoal
     @relation(RewardSchema.table, name.REWARD_ID) rewardRelation!: Relation<Reward>;
     @relation(RewardSchema.table, name.PENALTY_ID) penaltyRelation!: Relation<Penalty>;
+
+    isStreak = () => {
+        return this.goalType === GoalType.STREAK;
+    }
+
+    isNormal = () => {
+        return this.goalType === GoalType.NORMAL;
+    }
+
+    currentCycleStart = () => {
+        const correctDate = ( d: Date) => {
+            const goalStart = new MyDate( startDate(this.startDate)).toDate();
+            return d < goalStart ? goalStart : d;
+        }
+        switch(this.streakType) {
+            case "daily": {
+                const today = new MyDate( startDate(new Date())).toDate();
+                const goalStart = new MyDate( startDate(this.startDate)).toDate();
+                return correctDate(today); 
+            } break;
+            case "weekly": {
+                const dayName = new MyDate( this.startDate).dayName();
+                const day = new MyDate().setDay(dayName);
+                if( day.toDate() > new Date() ) {
+                    day.subtract(1, "weeks");
+                }
+
+                return correctDate(startDate(day.toDate()))
+            } break;
+            case "monthly": {
+                const dayInMonth = new MyDate(this.startDate).dayOfMonth();
+                const date = new MyDate().setDayOfMonth(dayInMonth);
+                if( date.toDate() > new Date()) {
+                    date.subtract(1, "months")
+                }
+
+                return correctDate(dueDate(date.toDate()))
+            } break;
+            default: {
+                return correctDate(new Date());
+            }
+        }
+    }
+
+    currentCycleEnd = () => {
+        const correctDate = ( d: Date) => {
+            const goalEnd = new MyDate( dueDate(this.dueDate)).toDate();
+            return d > goalEnd ? goalEnd : d;
+        }
+        switch(this.streakType) {
+            case "daily": {
+                const today = new MyDate( dueDate(new Date())).toDate();
+                return correctDate(today);
+            } break;
+            case "weekly": {
+                const dayName = new MyDate( this.dueDate).dayName();
+                const day = new MyDate().setDay(dayName);
+                if( day.toDate() < new Date() ) {
+                    day.add(1, "weeks");
+                }
+
+                return correctDate(dueDate(day.toDate()));
+            } break;
+            case "monthly": {
+                const dayInMonth = new MyDate(this.dueDate).dayOfMonth();
+                const date = new MyDate().setDayOfMonth(dayInMonth);
+                if( date.toDate() < new Date()) {
+                    date.add(1, "months")
+                }
+
+                return correctDate(dueDate(date.toDate()))
+            } break;
+            default: {
+                return correctDate(new Date());
+            }
+        }
+    }
+
 }
 
 export {

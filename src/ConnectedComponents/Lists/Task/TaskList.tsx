@@ -20,6 +20,8 @@ import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Style
 import EmptyList from "src/Components/Lists/EmptyList";
 import { prependToMemberExpression } from "@babel/types";
 import { OnTaskAction } from "src/Components/Lists/Items/TaskListItem";
+import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
+import { switchMap } from "rxjs/operators";
 
 interface Props {
     tasks: Task[];
@@ -101,7 +103,7 @@ interface InputProps extends Omit<Props, "tasks"> {
         "parent-all" | "active" | "active-due-soon-today" |
         "completed-today" | "in-progress-but-not-due-today" |
         "overdue" | "remaining-today" | "due-today" | "in-progress" | 
-        "single";
+        "single" | "current-cycle";
     parentId: string  // shows all tasks that have this parent
     id?: string;
 }
@@ -161,12 +163,25 @@ const enhance = withObservables(['type'], (props: InputProps) => {
             return {
                 tasks: observableWithRefreshTimer( () => new TaskQuery().queryRemainingToday().observe()),
             }
-        }
+        } break;
         case "single": {
             return {
                 tasks: new TaskQuery().queryId(props.id ? props.id : "").observe()
             }
-        }
+        } break;
+        case "current-cycle": {
+            return {
+                // This should provide a list of the tasks that are in the latest streak cycle
+                tasks: new StreakCycleQuery().queryInGoal(props.parentId).observe().pipe(switchMap(( cycles ) => {
+                    const sorted = cycles.sort((a, b) => {
+                        return b.startDate.valueOf() - a.startDate.valueOf()
+                    })
+
+                    const latest = sorted[0];
+                    return new TaskQuery().queryInSCycle(latest ? latest.id : "").observe()
+                }))
+            }
+        } break;
         default: {
             return {
                 tasks: new TaskQuery().queryAll().observe(),

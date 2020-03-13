@@ -1,7 +1,7 @@
 
 import { 
     ActiveSchema, ChildSchema, Schema, 
-    StateSchema,
+    StateSchema, DueSchema,
 } from "src/Models/base/SharedSchema"
 
 
@@ -31,7 +31,7 @@ const TaskType = {
     CREATED_ON: 'number',
 } as const
 
-export const TaskSchema: ChildSchema & StateSchema & ActiveSchema & Schema<typeof TaskName> = {
+export const TaskSchema: DueSchema & ChildSchema & StateSchema & ActiveSchema & Schema<typeof TaskName> = {
     table: 'tasks',
     name: TaskName,
     type: TaskType,

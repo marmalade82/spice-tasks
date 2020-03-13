@@ -9,6 +9,7 @@ import ClaimedReward from "src/Models/Reward/ClaimedReward";
 import Penalty from "src/Models/Penalty/Penalty";
 import Recur from "src/Models/Recurrence/Recur";
 import Global from "src/Models/Global/Global";
+import StreakCycle from "src/Models/Group/StreakCycle";
 
 class DB {
     static database: Database | undefined;
@@ -23,7 +24,9 @@ class DB {
 
             DB.database = new Database({
                 adapter: adapter,
-                modelClasses: [Goal, Task, Reward, EarnedReward, ClaimedReward, Penalty, Recur, Global],
+                modelClasses: [Goal, Task, Reward, EarnedReward, ClaimedReward, Penalty, Recur, Global, 
+                    StreakCycle
+                ],
                 actionsEnabled: true,
             });
 

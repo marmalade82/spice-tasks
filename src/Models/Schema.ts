@@ -6,9 +6,10 @@ import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
 import ClaimedRewardSchema from "src/Models/Reward/ClaimedRewardSchema";
 import { RecurSchema } from 'src/Models/Recurrence/RecurSchema';
 import { GlobalSchema } from 'src/Models/Global/GlobalSchema';
+import { GroupSchema } from "src/Models/Group/GroupSchema";
 
 const Schema = appSchema({
-    version: 2,
+    version: 6,
     tables: [
         generateTableSchema(GoalSchema),
         generateTableSchema(TaskSchema),
@@ -17,6 +18,7 @@ const Schema = appSchema({
         generateTableSchema(ClaimedRewardSchema),
         generateTableSchema(RecurSchema),
         generateTableSchema(GlobalSchema),
+        generateTableSchema(GroupSchema),
     ]
 });
 

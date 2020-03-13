@@ -3,7 +3,7 @@ import { View, ScrollView, SafeAreaView, Button } from "react-native";
 import { AddTaskForm, AddTaskData, AddTaskDefault, ValidateTaskForm } from "src/Components/Forms/AddTaskForm";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
-import { TaskQuery, Task } from "src/Models/Task/TaskQuery";
+import { TaskQuery, Task, TaskLogic } from "src/Models/Task/TaskQuery";
 import { DocumentView, ScreenHeader, Toast, IconButton } from "src/Components/Styled/Styled";
 import { of } from "rxjs";
 import GoalQuery from "src/Models/Goal/GoalQuery";
@@ -122,9 +122,9 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             };
 
             if(this.state.task) {
-                void (new TaskQuery().update(this.state.task, taskData)).catch();        
+                void new TaskLogic(this.state.task.id).update(taskData);
             } else {
-                void new TaskQuery().create(taskData).catch();
+                void TaskLogic.create(taskData);
             }
 
             this.props.navigation.goBack();

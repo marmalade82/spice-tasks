@@ -15,6 +15,11 @@ export interface IRecur {
 
 const name = RecurSchema.name;
 
+/**
+ * Data that specifies a schedule for something that repeats.
+ * For example, a bunch of goals could have a foreign id to a recurrence. That expresses how they are all related 
+ * to the recurrence.
+ */
 export default class Recur extends Model implements IRecur {
     static table = RecurSchema.table;
 

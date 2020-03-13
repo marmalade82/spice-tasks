@@ -4,5 +4,5 @@ import Notification from "src/Notification";
 
 module.exports = async (taskData) => {
 
-    new GlobalLogic().runDailyNotifications(); 
+    new GlobalLogic().runRecordRefresh(); 
 }

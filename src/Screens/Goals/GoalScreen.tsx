@@ -1,14 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, Button, FlatList } from "react-native";
-import Style from "src/Style/Style";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList"
 import { ConnectedGoalSummary } from "src/ConnectedComponents/Summaries/GoalSummary";
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
-import {
-    ColumnView, RowView, Button as MyButton, ViewPicker,
-} from "src/Components/Basic/Basic";
-import NavigationButton from "src/Components/Navigation/NavigationButton";
 import { DocumentView, ScreenHeader, ListPicker, Toast, BackgroundTitle, ModalIconButton, ModalRow, Modal } from "src/Components/Styled/Styled";
 import { ScrollView } from "react-native";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
@@ -18,8 +13,11 @@ import {  NavigationStackProp } from "react-navigation-stack";
 import { Single, Child, None } from "App";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
-import { getEventHandlerName } from "@testing-library/react-native";
 import { getKey } from "../common/screenUtils";
+import { GoalType } from "src/Models/Goal/GoalLogic";
+import { ConnectedStreakCycleList } from "src/ConnectedComponents/Lists/Group/StreakCycleList";
+import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
+import { switchMap } from "rxjs/operators";
 
 
 
@@ -32,6 +30,8 @@ interface State {
     currentList: number;
     activeCount: number;
     inactiveCount: number;
+    currentCycleCount: number;
+    previousCycleCount: number;
     toastVisible: boolean;
     toastMessage: string;
     showAdd: boolean;
@@ -65,6 +65,8 @@ export default class GoalScreen extends React.Component<Props, State> {
             currentList: 0,
             activeCount: 0,
             inactiveCount: 0,
+            currentCycleCount: 0,
+            previousCycleCount: 0,
             toastVisible: false,
             toastMessage: "",
             showAdd: false,
@@ -91,10 +93,36 @@ export default class GoalScreen extends React.Component<Props, State> {
                 this.setState({
                     inactiveCount: num,
                 })
+            });
+
+            const currentCycleSub = new StreakCycleQuery().queryInGoal(goal.id).observe().pipe(switchMap(( cycles ) => {
+                    const sorted = cycles.sort((a, b) => {
+                        return b.startDate.valueOf() - a.startDate.valueOf()
+                    })
+
+                    const latest = sorted[0];
+                    return new TaskQuery().queryInSCycle(latest ? latest.id : "").observeCount()
+                })).subscribe((n) => {
+                    this.setState({
+                        currentCycleCount: n,
+                    })
+                })
+
+            const previousCycleSub = new StreakCycleQuery()
+                                                        .queryBefore(goal.currentCycleStart())
+                                                        .observeCount()
+                                                        .subscribe((n) => {
+                this.setState({
+                    previousCycleCount: n,
+                })
             })
+
+
             this.unsubscribe = () => {
                 activeSub.unsubscribe();
                 inactiveSub.unsubscribe();
+                currentCycleSub.unsubscribe();
+                previousCycleSub.unsubscribe();
             }
         } else {
             this.setState({
@@ -157,38 +185,23 @@ export default class GoalScreen extends React.Component<Props, State> {
 
     }
 
+    private onTaskAction = (id: string, action: "complete" | "fail") => {
+        switch(action) {
+            case "complete": {
+                void new TaskLogic(id).complete();
+            } break; 
+            case "fail": {
+                void new TaskLogic(id).fail();
+            } break;
+        }
+    }
+
     render = () => {
         return (
             <DocumentView>
                 <ScrollView>
                     {this.renderSummary()}
-                    <BackgroundTitle title={`Active (${this.state.activeCount})`}
-                        style={{
-                        }}
-                    ></BackgroundTitle>
-                    <ConnectedTaskList
-                        navigation={this.props.navigation}
-                        parentId={this.props.navigation.getParam('id', '')}
-                        type={"parent-active"}
-                        paginate={4}
-                        onSwipeRight={(id: string) => {
-                            this.onTaskAction(id, "complete")
-                        }}
-                        emptyText={"No active subtasks"}
-                        onTaskAction={this.onTaskAction}
-                    ></ConnectedTaskList>
-                    <BackgroundTitle title={`Inactive (${this.state.inactiveCount})`}
-                        style={{
-                        }}
-                    ></BackgroundTitle>
-                    <ConnectedTaskList
-                        navigation={this.props.navigation}
-                        parentId={this.props.navigation.getParam('id', '')}
-                        paginate={4}
-                        emptyText={"No inactive subtasks"}
-                        type={"parent-inactive"}
-                        onTaskAction={this.onTaskAction}
-                    ></ConnectedTaskList>
+                    {this.renderLists()}
                     <FootSpacer></FootSpacer>
                 </ScrollView>
                 <Toast
@@ -229,18 +242,8 @@ export default class GoalScreen extends React.Component<Props, State> {
         );
     }
 
-    onTaskAction = (id: string, action: "complete" | "fail") => {
-        switch(action) {
-            case "complete": {
-                void new TaskLogic(id).complete();
-            } break; 
-            case "fail": {
-                void new TaskLogic(id).fail();
-            } break;
-        }
-    }
 
-    renderSummary = () => {
+    private renderSummary = () => {
         if(this.state.goal) {
             return (
                     <ConnectedGoalSummary
@@ -253,5 +256,90 @@ export default class GoalScreen extends React.Component<Props, State> {
         } else {
             return <View></View>
         }
+    }
+
+    private renderLists = () => {
+        const goal = this.state.goal
+        if(goal) {
+            switch(goal.goalType) {
+                case GoalType.STREAK: {
+                    return (
+                        <View
+                            style={{
+                                flex: 0,
+                            }}
+                        >
+                            <BackgroundTitle title={`Current Cycle (${this.state.currentCycleCount})`}
+                                style={{
+                                }}
+                            ></BackgroundTitle>
+
+                            <ConnectedTaskList
+                                navigation={this.props.navigation}
+                                parentId={this.props.navigation.getParam('id', '')}
+                                type={"current-cycle"}
+                                paginate={4}
+                                onSwipeRight={(id: string) => {
+                                    this.onTaskAction(id, "complete")
+                                }}
+                                emptyText={"No active subtasks"}
+                                onTaskAction={this.onTaskAction}
+                            ></ConnectedTaskList>
+
+                            <BackgroundTitle title={`Previous Cycles (${this.state.previousCycleCount})`}
+                                style={{
+                                }}
+                            ></BackgroundTitle>
+
+                            <ConnectedStreakCycleList
+                                navigation={this.props.navigation}
+                                type={"previous"}
+                                goalId={this.props.navigation.getParam('id', '')}
+                                paginate={4}
+                            ></ConnectedStreakCycleList>
+                        </View>
+                    )
+                } break;
+                default: {
+                    return (
+                        <View
+                            style={{
+                                flex: 0
+                            }}
+                        >
+                            <BackgroundTitle title={`Active (${this.state.activeCount})`}
+                                style={{
+                                }}
+                            ></BackgroundTitle>
+                            <ConnectedTaskList
+                                navigation={this.props.navigation}
+                                parentId={this.props.navigation.getParam('id', '')}
+                                type={"parent-active"}
+                                paginate={4}
+                                onSwipeRight={(id: string) => {
+                                    this.onTaskAction(id, "complete")
+                                }}
+                                emptyText={"No active subtasks"}
+                                onTaskAction={this.onTaskAction}
+                            ></ConnectedTaskList>
+                            <BackgroundTitle title={`Inactive (${this.state.inactiveCount})`}
+                                style={{
+                                }}
+                            ></BackgroundTitle>
+                            <ConnectedTaskList
+                                navigation={this.props.navigation}
+                                parentId={this.props.navigation.getParam('id', '')}
+                                paginate={4}
+                                emptyText={"No inactive subtasks"}
+                                type={"parent-inactive"}
+                                onTaskAction={this.onTaskAction}
+                            ></ConnectedTaskList>
+                        </View>
+                    ) 
+                }
+            }
+        }
+
+        return null;
     }
 }
