@@ -36,9 +36,16 @@ export class StreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle> {
         );
     }
 
-    queryBefore = (date: Date) => {
+    queryDueOnBefore = (date: Date) => {
         return this.query(
-            ...Conditions.startsBefore(date),
+            ...Conditions.dueOnOrBefore(date),
+        )
+    }
+
+    queryDueOnBeforeInGoal = (goalId: string, date: Date) => {
+        return this.query(
+            Q.and(...Conditions.dueOnOrBefore(date)),
+            Q.and(Q.where(GroupSchema.name.PARENT, goalId))
         )
     }
 

@@ -304,10 +304,11 @@ export class TaskLogic {
 
         if(parentGoal && parentGoal.isStreak()) {
             // We need to create a task, and add it to the current cycle
-            // We should create the CURRENT cycle if it doesn't exist yet.
+            // We should create the CURRENT cycle if it doesn't exist yet,
+            // but we won't mark it as the LATEST cycle because this isn't generated through
+            // the automatic processing.
 
             let currentCycle = await new StreakCycleQuery().inGoalCurrentCycle(parentGoal.id);
-            //let latestCycle = await new StreakCycleQuery().latestInGoal(parentGoal.id);
             let finalCurrentCycle: StreakCycle;
             if(!currentCycle) {
                 finalCurrentCycle = tx.addCreate(new StreakCycleQuery(), {

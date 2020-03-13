@@ -7,6 +7,7 @@ import MyDate from "src/common/Date";
 import GoalSchema from "src/Models/Goal/GoalSchema";
 import { GoalType } from "../Goal/GoalLogic";
 import { RecurSchema } from "../Recurrence/RecurSchema";
+import { dueDate, startDate } from "src/Components/Forms/common/utils";
 
 const name = TaskSchema.name;
 const goalName = GoalSchema.name ;
@@ -139,16 +140,30 @@ function lastRefreshedOnOrBeforeConditions(d: Date) {
 }
 
 function startsOnOrAfterConditions(d: Date) {
-    let startOfDay = new MyDate(d).prevMidnight();
+    let startOfDay = startDate(d);
     return [
-        Q.where(goalName.STARTS_AT, Q.gte(startOfDay.toDate().valueOf()))
+        Q.where(goalName.STARTS_AT, Q.gte(startOfDay.valueOf()))
     ]
 }
 
 function startsBeforeConditions(d: Date) {
-    let startOfDay = new MyDate(d).prevMidnight();
+    let startOfDay = startDate(d);
     return [
-        Q.where(goalName.STARTS_AT, Q.lt(startOfDay.toDate().valueOf()))
+        Q.where(goalName.STARTS_AT, Q.lt(startOfDay.valueOf()))
+    ]
+}
+
+function dueOnOrBeforeConditions(d: Date) {
+    let endOfDay = dueDate(d);
+    return [
+        Q.where(goalName.DUE_AT, Q.lte(endOfDay.valueOf()))
+    ]
+}
+
+function dueAfterConditions(d: Date) {
+    let endOfDay = dueDate(d);
+    return [
+        Q.where(goalName.DUE_AT, Q.gt(endOfDay.valueOf()))
     ]
 }
 
@@ -175,6 +190,8 @@ export const Conditions = {
     lastRefreshedOnOrBefore: lastRefreshedOnOrBeforeConditions,
     startsOnOrAfter: startsOnOrAfterConditions,
     startsBefore: startsBeforeConditions,
+    dueOnOrBefore: dueOnOrBeforeConditions,
+    dueAfter: dueAfterConditions,
 }
 
 

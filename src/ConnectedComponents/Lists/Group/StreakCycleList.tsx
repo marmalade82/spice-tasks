@@ -78,7 +78,7 @@ const enhance = withObservables([], (props: InputProps) => {
                 cycles: new GoalQuery().queryId(props.goalId ? props.goalId : "").observe().pipe(switchMap((goals) => {
                     const goal = goals[0];
                     if(goal) {
-                        return new StreakCycleQuery().queryBefore(goal.currentCycleStart()).observe();
+                        return new StreakCycleQuery().queryDueOnBeforeInGoal(goal.id, goal.currentCycleEnd()).observe();
                     } else {
                         return new Observable<StreakCycle[]>((subscriber) => {
                             subscriber.next([])

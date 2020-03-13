@@ -71,8 +71,8 @@ export default class Goal extends Model implements IGoal {
     @field(name.REWARD_TYPE) rewardType!: RewardType;
     @field(name.DETAILS) details!: string;
     @field(name.RECUR_ID) recurId!: string;
-    @date(name.LATEST_CYCLE_START) latestCycleStartDate!: Date;
-    @date(name.LAST_REFRESHED) lastRefreshed!: Date;
+    @date(name.LATEST_CYCLE_START) latestCycleStartDate!: Date; // to cache the last cycle generated automatically
+    @date(name.LAST_REFRESHED) lastRefreshed!: Date; // to track that this goal has been processed today.
     @field(name.REWARD_ID) rewardId!: string;
     @field(name.PENALTY_TYPE) penaltyType!: PenaltyTypes;
     @field(name.PENALTY_ID) penaltyId!: string;
@@ -104,12 +104,12 @@ export default class Goal extends Model implements IGoal {
     currentCycleStart = () => {
         const correctDate = ( d: Date) => {
             const goalStart = new MyDate( startDate(this.startDate)).toDate();
-            return d < goalStart ? goalStart : d;
+            const goalEnd = new MyDate( dueDate(this.dueDate)).toDate()
+            return d < goalStart ? goalStart : (d > goalEnd ? startDate(goalEnd) : d);
         }
         switch(this.streakType) {
             case "daily": {
                 const today = new MyDate( startDate(new Date())).toDate();
-                const goalStart = new MyDate( startDate(this.startDate)).toDate();
                 return correctDate(today); 
             } break;
             case "weekly": {
@@ -128,7 +128,7 @@ export default class Goal extends Model implements IGoal {
                     date.subtract(1, "months")
                 }
 
-                return correctDate(dueDate(date.toDate()))
+                return correctDate(startDate(date.toDate()))
             } break;
             default: {
                 return correctDate(new Date());
@@ -138,8 +138,9 @@ export default class Goal extends Model implements IGoal {
 
     currentCycleEnd = () => {
         const correctDate = ( d: Date) => {
+            const goalStart = new MyDate( startDate(this.startDate)).toDate();
             const goalEnd = new MyDate( dueDate(this.dueDate)).toDate();
-            return d > goalEnd ? goalEnd : d;
+            return d > goalEnd ? goalEnd : (d < goalStart ? dueDate(goalStart) : d);
         }
         switch(this.streakType) {
             case "daily": {

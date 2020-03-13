@@ -18,6 +18,7 @@ import { GoalType } from "src/Models/Goal/GoalLogic";
 import { ConnectedStreakCycleList } from "src/ConnectedComponents/Lists/Group/StreakCycleList";
 import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
 import { switchMap } from "rxjs/operators";
+import MyDate from "src/common/Date";
 
 
 
@@ -109,7 +110,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                 })
 
             const previousCycleSub = new StreakCycleQuery()
-                                                        .queryBefore(goal.currentCycleStart())
+                                                        .queryDueOnBeforeInGoal(goal.id, goal.currentCycleEnd())
                                                         .observeCount()
                                                         .subscribe((n) => {
                 this.setState({
@@ -282,7 +283,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 onSwipeRight={(id: string) => {
                                     this.onTaskAction(id, "complete")
                                 }}
-                                emptyText={"No active subtasks"}
+                                emptyText={"No active tasks"}
                                 onTaskAction={this.onTaskAction}
                             ></ConnectedTaskList>
 
