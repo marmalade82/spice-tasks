@@ -227,7 +227,7 @@ describe("streak tasks recur despite being very far in past" , () => {
     })
 })
 
-describe.only("Processing partially processed streak goals", () => {
+describe("Processing partially processed streak goals", () => {
     beforeEach(async () => {
         await destroyAll();
     })
@@ -236,7 +236,7 @@ describe.only("Processing partially processed streak goals", () => {
         await destroyAll();
     });
 
-    test("any streak type", async () => {
+    test("correct amount of processing occurs", async () => {
         await wait(async () => {
             const goals = await new GoalQuery().unprocessed();
             expect(goals.length).toEqual(0)
@@ -359,14 +359,21 @@ describe("streak tasks have proper values", () => {
                     streakType: "daily",
                     goalType: GoalType.STREAK,
                     active: true,
+                    startDate: startDate(new MyDate().subtract(10, "days").toDate()),
+                    dueDate: dueDate(new MyDate().add(10, "days").toDate()),
                     latestCycleId: "",
                     lastRefreshed: new MyDate().subtract(1, "days").toDate(),
                 }, 1))[0];
+                const cycle = (await createStreakCycles({
+                    parentGoalId: goal_1.id,
+                    startDate: startDate(new MyDate().subtract(1, "days").toDate()),
+                    endDate: dueDate(new MyDate().subtract(1, "days").toDate()),
+                }, 1))[0];
                 await createTasks({
-                    title: "middle", 
+                    title: "latest", 
                     active: false,
                     startDate: new MyDate().subtract(1, "days").toDate(),
-                    parentId: goal_1.id,
+                    parentId: cycle.id,
                 }, 1)
             });
 

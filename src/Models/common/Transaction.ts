@@ -62,8 +62,8 @@ export default class Transaction {
         })
     }
 
-    commitAndReset = () => {
-        void this.commit();
+    commitAndReset = async () => {
+        await this.commit();
         this.reset();
     }
 
