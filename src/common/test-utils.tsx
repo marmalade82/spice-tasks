@@ -19,6 +19,8 @@ import { GlobalSchema } from "src/Models/Global/GlobalSchema";
 import Global, { IGlobal } from "src/Models/Global/Global";
 import GlobalQuery from "src/Models/Global/GlobalQuery";
 import EarnedPenalty, { IEarnedPenalty } from "src/Models/Penalty/EarnedPenalty";
+import { IStreakCycle } from "src/Models/Group/StreakCycle";
+import { GroupSchema } from "src/Models/Group/GroupSchema";
 var chance = require("chance");
 var Chance = new chance();
 
@@ -88,6 +90,11 @@ async function createGoals(data: Partial<IGoal>, count: number) {
 
 export async function createRecurrences(data: Partial<IRecur>, count: number) {
     return (await _createModels(RecurSchema.table, data, count)) as Recur[];
+}
+
+export async function createStreakCycles(data: Partial<IStreakCycle>, count: number) {
+    data.type = "streak_cycle";
+    return (await _createModels(GroupSchema.table, data, count))
 }
 
 async function createRewards(data: Partial<IReward>, count: number) {

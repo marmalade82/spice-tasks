@@ -109,6 +109,32 @@ export class RecurLogic {
         this.id = id;
     }
 
+    static createDataForGoal =  (repeats: "daily" | "weekly" | "monthly") => {
+        switch(repeats) {
+            case "daily": {
+                return {
+                    lastRefreshed: new Date(),
+                    active: true,
+                    type: "daily",
+                } as const;
+            } break;
+            case "weekly": {
+                return {
+                    lastRefreshed: new Date(),
+                    active: true,
+                    type: "weekly",
+                } as const;
+            } break;
+            default: {
+                return {
+                    lastRefreshed: new Date(),
+                    active: true,
+                    type: "monthly",
+                } as const;
+            }
+        }
+    }
+
     static createForGoal = async (repeats: "never" | "daily" | "weekly" | "monthly") => {
         switch(repeats) {
             case "daily": {
@@ -199,13 +225,13 @@ export class RecurLogic {
             if(latestGoal) {
                 switch(recur.type) {
                     case "daily": {
-                        void this._generateNext(latestGoal.id, latestGoal.startDate, "days");
+                        void this._generateNext(latestGoal, latestGoal.startDate, "days");
                     } break;
                     case "weekly": {
-                        void this._generateNext(latestGoal.id, latestGoal.startDate, "weeks");
+                        void this._generateNext(latestGoal, latestGoal.startDate, "weeks");
                     } break;
                     case "monthly": {
-                        void this._generateNext(latestGoal.id, latestGoal.startDate, "months");
+                        void this._generateNext(latestGoal, latestGoal.startDate, "months");
                     } break;
                     default: {
                         //do nothing otherwise
@@ -220,17 +246,19 @@ export class RecurLogic {
         }
     }
 
-    _generateNext = async (id: string, d: Date, unit: "days" | "weeks" | "months") => {
+    _generateNext = async (goal: Goal, d: Date, unit: "days" | "weeks" | "months") => {
         // We take the latest goal's start date. If we are in the day after the latest goal's start date/time,
         // then we add the goal again. If we are AFTER the day after the latest goal's start date/time,
         // then we add the goal until we have reached the current start date/time.
         let start = d;
         let goals: Promise<IGoal>[] = [];
-        let logic = new GoalLogic(id);
         while(new MyDate().isInOrAfterNextCycleAfterDate(start, unit)) {
             const next = new MyDate(start).add(1, unit);
-            const goal = logic.cloneRelativeTo(d, next.toDate());
-            goals.push(goal);
+            const clone = GoalLogic.cloneRelativeTo(d, next.toDate(), goal)
+            const promisify = new Promise<IGoal>((resolve) => {
+                resolve(clone);
+            })
+            goals.push(promisify);
             start = next.toDate();
         }
 

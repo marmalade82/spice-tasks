@@ -8,7 +8,7 @@
     "test": "jest --onlyChanged",
     "test-all": "jest",
     "test-watch": "jest --watch",
-    "test-one": "jest FakeTestFile.test.tsx",
+    "test-one": "jest GoalLogic.test",
     "debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
     "link": "react-native link",
     "lint": "tslint --project tsconfig.json",

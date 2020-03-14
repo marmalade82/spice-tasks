@@ -40,6 +40,18 @@ export default class Transaction {
     }
 
     /**
+     * Merges other transaction into this transaction.
+     * Other transaction is then reset.
+     */
+    consume = (other: Transaction) => {
+        other.batch.forEach((line) => {
+            this.batch.push(line);
+        })
+
+        other.reset();
+    }
+
+    /**
      * Finalizes a transaction and sends them all as one to the DB.
      */
     commit = async () => {

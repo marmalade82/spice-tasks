@@ -28,7 +28,7 @@ interface IGoal extends IStreak{
     rewardType: RewardType;
     penaltyType: PenaltyTypes
     recurId: string;
-    latestCycleStartDate: Date;
+    latestCycleId: string;
     rewardId: string;
     penaltyId: string;
 }
@@ -71,7 +71,7 @@ export default class Goal extends Model implements IGoal {
     @field(name.REWARD_TYPE) rewardType!: RewardType;
     @field(name.DETAILS) details!: string;
     @field(name.RECUR_ID) recurId!: string;
-    @date(name.LATEST_CYCLE_START) latestCycleStartDate!: Date; // to cache the last cycle generated automatically
+    @date(name.LATEST_CYCLE) latestCycleId!: string; // to cache the last cycle generated automatically
     @date(name.LAST_REFRESHED) lastRefreshed!: Date; // to track that this goal has been processed today.
     @field(name.REWARD_ID) rewardId!: string;
     @field(name.PENALTY_TYPE) penaltyType!: PenaltyTypes;

@@ -49,7 +49,18 @@ export class StreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle> {
         )
     }
 
-    latestInGoal = async (goalId: string) => {
+    queryDueAfterInGoal = (goalId: string, date: Date) => {
+        return this.query(
+            Q.and(...Conditions.dueAfter(date)),
+            Q.and(Q.where(GroupSchema.name.PARENT, goalId))
+        );
+    }
+
+    endsAfterInGoal = async(goalId: string, date: Date) => {
+        return await this.queryDueAfterInGoal(goalId, date).fetch();
+    }
+
+    calculatedLatestInGoal = async (goalId: string) => {
         const cycles = await new StreakCycleQuery().queryInGoal(goalId).fetch();
         const sorted = cycles.sort((a, b) => {
             return b.startDate.valueOf() - a.startDate.valueOf()

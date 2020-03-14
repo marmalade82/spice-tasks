@@ -16,6 +16,10 @@ import EarnedRewardLogic from "../Reward/EarnedRewardLogic";
 import { PenaltyTypes } from "../Penalty/PenaltyLogic";
 import EarnedPenaltyQuery from "../Penalty/EarnedPenaltyQuery";
 import EarnedPenaltyLogic from "../Penalty/EarnedPenaltyLogic";
+import Transaction from "../common/Transaction";
+import RecurQuery, { RecurLogic, Recur } from "../Recurrence/RecurQuery";
+import StreakCycleQuery from "../Group/StreakCycleQuery";
+import StreakCycle from "../Group/StreakCycle";
 
 class GoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
@@ -44,7 +48,7 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
             penaltyType: PenaltyTypes.NONE,
             details: "",
             recurId: "",
-            latestCycleStartDate: new Date(),
+            latestCycleId: "",
             lastRefreshed: new Date(),
             rewardId: "",
             penaltyId: "",
@@ -383,57 +387,146 @@ export class GoalLogic {
         const goal = await new GoalQuery().get(this.id);
         if(goal) {
             let unit: "days" | "weeks" | "months" = "days";
-            let updatedCycleStart: MyDate = new MyDate();
             switch(goal.streakType) {
                 case "daily": {
                     unit = "days";
-                    updatedCycleStart = new MyDate().lastCycleStart(goal.streakType, goal.latestCycleStartDate);
                 } break;
                 case "weekly": {
                     unit = "weeks";
-                    updatedCycleStart = new MyDate().lastCycleStart(goal.streakType, new MyDate(goal.latestCycleStartDate).dayName());
-                } break;
-                case "monthly": {
-                    unit = "months";
-                    updatedCycleStart = new MyDate().lastCycleStart(goal.streakType, new MyDate(goal.latestCycleStartDate).dayOfMonth());
                 } break;
                 default: {
-                    updatedCycleStart = new MyDate();
+                    unit = "months";
                 }
             }
-            const latest = new MyDate(goal.latestCycleStartDate);
-            const latestCycleTasks: Task[] = await new TaskQuery().inStreakCycle(latest.toDate(), goal.streakType );
-            if(latestCycleTasks.length > 0) {
-                await this._generateNextStreakTasks(latestCycleTasks, goal.id, goal.latestCycleStartDate, unit);
-            } 
 
-            // once we've processed everything, the latest cycle start date should be updated to be latest
-            // relative to TODAY's date.
-            await new GoalQuery().update(goal, {
-                latestCycleStartDate: updatedCycleStart.toDate(),
-                lastRefreshed: new Date(),
-            })
+            const tx = new Transaction();
+            let initialLatestCycle = await new StreakCycleQuery().get(goal.latestCycleId);
+            if(!initialLatestCycle) {
+                initialLatestCycle = await new StreakCycleQuery().calculatedLatestInGoal(goal.id);
+            }
+
+            if(initialLatestCycle) {
+                console.log("found latest cycle");
+                const afterCycles = await new StreakCycleQuery().endsAfterInGoal(goal.id, initialLatestCycle.endDate)
+                const latestCycleTasks: Task[] = await new TaskQuery().inStreakCycle(initialLatestCycle.id);
+                const latestCycleEndDate: Date = initialLatestCycle.endDate;
+
+                //Generate all missing cycles.
+                const { latestCycleId, newTx } = 
+                        await this._generateNextStreakTasks(latestCycleTasks, goal.id, latestCycleEndDate, unit, 
+                                afterCycles, goal.currentCycleStart());
+
+                tx.consume(newTx);
+
+                tx.addUpdate(new GoalQuery(), goal, {
+                    latestCycleId: latestCycleId ? latestCycleId : initialLatestCycle.id,
+                    lastRefreshed: new Date(),
+                })
+            } else {
+                tx.addUpdate(new GoalQuery(), goal, {
+                    lastRefreshed: new Date(),
+                });
+            }
+
+            tx.commitAndReset();
         }
     }
 
-    _generateNextStreakTasks = async (latestTasks: Task[], parentId: string, 
+    _generateNextStreakTasks = async (latestTasks: Task[], goalId: string, 
                                 latestCycleStart: Date,
-                                unit: "days" | "weeks" | "months") => {
+                                unit: "days" | "weeks" | "months",
+                                afterCycles: StreakCycle[],
+                                currentCycleStart: Date): Promise<{ latestCycleId: string, newTx: Transaction }> => {
+        // If there was no cycle created after the latest known generated cycle, 
+        // we keep generating cycles until we've also generated the current cycle.
         let start = latestCycleStart;
-        let tasks: Promise<Partial<ITask>>[] = [];
-        // We continue generating streak tasks until processed everything up to the next cycle
-        while(new MyDate().isInOrAfterNextCycleAfterDate(start, unit)) {
-            const next = new MyDate(start).add(1, unit);
-            let clones = latestTasks.map((task) => {
-                return new TaskLogic(task.id).cloneRelativeTo(latestCycleStart, next.toDate());
-            });
+        const tx = new Transaction();
+        let latestCycleId = "";
 
-            tasks = tasks.concat(clones);
-            start = next.toDate();
+        console.log("trying to generate next tasks");
+
+        const openCycles = getOpenCycles(latestCycleStart, afterCycles, unit, currentCycleStart);
+        openCycles.forEach((cycle) => {
+            console.log("generating stuff for a new cycle")
+            const newCycle = tx.addCreate(new StreakCycleQuery(), {
+                parentGoalId: goalId,
+                startDate: cycle.start,
+                endDate: cycle.end,
+            })
+            latestTasks.forEach((task) => {
+                const clone = TaskLogic.cloneRelativeTo(latestCycleStart, cycle.start, task);
+                clone.parentId = newCycle.id;
+                tx.addCreate(new TaskQuery(), clone);
+            });
+            latestCycleId = newCycle.id;
+            start = newCycle.startDate;
+        })
+
+        // Determine whether the latest cycle is one of the already existing cycles, or one
+        // of the newly created cycles.
+        const sortedDescended = afterCycles.sort((a, b) => {
+            return a.startDate.valueOf() - b.startDate.valueOf();
+        })
+        latestCycleId = sortedDescended[0] && sortedDescended[0].startDate > start ? sortedDescended[0].id : latestCycleId;
+
+        return {
+            newTx: tx,
+            latestCycleId: latestCycleId,
         }
 
-        let fullTasks = await Promise.all(tasks);
-        void new TaskQuery().createMultiple(fullTasks); // this should be batched, as it's all or nothing.
+        function getOpenCycles(existingPastCycleStart: Date, afterCycles: StreakCycle[], unit: "days" | "weeks" | "months",
+                                currentCycleStart: Date) {
+            console.log(`getting open cycles: ${existingPastCycleStart.toString()}, ${afterCycles.length}, ${currentCycleStart.toString()}, ${unit}`);
+            const sortedAscendingAfterCycles = afterCycles.sort((a, b) => {
+                return a.startDate.valueOf() - b.startDate.valueOf();
+            })
+            const openCycles: { start: Date, end: Date }[] = [];
+
+            let nextCycleStart = new MyDate(existingPastCycleStart).addCycle(unit);
+
+            // First, generate all cycles between the latest past cycle and the first future cycle
+            const firstAfterCycle = sortedAscendingAfterCycles[0];
+            if(firstAfterCycle) {
+                while(nextCycleStart.toDate() < firstAfterCycle.startDate) {
+                    openCycles.push({
+                        start: nextCycleStart.toDate(),
+                        end: new MyDate(nextCycleStart.toDate()).addIncompleteCycle(unit).toDate()
+                    })
+                    nextCycleStart.addCycle(unit);
+                }
+            }
+
+            // Second, generate all cycles missing within the future cycles
+            nextCycleStart = new MyDate(sortedAscendingAfterCycles.reduce((accDate, current) => {
+                let nextCycleStart = new MyDate(accDate);
+                while( nextCycleStart.toDate() < current.startDate) {
+                    openCycles.push({
+                        start: nextCycleStart.toDate(),
+                        end: new MyDate(nextCycleStart.toDate()).addIncompleteCycle(unit).toDate()
+                    })
+                    nextCycleStart.addCycle(unit);
+                }
+
+                nextCycleStart.addCycle(unit);
+
+                return nextCycleStart.toDate();
+            }, nextCycleStart.toDate()));
+
+            // Finally, generate all cycles remaining, up to and including the current cycle.
+            // Observe that if the condition below holds true at all, then the current
+            // cycle cannot exist yet, since we processed all existing cycles above.
+            while(nextCycleStart.toDate() <= currentCycleStart) {
+                openCycles.push({
+                    start: nextCycleStart.toDate(),
+                    end: new MyDate(nextCycleStart.toDate()).addIncompleteCycle(unit).toDate()
+                })
+                nextCycleStart.addCycle(unit);
+            }
+
+            console.log("got " + openCycles.length + "open cycles");
+
+            return openCycles;
+        }
     }
 
     /**
@@ -481,39 +574,58 @@ export class GoalLogic {
     }
 
     /**
-     * Creates a new goal based on an old goal. Start/Due dates have the same relation to newDate taht 
+     * Creates a new goal based on an old goal. Start/Due dates have the same relation to new Date that
      * the old goal's start/due dates had to the oldDate.
      */
-    cloneRelativeTo = async (oldDate: Date, newDate: Date) => {
-        const goal = await new GoalQuery().get(this.id);
-
-        if(goal) {
-            const newStart = new MyDate(newDate).add( new MyDate(goal.startDate).diff(oldDate, "minutes"), "minutes");
-            const newGoal : IGoal = {
-                title: goal.title,
-                details: goal.details,
-                goalType: goal.goalType,
-                parentId: goal.parentId,
-                state: 'open',
-                active: true,
-                rewardType: goal.rewardType,
-                recurId: goal.recurId,
-                streakMinimum: goal.streakMinimum,
-                streakDailyStart: goal.streakDailyStart,
-                streakMonthlyStart: goal.streakMonthlyStart,
-                streakType: goal.streakType,
-                streakWeeklyStart: goal.streakWeeklyStart,
-                startDate: newStart.toDate(),
-                dueDate: new MyDate(newDate).add( new MyDate(goal.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
-                latestCycleStartDate: newStart.prevMidnight().toDate(),
-                lastRefreshed: goal.lastRefreshed,
-                rewardId: goal.rewardId,
-                penaltyType: goal.penaltyType,
-                penaltyId: goal.penaltyId,
-            }
-            return newGoal;
-        } else {
-            throw new Error()
+    static cloneRelativeTo = (oldDate: Date, newDate: Date, goal: Goal) => {
+        const newStart = new MyDate(newDate).add( new MyDate(goal.startDate).diff(oldDate, "minutes"), "minutes");
+        const newGoal : IGoal = {
+            title: goal.title,
+            details: goal.details,
+            goalType: goal.goalType,
+            parentId: goal.parentId,
+            state: 'open',
+            active: true,
+            rewardType: goal.rewardType,
+            recurId: goal.recurId,
+            streakMinimum: goal.streakMinimum,
+            streakDailyStart: goal.streakDailyStart,
+            streakMonthlyStart: goal.streakMonthlyStart,
+            streakType: goal.streakType,
+            streakWeeklyStart: goal.streakWeeklyStart,
+            startDate: newStart.toDate(),
+            dueDate: new MyDate(newDate).add( new MyDate(goal.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
+            latestCycleId: "", //starts with no cycle? No, it should start with a cycle, and tasks in the cycle
+            lastRefreshed: goal.lastRefreshed,
+            rewardId: goal.rewardId,
+            penaltyType: goal.penaltyType,
+            penaltyId: goal.penaltyId,
         }
+        return newGoal;
+    }
+
+    update = async (goalData: Partial<IGoal>) => {
+        // no reason to touch the latest cycle concept here.
+        //goalData.latestCycleId = new MyDate(goalData.startDate).prevMidnight().toDate();
+        const goal = await new GoalQuery().get(this.id);
+        if(goal) {
+            const tx = new Transaction();
+            tx.addUpdate(new GoalQuery(), goal, goalData);
+            tx.commitAndReset();
+        }
+    }
+
+    static create = async (goalData: Partial<IGoal>, repeats: "never" | "daily" | "weekly" | "monthly") => {
+
+        const tx = new Transaction();
+        if(repeats === "never") {
+            tx.addCreate(new GoalQuery(), goalData);
+        } else {
+            const recur = tx.addCreate(new RecurQuery(), RecurLogic.createDataForGoal(repeats) );
+            goalData.recurId = recur.id;
+            tx.addCreate(new GoalQuery(), goalData);
+        }
+
+        tx.commitAndReset();
     }
 }

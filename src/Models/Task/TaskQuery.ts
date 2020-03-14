@@ -262,25 +262,12 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
         return (await this.queryCompletedTasks().fetch()) as Task[];
     }
 
-    queryInStreakCycle = (start: Date, type: "daily" | "weekly" | "monthly") => {
-        let unit: "days" | "weeks" | "months" = "days";
-        switch(type) {
-            case "daily": unit = "days"; break;
-            case "weekly": unit = "weeks"; break;
-            case "monthly": unit = "months"; break;
-            default: { }
-        }
-
-        return this.store().query(
-            Q.and( Q.and(...Conditions.startsOnOrAfter(start)),
-                    Q.and(...Conditions.startsBefore(new MyDate(start).add(1, unit).toDate()))
-                  )
-            
-        )
+    queryInStreakCycle = (cycleId: string) => {
+        return this.queryInSCycle(cycleId);
     }
 
-    inStreakCycle = async (start: Date, type: "daily" | "weekly" | "monthly") => {
-        return await this.queryInStreakCycle(start, type).fetch() as Task[];
+    inStreakCycle = async (cycleId: string) => {
+        return await this.queryInStreakCycle(cycleId).fetch() as Task[];
     }
 }
 
@@ -340,11 +327,24 @@ export class TaskLogic {
         }
     }
 
+    static cloneRelativeTo = (oldDate, newDate: Date, task: Task) => {
+        const newTask : Omit<ITask, "createdAt" | "completedDate"> = {
+            title: task.title,
+            parentId: task.parentId,
+            instructions: task.instructions,
+            active: true,
+            state: 'open',
+            startDate: new MyDate(newDate).add( new MyDate(task.startDate).diff(oldDate, "minutes"), "minutes").toDate(),
+            dueDate: new MyDate(newDate).add( new MyDate(task.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
+            parentType: task.parentType,
+        }
+        return newTask;
+    }
+
     cloneRelativeTo = async (oldDate, newDate : Date) => {
         const task = await new TaskQuery().get(this.id)
 
         if(task) {
-            console.log("found task")
             const newTask : Omit<ITask, "createdAt" | "completedDate"> = {
                 title: task.title,
                 parentId: task.parentId,

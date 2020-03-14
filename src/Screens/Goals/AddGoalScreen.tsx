@@ -3,7 +3,7 @@ import { View, ScrollView, SafeAreaView, Button } from "react-native";
 import { AddGoalForm, AddGoalData, AddGoalDefault, ValidateGoalForm } from "src/Components/Forms/AddGoalForm";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
-import { GoalQuery, Goal, IGoal } from "src/Models/Goal/GoalQuery";
+import { GoalQuery, Goal, IGoal, GoalLogic } from "src/Models/Goal/GoalQuery";
 import { ColumnView, TouchableView } from "src/Components/Basic/Basic";
 import { DocumentView, ScreenHeader, Toast, IconButton, Icon } from "src/Components/Styled/Styled";
 import { RecurLogic } from "src/Models/Recurrence/RecurQuery";
@@ -21,6 +21,7 @@ import { Single, Child, None } from "App";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "src/Screens/common/screenUtils";
+import Transaction from "src/Models/common/Transaction";
 
 
 interface Props {
@@ -133,25 +134,10 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             };
 
             if(this.state.goal) {
-                goalData.latestCycleStartDate = new MyDate(goalData.startDate).prevMidnight().toDate();
-                void new GoalQuery().update(this.state.goal, goalData)
-                    .catch((reason) => {
-                        console.log("Failed to update existing goal with reason: " + reason);
-                    });
-
+                void new GoalLogic(this.state.goal.id).update(goalData)
                 this.props.navigation.goBack();
             } else {
-                // Whether a goal is recurring can only be set in this form on creation. Otherwise it needs to be handled elsewhere.
-                let recur: Recur | null = await RecurLogic.createForGoal(data.repeats);
-
-                if(recur) {
-                    goalData.recurId = recur.id;
-                }
-
-                void new GoalQuery().create(goalData)
-                    .catch((reason) => {
-                        console.log("Failed to create goal with reason: " + reason);
-                    });  
+                void GoalLogic.create(goalData, data.repeats)
 
                 this.props.navigation.goBack();
             }

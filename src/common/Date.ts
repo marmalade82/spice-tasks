@@ -184,6 +184,19 @@ export default class MyDate {
 
     };
 
+    /**
+     * Adds a cycle and then rounds to start
+     */
+    addCycle = (unit : "days" | "weeks" | "months") => {
+        this.add(1, unit).prevMidnight();
+        return this;
+    }
+
+    addIncompleteCycle = (unit: "days" | "weeks" | "months") => {
+        this.add(1, unit).prevMidnight().subtract(1, "minutes");
+        return this;
+    }
+
     isInNextCycleAfterDate = (d: Date, unit: timeUnit) => {
         const start = new MyDate(d).add(1, unit).prevMidnight();
         const end = new MyDate(d).add(2, unit).prevMidnight();
