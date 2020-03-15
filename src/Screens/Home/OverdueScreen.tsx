@@ -6,7 +6,7 @@ import List from "src/Components/Lists/base/List";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
-import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
+import GoalQuery, { GoalLogic, ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
 
 
 interface Props {
@@ -50,7 +50,7 @@ export default class OverdueScreen extends React.Component<Props, State> {
             })
         })
 
-        const goalSub = new GoalQuery().queryActiveAndOverdue().observeCount().subscribe((num) => {
+        const goalSub = new ActiveGoalQuery().queryOverdue().observeCount().subscribe((num) => {
             this.setState({
                 overdueGoalsCount: num
             })

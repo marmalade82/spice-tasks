@@ -9,7 +9,7 @@ import TaskQuery from "src/Models/Task/TaskQuery";
 import { ConnectedGoalTaskItem} from "src/ConnectedComponents/Lists/Composite/GoalTaskItem";
 import { merge } from "rxjs";
 import { AccordionList } from "src/Components/Basic/Basic";
-import GoalQuery from "src/Models/Goal/GoalQuery";
+import GoalQuery, { ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
 
 interface Props {
     navigation: any
@@ -122,22 +122,22 @@ const enhance = withObservables(['type'], (props: InputProps) => {
     if(props.type === "dueAndOverdueActive") {
         return {
             tasks: new TaskQuery().queryActiveAndDue().observe(),
-            goals: new GoalQuery().queryActiveAndDue().observe(),
+            goals: new ActiveGoalQuery().queryDueOrOverdue().observe(),
         }
     } else if(props.type === "startedButNotDueActive") {
         return {
             tasks: new TaskQuery().queryActiveAndStartedButNotDue().observe(),
-            goals: new GoalQuery().queryActiveAndStartedButNotDue().observe(),
+            goals: new ActiveGoalQuery().queryStartedButNotDue().observe(),
         }
     } else if (props.type === "notStartedActive") {
         return {
             tasks: new TaskQuery().queryActiveButNotStarted().observe(),
-            goals: new GoalQuery().queryActiveButNotStarted().observe(),
+            goals: new ActiveGoalQuery().queryNotStarted().observe(),
         }
     } else {
         return {
             tasks: new TaskQuery().queryAll().observe(),
-            goals: new GoalQuery().queryAll().observe(),
+            goals: new ActiveGoalQuery().queryAll().observe(),
         }
     }
 });

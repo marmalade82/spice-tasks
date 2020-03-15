@@ -4,7 +4,7 @@ import { ColumnView, RowView, RowReverseView, HeaderText } from "src/Components/
 import { ScreenHeader, DocumentView, ClickRow, ListPicker, ListItem } from "src/Components/Styled/Styled";
 import List from "src/Components/Lists/base/List";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
-import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
+import GoalQuery, { GoalLogic, ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
 
 
 interface Props {
@@ -37,7 +37,7 @@ export default class InProgressGoalListScreen extends React.Component<Props, Sta
     }
 
     componentDidMount = () => {
-        const inProgressSub = new GoalQuery().queryActiveAndStartedButNotDue().observeCount().subscribe((num) => {
+        const inProgressSub = new ActiveGoalQuery().queryStartedButNotDue().observeCount().subscribe((num) => {
             this.setState({
                 inProgressGoalsCount: num
             })

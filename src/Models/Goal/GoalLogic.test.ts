@@ -11,7 +11,7 @@ import {
 } from "src/common/test-utils";
 import MyDate from "src/common/Date";
 
-import GoalQuery, { GoalLogic } from "../Goal/GoalQuery";
+import GoalQuery, { GoalLogic, ActiveGoalQuery, CompleteGoalQuery } from "../Goal/GoalQuery";
 import { GoalType } from "./GoalLogic";
 import TaskQuery from "../Task/TaskQuery";
 import { dueDate, startDate } from "src/Components/Forms/common/utils";
@@ -251,28 +251,28 @@ describe("Processing partially processed streak goals", () => {
 
     test("correct amount of processing occurs", async () => {
         await wait(async () => {
-            const goals = await new GoalQuery().unprocessed();
+            const goals = await new ActiveGoalQuery().unprocessed();
             expect(goals.length).toEqual(0)
         });
 
         await setup();
 
         await wait(async () => {
-            const goals = await new GoalQuery().unprocessed();
+            const goals = await new ActiveGoalQuery().unprocessed();
             expect(goals.length).toEqual(3)
         });
 
         await GoalLogic.processSomeStreaks(2);
 
         await wait(async () => {
-            const goals = await new GoalQuery().unprocessed();
+            const goals = await new ActiveGoalQuery().unprocessed();
             expect(goals.length).toEqual(1)
         });
 
         await GoalLogic.processSomeStreaks(2);
 
         await wait(async () => {
-            const goals = await new GoalQuery().unprocessed();
+            const goals = await new ActiveGoalQuery().unprocessed();
             expect(goals.length).toEqual(0)
         });
 
@@ -345,7 +345,7 @@ describe("streak tasks have proper values", () => {
         await setup();
 
         await wait(async () => {
-            const goals = await new GoalQuery().unprocessed();
+            const goals = await new ActiveGoalQuery().unprocessed();
             expect(goals.length).toEqual(1)
         });
 
@@ -357,7 +357,7 @@ describe("streak tasks have proper values", () => {
         await GoalLogic.processSomeStreaks(2);
 
         await wait(async () => {
-            const goals = await new GoalQuery().unprocessed();
+            const goals = await new ActiveGoalQuery().unprocessed();
             expect(goals.length).toEqual(0)
         });
 

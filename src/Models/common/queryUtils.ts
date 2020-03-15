@@ -53,7 +53,8 @@ function openConditions() {
 
 function completeConditions() {
     return [
-        Q.where(name.STATE, 'complete')
+        Q.where(name.STATE, 'complete'),
+        Q.where(name.ACTIVE, false),
     ]
 }
 

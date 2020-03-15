@@ -20,18 +20,19 @@ import ActiveTransaction, {InactiveTransaction} from "../common/Transaction";
 import RecurQuery, { RecurLogic, Recur } from "../Recurrence/RecurQuery";
 import StreakCycleQuery, { ChildStreakCycleQuery } from "../Group/StreakCycleQuery";
 import StreakCycle from "../Group/StreakCycle";
+import { Condition } from "@nozbe/watermelondb/QueryDescription";
 
-class GoalQuery extends ModelQuery<Goal, IGoal>{
+export class GoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
         super(GoalSchema.table);
     }
 
     queries = () => {
-        return [];
+        return [] as Condition[];
     }
 
     default = () => {
-        const Default = {
+        const Default: IGoal = {
             title: 'Default Goal',
             goalType: GoalType.NORMAL,
             startDate: new Date(),
@@ -52,12 +53,12 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
             lastRefreshed: new Date(),
             rewardId: "",
             penaltyId: "",
-        } as const;
+        };
         return Default;
     }
 
     queryInRecurrence = (recurId: string) => {
-        return this.store().query(
+        return this.query(
             Q.where(GoalSchema.name.RECUR_ID, recurId)
         );
     }
@@ -66,30 +67,6 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
         return (await this.queryInRecurrence(recurId).fetch()) as Goal[]
     }
 
-    queryUnprocessed = () => {
-        return this.store().query(
-            ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
-                ...Conditions.active(),
-            ]
-        );
-    }
-
-    unprocessed = async () => {
-        return (await this.queryUnprocessed().fetch()) as Goal[];
-    }
-
-    queryUnprocessedStreaks = () => {
-        return this.store().query(
-            ...[ ...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
-                 ...Conditions.active(),
-                 ...Conditions.isStreak(),
-            ]
-        )
-    }
-
-    unprocessedStreaks = async () => {
-        return (await this.queryUnprocessedStreaks().fetch()) as Goal[];
-    }
 
     latestInRecurrence = async (recurId: string) => {
         let goals = await this.inRecurrence(recurId);
@@ -104,16 +81,8 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
         }
     }
 
-    queryActiveAndStarted = () => {
-        return this.query(
-            ...[
-                ...Conditions.started(), ...Conditions.active()
-            ]
-        )
-    }
-
     queryInRecentRecurrence = (recurId: string) => {
-        return this.store().query(
+        return this.query(
             ...[ Q.where(GoalSchema.name.RECUR_ID, recurId),
                 ...Conditions.createdAfter( new MyDate().subtract(2, "months").toDate() )
             ]
@@ -125,7 +94,7 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
     }
 
     queryOngoingStreakGoals = () => {
-        return this.store().query(
+        return this.query(
             ...[...Conditions.active(), 
                 ...Conditions.isStreak(), 
                 ...Conditions.started(), 
@@ -138,61 +107,12 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
         return (await this.queryOngoingStreakGoals().fetch()) as Goal[];
     }
 
-    queryActiveAndDue = () => {
-        return this.store().query(
-            Q.or(
-                Q.and(
-                    ...[...Conditions.active(), ...Conditions.overdue()]
-                ),
-                Q.and(
-                    ...[...Conditions.active(), ...Conditions.dueToday()]
-                )
-            )
-        )
-    }
-
-    queryActiveAndDueToday = () => {
-        return this.store().query(
-            ...[...Conditions.active(), ...Conditions.dueToday()]
-        );
-    }
-
-    queryActiveAndStartedButNotDue = () => {
-        return this.store().query(
-            ...[...Conditions.active(), ...Conditions.started(), ...Conditions.notDue()]
-        )
-    }
-
-    queryActiveButNotStarted = () => {
-        return this.store().query(
-            ...[...Conditions.active(), ...Conditions.notStarted()]
-        );
-    }
-
-    queryActive = () => {
-        return this.store().query(
-            ...Conditions.active()
-        );
-    }
-
-    activeGoals = async () => {
-        return await this.queryActive().fetch() as Goal[];
-    }
-
-    queryCompleted = () => {
-        return this.store().query(...Conditions.complete())
-    }
-
-    completedGoals = async () => {
-        return await this.queryCompleted().fetch() as Goal[];
-    }
-
     queryInactive = () => {
-        return this.store().query(...Conditions.inactive());
+        return this.query(...Conditions.inactive());
     }
 
     queryFailed = () => {
-        return this.store().query(...Conditions.failed());
+        return this.query(...Conditions.failed());
     }
 
     inactiveGoals = async () => {
@@ -203,79 +123,114 @@ class GoalQuery extends ModelQuery<Goal, IGoal>{
         return await this.queryFailed().fetch() as Goal[];
     }
 
-    queryActiveAndOverdue = () => {
-        return this.store().query(
-            ...[...Conditions.active(), ...Conditions.overdue()]
-        );
-    }
-
-    completeGoalAndDescendants = async (opts: { id: string}) => {
-        if(opts.id !== '') {
-            try {
-                const parent: Goal = await this.store().find(opts.id) as Goal;
-                /* THIS ISN"T READY YET. need to recursively check descendant goals for both goals and tasks */
-                const allGoals: Goal[] = [parent]// await findAllChildrenIn(this.table, parent.id, [parent]);
-                const allGoalsPrep = allGoals.map((goal: Goal) => {
-                    return goal.prepareUpdate((g: IGoal) => {
-                        g.active = false;
-                        g.state = 'complete';
-                    });
-                });
-
-                const allTasks: Task[] = await findAllChildrenIn(TaskSchema.table, parent.id, []);
-                const allTasksPrep = allTasks.map((task: Task) => {
-                    return task.prepareUpdate((t: ITask) => {
-                        t.active = false;
-                        t.state = 'complete';
-                    });
-                });
-
-                await DB.get().action(async() => {
-                    await DB.get().batch(...[...allGoalsPrep, ...allTasksPrep]);
-                })
-            } catch (e) {
-                console.log(e);
-                throw e;
-            }
-        }
-    }
-
-    failGoalAndDescendants = async(opts: { id: string}) => {
-        if(opts.id !== '') {
-            try {
-                const parent: Goal = await this.store().find(opts.id) as Goal;
-                /* THIS ISN"T READY YET. need to recursively check descendant goals for both goals and tasks */
-                const allGoals: Goal[] = [parent]// await findAllChildrenIn(this.table, parent.id, [parent]);
-                const allGoalsPrep = allGoals.map((goal: Goal) => {
-                    return goal.prepareUpdate((g: IGoal) => {
-                        g.active = false;
-                        g.state = 'cancelled';
-                    });
-                });
-
-                const allTasks: Task[] = await findAllChildrenIn(TaskSchema.table, parent.id, []);
-                const allTasksPrep = allTasks.map((task: Task) => {
-                    return task.prepareUpdate((t: ITask) => {
-                        t.active = false;
-                        t.state = 'cancelled';
-                    });
-                });
-
-                await DB.get().action(async() => {
-                    await DB.get().batch(...[...allGoalsPrep, ...allTasksPrep]);
-                })
-
-            } catch (e) {
-                console.log(e);
-                throw e;
-            }
-        }
-    }
 }
 
 export default GoalQuery;
+
+export class ActiveGoalQuery extends ModelQuery<Goal, IGoal>{ 
+    constructor() {
+        super(GoalSchema.table);
+    }
+    default = () => {
+        let def = new GoalQuery().default();
+        def.active = true;
+        return def;
+    }
+
+    queries = () => {
+        return new GoalQuery().queries().concat(
+            Conditions.active()
+        ) 
+    }
+
+    queryOverdue = () => {
+        return this.query(
+            ...[...Conditions.overdue()]
+        );
+    }
+
+    queryStartedButNotDue = () => {
+        return this.query(
+            ...[...Conditions.started(), ...Conditions.notDue()]
+        )
+    }
+
+    queryDueOrOverdue = () => {
+        return this.query(
+            Q.or(
+                Q.and(
+                    ...[...Conditions.overdue()]
+                ),
+                Q.and(
+                    ...[...Conditions.dueToday()]
+                )
+            )
+        )
+    }
+
+    queryDueToday = () => {
+        return this.query(
+            ...[...Conditions.dueToday()]
+        );
+    }
+
+    queryNotStarted = () => {
+        return this.query(
+            ...[...Conditions.notStarted()]
+        );
+    }
+
+    queryStarted = () => {
+        return this.query(
+            ...[
+                ...Conditions.started()
+            ]
+        )
+    }
+
+    queryUnprocessed = () => {
+        return this.query(
+            ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+            ]
+        );
+    }
+
+    unprocessed = async () => {
+        return (await this.queryUnprocessed().fetch()) as Goal[];
+    }
+
+    queryUnprocessedStreaks = () => {
+        return this.query(
+            ...[ ...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+                 ...Conditions.isStreak(),
+            ]
+        )
+    }
+
+    unprocessedStreaks = async () => {
+        return (await this.queryUnprocessedStreaks().fetch()) as Goal[];
+    }
+}
+
+export class CompleteGoalQuery extends ModelQuery<Goal, IGoal>{ 
+    constructor() {
+        super(GoalSchema.table);
+    }
+    default = () => {
+        let def = new GoalQuery().default();
+        def.active = false;
+        def.state = "complete";
+        return def;
+    }
+
+    queries = () => {
+        return new GoalQuery().queries().concat(
+            ...Conditions.complete()
+        )
+    }
+}
+
 export {
-    GoalQuery,
     Goal,
     IGoal,
 }
@@ -293,79 +248,17 @@ export class GoalLogic {
     }
 
     static processSomeStreaks = async (n?: number) => {
-        const goals: Goal[] = await new GoalQuery().unprocessedStreaks();
+        const goals: Goal[] = await new ActiveGoalQuery().unprocessedStreaks();
         await GoalLogic.process(goals, n)
     }
 
-    static process = async (arr: Goal[], n?: number) => {
-        /*
-            let firstN = take(arr, n? n : arr.length).map((goal) => {
-                return new GoalLogic(goal.id).generateNextStreakTasks();
-            });
-
-            await Promise.all(firstN);
-        */
-            
+    private static process = async (arr: Goal[], n?: number) => {
             
         let firstN = take(arr, n? n : arr.length);
         for(let i = 0; i < firstN.length; i++) {
             // Since only one transaction may run at a time, we might as well do each transaction just 
             // one at a time.
             await new GoalLogic(firstN[i].id).generateNextStreakTasks();
-        }
-    }
-
-    complete = async () => {
-        await new GoalQuery().completeGoalAndDescendants({
-            id: this.id
-        });
-
-        await this.earnReward();
-    }
-
-    earnReward = async () => {
-        const goal: IGoal | null = await new GoalQuery().get(this.id);
-        if(goal) {
-            switch(goal.rewardType) {
-                case RewardTypes.NONE: {
-                    // If none, do nothing. No reward was earned.
-                } break;
-                case RewardTypes.SPECIFIC: {
-                    await EarnedRewardLogic.earnSpecific(goal.rewardId, this.id);
-                };
-                default: {
-                    await new EarnedRewardQuery().create({
-                        earnedDate: new MyDate().toDate(),
-                        type: goal.rewardType,
-                        goalId: this.id,
-                    })
-                }
-            }
-        }
-    }
-
-    fail = async () => {
-        await new GoalQuery().failGoalAndDescendants({
-            id: this.id
-        })
-
-        await this.earnPenalty();
-    }
-
-    earnPenalty = async () => {
-        const goal = await new GoalQuery().get(this.id);
-        if(goal) {
-            switch(goal.penaltyType) {
-                case PenaltyTypes.NONE: {
-                    // Nothing
-                } break;
-                case PenaltyTypes.SPECIFIC: {
-                    await EarnedPenaltyLogic.earnSpecific(goal.penaltyId, this.id);
-                } break;
-                default: {
-                    // Nothing for now.
-                }
-            }
         }
     }
 
@@ -544,50 +437,6 @@ export class GoalLogic {
     }
 
     /**
-     * For each task created in the last cycle (after the scheduled start),
-     * create duplicate tasks with the exact same date relationships to the scheduled start.
-     */
-    generateStreakTasks = async (timeUntilNext?: number) => {
-        const goal: IGoal | null = await new GoalQuery().get(this.id);
-        if(goal) {
-            let nextCycle: MyDate;
-            let lastCycle: MyDate;
-            switch(goal.streakType) {
-                case "daily": {
-                    nextCycle =  new MyDate().nextCycleStart(goal.streakType, goal.streakDailyStart);
-                    lastCycle = new MyDate().lastCycleStart(goal.streakType, goal.streakDailyStart);
-                } break;
-                case "weekly": {
-                    nextCycle = new MyDate().nextCycleStart(goal.streakType, goal.streakWeeklyStart);
-                    lastCycle = new MyDate().lastCycleStart(goal.streakType, goal.streakWeeklyStart);
-                } break;
-                case "monthly": {
-                    nextCycle = new MyDate().nextCycleStart(goal.streakType, goal.streakMonthlyStart);
-                    lastCycle = new MyDate().lastCycleStart(goal.streakType, goal.streakMonthlyStart);
-                } break;
-                default: {
-                    throw new Error("unhandled streak type")
-                }
-            }
-
-            if( nextCycle.inNext("minutes", timeUntilNext ? timeUntilNext : 50)) {
-                // If the time is really soon, then we'll generate the next streak's tasks right now.
-                // We query all completed or active tasks created AFTER shortly before the last cycle start,
-                // and we clone them.
-                let tasks = await new TaskQuery().createdBetween(
-                        lastCycle.subtract(2, "hours").toDate(), MyDate.Now().toDate());
-
-                const newTasks = await Promise.all(tasks.map(async (task) => {
-                    return await (new TaskLogic(task.id).cloneRelativeTo(lastCycle.toDate(), nextCycle.toDate()))
-                }));
-                void new TaskQuery().createMultiple(newTasks);
-            } else {
-                console.log("not in next cycle start");
-            }
-        }
-    }
-
-    /**
      * Creates a new goal based on an old goal. Start/Due dates have the same relation to new Date that
      * the old goal's start/due dates had to the oldDate.
      */
@@ -648,5 +497,117 @@ export class GoalLogic {
         }
 
         await tx.commitAndReset();
+    }
+
+    complete = async () => {
+        const tx = await ActiveTransaction.new();
+        tx.consume(await this.completeGoalAndDescendants({
+            id: this.id
+        }));
+
+        tx.consume(await this.earnReward())
+
+        await tx.commitAndReset();
+    }
+
+    private earnReward = async () => {
+        const tx = InactiveTransaction.new();
+        const goal: IGoal | null = await new GoalQuery().get(this.id);
+        if(goal) {
+            switch(goal.rewardType) {
+                case RewardTypes.NONE: {
+                    // If none, do nothing. No reward was earned.
+                } break;
+                case RewardTypes.SPECIFIC: {
+                    tx.consume(await EarnedRewardLogic.earnSpecific(goal.rewardId, this.id));
+                };
+                default: {
+                    tx.addCreate(new EarnedRewardQuery(), {
+                        earnedDate: new MyDate().toDate(),
+                        type: goal.rewardType,
+                        goalId: this.id,
+                    })
+                }
+            }
+        }
+        return tx;
+    }
+
+    fail = async () => {
+        const tx = await ActiveTransaction.new();
+        tx.consume( await this.failGoalAndDescendants({
+            id: this.id
+        }));
+
+        tx.consume( await this.earnPenalty() );
+
+        await tx.commitAndReset();
+    }
+
+    private earnPenalty = async () => {
+        const tx = InactiveTransaction.new();
+        const goal = await new GoalQuery().get(this.id);
+        if(goal) {
+            switch(goal.penaltyType) {
+                case PenaltyTypes.NONE: {
+                    // Nothing
+                } break;
+                case PenaltyTypes.SPECIFIC: {
+                    tx.consume(await EarnedPenaltyLogic.earnSpecific(goal.penaltyId, this.id))
+                } break;
+                default: {
+                    // Nothing for now.
+                }
+            }
+        }
+
+        return tx;
+    }
+
+    private completeGoalAndDescendants = async ( opts: { id: string}) => {
+        return await this.actionGoalAndDescendants("complete", opts.id);
+    }
+
+    private actionGoalAndDescendants = async (action: "complete" | "fail", id: string) => {
+        const tx = new InactiveTransaction();
+        const goal = await new GoalQuery().get(id);
+        if(goal) {
+            const update = getUpdate(action);
+            [goal].forEach((g) => {
+                tx.addUpdate(new GoalQuery(), g, {
+                    ...update
+                })
+            })
+
+            const allTasks: Task[] = await findAllChildrenIn(TaskSchema.table, goal.id, []);
+            allTasks.forEach((task: Task) => {
+                tx.addUpdate(new TaskQuery(), task, {
+                    ...update
+                })
+            });
+        }
+
+        return tx;
+
+        function getUpdate(action: "complete" | "fail") {
+            switch(action) {
+                case "complete": {
+                    return {
+                        active: false,
+                        state: 'complete',
+                    } as const;
+                }
+                case "fail": {
+                    return {
+                        active: false,
+                        state: 'cancelled',
+                    } as const;
+                }
+            }
+        }
+    }
+
+    private failGoalAndDescendants = async(opts: { id: string}) => {
+        return await this.actionGoalAndDescendants("fail", opts.id);
     }
 }

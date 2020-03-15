@@ -4,7 +4,7 @@ jest.mock('src/Notification');
 import DB from "src/Models/Database";
 import React from "react";
 import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cleanup } from '@testing-library/react-native';
-import { Goal, GoalQuery, IGoal } from "src/Models/Goal/GoalQuery";
+import { Goal, GoalQuery, IGoal, ActiveGoalQuery, CompleteGoalQuery } from "src/Models/Goal/GoalQuery";
 import { TaskQuery, Task, ITask } from "src/Models/Task/TaskQuery";
 import GoalScreen from "src/Screens/Goals/GoalScreen";
 import { 
@@ -25,7 +25,7 @@ describe("Using the complete button", () => {
     test("By pressing Complete button, user can mark the goal and its tasks as Complete in the database", async () => {
         const opts = await setup();
 
-        let activeGoals: Goal[] = await new GoalQuery().activeGoals();
+        let activeGoals: Goal[] = await new ActiveGoalQuery().all();
         expect(activeGoals.length).toEqual(1);
         let activeTasks: Task[] = await new TaskQuery().activeTasks();
         expect(activeTasks.length).toEqual(1);
@@ -42,11 +42,11 @@ describe("Using the complete button", () => {
         } 
 
         await wait(async() => {
-            const completedGoals: Goal[] = await new GoalQuery().completedGoals();
+            const completedGoals: Goal[] = await new CompleteGoalQuery().all();
             expect(completedGoals.length).toEqual(1);
             const inactiveGoals: Goal[] = await new GoalQuery().inactiveGoals();
             expect(inactiveGoals.length).toEqual(1);
-            activeGoals = await new GoalQuery().activeGoals();
+            activeGoals = await new ActiveGoalQuery().all();
             expect(activeGoals.length).toEqual(0);
         })
 
@@ -499,7 +499,7 @@ describe("Using the incomplete button", () => {
 
         const opts = await setup();
 
-        let activeGoals: Goal[] = await new GoalQuery().activeGoals();
+        let activeGoals: Goal[] = await new ActiveGoalQuery().all();
         expect(activeGoals.length).toEqual(1);
         let activeTasks: Task[] = await new TaskQuery().activeTasks();
         expect(activeTasks.length).toEqual(1);
@@ -520,7 +520,7 @@ describe("Using the incomplete button", () => {
             expect(completedGoals.length).toEqual(1);
             const inactiveGoals: Goal[] = await new GoalQuery().inactiveGoals();
             expect(inactiveGoals.length).toEqual(1);
-            activeGoals = await new GoalQuery().activeGoals();
+            activeGoals = await new ActiveGoalQuery().all();
             expect(activeGoals.length).toEqual(0);
         })
 
@@ -713,7 +713,7 @@ describe("streak goal tests", () => {
         } 
 
         await wait(async() => {
-            const completedGoals: Goal[] = await new GoalQuery().completedGoals();
+            const completedGoals: Goal[] = await new CompleteGoalQuery().all();
             expect(completedGoals.length).toEqual(1);
             const inactiveGoals: Goal[] = await new GoalQuery().inactiveGoals();
             expect(inactiveGoals.length).toEqual(1);
@@ -764,7 +764,7 @@ describe("streak goal tests", () => {
         const { parentId } = await setup();
 
         await wait(async() => {
-            const completedGoals: Goal[] = await new GoalQuery().completedGoals();
+            const completedGoals: Goal[] = await new CompleteGoalQuery().all();
             expect(completedGoals.length).toEqual(0);
             const inactiveGoals: Goal[] = await new GoalQuery().inactiveGoals();
             expect(inactiveGoals.length).toEqual(0);
@@ -803,7 +803,7 @@ describe("streak goal tests", () => {
             // no goals should have completed, since the minimum is 2 and there is only 1 child.
             const inactiveGoals: Goal[] = await new GoalQuery().inactiveGoals();
             expect(inactiveGoals.length).toEqual(0);
-            const completedGoals: Goal[] = await new GoalQuery().completedGoals();
+            const completedGoals: Goal[] = await new CompleteGoalQuery().all();
             expect(completedGoals.length).toEqual(0);
         })
 

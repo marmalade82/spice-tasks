@@ -43,6 +43,14 @@ export class InactiveTransaction {
         );
     }
 
+    consume = (other: InactiveTransaction) => {
+        other.batch.forEach((line) => {
+            this.batch.push(line);
+        })
+
+        other.reset();
+    }
+
     /**
      * Removes everything from the gathered transaction
      */

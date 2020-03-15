@@ -7,7 +7,7 @@ import {
 import Goal from "src/Models/Goal/Goal";
 import withObservables from "@nozbe/with-observables";
 
-import GoalQuery from "src/Models/Goal/GoalQuery";
+import GoalQuery, { ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
 import List from "src/Components/Lists/base/List";
 import ClickNavigation from "src/Components/Navigation/ClickNavigation";
 import { observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
@@ -95,12 +95,12 @@ const enhance = withObservables([], (props: InputProps) => {
     switch(props.type) {
         case "overdue" : {
             return {
-                goals: observableWithRefreshTimer( () => new GoalQuery().queryActiveAndOverdue().observe())
+                goals: observableWithRefreshTimer( () => new ActiveGoalQuery().queryOverdue().observe())
             }
         } break;
         case "in-progress-not-due": {
             return {
-                goals: observableWithRefreshTimer(() => new GoalQuery().queryActiveAndStartedButNotDue().observe())
+                goals: observableWithRefreshTimer(() => new ActiveGoalQuery().queryStartedButNotDue().observe())
             }
         } break;
         case "recurring": {
@@ -110,7 +110,7 @@ const enhance = withObservables([], (props: InputProps) => {
         } break;
         case "ongoing": {
             return {
-                goals: observableWithRefreshTimer( () => new GoalQuery().queryActiveAndStarted().observe() ),
+                goals: observableWithRefreshTimer( () => new ActiveGoalQuery().queryStarted().observe() ),
             }
         } break;
         default: {

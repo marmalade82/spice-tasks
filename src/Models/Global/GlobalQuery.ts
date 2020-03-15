@@ -13,7 +13,7 @@ import MyDate from "src/common/Date";
 import { Observable, interval, timer } from "rxjs";
 import Notification from "src/Notification";
 import TaskQuery from "../Task/TaskQuery";
-import GoalQuery, { Goal, GoalLogic } from 'src/Models/Goal/GoalQuery';
+import GoalQuery, { Goal, GoalLogic, ActiveGoalQuery } from 'src/Models/Goal/GoalQuery';
 import RecurQuery, { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 
 const name = GlobalSchema.name
@@ -57,11 +57,11 @@ export class GlobalLogic {
     }
 
     runRefresh = async () => {
-        await this.runDailyNotifications();
-        await this.runRecordRefresh();
+        void this.runDailyNotifications();
+        void this.runRecordRefresh();
     }
 
-    runRecordRefresh = async () => {
+    private runRecordRefresh = async () => {
         const count = 5;
         // process @count of the recurring goals for the day.
         // Keep this logic short so it doesn't take up too much resources.
@@ -77,7 +77,7 @@ export class GlobalLogic {
             const countDue = await new TaskQuery().queryActiveAndDueToday().fetchCount();
 
             // Notify count of all overdue goals/tasks.
-            const countOverdueGoals = await new GoalQuery().queryActiveAndOverdue().fetchCount();
+            const countOverdueGoals = await new ActiveGoalQuery().queryOverdue().fetchCount();
             const countOverdueTasks = await new TaskQuery().queryActiveAndOverdue().fetchCount();
 
             Notification.localNotification({
@@ -88,26 +88,12 @@ export class GlobalLogic {
         }
     }
 
-    refreshNotificationDates = async () => {
+    private refreshNotificationDates = async () => {
         const current = await new GlobalQuery().current();
 
         await new GlobalQuery().update(current, {
             lastNotifiedDate: new Date(),
         });
-    }
-
-    refreshCurrentTime = async () => {
-        const time = await new GlobalQuery().current()
-
-        if(time) {
-            await new GlobalQuery().update(time, {
-                current: new Date(),
-            });
-        } else {
-            await new GlobalQuery().create({
-                current: new Date(),
-            });
-        }
     }
 }
 

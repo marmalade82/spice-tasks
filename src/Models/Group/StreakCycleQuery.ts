@@ -7,7 +7,9 @@ import { Conditions } from "../common/queryUtils";
 import GoalQuery from "../Goal/GoalQuery";
 
 
-
+function endsOnBeforeConditions(d: Date) {
+    return Conditions.dueOnOrBefore(d);
+}
 
 export class StreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle> {
 
@@ -30,10 +32,11 @@ export class StreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle> {
         ];
     }
 
-    queryDueOnBefore = (date: Date) => {
+    queryEndsOnBefore = (date: Date) => {
         return this.query(
-            ...Conditions.dueOnOrBefore(date),
+            ...endsOnBeforeConditions(date)
         )
+
     }
 }
 
@@ -60,7 +63,7 @@ export class ChildStreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle>
 
     queryEndsOnBefore = (date: Date) => {
         return this.query(
-            ...Conditions.dueOnOrBefore(date),
+            ...endsOnBeforeConditions(date),
         )
     }
 

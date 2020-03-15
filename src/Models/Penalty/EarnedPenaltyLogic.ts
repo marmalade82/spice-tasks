@@ -4,6 +4,7 @@ import ClaimedRewardQuery from "src/Models/Reward/ClaimedRewardQuery"
 import MyDate from "src/common/Date";
 import { PenaltyTypes } from "./PenaltyLogic";
 import EarnedPenaltyQuery from "./EarnedPenaltyQuery";
+import { InactiveTransaction } from "../common/Transaction";
 
 
 
@@ -15,17 +16,19 @@ export default class EarnedPenaltyLogic {
     }
 
     static earnSpecific = async (penaltyId: string, goalId: string) => {
+        const tx = InactiveTransaction.new();
         const penalty = await new PenaltyQuery().get(penaltyId);
         if(penalty) {
             const title = penalty.title;
             const details = penalty.details;
-            void new EarnedPenaltyQuery().create({
+            tx.addCreate(new EarnedPenaltyQuery(), {
                 title: title,
                 details: details,
                 goalId: goalId,
                 type: PenaltyTypes.SPECIFIC
             });
         }
+        return tx;
     }
 
     use = async () => {

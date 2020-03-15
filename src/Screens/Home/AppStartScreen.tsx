@@ -15,7 +15,7 @@ import {
     LEFT_SECOND_MARGIN, PRIMARY_COLOR_LIGHT, LEFT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, RIGHT_SECOND_MARGIN, ROW_HEIGHT
 } from "src/Components/Styled/Styles";
 import withObservables from "@nozbe/with-observables";
-import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
+import GoalQuery, { GoalLogic, ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
 import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
 import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import GlobalQuery, { GlobalLogic, Global_Timer, observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
@@ -104,7 +104,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
             });
 
         let ongoingGoalsSub: Subscription = observableWithRefreshTimer(
-            () => new GoalQuery().queryActiveAndStarted().observeCount()).subscribe((count) => {
+            () => new ActiveGoalQuery().queryStarted().observeCount()).subscribe((count) => {
                 this.setState({
                     ongoingGoalsCount: count
                 })
@@ -372,7 +372,7 @@ const enhance = withObservables([], (_props: AllStatusListProps) => {
     return {
         overdueTaskCount: observableWithRefreshTimer(() => new TaskQuery().queryActiveAndOverdue().observeCount()),
         remainingTodayTaskCount: observableWithRefreshTimer(() => new TaskQuery().queryRemainingToday().observeCount()),
-        inProgressGoalsCount: observableWithRefreshTimer(() => new GoalQuery().queryActiveAndStartedButNotDue().observeCount()),
+        inProgressGoalsCount: observableWithRefreshTimer(() => new ActiveGoalQuery().queryStartedButNotDue().observeCount()),
         earnedRewardsCount: observableWithRefreshTimer(() => new EarnedRewardQuery().queryUnused().observeCount()),
         earnedPenaltiesCount: observableWithRefreshTimer(() => new EarnedPenaltyQuery().queryUnused().observeCount()),
     }
