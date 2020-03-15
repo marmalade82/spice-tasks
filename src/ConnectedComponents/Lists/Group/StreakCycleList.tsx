@@ -14,7 +14,7 @@ import SwipeRow from "src/Components/Basic/SwipeRow";
 import { View } from "react-native"
 import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
 import StreakCycle from "src/Models/Group/StreakCycle";
-import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
+import StreakCycleQuery, { ChildStreakCycleQuery } from "src/Models/Group/StreakCycleQuery";
 import { ConnectedStreakCycleListItem } from "src/ConnectedComponents/Lists/Group/StreakCycleListItem";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import { switchMap } from "rxjs/operators";
@@ -78,7 +78,7 @@ const enhance = withObservables([], (props: InputProps) => {
                 cycles: new GoalQuery().queryId(props.goalId ? props.goalId : "").observe().pipe(switchMap((goals) => {
                     const goal = goals[0];
                     if(goal) {
-                        return new StreakCycleQuery().queryDueOnBeforeInGoal(goal.id, goal.currentCycleEnd()).observe();
+                        return new ChildStreakCycleQuery(goal.id).queryEndsOnBefore(goal.currentCycleEnd()).observe();
                     } else {
                         return new Observable<StreakCycle[]>((subscriber) => {
                             subscriber.next([])

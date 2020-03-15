@@ -18,7 +18,7 @@ import EarnedPenaltyQuery from "../Penalty/EarnedPenaltyQuery";
 import EarnedPenaltyLogic from "../Penalty/EarnedPenaltyLogic";
 import ActiveTransaction, {InactiveTransaction} from "../common/Transaction";
 import RecurQuery, { RecurLogic, Recur } from "../Recurrence/RecurQuery";
-import StreakCycleQuery from "../Group/StreakCycleQuery";
+import StreakCycleQuery, { ChildStreakCycleQuery } from "../Group/StreakCycleQuery";
 import StreakCycle from "../Group/StreakCycle";
 
 class GoalQuery extends ModelQuery<Goal, IGoal>{
@@ -412,14 +412,10 @@ export class GoalLogic {
             }
 
             const tx = await ActiveTransaction.new();
-            let initialLatestCycle = await new StreakCycleQuery().get(goal.latestCycleId);
-            if(!initialLatestCycle) {
-                initialLatestCycle = await new StreakCycleQuery().calculatedLatestInGoal(goal.id);
-            }
+            let initialLatestCycle = await new ChildStreakCycleQuery(goal.id).latest();
 
             if(initialLatestCycle) {
-                console.log("found latest cycle");
-                const afterCycles = await new StreakCycleQuery().endsAfterInGoal(goal.id, initialLatestCycle.endDate)
+                const afterCycles = await new ChildStreakCycleQuery(goal.id).endsAfter(initialLatestCycle.endDate)
                 const latestCycleTasks: Task[] = await new TaskQuery().inStreakCycle(initialLatestCycle.id);
                 const latestCycleEndDate: Date = initialLatestCycle.endDate;
 

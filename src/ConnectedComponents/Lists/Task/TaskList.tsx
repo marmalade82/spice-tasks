@@ -20,7 +20,7 @@ import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Style
 import EmptyList from "src/Components/Lists/EmptyList";
 import { prependToMemberExpression } from "@babel/types";
 import { OnTaskAction } from "src/Components/Lists/Items/TaskListItem";
-import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
+import StreakCycleQuery, { ChildStreakCycleQuery } from "src/Models/Group/StreakCycleQuery";
 import { switchMap } from "rxjs/operators";
 
 interface Props {
@@ -172,7 +172,7 @@ const enhance = withObservables(['type'], (props: InputProps) => {
         case "current-cycle": {
             return {
                 // This should provide a list of the tasks that are in the latest streak cycle
-                tasks: new StreakCycleQuery().queryInGoal(props.parentId).observe().pipe(switchMap(( cycles ) => {
+                tasks: new ChildStreakCycleQuery(props.parentId).queryAll().observe().pipe(switchMap(( cycles ) => {
                     const sorted = cycles.sort((a, b) => {
                         return b.startDate.valueOf() - a.startDate.valueOf()
                     })

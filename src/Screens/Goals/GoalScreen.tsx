@@ -16,7 +16,7 @@ import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 import { ConnectedStreakCycleList } from "src/ConnectedComponents/Lists/Group/StreakCycleList";
-import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
+import StreakCycleQuery, { ChildStreakCycleQuery } from "src/Models/Group/StreakCycleQuery";
 import { switchMap } from "rxjs/operators";
 import MyDate from "src/common/Date";
 
@@ -96,7 +96,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                 })
             });
 
-            const currentCycleSub = new StreakCycleQuery().queryInGoal(goal.id).observe().pipe(switchMap(( cycles ) => {
+            const currentCycleSub = new ChildStreakCycleQuery(goal.id).queryAll().observe().pipe(switchMap(( cycles ) => {
                     const sorted = cycles.sort((a, b) => {
                         return b.startDate.valueOf() - a.startDate.valueOf()
                     })
@@ -109,8 +109,8 @@ export default class GoalScreen extends React.Component<Props, State> {
                     })
                 })
 
-            const previousCycleSub = new StreakCycleQuery()
-                                                        .queryDueOnBeforeInGoal(goal.id, goal.currentCycleEnd())
+            const previousCycleSub = new ChildStreakCycleQuery(goal.id)
+                                                        .queryEndsOnBefore(goal.currentCycleEnd())
                                                         .observeCount()
                                                         .subscribe((n) => {
                 this.setState({
@@ -270,7 +270,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 flex: 0,
                             }}
                         >
-                            <BackgroundTitle title={`Current Cycle (${this.state.currentCycleCount}) starts ${goal.currentCycleStart().toString()} ends ${goal.currentCycleEnd().toString()}`}
+                            <BackgroundTitle title={`Current Cycle (${this.state.currentCycleCount})`}
                                 style={{
                                 }}
                             ></BackgroundTitle>

@@ -7,7 +7,7 @@ import { Q, Database, Model } from "@nozbe/watermelondb";
 import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils"
 import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
-import StreakCycleQuery from "../Group/StreakCycleQuery";
+import StreakCycleQuery, { ChildStreakCycleQuery } from "../Group/StreakCycleQuery";
 import ActiveTransaction, { DBResourceLock, CURRENT_STREAK_CYCLE_ID } from "../common/Transaction";
 import GoalQuery from "../Goal/GoalQuery";
 import StreakCycle from "../Group/StreakCycle";
@@ -297,7 +297,7 @@ export class TaskLogic {
             // We won't have transaction conflicts, because only one transaction is allowed to be 
             // active at a time.
 
-            let currentCycle = await new StreakCycleQuery().inGoalCurrentCycle(parentGoal.id);
+            let currentCycle = await new ChildStreakCycleQuery(parentGoal.id).inCurrentCycle();
             let finalCurrentCycle: StreakCycle;
             if(!currentCycle) {
                 finalCurrentCycle = tx.addCreate(new StreakCycleQuery(), {

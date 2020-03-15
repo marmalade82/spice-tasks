@@ -17,11 +17,11 @@ export class StreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle> {
 
     default = () => {
         return {
-            type: "streak_cycle",
+            type: "streak_cycle" as "streak_cycle",
             parentGoalId: "",
             startDate: startDate(new Date()),
             endDate: dueDate(new Date()),
-        } as const;
+        };
     }
 
     queries = () => {
@@ -30,72 +30,91 @@ export class StreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle> {
         ];
     }
 
-    queryInGoal = (goalId: string) => {
-        return this.query(
-            Q.where(GroupSchema.name.PARENT, goalId)
-        );
-    }
-
     queryDueOnBefore = (date: Date) => {
         return this.query(
             ...Conditions.dueOnOrBefore(date),
         )
     }
+}
 
-    queryDueOnBeforeInGoal = (goalId: string, date: Date) => {
+export default StreakCycleQuery;
+
+export class ChildStreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle>{
+    goalId: string;
+    constructor(parentId: string) {
+        super(GroupSchema.table);
+        this.goalId = parentId;
+    }
+
+    default = () => {
+        let def = new StreakCycleQuery().default();
+        def.parentGoalId = this.goalId;
+        return def;
+    }
+
+    queries = () => {
+        return new StreakCycleQuery().queries().concat([
+            Q.where(GroupSchema.name.PARENT, this.goalId) 
+        ])
+    }
+
+    queryEndsOnBefore = (date: Date) => {
         return this.query(
-            Q.and(...Conditions.dueOnOrBefore(date)),
-            Q.and(Q.where(GroupSchema.name.PARENT, goalId))
+            ...Conditions.dueOnOrBefore(date),
         )
     }
 
-    queryDueAfterInGoal = (goalId: string, date: Date) => {
+    queryEndsAfter = (date: Date) => {
         return this.query(
             Q.and(...Conditions.dueAfter(date)),
-            Q.and(Q.where(GroupSchema.name.PARENT, goalId))
         );
     }
 
-    endsAfterInGoal = async(goalId: string, date: Date) => {
-        return await this.queryDueAfterInGoal(goalId, date).fetch();
+    endsAfter = async(date: Date) => {
+        return await this.queryEndsAfter(date).fetch();
     }
 
-    calculatedLatestInGoal = async (goalId: string) => {
-        const cycles = await new StreakCycleQuery().queryInGoal(goalId).fetch();
-        const sorted = cycles.sort((a, b) => {
-            return b.startDate.valueOf() - a.startDate.valueOf()
-        })
-
-        return sorted[0] ? sorted[0] : null;
-    }
-
-    inGoalCurrentCycle = async (goalId: string) => {
-        const goal = await new GoalQuery().get(goalId);
+    latest = async() => {
+        const goal = await new GoalQuery().get(this.goalId);
         if(goal) {
-            console.log("starts " + goal.currentCycleStart().toString());
-            console.log("ends " + goal.currentCycleEnd().toString())
+            //We'll try to get it if it's cached.
+            const cycle = await this.get(goal.latestCycleId);
+            if(cycle) {
+                return cycle;
+            } else {
+                // If it isn't cached, we'll have to calculate it.
+                const cycles = await this.queryAll().fetch();
+                const descending = cycles.sort((a, b) => {
+                    return b.startDate.valueOf() - a.startDate.valueOf()
+                })
+
+                return descending[0] ? descending[0] : null;
+            }
+        }
+
+        return null;
+    }
+
+    inCurrentCycle = async () => {
+        const goal = await new GoalQuery().get(this.goalId);
+        if(goal) {
             const cycles = await this.query(
                 ...[
                 ...Conditions.startsOnOrAfter(goal.currentCycleStart()),
                 ...Conditions.startsBefore(goal.currentCycleEnd()),
-                ...[Q.where(GroupSchema.name.PARENT, goalId)]
                 ]
             ).fetch();
 
             if(cycles[0]) {
                 return cycles[0];
             } else {
-                console.log("no cycle found for goal")
                 return null;
             }
         }
 
-        console.log("no goal found");
         return null;
     }
 }
-
-export default StreakCycleQuery;
 
 export class StreakCycleLogic {
     id: string;
