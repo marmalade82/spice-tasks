@@ -19,6 +19,15 @@ import { Observable } from "rxjs";
 import { LabelValue } from "src/common/types";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
+export let countOfThings = (() => {
+    let count = 0;
+    return () => {
+        count += 1;
+        console.log("count increased: " + count);
+    }
+})();
+
+
 interface Props {
     navigation: any;
 }

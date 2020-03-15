@@ -40,7 +40,7 @@ export class StreakCycleListItem extends Item<Props, State, StreakCycle> {
                 params={{id: id}}
                 destination={"StreakCycle"}
                 accessibilityLabel={this.props.accessibilityLabel}
-                text={`${new MyDate(start).format("MMM Do")} to ${new MyDate(end).format("MMM Do")}`}
+                text={`${new MyDate(start).format("MMM Do HHmmss")} to ${new MyDate(end).format("MMM Do HHmmss")}`}
                 subtext={ "" }
                 number={0}
                 key={id}

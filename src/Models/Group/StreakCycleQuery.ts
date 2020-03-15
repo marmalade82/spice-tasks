@@ -72,16 +72,25 @@ export class StreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle> {
     inGoalCurrentCycle = async (goalId: string) => {
         const goal = await new GoalQuery().get(goalId);
         if(goal) {
+            console.log("starts " + goal.currentCycleStart().toString());
+            console.log("ends " + goal.currentCycleEnd().toString())
             const cycles = await this.query(
-                Q.and(...Conditions.startsOnOrAfter(goal.currentCycleStart())),
-                Q.and(...Conditions.startsBefore(goal.currentCycleEnd()))
+                ...[
+                ...Conditions.startsOnOrAfter(goal.currentCycleStart()),
+                ...Conditions.startsBefore(goal.currentCycleEnd()),
+                ...[Q.where(GroupSchema.name.PARENT, goalId)]
+                ]
             ).fetch();
 
             if(cycles[0]) {
                 return cycles[0];
+            } else {
+                console.log("no cycle found for goal")
+                return null;
             }
         }
 
+        console.log("no goal found");
         return null;
     }
 }

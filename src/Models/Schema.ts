@@ -9,7 +9,7 @@ import { GlobalSchema } from 'src/Models/Global/GlobalSchema';
 import { GroupSchema } from "src/Models/Group/GroupSchema";
 
 const Schema = appSchema({
-    version: 1,
+    version: 2,
     tables: [
         generateTableSchema(GoalSchema),
         generateTableSchema(TaskSchema),

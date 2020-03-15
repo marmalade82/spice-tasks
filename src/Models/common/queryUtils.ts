@@ -140,30 +140,26 @@ function lastRefreshedOnOrBeforeConditions(d: Date) {
 }
 
 function startsOnOrAfterConditions(d: Date) {
-    let startOfDay = startDate(d);
     return [
-        Q.where(goalName.STARTS_AT, Q.gte(startOfDay.valueOf()))
+        Q.where(goalName.STARTS_AT, Q.gte(d.valueOf()))
     ]
 }
 
 function startsBeforeConditions(d: Date) {
-    let startOfDay = startDate(d);
     return [
-        Q.where(goalName.STARTS_AT, Q.lt(startOfDay.valueOf()))
+        Q.where(goalName.STARTS_AT, Q.lt(d.valueOf()))
     ]
 }
 
 function dueOnOrBeforeConditions(d: Date) {
-    let endOfDay = dueDate(d);
     return [
-        Q.where(goalName.DUE_AT, Q.lte(endOfDay.valueOf()))
+        Q.where(goalName.DUE_AT, Q.lte(d.valueOf()))
     ]
 }
 
 function dueAfterConditions(d: Date) {
-    let endOfDay = dueDate(d);
     return [
-        Q.where(goalName.DUE_AT, Q.gt(endOfDay.valueOf()))
+        Q.where(goalName.DUE_AT, Q.gt(d.valueOf()))
     ]
 }
 

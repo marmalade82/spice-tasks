@@ -12,6 +12,8 @@ import {
   Styles, ROW_CONTAINER_HEIGHT, TEXT_GREY, TAB_GREY,
 } from 'src/Components/Styled/Styles';
 import { IconButton, Icon, ScreenHeader } from 'src/Components/Styled/Styled';
+import ActiveTransaction from 'src/Models/common/Transaction';
+import { countOfThings } from 'src/Screens/Prototypes/TestScreen';
 
 const ScreenDirectory = {
   Home: {
@@ -239,6 +241,7 @@ export default class App extends React.Component {
 
   componentDidMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
+    
 
     void Schedule.refresh(1, () => false);
   }
@@ -253,9 +256,11 @@ export default class App extends React.Component {
         SpiceDBService.stopService();
       } break;
       case "background": {
+        ActiveTransaction.invalidate()
         SpiceDBService.startService();
       } break;
       case "inactive": {
+        ActiveTransaction.invalidate()
         SpiceDBService.startService();
       } break;
       case null: {

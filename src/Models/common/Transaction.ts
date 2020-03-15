@@ -64,6 +64,14 @@ export class ActiveTransaction {
         return new ActiveTransaction(lock);
     }
 
+    /**
+     * Frees the lock on the current active transaction so that transactions can continue in the background.
+     * Hopefully this doesn't lead to too many errors.
+    */
+    static invalidate = () => {
+        DBResourceLock.activeTxUnlock ? DBResourceLock.activeTxUnlock(null) : null;
+    }
+
     batch: M[] = [];
     lock: Lock;
     constructor(lock: Lock) {
@@ -109,7 +117,7 @@ export class ActiveTransaction {
     /**
      * Finalizes a transaction and sends them all as one to the DB.
      */
-    commit = async () => {
+    private commit = async () => {
         await DB.get().action(async () => {
             await DB.get().batch(
                 ...this.batch
@@ -149,6 +157,7 @@ type Lock = {
  */
 export class DBResourceLock {
     static resources: Resources = {};
+    static activeTxUnlock: undefined | ((payload: object | null) => void) = undefined;
     static lock = (name: string) => {
         return new Promise<Lock>((resolve, reject) => {
             let count = 0;
@@ -168,18 +177,21 @@ export class DBResourceLock {
                 } else {
                     // the resource is not currently locked, so we lock it.
                     DBResourceLock.resources[name] = true;
+                    const unlock = (() => {
+                        let locked = true;
+                        return (payload: object | null) => {
+                            if(locked) {
+                                DBResourceLock.resources[name] = payload ? payload : undefined;
+                            } else {
+                                // unlocking an unlocked lock is a no-op.
+                            }
+                        }
+                    })()
+
+                    DBResourceLock.activeTxUnlock = unlock;
                     resolve({
                         result: resource ? resource : null,
-                        unlock: (() => {
-                            let locked = true;
-                            return (payload: object | null) => {
-                                if(locked) {
-                                    DBResourceLock.resources[name] = payload ? payload : undefined;
-                                } else {
-                                    // unlocking an unlocked lock is a no-op.
-                                }
-                            }
-                        })(),
+                        unlock: unlock,
                     })
                 }
             }

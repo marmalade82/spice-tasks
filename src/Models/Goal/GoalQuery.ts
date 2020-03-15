@@ -298,13 +298,21 @@ export class GoalLogic {
     }
 
     static process = async (arr: Goal[], n?: number) => {
-            let firstN = take(arr, n? n : arr.length);
+        /*
+            let firstN = take(arr, n? n : arr.length).map((goal) => {
+                return new GoalLogic(goal.id).generateNextStreakTasks();
+            });
+
+            await Promise.all(firstN);
+        */
             
-            for(let i = 0; i < firstN.length; i++) {
-                // We must await in sequence due to WatermelonDB constraint that we must batch
-                // synchronously -- only one prepared transaction can exist at a time.
-                await new GoalLogic(firstN[i].id).generateNextStreakTasks();
-            }
+            
+        let firstN = take(arr, n? n : arr.length);
+        for(let i = 0; i < firstN.length; i++) {
+            // Since only one transaction may run at a time, we might as well do each transaction just 
+            // one at a time.
+            await new GoalLogic(firstN[i].id).generateNextStreakTasks();
+        }
     }
 
     complete = async () => {

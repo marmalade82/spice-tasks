@@ -270,7 +270,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 flex: 0,
                             }}
                         >
-                            <BackgroundTitle title={`Current Cycle (${this.state.currentCycleCount})`}
+                            <BackgroundTitle title={`Current Cycle (${this.state.currentCycleCount}) starts ${goal.currentCycleStart().toString()} ends ${goal.currentCycleEnd().toString()}`}
                                 style={{
                                 }}
                             ></BackgroundTitle>
