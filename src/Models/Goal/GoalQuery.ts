@@ -16,7 +16,7 @@ import EarnedRewardLogic from "../Reward/EarnedRewardLogic";
 import { PenaltyTypes } from "../Penalty/PenaltyLogic";
 import EarnedPenaltyQuery from "../Penalty/EarnedPenaltyQuery";
 import EarnedPenaltyLogic from "../Penalty/EarnedPenaltyLogic";
-import Transaction from "../common/Transaction";
+import ActiveTransaction, {InactiveTransaction} from "../common/Transaction";
 import RecurQuery, { RecurLogic, Recur } from "../Recurrence/RecurQuery";
 import StreakCycleQuery from "../Group/StreakCycleQuery";
 import StreakCycle from "../Group/StreakCycle";
@@ -403,7 +403,7 @@ export class GoalLogic {
                 }
             }
 
-            const tx = new Transaction();
+            const tx = await ActiveTransaction.new();
             let initialLatestCycle = await new StreakCycleQuery().get(goal.latestCycleId);
             if(!initialLatestCycle) {
                 initialLatestCycle = await new StreakCycleQuery().calculatedLatestInGoal(goal.id);
@@ -427,6 +427,12 @@ export class GoalLogic {
                     lastRefreshed: new Date(),
                 })
             } else {
+                // If there's no initial latest cycle at all, then there are no tasks. All we can do is add an initial cycle.
+                tx.addCreate(new StreakCycleQuery(), {
+                    parentGoalId: goal.id,
+                    startDate: goal.currentCycleStart(),
+                    endDate: goal.currentCycleEnd(),
+                })
                 tx.addUpdate(new GoalQuery(), goal, {
                     lastRefreshed: new Date(),
                 });
@@ -440,11 +446,11 @@ export class GoalLogic {
                                 latestCycleStart: Date,
                                 unit: "days" | "weeks" | "months",
                                 afterCycles: StreakCycle[],
-                                currentCycleStart: Date): Promise<{ latestCycleId: string, newTx: Transaction }> => {
+                                currentCycleStart: Date): Promise<{ latestCycleId: string, newTx: InactiveTransaction }> => {
         // If there was no cycle created after the latest known generated cycle, 
         // we keep generating cycles until we've also generated the current cycle.
         let start = latestCycleStart;
-        const tx = new Transaction();
+        const tx = InactiveTransaction.new();
         let latestCycleId = "";
 
         console.log("trying to generate next tasks");
@@ -613,7 +619,7 @@ export class GoalLogic {
         //goalData.latestCycleId = new MyDate(goalData.startDate).prevMidnight().toDate();
         const goal = await new GoalQuery().get(this.id);
         if(goal) {
-            const tx = new Transaction();
+            const tx = await ActiveTransaction.new();
             tx.addUpdate(new GoalQuery(), goal, goalData);
             tx.commitAndReset();
         }
@@ -621,15 +627,22 @@ export class GoalLogic {
 
     static create = async (goalData: Partial<IGoal>, repeats: "never" | "daily" | "weekly" | "monthly") => {
 
-        const tx = new Transaction();
-        if(repeats === "never") {
-            tx.addCreate(new GoalQuery(), goalData);
-        } else {
+        const tx = await ActiveTransaction.new();
+        if(repeats !== "never") {
             const recur = tx.addCreate(new RecurQuery(), RecurLogic.createDataForGoal(repeats) );
             goalData.recurId = recur.id;
-            tx.addCreate(new GoalQuery(), goalData);
+        } 
+
+        const goal = tx.addCreate(new GoalQuery(), goalData);
+
+        if(goal.goalType === GoalType.STREAK) {
+            tx.addCreate(new StreakCycleQuery(), {
+                parentGoalId: goal.id,
+                startDate: goal.currentCycleStart(),
+                endDate: goal.currentCycleEnd()
+            })
         }
 
-        tx.commitAndReset();
+        await tx.commitAndReset();
     }
 }

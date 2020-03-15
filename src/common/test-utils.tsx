@@ -136,7 +136,7 @@ async function destroyAll() {
     const tables: string[] = [
         GoalSchema.table, TaskSchema.table, RewardSchema.table,
         EarnedRewardSchema.table, ClaimedReward.table,
-        GlobalSchema.table, RecurSchema.table,
+        GlobalSchema.table, RecurSchema.table, GroupSchema.table,
     ];
     const destroys = tables.map((name: string) => {
         return destroyAllIn(name);

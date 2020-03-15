@@ -21,7 +21,6 @@ import { Single, Child, None } from "App";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "src/Screens/common/screenUtils";
-import Transaction from "src/Models/common/Transaction";
 
 
 interface Props {

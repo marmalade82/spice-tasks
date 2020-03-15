@@ -8,7 +8,7 @@ import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils"
 import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
 import StreakCycleQuery from "../Group/StreakCycleQuery";
-import Transaction from "../common/Transaction";
+import ActiveTransaction, { DBResourceLock, CURRENT_STREAK_CYCLE_ID } from "../common/Transaction";
 import GoalQuery from "../Goal/GoalQuery";
 import StreakCycle from "../Group/StreakCycle";
 
@@ -286,14 +286,16 @@ export class TaskLogic {
     static create = async (d: Partial<ITask>) => {
         const parentId = d.parentId ? d.parentId : ""
         const parentGoal = await new GoalQuery().get(parentId);
-        const tx = new Transaction();
-
+        const tx = await ActiveTransaction.new();
 
         if(parentGoal && parentGoal.isStreak()) {
             // We need to create a task, and add it to the current cycle
             // We should create the CURRENT cycle if it doesn't exist yet,
             // but we won't mark it as the LATEST cycle because this isn't generated through
             // the automatic processing.
+            //
+            // We won't have transaction conflicts, because only one transaction is allowed to be 
+            // active at a time.
 
             let currentCycle = await new StreakCycleQuery().inGoalCurrentCycle(parentGoal.id);
             let finalCurrentCycle: StreakCycle;
@@ -305,11 +307,11 @@ export class TaskLogic {
                 })
             } else {
                 finalCurrentCycle = currentCycle; 
+                d.parentId = finalCurrentCycle.id;  // reassign the parent field to the cycle where it belongs.
             }
 
-            d.parentId = finalCurrentCycle.id;  // reassign the parent field to the cycle where it belongs.
             tx.addCreate(new TaskQuery(), d);
-            tx.commitAndReset();
+            await tx.commitAndReset();
         } else {
             // We need to create a normal single task based on the data.
             // So we don't need to do anything here.
@@ -320,7 +322,7 @@ export class TaskLogic {
 
     update = async (d: Partial<ITask>) => {
         const task = await new TaskQuery().get(this.id);
-        const tx = new Transaction();
+        const tx = await ActiveTransaction.new();
         if(task) {
             tx.addUpdate(new TaskQuery(), task, d);
             tx.commitAndReset();

@@ -16,6 +16,7 @@ import { GoalType } from "./GoalLogic";
 import TaskQuery from "../Task/TaskQuery";
 import { dueDate, startDate } from "src/Components/Forms/common/utils";
 import StreakCycle from "../Group/StreakCycle";
+import StreakCycleQuery from "../Group/StreakCycleQuery";
 
 
 describe("streak tasks recur despite being very far in past" , () => {
@@ -32,6 +33,8 @@ describe("streak tasks recur despite being very far in past" , () => {
         await wait(async () => {
             const tasks = await new TaskQuery().all();
             expect(tasks.length).toBe(4);
+            const cycles = await new StreakCycleQuery().all();
+            expect(cycles.length).toBe(1);
         })
 
         await new GoalLogic(goalId).generateNextStreakTasks();
@@ -39,6 +42,8 @@ describe("streak tasks recur despite being very far in past" , () => {
         await wait(async () => {
             const tasks = await new TaskQuery().all();
             expect(tasks.length).toBe(4 + 2 * 4);
+            const cycles = await new StreakCycleQuery().all();
+            expect(cycles.length).toBe(1 + 4);
         });
 
         async function setup() {
@@ -99,6 +104,8 @@ describe("streak tasks recur despite being very far in past" , () => {
         await wait(async () => {
             const tasks = await new TaskQuery().all();
             expect(tasks.length).toBe(4);
+            const cycles = await new StreakCycleQuery().all();
+            expect(cycles.length).toBe(1);
         })
 
         await new GoalLogic(goalId).generateNextStreakTasks();
@@ -106,6 +113,8 @@ describe("streak tasks recur despite being very far in past" , () => {
         await wait(async () => {
             const tasks = await new TaskQuery().all();
             expect(tasks.length).toBe(4 + 2 * 4);
+            const cycles = await new StreakCycleQuery().all();
+            expect(cycles.length).toBe(1 + 4);
         });
 
         async function setup() {
@@ -165,6 +174,8 @@ describe("streak tasks recur despite being very far in past" , () => {
         await wait(async () => {
             const tasks = await new TaskQuery().all();
             expect(tasks.length).toBe(4);
+            const cycles = await new StreakCycleQuery().all();
+            expect(cycles.length).toBe(1);
         })
 
         await new GoalLogic(goalId).generateNextStreakTasks();
@@ -172,6 +183,8 @@ describe("streak tasks recur despite being very far in past" , () => {
         await wait(async () => {
             const tasks = await new TaskQuery().all();
             expect(tasks.length).toBe(4 + 2 * 4);
+            const cycles = await new StreakCycleQuery().all();
+            expect(cycles.length).toBe(1 + 4);
         });
 
         async function setup() {
