@@ -4,7 +4,7 @@ import MyDate from "src/common/Date";
 import PenaltyQuery from "src/Models/Penalty/PenaltyQuery";
 import { RewardTypes } from "./RewardLogic";
 import { isBuffer } from "util";
-import { InactiveTransaction } from "../common/Transaction";
+import ActiveTransaction, { InactiveTransaction } from "../common/Transaction";
 
 
 export default class EarnedRewardLogic {
@@ -33,68 +33,11 @@ export default class EarnedRewardLogic {
     use = async() => {
         const earned = await new EarnedRewardQuery().get(this.id);
         if(earned) {
-            await new EarnedRewardQuery().update(earned, {
+            const tx = await ActiveTransaction.new();
+            tx.addUpdate(new EarnedRewardQuery(), earned, {
                 active: false,
             })
-        }
-    }
-
-    fetchEarned = async () => {
-        if(this.earned) {
-            debugger;
-        } else {
-            debugger;
-            const earned = await new EarnedRewardQuery().get(this.id);
-            if(earned) {
-                this.earned = earned;
-            } else {
-                this.earned = undefined;
-            }
-        }
-        return this.earned;
-    }
-
-    /**
-     * Claims the specified reward and creates a clone
-     * of its details in the Claimed Rewards table so that 
-     * it can be accessed by the user.
-     */
-    claimReward = async (rewardId: string) => {
-        const earned = await this.fetchEarned();
-        debugger;
-        if(earned) {
-            const reward = await new RewardQuery().get(rewardId);
-            debugger;
-            if(reward) {
-                /*
-                await new ClaimedRewardQuery().create({
-                    title: reward.title,
-                    details: reward.details,
-                    claimedDate: new MyDate().toDate(),
-                    type: "reward",
-                    earnedId: this.id,
-                });*/
-            }
-        }
-
-    }
-
-    claimPenalty = async (penaltyId: string) => {
-        const earned = await this.fetchEarned();
-
-        if(earned) {
-            const penalty = await new PenaltyQuery().get(penaltyId);
-
-            if(penalty) {
-                /*
-                await new ClaimedRewardQuery().create({
-                    title: penalty.title,
-                    details: penalty.details,
-                    claimedDate: new MyDate().toDate(),
-                    type: "penalty",
-                    earnedId: this.id,
-                });*/
-            }
+            await tx.commitAndReset();
         }
     }
 }

@@ -57,8 +57,8 @@ export class GlobalLogic {
     }
 
     runRefresh = async () => {
-        void this.runDailyNotifications();
-        void this.runRecordRefresh();
+        await this.runRecordRefresh();
+        await this.runDailyNotifications();
     }
 
     private runRecordRefresh = async () => {

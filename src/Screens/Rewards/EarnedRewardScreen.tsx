@@ -55,21 +55,6 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
         }
     }
 
-    onCompleteWizard = (result:{ reward: string[], penalty: string[]} ) => {
-        // result shows the ids of rewards and penalties that were earned, so they 
-        // can be created and shown.
-        const { reward, penalty } = result;
-        const earnedId = this.props.navigation.getParam("id", "");
-        debugger;
-        for(let i = 0; i < reward.length; i++) {
-            void new EarnedRewardLogic(earnedId).claimReward(reward[i]);
-        }
-
-        for(let i = 0; i < penalty.length; i++) {
-            void new EarnedRewardLogic(earnedId).claimPenalty(penalty[i]);
-        }
-    }
-
     render = () => {
         
         return (
@@ -80,7 +65,7 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
         );
     }
 
-    onChoice = (choice: "use") => {
+    private onChoice = (choice: "use") => {
         const id = this.props.navigation.getParam("id", "");
         switch(choice) {
             case "use": {
@@ -93,7 +78,7 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
         }
     }
 
-    renderSummary = () => {
+    private renderSummary = () => {
         if(this.state.earnedReward && this.state.sourceGoal) {
             return (
                 <ConnectedEarnedRewardSummary
