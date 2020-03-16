@@ -6,7 +6,7 @@ import Goal from "src/Models/Goal/Goal";
 import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
 import { DocumentView, ScreenHeader, ListPicker, Toast, BackgroundTitle, ModalIconButton, ModalRow, Modal } from "src/Components/Styled/Styled";
 import { ScrollView } from "react-native";
-import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic, ActiveTaskQuery, ChildTaskQuery } from "src/Models/Task/TaskQuery";
 import FootSpacer from "src/Components/Basic/FootSpacer";
 import { TaskParentTypes } from "src/Models/Task/Task";
 import {  NavigationStackProp } from "react-navigation-stack";
@@ -85,12 +85,12 @@ export default class GoalScreen extends React.Component<Props, State> {
                 goal: goal
             })
 
-            const activeSub = new TaskQuery().queryActiveHasParent(goal.id).observeCount().subscribe((num) => {
+            const activeSub = new ActiveTaskQuery().queryHasParent(goal.id).observeCount().subscribe((num) => {
                 this.setState({
                     activeCount: num,
                 })
             });
-            const inactiveSub = new TaskQuery().queryInactiveHasParent(goal.id).observeCount().subscribe((num) => {
+            const inactiveSub = new ChildTaskQuery(goal.id).queryInactive().observeCount().subscribe((num) => {
                 this.setState({
                     inactiveCount: num,
                 })

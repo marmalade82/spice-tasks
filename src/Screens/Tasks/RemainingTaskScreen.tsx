@@ -2,7 +2,7 @@ import React from "react";
 import { ColumnView, RowView, RowReverseView, HeaderText } from "src/Components/Basic/Basic";
 import { ScreenHeader, DocumentView, ClickRow, ListPicker, ListItem } from "src/Components/Styled/Styled";
 import List from "src/Components/Lists/base/List";
-import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic, ActiveTaskQuery } from "src/Models/Task/TaskQuery";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 
 interface Props {
@@ -36,7 +36,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
     }
 
     componentDidMount = () => {
-        const dueSoonSub = new TaskQuery().queryActiveAndDueSoonToday().observeCount().subscribe((num) => {
+        const dueSoonSub = new ActiveTaskQuery().queryDueSoonToday().observeCount().subscribe((num) => {
             this.setState({
                 dueSoonTodayCount: num
             })
@@ -48,7 +48,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
             })
         })
 
-        const inProgressSub = new TaskQuery().queryActiveAndStartedButNotDue().observeCount().subscribe((num) => {
+        const inProgressSub = new ActiveTaskQuery().queryStartedButNotDue().observeCount().subscribe((num) => {
             this.setState({
                 inProgressCount: num
             });

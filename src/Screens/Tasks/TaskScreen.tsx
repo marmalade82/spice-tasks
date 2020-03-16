@@ -2,7 +2,7 @@ import React from "react";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList"
 import { ConnectedTaskSummary } from "src/ConnectedComponents/Summaries/TaskSummary";
 import Task, { TaskParentTypes } from "src/Models/Task/Task";
-import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic, ActiveTaskQuery, ChildTaskQuery } from "src/Models/Task/TaskQuery";
 import {
     ColumnView, RowView, Button as MyButton,
     ViewPicker,
@@ -66,12 +66,12 @@ export default class TaskScreen extends React.Component<Props, State> {
             this.setState({
                 task: task
             })
-            const activeSub = new TaskQuery().queryActiveHasParent(task.id).observeCount().subscribe((num) => {
+            const activeSub = new ActiveTaskQuery().queryHasParent(task.id).observeCount().subscribe((num) => {
                 this.setState({
                     activeCount: num,
                 })
             });
-            const inactiveSub = new TaskQuery().queryInactiveHasParent(task.id).observeCount().subscribe((num) => {
+            const inactiveSub = new ChildTaskQuery(task.id).queryInactive().observeCount().subscribe((num) => {
                 this.setState({
                     inactiveCount: num,
                 })

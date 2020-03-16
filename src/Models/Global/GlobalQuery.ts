@@ -12,7 +12,7 @@ import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
 import { Observable, interval, timer } from "rxjs";
 import Notification from "src/Notification";
-import TaskQuery from "../Task/TaskQuery";
+import TaskQuery, { ActiveTaskQuery } from "../Task/TaskQuery";
 import GoalQuery, { Goal, GoalLogic, ActiveGoalQuery } from 'src/Models/Goal/GoalQuery';
 import RecurQuery, { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 
@@ -74,11 +74,11 @@ export class GlobalLogic {
 
         if( !new MyDate(global.lastNotifiedDate).isSomeTimeToday() ) {
             // Notify count of all due tasks
-            const countDue = await new TaskQuery().queryActiveAndDueToday().fetchCount();
+            const countDue = await new ActiveTaskQuery().queryDueToday().fetchCount();
 
             // Notify count of all overdue goals/tasks.
             const countOverdueGoals = await new ActiveGoalQuery().queryOverdue().fetchCount();
-            const countOverdueTasks = await new TaskQuery().queryActiveAndOverdue().fetchCount();
+            const countOverdueTasks = await new ActiveTaskQuery().queryOverdue().fetchCount();
 
             Notification.localNotification({
                 message: `Due today:  ${countDue.toString()}\nOverdue: ${(countOverdueGoals + countOverdueTasks).toString()}`,

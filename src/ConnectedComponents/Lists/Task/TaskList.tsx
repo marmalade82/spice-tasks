@@ -9,7 +9,7 @@ import withObservables from "@nozbe/with-observables";
 import {
     Task
 } from "src/Models/Task/Task";
-import TaskQuery from "src/Models/Task/TaskQuery";
+import TaskQuery, { ActiveTaskQuery, ChildTaskQuery } from "src/Models/Task/TaskQuery";
 import List from "src/Components/Lists/base/List";
 import { PagedList } from "src/Components/Styled/Styled";
 import { View } from "react-native";
@@ -116,22 +116,22 @@ const enhance = withObservables(['type'], (props: InputProps) => {
     switch(props.type) {
         case "active": {
             return {
-                tasks: new TaskQuery().queryActiveTasks().observe()
+                tasks: new ActiveTaskQuery().queryAll().observe()
             }
         } break;
         case "parent-active": {
             return {
-                tasks: new TaskQuery().queryActiveHasParent(props.parentId).observe(),
+                tasks: new ActiveTaskQuery().queryHasParent(props.parentId).observe(),
             }
         } break;
         case "parent-inactive": {
             return {
-                tasks: new TaskQuery().queryInactiveHasParent(props.parentId).observe(),
+                tasks: new ChildTaskQuery(props.parentId).queryInactive().observe(),
             }
         } break;
         case "active-due-soon-today": {
             return {
-                tasks: new TaskQuery().queryActiveAndDueSoonToday().observe()
+                tasks: new ActiveTaskQuery().queryDueSoonToday().observe()
             }
         } break;
         case "completed-today" : {
@@ -141,7 +141,7 @@ const enhance = withObservables(['type'], (props: InputProps) => {
         } break;
         case "in-progress-but-not-due-today": {
             return {
-                tasks: observableWithRefreshTimer(() => new TaskQuery().queryActiveAndStartedButNotDue().observe()),
+                tasks: observableWithRefreshTimer(() => new ActiveTaskQuery().queryStartedButNotDue().observe()),
             }
         } break;
         case "in-progress": {
@@ -151,17 +151,17 @@ const enhance = withObservables(['type'], (props: InputProps) => {
         } break;
         case "due-today": {
             return {
-                tasks: observableWithRefreshTimer( () => new TaskQuery().queryActiveAndDueToday().observe() )
+                tasks: observableWithRefreshTimer( () => new ActiveTaskQuery().queryDueToday().observe() )
             }
         } break;
         case "overdue": {
             return {
-                tasks: observableWithRefreshTimer( () => new TaskQuery().queryActiveAndOverdue().observe())
+                tasks: observableWithRefreshTimer( () => new ActiveTaskQuery().queryOverdue().observe())
             }
         } break;
         case "remaining-today": {
             return {
-                tasks: observableWithRefreshTimer( () => new TaskQuery().queryRemainingToday().observe()),
+                tasks: observableWithRefreshTimer( () => new ActiveTaskQuery().queryRemainingToday().observe()),
             }
         } break;
         case "single": {

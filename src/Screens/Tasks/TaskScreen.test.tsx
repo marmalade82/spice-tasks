@@ -8,7 +8,7 @@ import {
     createTasks,
 } from "src/common/test-utils";
 import TaskScreen from "src/Screens/Tasks/TaskScreen";
-import { TaskQuery, Task, ITask } from "src/Models/Task/TaskQuery";
+import { TaskQuery, Task, ITask, ActiveTaskQuery } from "src/Models/Task/TaskQuery";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 import DB from "src/Models/Database";
 
@@ -65,7 +65,7 @@ test("User has access to the complete button and more button", async() => {
 test("User can mark a task (and its children) as Complete/Inactive in the database", async () => {
     const opts = await setup();
 
-    let activeTasks: Task[] = await new TaskQuery().activeTasks();
+    let activeTasks: Task[] = await new ActiveTaskQuery().all();
     expect(activeTasks.length).toEqual(2);
 
     {
@@ -107,7 +107,7 @@ test("User can mark a task (and its children) as Complete/Inactive in the databa
     })
 
     await wait(async () => {
-        activeTasks = await new TaskQuery().activeTasks();
+        activeTasks = await new ActiveTaskQuery().all();
         expect(activeTasks.length).toEqual(0);
     })
 
@@ -263,7 +263,7 @@ describe("list interactions", () => {
             expect(tasks.length).toEqual(2);
         })
 
-        const activeTasks = await new TaskQuery().queryActiveHasParent(parentId).fetch();
+        const activeTasks = await new ActiveTaskQuery().queryHasParent(parentId).fetch();
         expect(activeTasks.length).toEqual(1);
 
         async function setup() {
@@ -305,7 +305,7 @@ describe("list interactions", () => {
             expect(tasks.length).toEqual(2);
         })
 
-        const activeTasks = await new TaskQuery().queryActiveHasParent(parentId).fetch();
+        const activeTasks = await new ActiveTaskQuery().queryHasParent(parentId).fetch();
         expect(activeTasks.length).toEqual(1);
 
         async function setup() {

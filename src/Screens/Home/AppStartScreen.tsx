@@ -16,7 +16,7 @@ import {
 } from "src/Components/Styled/Styles";
 import withObservables from "@nozbe/with-observables";
 import GoalQuery, { GoalLogic, ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
-import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic, ActiveTaskQuery } from "src/Models/Task/TaskQuery";
 import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import GlobalQuery, { GlobalLogic, Global_Timer, observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
 import { Subscription } from "rxjs";
@@ -83,21 +83,21 @@ export default class AppStartScreen extends React.Component<Props, State> {
         });
 
         let dueTodaySub: Subscription = observableWithRefreshTimer(
-            () => new TaskQuery().queryActiveAndDueToday().observeCount() ).subscribe((count) => {
+            () => new ActiveTaskQuery().queryDueToday().observeCount() ).subscribe((count) => {
                 this.setState({
                     dueTodayCount: count,
                 })
             })
 
         let inProgressSub: Subscription = observableWithRefreshTimer(
-            () => new TaskQuery().queryActiveAndStartedButNotDue().observeCount()).subscribe((count) => {
+            () => new ActiveTaskQuery().queryStartedButNotDue().observeCount()).subscribe((count) => {
                 this.setState({
                     inProgressCount: count
                 })
             });
 
         let overdueSub: Subscription = observableWithRefreshTimer(
-            () => new TaskQuery().queryActiveAndOverdue().observeCount()).subscribe((count) => {
+            () => new ActiveTaskQuery().queryOverdue().observeCount()).subscribe((count) => {
                 this.setState({
                     overdueCount: count
                 })
@@ -370,8 +370,8 @@ interface AllStatusListProps {
  */
 const enhance = withObservables([], (_props: AllStatusListProps) => {
     return {
-        overdueTaskCount: observableWithRefreshTimer(() => new TaskQuery().queryActiveAndOverdue().observeCount()),
-        remainingTodayTaskCount: observableWithRefreshTimer(() => new TaskQuery().queryRemainingToday().observeCount()),
+        overdueTaskCount: observableWithRefreshTimer(() => new ActiveTaskQuery().queryOverdue().observeCount()),
+        remainingTodayTaskCount: observableWithRefreshTimer(() => new ActiveTaskQuery().queryRemainingToday().observeCount()),
         inProgressGoalsCount: observableWithRefreshTimer(() => new ActiveGoalQuery().queryStartedButNotDue().observeCount()),
         earnedRewardsCount: observableWithRefreshTimer(() => new EarnedRewardQuery().queryUnused().observeCount()),
         earnedPenaltiesCount: observableWithRefreshTimer(() => new EarnedPenaltyQuery().queryUnused().observeCount()),

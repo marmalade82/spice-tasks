@@ -13,7 +13,7 @@ import MyDate from "src/common/Date";
 
 import GoalQuery, { GoalLogic, ActiveGoalQuery, CompleteGoalQuery } from "../Goal/GoalQuery";
 import { GoalType } from "./GoalLogic";
-import TaskQuery from "../Task/TaskQuery";
+import TaskQuery, { ActiveTaskQuery } from "../Task/TaskQuery";
 import { dueDate, startDate } from "src/Components/Forms/common/utils";
 import StreakCycle from "../Group/StreakCycle";
 import StreakCycleQuery from "../Group/StreakCycleQuery";
@@ -350,7 +350,7 @@ describe("streak tasks have proper values", () => {
         });
 
         await wait(async () => {
-            const tasks = await new TaskQuery().activeTasks();
+            const tasks = await new ActiveTaskQuery().all();
             expect(tasks.length).toEqual(0);
         })
 
@@ -362,7 +362,7 @@ describe("streak tasks have proper values", () => {
         });
 
         await wait(async () => {
-            const tasks = await new TaskQuery().activeTasks();
+            const tasks = await new ActiveTaskQuery().all();
             expect(tasks.length).toEqual(1);
         })
 

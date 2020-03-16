@@ -30,7 +30,6 @@ const ScreenDirectory = {
   , Rewards: Screens.RewardList
   , AddReward: Screens.AddReward
   , Task: Screens.Task
-  , Dashboard: Screens.Dashboard
   , RewardOptions: Screens.RewardOptions
   , EarnedReward: Screens.EarnedReward
   , EarnedRewards: Screens.EarnedRewardList

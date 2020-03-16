@@ -11,18 +11,19 @@ import StreakCycleQuery, { ChildStreakCycleQuery } from "../Group/StreakCycleQue
 import ActiveTransaction, { DBResourceLock, CURRENT_STREAK_CYCLE_ID } from "../common/Transaction";
 import GoalQuery from "../Goal/GoalQuery";
 import StreakCycle from "../Group/StreakCycle";
+import { Condition } from "@nozbe/watermelondb/QueryDescription";
 
-export default class TaskQuery extends ModelQuery<Task, ITask> {
+export class TaskQuery extends ModelQuery<Task, ITask> {
     constructor() {
         super(TaskSchema.table);
     }
 
     queries = () => {
-        return [];
+        return [] as Condition[];
     }
 
     default = () => {
-        return {
+        let def: ITask = {
             title: "Default Task",
             instructions: "",
             startDate: new Date(),
@@ -33,7 +34,8 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
             completedDate: MyDate.Zero().toDate(),
             createdAt: new MyDate().toDate(),
             parentType: TaskParentTypes.TASK,
-        } as const;
+        };
+        return def;
     }
 
     queryInSCycle = (cycleId: string) => {
@@ -43,7 +45,7 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     queryCreatedBetween = (left: Date, right: Date) => {
-        return this.store().query(
+        return this.query(
             ...[ ...Conditions.createdAfter(left), ...Conditions.createdBefore(right)]
         )
     }
@@ -53,7 +55,7 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     queryCreatedBefore = (d: Date) => {
-        return this.store().query(
+        return this.query(
             ...Conditions.createdBefore(d)
         );
     }
@@ -63,7 +65,7 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     queryCreatedAfter = (d: Date) => {
-        return this.store().query(
+        return this.query(
             ...Conditions.createdAfter(d)
         );
     }
@@ -73,90 +75,8 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     queryCompletedToday = () => {
-        return this.store().query(
+        return this.query(
             ...[...Conditions.completedToday(), ...Conditions.complete()]
-        );
-    }
-
-    queryRemainingToday = () => {
-        return this.store().query(
-            Q.or(
-                Q.and(
-                    ...[...Conditions.active(), ...Conditions.dueToday()]
-                ),
-                Q.and(
-                    ...[...Conditions.active(), ...Conditions.started(), ...Conditions.notDue()]
-                ),
-            )
-        )
-    }
-
-    queryHasParent = (parentId: string) => {
-        return this.store().query(
-            Q.where('parent_id', parentId),
-        );
-    }
-
-    hasParent = async (parentId: string) => {
-        return await this.queryHasParent(parentId).fetch() as Task[];
-    }
-
-    queryActive = () => {
-        return this.store().query(
-            Q.where('is_active', true)
-        );
-    }
-
-    queryActiveHasParent = (parentId: string) => {
-        return this.store().query(
-            Q.where('is_active', true),
-            Q.where('parent_id', parentId)
-        );
-    }
-
-    queryActiveAndDueToday = () => {
-        return this.store().query(
-            ...[...Conditions.active(), ...Conditions.dueToday()]
-        );
-    }
-
-    queryActiveAndDueSoonToday = () => {
-        return this.store().query(
-            ...[...Conditions.active(), ...Conditions.dueToday(), ...Conditions.dueInFuture()]
-        );
-    }
-
-    queryActiveAndOverdue = () => {
-        return this.store().query(
-            ...[...Conditions.active(), ...Conditions.overdue()]
-        );
-    }
-
-    /**
-     * Query for tasks that are active, and due either today, or in the past (overdue).
-     */
-    queryActiveAndDue = () => {
-        return this.store().query(
-            Q.or(
-                Q.and(
-                    ...[...Conditions.active(), ...Conditions.overdue()]
-                ),
-                Q.and(
-                    ...[...Conditions.active(), ...Conditions.dueToday()]
-                )
-            )
-        )
-    }
-
-    queryActiveAndStartedButNotDue = () => {
-        return this.store().query(
-            ...[...Conditions.active(), ...Conditions.started(), ...Conditions.notDue()]
-        )
-    }
-
-    queryActiveButNotStarted = () => {
-        return this.store().query(
-            ...[...Conditions.active(), ...Conditions.notStarted()]
         );
     }
 
@@ -172,87 +92,28 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     queryInactive = () => {
-        return this.store().query(
-            Q.where('is_active', false)
+        return this.query(
+            ...Conditions.inactive()
         );
     }
 
     queryFailed = () => {
-        return this.store().query(...Conditions.failed());
+        return this.query(...Conditions.failed());
     }
 
     failedTasks = async () => {
         return await this.queryFailed().fetch() as Task[];
     }
 
-    queryInactiveHasParent = (parentId: string) => {
-        return this.store().query(
-            ...Conditions.inactiveChild(parentId)
-        );
-    }
 
-    queryOpen = () => {
-        return this.store().query(
-            Q.where('state', 'open')
-        );
-    }
-
-    queryCompletedHasParent = (parentId: string) => {
-        return this.store().query(
-            ...[...Conditions.inactiveChild(parentId), ...Conditions.complete()]
-        )
-    }
-
-    completeTaskAndDescendants = async (opts: { id: string}) => {
-        if(opts.id !== '') {
-            try {
-                const parent: Task = await this.store().find(opts.id) as Task;
-                const allTasks: Task[] = await findAllChildrenIn(TaskSchema.table, parent.id, [parent]);
-                const allTasksPrep = allTasks.map((task: Task) => {
-                    return task.prepareUpdate((t: ITask) => {
-                        t.active = false;
-                        t.state = 'complete';
-                        t.completedDate = new Date() // it was completed today.
-                    });
-                });
-
-                await DB.get().action(async() => {
-                    await DB.get().batch(...allTasksPrep);
-                })
-            } catch (e) {
-                console.log(e);
-                throw e;
-            }
-        }
-    }
-
-    queryActiveTasks = () => {
-        const active = this.query(
-            ...Conditions.active()
-        );
-
-        return active;
-    }
-
-    activeTasks = async () => {
-        return (await (this.queryActiveTasks()).fetch()) as Task[];
-    }
-
-    queryInactiveTasks = () => {
-        const inactive = this.query(
-            ...Conditions.inactive()
-        );
-
-        return inactive;
-    }
 
     inactiveTasks = async () => {
-        return (await (this.queryInactiveTasks()).fetch()) as Task[];
+        return (await (this.queryInactive()).fetch());
     }
 
     queryCompletedTasks = () => {
-        const complete = this.store().query(
-            Q.where('state', 'complete')
+        const complete = this.query(
+            ...Conditions.complete()
         );
 
         return complete;
@@ -271,8 +132,131 @@ export default class TaskQuery extends ModelQuery<Task, ITask> {
     }
 }
 
+export default TaskQuery;
+
+export class ActiveTaskQuery extends ModelQuery<Task, ITask> {
+    constructor() {
+        super(TaskSchema.table);
+    }
+    default = () => {
+        let def = new TaskQuery().default();
+        def.active = true;
+        return def;
+    }
+
+    queries = () => {
+        return new TaskQuery().queries().concat([
+            ...Conditions.active()
+        ])
+    }
+
+    queryOpen = () => {
+        return this.query(
+            Q.where('state', 'open')
+        );
+    }
+
+    queryHasParent = (parentId: string) => {
+        return this.query(
+            Q.where('parent_id', parentId)
+        );
+    }
+
+    queryDueToday = () => {
+        return this.query(
+            ...[ ...Conditions.dueToday()]
+        );
+    }
+
+    queryDueSoonToday = () => {
+        return this.query(
+            ...[ ...Conditions.dueToday(), ...Conditions.dueInFuture()]
+        );
+    }
+
+    queryOverdue = () => {
+        return this.query(
+            ...[...Conditions.overdue()]
+        );
+    }
+
+    /**
+     * Query for tasks that are active, and due either today, or in the past (overdue).
+     */
+    queryDueOrOverdue = () => {
+        return this.query(
+            Q.or(
+                Q.and(
+                    ...[ ...Conditions.overdue()]
+                ),
+                Q.and(
+                    ...[ ...Conditions.dueToday()]
+                )
+            )
+        )
+    }
+
+    queryStartedButNotDue = () => {
+        return this.query(
+            ...[ ...Conditions.started(), ...Conditions.notDue()]
+        )
+    }
+
+    queryNotStarted = () => {
+        return this.query(
+            ...[ ...Conditions.notStarted()]
+        );
+    }
+
+    queryRemainingToday = () => {
+        return this.query(
+            Q.or(
+                Q.and(
+                    ...[...Conditions.dueToday()]
+                ),
+                Q.and(
+                    ...[...Conditions.started(), ...Conditions.notDue()]
+                ),
+            )
+        )
+    }
+
+}
+
+export class ChildTaskQuery extends ModelQuery<Task, ITask> { 
+    parent: string;
+    constructor(parent: string) {
+        super(TaskSchema.table);
+        this.parent = parent;
+    }
+
+    default = () => {
+        let def = new TaskQuery().default();
+        def.parentId = this.parent;
+        return def;
+    }
+
+    queries = () => {
+        return new TaskQuery().queries().concat([
+            Q.where(TaskSchema.name.PARENT, this.parent)
+        ]);
+    }
+
+    queryInactive = () => {
+        return this.query(
+            ...Conditions.inactive()
+        );
+    }
+
+    queryCompleted = () => {
+        return this.query(
+            ...[...Conditions.complete()]
+        )
+    }
+
+}
+
 export {
-    TaskQuery,
     Task,
     ITask,
 }
@@ -311,13 +295,12 @@ export class TaskLogic {
             }
 
             tx.addCreate(new TaskQuery(), d);
-            await tx.commitAndReset();
         } else {
             // We need to create a normal single task based on the data.
             // So we don't need to do anything here.
             tx.addCreate(new TaskQuery(), d);
-            tx.commitAndReset();
         }
+        tx.commitAndReset();
     }
 
     update = async (d: Partial<ITask>) => {
@@ -325,8 +308,8 @@ export class TaskLogic {
         const tx = await ActiveTransaction.new();
         if(task) {
             tx.addUpdate(new TaskQuery(), task, d);
-            tx.commitAndReset();
         }
+        tx.commitAndReset();
     }
 
     static cloneRelativeTo = (oldDate, newDate: Date, task: Task) => {
@@ -343,50 +326,43 @@ export class TaskLogic {
         return newTask;
     }
 
-    cloneRelativeTo = async (oldDate, newDate : Date) => {
-        const task = await new TaskQuery().get(this.id)
-
-        if(task) {
-            const newTask : Omit<ITask, "createdAt" | "completedDate"> = {
-                title: task.title,
-                parentId: task.parentId,
-                instructions: task.instructions,
-                active: true,
-                state: 'open',
-                startDate: new MyDate(newDate).add( new MyDate(task.startDate).diff(oldDate, "minutes"), "minutes").toDate(),
-                dueDate: new MyDate(newDate).add( new MyDate(task.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
-                parentType: task.parentType,
-            }
-            return newTask;
-        } else {
-            console.log("no clone created")
-            throw new Error()
-        }
-    }
-
     complete = async () => {
-        await new TaskQuery().completeTaskAndDescendants({ id: this.id });
+        await this.actionTaskAndDescendants("complete", this.id)
     }
 
     fail = async () => {
-        try {
-            const parent: Task | null = await new TaskQuery().get(this.id);
-            if(parent) {
-                const allTasks: Task[] = await findAllChildrenIn(TaskSchema.table, parent.id, [parent]);
-                const allTasksPrep = allTasks.map((task: Task) => {
-                    return task.prepareUpdate((t: ITask) => {
-                        t.active = false;
-                        t.state = "cancelled";
-                    });
-                });
+        await this.actionTaskAndDescendants("fail", this.id);
+    }
 
-                await DB.get().action(async() => {
-                    await DB.get().batch(...allTasksPrep);
-                })
+    private actionTaskAndDescendants = async (action: "complete" | "fail", id: string) => {
+        const parent: Task | null = await new TaskQuery().get(this.id);
+        if(parent) {
+            const tx = await ActiveTransaction.new();
+            const allTasks: Task[] = await findAllChildrenIn(TaskSchema.table, parent.id, [parent]);
+            const update = getUpdate(action);
+            allTasks.forEach((task: Task) => {
+                tx.addUpdate(new TaskQuery(), task, update)
+            });
+
+            await tx.commitAndReset();
+        }
+
+        function getUpdate(action: "complete" | "fail") {
+            switch(action) {
+                case "complete": {
+                    return {
+                        active: false,
+                        state: "complete",
+                        completedDate: new Date(),
+                    } as const;
+                } 
+                case "fail": {
+                    return {
+                        active: false,
+                        state: "cancelled",
+                    } as const;
+                }
             }
-        } catch (e) {
-            console.log(e);
-            throw e;
         }
     }
 }

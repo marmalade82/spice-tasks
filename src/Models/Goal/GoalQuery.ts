@@ -10,7 +10,7 @@ import { GoalType } from "src/Models/Goal/GoalLogic";
 import { RewardTypes } from "src/Models/Reward/RewardLogic";
 import EarnedRewardQuery from "../Reward/EarnedRewardQuery";
 import MyDate from "src/common/Date";
-import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic, ActiveTaskQuery, ChildTaskQuery } from "src/Models/Task/TaskQuery";
 import { take } from "src/Models/common/logicUtils";
 import EarnedRewardLogic from "../Reward/EarnedRewardLogic";
 import { PenaltyTypes } from "../Penalty/PenaltyLogic";
@@ -277,8 +277,8 @@ export class GoalLogic {
      */
     metMinimum = async () => {
         const goal: IGoal | null = await new GoalQuery().get(this.id);
-        const activeTasks: number = await new TaskQuery().queryActiveHasParent(this.id).fetchCount();
-        const completedTasks: number = await new TaskQuery().queryCompletedHasParent(this.id).fetchCount();
+        const activeTasks: number = await new ActiveTaskQuery().queryHasParent(this.id).fetchCount();
+        const completedTasks: number = await new ChildTaskQuery(this.id).queryCompleted().fetchCount();
         debugger;
         if(goal) {
             const met = (activeTasks + completedTasks) >= goal.streakMinimum;

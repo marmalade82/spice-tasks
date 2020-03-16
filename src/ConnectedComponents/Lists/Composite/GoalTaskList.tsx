@@ -5,10 +5,8 @@ import ClickNavigation from "src/Components/Navigation/ClickNavigation";
 import List from "src/Components/Lists/base/List";
 import { Model } from "@nozbe/watermelondb";
 import withObservables from "@nozbe/with-observables";
-import TaskQuery from "src/Models/Task/TaskQuery";
+import TaskQuery, { ActiveTaskQuery } from "src/Models/Task/TaskQuery";
 import { ConnectedGoalTaskItem} from "src/ConnectedComponents/Lists/Composite/GoalTaskItem";
-import { merge } from "rxjs";
-import { AccordionList } from "src/Components/Basic/Basic";
 import GoalQuery, { ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
 
 interface Props {
@@ -121,23 +119,23 @@ interface InputProps {
 const enhance = withObservables(['type'], (props: InputProps) => {
     if(props.type === "dueAndOverdueActive") {
         return {
-            tasks: new TaskQuery().queryActiveAndDue().observe(),
+            tasks: new ActiveTaskQuery().queryDueOrOverdue().observe(),
             goals: new ActiveGoalQuery().queryDueOrOverdue().observe(),
         }
     } else if(props.type === "startedButNotDueActive") {
         return {
-            tasks: new TaskQuery().queryActiveAndStartedButNotDue().observe(),
+            tasks: new ActiveTaskQuery().queryStartedButNotDue().observe(),
             goals: new ActiveGoalQuery().queryStartedButNotDue().observe(),
         }
     } else if (props.type === "notStartedActive") {
         return {
-            tasks: new TaskQuery().queryActiveButNotStarted().observe(),
+            tasks: new ActiveTaskQuery().queryNotStarted().observe(),
             goals: new ActiveGoalQuery().queryNotStarted().observe(),
         }
     } else {
         return {
             tasks: new TaskQuery().queryAll().observe(),
-            goals: new ActiveGoalQuery().queryAll().observe(),
+            goals: new GoalQuery().queryAll().observe(),
         }
     }
 });

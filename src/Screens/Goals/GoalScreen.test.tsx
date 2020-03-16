@@ -5,7 +5,7 @@ import DB from "src/Models/Database";
 import React from "react";
 import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cleanup } from '@testing-library/react-native';
 import { Goal, GoalQuery, IGoal, ActiveGoalQuery, CompleteGoalQuery } from "src/Models/Goal/GoalQuery";
-import { TaskQuery, Task, ITask } from "src/Models/Task/TaskQuery";
+import { TaskQuery, Task, ITask, ActiveTaskQuery } from "src/Models/Task/TaskQuery";
 import GoalScreen from "src/Screens/Goals/GoalScreen";
 import { 
     makeNavigation, destroyAllIn, destroyAll,
@@ -27,7 +27,7 @@ describe("Using the complete button", () => {
 
         let activeGoals: Goal[] = await new ActiveGoalQuery().all();
         expect(activeGoals.length).toEqual(1);
-        let activeTasks: Task[] = await new TaskQuery().activeTasks();
+        let activeTasks: Task[] = await new ActiveTaskQuery().all();
         expect(activeTasks.length).toEqual(1);
 
         {
@@ -55,7 +55,7 @@ describe("Using the complete button", () => {
             expect(completedTasks.length).toEqual(1);
             const inactiveTasks: Task[] = await new TaskQuery().inactiveTasks();
             expect(inactiveTasks.length).toEqual(1);
-            activeTasks = await new TaskQuery().activeTasks();
+            activeTasks = await new ActiveTaskQuery().all();
             expect(activeTasks.length).toEqual(0);
         })
 
@@ -501,7 +501,7 @@ describe("Using the incomplete button", () => {
 
         let activeGoals: Goal[] = await new ActiveGoalQuery().all();
         expect(activeGoals.length).toEqual(1);
-        let activeTasks: Task[] = await new TaskQuery().activeTasks();
+        let activeTasks: Task[] = await new ActiveTaskQuery().all();
         expect(activeTasks.length).toEqual(1);
 
         {
@@ -529,7 +529,7 @@ describe("Using the incomplete button", () => {
             expect(completedTasks.length).toEqual(1);
             const inactiveTasks: Task[] = await new TaskQuery().inactiveTasks();
             expect(inactiveTasks.length).toEqual(1);
-            activeTasks = await new TaskQuery().activeTasks();
+            activeTasks = await new ActiveTaskQuery().all();
             expect(activeTasks.length).toEqual(0);
         })
 
@@ -867,7 +867,7 @@ describe("list interactions", () => {
             expect(goals.length).toEqual(2);
         })
 
-        const activeTasks = await new TaskQuery().queryActiveHasParent(goalId).fetch();
+        const activeTasks = await new ActiveTaskQuery().queryHasParent(goalId).fetch();
         expect(activeTasks.length).toEqual(1);
 
         async function setup() {
@@ -909,7 +909,7 @@ describe("list interactions", () => {
             expect(goals.length).toEqual(2);
         })
 
-        const activeTasks = await new TaskQuery().queryActiveHasParent(goalId).fetch();
+        const activeTasks = await new ActiveTaskQuery().queryHasParent(goalId).fetch();
         expect(activeTasks.length).toEqual(1);
 
         async function setup() {

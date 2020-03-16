@@ -4,7 +4,7 @@ import { ColumnView, RowView, RowReverseView, HeaderText } from "src/Components/
 import { ScreenHeader, DocumentView, ClickRow, ListPicker, ListItem } from "src/Components/Styled/Styled";
 import List from "src/Components/Lists/base/List";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
-import TaskQuery, { TaskLogic } from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic, ActiveTaskQuery } from "src/Models/Task/TaskQuery";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import GoalQuery, { GoalLogic, ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
 
@@ -44,7 +44,7 @@ export default class OverdueScreen extends React.Component<Props, State> {
     }
 
     componentDidMount = () => {
-        const taskSub = new TaskQuery().queryActiveAndOverdue().observeCount().subscribe((num) => {
+        const taskSub = new ActiveTaskQuery().queryOverdue().observeCount().subscribe((num) => {
             this.setState({
                 overdueTasksCount: num,
             })
