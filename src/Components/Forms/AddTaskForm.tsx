@@ -24,6 +24,7 @@ interface Props {
     data: State | false
     onDataChange: (d: State) => void;
     style: StyleProp<ViewStyle>;
+    hasParent? : boolean;
     dateRange?: [Date, Date]
 }
 
@@ -31,7 +32,6 @@ interface State {
     name: string
     description: string
     start_date: Date
-    due_date: Date
 }
 
 function Default(): State {
@@ -39,7 +39,6 @@ function Default(): State {
         name: "",
         description: "",
         start_date: startDate(new Date()),
-        due_date: dueDate(new Date()),
     };
 }
 
@@ -71,11 +70,6 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                         (d: Date) => this.validateStartDate(d) ,
                         (d: Date) => this.validateStartDate(d) ,
                     );
-    DueDateInput = Validate<Date, DateProps>(
-                        DateTimeInput, 
-                        (d: Date) => this.validateDueDate(d) ,
-                        (d: Date) => this.validateDueDate(d) ,
-                    )
     dispatcher: IEventDispatcher;
     startDateRefresh : Observable<boolean>;
     constructor(props: Props) {
@@ -89,16 +83,11 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
     /***********************
      * Validation
      */
-
     validateName = (summary : string) => {
         return summary.length > 0 ? undefined : "Please provide a name";
     }
 
     validateStartDate = (start: Date) => {
-        if(start > this.data().due_date) {
-            return "Start date cannot be after due date";
-        }
-
         if(this.props.dateRange ) {
             const startMin = this.props.dateRange[0];
             if(start < startMin) {
@@ -109,46 +98,25 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
         return undefined;
     }
 
-    validateDueDate = (due: Date) => {
-        if(this.props.dateRange) {
-            const dueMax = this.props.dateRange[1];
-            if(due > dueMax) {
-                return "Due date cannot be after " + dueMax.toString();
-            }
-        }
-
-        return undefined;
-    }
-    
-
     /**********************
      *  Event handling
      */
-
-    onChangeName = (name: string) => {
+    private onChangeName = (name: string) => {
         this.setData({
             name: name
         });
     }
 
-    onChangeDescription = (desc: string) => {
+    private onChangeDescription = (desc: string) => {
         this.setData({
             description: desc
         });
     }
 
-    onChangeStart = (date: Date) => {
+    private onChangeStart = (date: Date) => {
         this.setData({
             start_date: startDate(date),
         });
-    }
-
-    onChangeDue = (date: Date) => {
-        this.setData({
-            due_date: dueDate(date),
-        });
-
-        this.dispatcher.fireEvent(DUE_DATE_CHANGE);
     }
 
     render = () => {
@@ -176,22 +144,15 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                     />
 
                     <this.StartDateInput
-                        title={"Starts on"}
+                        title={`Task Date${this.props.hasParent ? " (From Parent)" : ""}`}
                         type={"date"}
                         data={this.data().start_date}
                         onValidDataChange={this.onChangeStart}
                         onInvalidDataChange={this.onChangeStart}
                         accessibilityLabel={"task-start-date"}
                         revalidate={this.startDateRefresh}
+                        readonly={this.props.hasParent}
                     ></this.StartDateInput>
-
-                    <DateTimeInput
-                        title={"Due on"}
-                        type={"date"} 
-                        data={this.data().due_date}
-                        onDataChange={ this.onChangeDue }
-                        accessibilityLabel={"task-due-date"}
-                    />
 
                     <FootSpacer></FootSpacer>
                 </ScrollView>

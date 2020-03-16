@@ -63,7 +63,7 @@ export function Validate<Data, T extends ComponentProps<Data>>(
             // This allows time for data from parent to load, before we decide whether the data is invalid or not.
             setTimeout(() => {
                 this.onDataChange(this.props.data);
-            })
+            }, 100)
         }
 
         componentWillUnmount = () => {

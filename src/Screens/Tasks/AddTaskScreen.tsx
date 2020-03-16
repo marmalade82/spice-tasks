@@ -61,14 +61,12 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             let data: AddTaskData = {
                 name: task.title,
                 start_date: task.startDate,
-                due_date: task.dueDate,
                 description: task.instructions,
             }
             let parentGoal = await new GoalQuery().get(task.parentId);
 
             if(parentGoal) {
                 data.start_date = parentGoal.startDate;
-                data.due_date = parentGoal.dueDate;
             }
 
             this.setState({
@@ -114,7 +112,6 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             const data = this.state.data;
             const taskData = {
                 title: data.name,
-                dueDate: data.due_date,
                 startDate: data.start_date,
                 instructions: data.description,
                 parentId: parentId,
@@ -163,8 +160,10 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                         });
                     }}
                     style={{}}
+                    hasParent = { this.state.task ? this.state.task.parentId !== "" : false }
                     ref={this.taskFormRef}
                 ></AddTaskForm>
         );
     }
 }
+

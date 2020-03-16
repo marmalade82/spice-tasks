@@ -18,6 +18,7 @@ export interface Props {
     success ? : boolean;
     failure ? : string;
     onBlur?: () => void;
+    readonly?: boolean;
 }
 
 interface State {
@@ -55,6 +56,7 @@ export default class DateTimeInput extends React.Component<Props,State> {
                     accessibilityLabel={this.props.accessibilityLabel}
                     onBlur={this.props.onBlur}
                     icon={this.icon()}
+                    readonly={this.props.readonly}
                 ></DateInput>
             </ColumnView>
         );

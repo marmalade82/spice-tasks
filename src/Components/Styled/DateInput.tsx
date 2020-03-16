@@ -14,8 +14,6 @@ import {
     DatePickerAndroid, TimePickerAndroid, StyleSheet
 } from "react-native";
 import MyDate from "src/common/Date";
-import Modal from "src/Components/Styled/Modal";
-import DateTimePicker from "src/Components/Inputs/DateTimePicker";
 import { Icon } from "./Icon";
 
 interface Props {
@@ -30,6 +28,7 @@ interface Props {
     format: "january 1st, 2020"
     onBlur?: () => void;
     icon?: "mandatory" | "attention";
+    readonly?: boolean;
 }
 
 interface State {
@@ -91,27 +90,11 @@ export default class DateInput extends React.Component<Props, State> {
                 <ColumnView style={{
                     flex: 1,
                     backgroundColor: "transparent",
-                    borderColor: this.props.underlineColor ? this.props.underlineColor : TEXT_GREY,
+                    borderColor: this.props.readonly ? "transparent" : (this.props.underlineColor ? this.props.underlineColor : TEXT_GREY),
                     borderBottomWidth: 1,
                     marginLeft: TEXT_HORIZONTAL_MARGIN,
                 }}>
-                    <TouchableView style={{
-                            flex: 1,
-                        }}
-                        onPress={this.onPress}
-                        accessibilityLabel={this.props.accessibilityLabel}
-                    >
-                        <RowView style={{
-                            flex: 1,
-                            justifyContent: "space-between",
-                            backgroundColor: "transparent",
-                            alignItems: "center",
-                            }}
-                        >
-                            {this.renderText()}
-                            {this.renderIcon()}
-                        </RowView>
-                    </TouchableView>
+                    {this.renderTouchable()}
                     <View style={{
                         flex: 0,
                         height: 0,
@@ -133,7 +116,37 @@ export default class DateInput extends React.Component<Props, State> {
         );
     }
 
-    renderText = () => {
+    private renderTouchable = () => {
+        if(this.props.readonly !== true) {
+            return ( <TouchableView style={{
+                    flex: 1,
+                }}
+                onPress={this.onPress}
+                accessibilityLabel={this.props.accessibilityLabel}
+            >
+                {this.renderInput()}
+            </TouchableView>)
+        } else {
+            return this.renderInput();
+        }
+    }
+
+    private renderInput = () => {
+        return (
+            <RowView style={{
+                flex: 1,
+                justifyContent: "space-between",
+                backgroundColor: "transparent",
+                alignItems: "center",
+                }}
+            >
+                {this.renderText()}
+                {this.renderIcon()}
+            </RowView>
+        )
+    }
+
+    private renderText = () => {
         if (this.props.value) {
             return (
                 <Text
@@ -164,7 +177,7 @@ export default class DateInput extends React.Component<Props, State> {
         }
     }
 
-    renderLeftIcon = () => {
+    private renderLeftIcon = () => {
         if(this.props.icon) {
             let type = this.iconType();
             return(
@@ -189,7 +202,7 @@ export default class DateInput extends React.Component<Props, State> {
         }
     }
 
-    renderDate = () => {
+    private renderDate = () => {
         const date = new MyDate(this.props.value)
         switch(this.props.format) {
             case "january 1st, 2020": {
@@ -201,10 +214,10 @@ export default class DateInput extends React.Component<Props, State> {
         }
     }
 
-    renderIcon = () => {
+    private renderIcon = () => {
         return (
             <Icon
-                type={"right"}
+                type={this.props.readonly ? "none" : "right"}
                 backgroundColor={"transparent"}
             ></Icon>
         );
