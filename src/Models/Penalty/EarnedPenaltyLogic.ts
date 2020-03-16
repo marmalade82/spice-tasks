@@ -4,7 +4,7 @@ import ClaimedRewardQuery from "src/Models/Reward/ClaimedRewardQuery"
 import MyDate from "src/common/Date";
 import { PenaltyTypes } from "./PenaltyLogic";
 import EarnedPenaltyQuery from "./EarnedPenaltyQuery";
-import { InactiveTransaction } from "../common/Transaction";
+import ActiveTransaction, { InactiveTransaction } from "../common/Transaction";
 
 
 
@@ -34,40 +34,12 @@ export default class EarnedPenaltyLogic {
     use = async () => {
         let earned = await new EarnedPenaltyQuery().get(this.id);
         if(earned) {
-            await new EarnedPenaltyQuery().update(earned, {
+            const tx = await ActiveTransaction.new();
+            tx.addUpdate(new EarnedPenaltyQuery(), earned, {
                 active: false,
-            });
+            })
+
+            await tx.commitAndReset();
         }
     }
-
-    _fetchEarned = async () => {
-        if(this.earned) {
-            return this.earned;
-        } else {
-            const earned = await new EarnedRewardQuery().get(this.id);
-            if(earned) {
-                this.earned = earned;
-            } else {
-                this.earned = undefined;
-            }
-        }
-    }
-
-    claimPenalty = async (penaltyId: string) => {
-        const earned = await this._fetchEarned();
-
-        if(earned) {
-            const reward = await new PenaltyQuery().get(penaltyId);
-
-            if(reward) {
-                await new ClaimedRewardQuery().create({
-                    title: reward.title,
-                    details: reward.details,
-                    claimedDate: new MyDate().toDate(),
-                    earnedId: this.id,
-                });
-            }
-        }
-    }
-
 }

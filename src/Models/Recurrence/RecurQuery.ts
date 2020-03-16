@@ -12,19 +12,22 @@ import GoalQuery, { GoalLogic, IGoal, Goal } from "../Goal/GoalQuery";
 import { tsAnyKeyword } from "@babel/types";
 import { DatePickerAndroid } from "react-native";
 import { take } from "src/Models/common/logicUtils";
+import { Condition } from "@nozbe/watermelondb/QueryDescription";
+import ActiveTransaction from "../common/Transaction";
 
 
+function activeCondition() {
+    return Conditions.active();
+}
 
-export default class RecurQuery extends ModelQuery<Recur, IRecur> {
+export class RecurQuery extends ModelQuery<Recur, IRecur> {
     constructor() {
         super(RecurSchema.table);
     }
 
-
-
     queryActive = () => {
         return this.store().query(
-            ...Conditions.active()
+            ...activeCondition()
         );
     }
 
@@ -35,7 +38,7 @@ export default class RecurQuery extends ModelQuery<Recur, IRecur> {
     queryUnprocessed = () => {
         return this.store().query(
             ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
-                ...Conditions.active(),
+                ...activeCondition(),
             ]
         );
     }
@@ -47,7 +50,7 @@ export default class RecurQuery extends ModelQuery<Recur, IRecur> {
     queryDailyUnprocessed = () => {
         return this.store().query(
             ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
-                ...Conditions.active(),
+                ...activeCondition(),
                 Q.where(RecurSchema.name.TYPE, "daily"),
             ]
         );
@@ -60,7 +63,7 @@ export default class RecurQuery extends ModelQuery<Recur, IRecur> {
     queryWeeklyUnprocessed = () => {
         return this.store().query(
             ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
-                ...Conditions.active(),
+                ...activeCondition(),
                 Q.where(RecurSchema.name.TYPE, "weekly"),
                 ]
         );
@@ -73,7 +76,7 @@ export default class RecurQuery extends ModelQuery<Recur, IRecur> {
     queryMonthlyUnprocessed = () => {
         return this.store().query(
             ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
-                ...Conditions.active(),
+                ...activeCondition(),
                 Q.where(RecurSchema.name.TYPE, "monthly"),
                 ]
         );
@@ -84,11 +87,11 @@ export default class RecurQuery extends ModelQuery<Recur, IRecur> {
     }
 
     queries = () => {
-        return [];
+        return [] as Condition[];
     }
 
     default = () => {
-        return {
+        const def: IRecur = {
             type: "daily",
             date: new Date(), 
             // are these necessary? It would be simpler to just assume that they recur at the same time.
@@ -97,9 +100,13 @@ export default class RecurQuery extends ModelQuery<Recur, IRecur> {
             monthDay: 1,
             active: true,
             lastRefreshed: new Date() // no need to calculate it if it was just created...
-        } as const;
+        }
+
+        return def;
     }
 }
+export default RecurQuery;
+
 
 export class RecurLogic {
     valid: boolean;
@@ -135,35 +142,6 @@ export class RecurLogic {
         }
     }
 
-    static createForGoal = async (repeats: "never" | "daily" | "weekly" | "monthly") => {
-        switch(repeats) {
-            case "daily": {
-                return await new RecurQuery().create({
-                    lastRefreshed: new Date(),
-                    active: true,
-                    type: "daily",
-                });
-            } break;
-            case "weekly": {
-                return await new RecurQuery().create({
-                    lastRefreshed: new Date(),
-                    active: true,
-                    type: "weekly",
-                });
-            } break;
-            case "monthly": {
-                return await new RecurQuery().create({
-                    lastRefreshed: new Date(),
-                    active: true,
-                    type: "monthly",
-                });
-            } break;
-            default: {
-                return null;
-            }
-        }
-    }
-
     static processRecurrences = async () => {
         await RecurLogic.processSomeRecurrences();
     }
@@ -183,7 +161,7 @@ export class RecurLogic {
     }
 
     
-    static process = async(arr: Recur[], n?: number) => {
+    private static process = async(arr: Recur[], n?: number) => {
         take(arr, n? n : arr.length).forEach((recur) => {
             void new RecurLogic(recur.id).generateNext();
         })
@@ -269,29 +247,37 @@ export class RecurLogic {
     enable = async () => {
         const recur = await new RecurQuery().get(this.id);
         if(recur) {
-            void new RecurQuery().update(recur, {
+            const tx = await ActiveTransaction.new();
+            tx.addUpdate(new RecurQuery(), recur, {
                 active: true,
             })
+            await tx.commitAndReset();
         }
     }
 
     disable = async () => {
         const recur = await new RecurQuery().get(this.id);
         if(recur) {
-            void new RecurQuery().update(recur, {
-                active: false,
+            const tx = await ActiveTransaction.new();
+            tx.addUpdate(new RecurQuery(), recur, {
+                active: false
             })
+            await tx.commitAndReset();
         }
     }
 
     delete = async () => {
         // Luckily, deleting a recurrence doesn't really affect the underlying goals.
-        void new RecurQuery().delete(this.id);
+        const recur = await new RecurQuery().get(this.id);
+        if(recur) {
+            const tx = await ActiveTransaction.new();
+            tx.addDelete(new RecurQuery(), recur)
+            await tx.commitAndReset();
+        }
     }
 }
 
 export {
-    RecurQuery,
     Recur,
     IRecur,
 }
