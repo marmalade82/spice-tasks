@@ -8,10 +8,11 @@ import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils"
 import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
 import StreakCycleQuery, { ChildStreakCycleQuery } from "../Group/StreakCycleQuery";
-import ActiveTransaction, { DBResourceLock, CURRENT_STREAK_CYCLE_ID } from "../common/Transaction";
+import ActiveTransaction, { DBResourceLock, CURRENT_STREAK_CYCLE_ID, InactiveTransaction } from "../common/Transaction";
 import GoalQuery from "../Goal/GoalQuery";
 import StreakCycle from "../Group/StreakCycle";
 import { Condition } from "@nozbe/watermelondb/QueryDescription";
+import { dueDate } from "src/Components/Forms/common/utils";
 
 export class TaskQuery extends ModelQuery<Task, ITask> {
     constructor() {
@@ -272,6 +273,11 @@ export class TaskLogic {
         const parentGoal = await new GoalQuery().get(parentId);
         const tx = await ActiveTransaction.new();
 
+        // Default is that dueDate is calculated from start date where possible.
+        if(d.startDate) {
+            d.dueDate = dueDate(d.startDate);
+        }
+
         if(parentGoal && parentGoal.isStreak()) {
             // We need to create a task, and add it to the current cycle
             // We should create the CURRENT cycle if it doesn't exist yet,
@@ -296,6 +302,13 @@ export class TaskLogic {
 
             tx.addCreate(new TaskQuery(), d);
         } else {
+            //If the parent is a task instead, we inherit start and due dates from the parent. ALWAYS.
+            const parentTask = await new TaskQuery().get(parentId);
+            if(parentTask) {
+                d.startDate = parentTask.startDate;
+                d.dueDate = parentTask.dueDate;
+            }
+
             // We need to create a normal single task based on the data.
             // So we don't need to do anything here.
             tx.addCreate(new TaskQuery(), d);
@@ -306,8 +319,16 @@ export class TaskLogic {
     update = async (d: Partial<ITask>) => {
         const task = await new TaskQuery().get(this.id);
         const tx = await ActiveTransaction.new();
+
+        // Default is that dueDate is calculated from start date where possible.
+        if(d.startDate) {
+            d.dueDate = dueDate(d.startDate);
+        }
+
         if(task) {
+            // For now, every update to the task requires updating all the children's child dates as well.
             tx.addUpdate(new TaskQuery(), task, d);
+            tx.consume(await this._actionTaskAndDescendants("updateDates", task.id, true))
         }
         tx.commitAndReset();
     }
@@ -335,19 +356,24 @@ export class TaskLogic {
     }
 
     private actionTaskAndDescendants = async (action: "complete" | "fail", id: string) => {
-        const parent: Task | null = await new TaskQuery().get(this.id);
-        if(parent) {
-            const tx = await ActiveTransaction.new();
-            const allTasks: Task[] = await findAllChildrenIn(TaskSchema.table, parent.id, [parent]);
-            const update = getUpdate(action);
+        const tx = await ActiveTransaction.new();
+        tx.consume(await this._actionTaskAndDescendants(action, id))
+        await tx.commitAndReset();
+    }
+    
+    private _actionTaskAndDescendants = async (action: "complete" | "fail" | "updateDates", id: string, onlyChildren?: true) => {
+        const task: Task | null = await new TaskQuery().get(id);
+        const tx = await InactiveTransaction.new();
+        if(task) {
+            const allTasks: Task[] = await findAllChildrenIn(TaskSchema.table, task.id, onlyChildren ? [] : [task]);
+            const update = getUpdate(action, task);
             allTasks.forEach((task: Task) => {
                 tx.addUpdate(new TaskQuery(), task, update)
             });
-
-            await tx.commitAndReset();
         }
+        return tx;
 
-        function getUpdate(action: "complete" | "fail") {
+        function getUpdate(action: "complete" | "fail" | "updateDates", task: Task) {
             switch(action) {
                 case "complete": {
                     return {
@@ -360,6 +386,12 @@ export class TaskLogic {
                     return {
                         active: false,
                         state: "cancelled",
+                    } as const;
+                }
+                case "updateDates": {
+                    return {
+                        startDate: task.startDate,
+                        dueDate: task.dueDate,
                     } as const;
                 }
             }
