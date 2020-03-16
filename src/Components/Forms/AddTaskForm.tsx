@@ -144,7 +144,7 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                     />
 
                     <this.StartDateInput
-                        title={`Task Date${this.props.hasParent ? " (From Parent)" : ""}`}
+                        title={this.title()}
                         type={"date"}
                         data={this.data().start_date}
                         onValidDataChange={this.onChangeStart}
@@ -158,6 +158,20 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                 </ScrollView>
             </ColumnView>
         );
+    }
+
+    private title = () => {
+        return (
+            `Date${this.props.hasParent ? " (From Parent)" : this.dateRange()}`
+        )
+    }
+
+    private dateRange = () => {
+        if(this.props.dateRange) {
+            return ` (${new MyDate().format("MM/DD") + " - " + new MyDate().format("MM/DD")})`
+        } else {
+            return "";
+        }
     }
 }
 

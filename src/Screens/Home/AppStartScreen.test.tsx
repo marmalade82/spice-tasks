@@ -51,39 +51,6 @@ describe("Viewing data", () => {
         }
     })
 
-    test("User can view tasks that are in progress", async () => {
-        await setup();
-
-        const { getByLabelText, queryByLabelText, queryAllByLabelText } = render(
-            <AppStartScreen navigation={makeNavigation({})}></AppStartScreen>
-        );
-
-        await wait(async () => {
-            const tasks = queryAllByLabelText("task-list-item");
-            expect(tasks.length).toEqual(3);
-        })
-
-        async function setup() {
-            await DB.get().action(async () => {
-                await createTasks({
-                    active: true,
-                    startDate: new MyDate().prevMidnight().toDate(),
-                    dueDate: new MyDate().add(1, "days").toDate(),
-                }, 1)
-                await createTasks({
-                    active: true,
-                    startDate: new MyDate().prevMidnight().toDate(),
-                    dueDate: new MyDate().add(1, "days").prevMidnight().toDate(),
-                }, 1)
-                await createTasks({
-                    active: true,
-                    startDate: new MyDate().prevMidnight().toDate(),
-                    dueDate: new MyDate().add(1, "days").nextMidnight().subtract(1, "minutes").toDate(),
-                }, 1)
-            });
-        }
-    })
-
     test("User can view tasks that are overdue", async () => {
         await setup();
 

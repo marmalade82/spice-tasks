@@ -22,6 +22,7 @@ interface State {
     task?: Task;
     showToast: boolean;
     toast: string;
+    dateRange?: [Date, Date];
 }
 
 const dispatcher = new EventDispatcher();
@@ -67,6 +68,9 @@ export default class AddTaskScreen extends React.Component<Props, State> {
 
             if(parentGoal) {
                 data.start_date = parentGoal.startDate;
+                this.setState({
+                    dateRange: [ parentGoal.startDate, parentGoal.dueDate]
+                })
             }
 
             this.setState({
@@ -75,8 +79,10 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             })
 
         } else {
+            let parentGoal = await new GoalQuery().get(this.props.navigation.getParam('parent_id', ''))
             this.setState({
-                task: undefined
+                dateRange: parentGoal ? [parentGoal.startDate, parentGoal.dueDate] : undefined,
+                task: undefined,
             })
         }
 
@@ -160,7 +166,8 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                         });
                     }}
                     style={{}}
-                    hasParent = { this.state.task ? this.state.task.parentId !== "" : false }
+                    hasParent = { this.state.dateRange ? false : (this.state.task ? this.state.task.parentId !== "" : false) }
+                    dateRange={this.state.dateRange}
                     ref={this.taskFormRef}
                 ></AddTaskForm>
         );
