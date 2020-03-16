@@ -124,13 +124,13 @@ export default class AppStartScreen extends React.Component<Props, State> {
         this.unsub();
     }
 
-    onClickAdd = () => {
+    private onClickAdd = () => {
         this.setState({
             showAdd: true,
         })
     }
 
-    onTaskAction = (id: string, action: "complete" | "fail") => {
+    private onTaskAction = (id: string, action: "complete" | "fail") => {
         switch(action) {
             case "complete": {
                 void new TaskLogic(id).complete();
@@ -141,7 +141,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
         }
     }
 
-    onGoalAction = (id: string, action: "complete" | "fail") => {
+    private onGoalAction = (id: string, action: "complete" | "fail") => {
         switch(action) {
             case "complete": {
                 void new GoalLogic(id).complete();
@@ -173,8 +173,6 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         emptyText={"Congrats! You're done with your tasks for today."}
                         onTaskAction={this.onTaskAction}
                     ></ConnectedTaskList>
-
-                    { this.renderInProgress() }
 
                     {this.renderOverdue()}
 
@@ -235,31 +233,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
         );
     }
 
-    renderInProgress = () => {
-        if( this.state.inProgressCount > 0) {
-            return (
-                <View style={{flex: 0}}>
-                    <BackgroundTitle title={`In Progress (${this.state.inProgressCount})`}
-                        style={{
-                        }}
-                    ></BackgroundTitle>
-                    <ConnectedTaskList
-                        navigation={this.props.navigation}
-                        type={"in-progress-but-not-due-today"}
-                        parentId={""}
-                        paginate={4}
-                        onSwipeRight={(id: string) => {
-                            void new TaskLogic(id).complete()
-                        }}
-                        onTaskAction={this.onTaskAction}
-                    ></ConnectedTaskList>
-                </View>
-            )
-        }
-        return null;
-    }
-
-    renderOverdue = () => {
+    private renderOverdue = () => {
         if( this.state.overdueCount > 0) {
             return (
                 <View style={{flex: 0}}>
@@ -283,7 +257,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
         return null;
     }
 
-    renderOngoingGoals = () => {
+    private renderOngoingGoals = () => {
         if( this.state.ongoingGoalsCount > 0) {
             return (
                 <View style={{flex: 0}}>
