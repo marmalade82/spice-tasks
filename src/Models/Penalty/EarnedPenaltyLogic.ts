@@ -1,6 +1,5 @@
 import EarnedRewardQuery, { EarnedReward} from "src/Models/Reward/EarnedRewardQuery";
 import PenaltyQuery from "src/Models/Penalty/PenaltyQuery";
-import ClaimedRewardQuery from "src/Models/Reward/ClaimedRewardQuery"
 import MyDate from "src/common/Date";
 import { PenaltyTypes } from "./PenaltyLogic";
 import EarnedPenaltyQuery from "./EarnedPenaltyQuery";

@@ -6,7 +6,7 @@ import React from "react";
 import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cleanup } from '@testing-library/react-native';
 import { 
     makeNavigation, destroyAll,
-    createGoals, createTasks, createClaimedRewards,
+    createGoals, createTasks,
     createRecurrences,
 } from "src/common/test-utils";
 import MyDate from "src/common/Date";

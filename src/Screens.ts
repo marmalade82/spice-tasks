@@ -17,7 +17,6 @@ import EarnedRewardScreen from "src/Screens/Rewards/EarnedRewardScreen";
 import EarnedRewardListScreen from "src/Screens/Rewards/EarnedRewardListScreen";
 import PenaltyListScreen from "src/Screens/Penalties/PenaltyListScreen";
 import AddPenaltyScreen from "src/Screens/Penalties/AddPenaltyScreen";
-import ClaimedRewardListScreen from "src/Screens/Prototypes/ClaimedRewardListScreen";
 import HomePageScreen from "src/Screens/Prototypes/HomePageScreen";
 import RemainingTaskScreen from "src/Screens/Tasks/RemainingTaskScreen";
 import SpecificTaskScreen from "src/Screens/Prototypes/SpecificTaskScreen";
@@ -55,7 +54,6 @@ export {
     EarnedRewardListScreen as EarnedRewardList,
     PenaltyListScreen as PenaltyList,
     AddPenaltyScreen as AddPenalty,
-    ClaimedRewardListScreen as ClaimedRewardList,
     HomePageScreen as HomePage,
     RemainingTaskScreen as RemainingTasks,
     SpecificTaskScreen as SpecificTask,

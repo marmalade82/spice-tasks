@@ -1,5 +1,4 @@
 import RewardQuery from "src/Models/Reward/RewardQuery"
-import ClaimedRewardQuery from "src/Models/Reward/ClaimedRewardQuery";
 import EarnedRewardQuery, { EarnedReward } from "src/Models/Reward/EarnedRewardQuery";
 import MyDate from "src/common/Date";
 import PenaltyQuery from "src/Models/Penalty/PenaltyQuery";
@@ -67,13 +66,14 @@ export default class EarnedRewardLogic {
             const reward = await new RewardQuery().get(rewardId);
             debugger;
             if(reward) {
+                /*
                 await new ClaimedRewardQuery().create({
                     title: reward.title,
                     details: reward.details,
                     claimedDate: new MyDate().toDate(),
                     type: "reward",
                     earnedId: this.id,
-                });
+                });*/
             }
         }
 
@@ -86,13 +86,14 @@ export default class EarnedRewardLogic {
             const penalty = await new PenaltyQuery().get(penaltyId);
 
             if(penalty) {
+                /*
                 await new ClaimedRewardQuery().create({
                     title: penalty.title,
                     details: penalty.details,
                     claimedDate: new MyDate().toDate(),
                     type: "penalty",
                     earnedId: this.id,
-                });
+                });*/
             }
         }
     }

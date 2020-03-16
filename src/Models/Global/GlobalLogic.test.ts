@@ -6,7 +6,7 @@ import Notification from "src/Notification";
 
 import { 
     makeNavigation, destroyAll,
-    createGoals, createTasks, createClaimedRewards,
+    createGoals, createTasks,
     createRecurrences, createGlobal,
 } from "src/common/test-utils";
 import MyDate from "src/common/Date";
