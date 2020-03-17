@@ -9,10 +9,11 @@ import PenaltyQuery from "src/Models/Penalty/PenaltyQuery";
 import List from "src/Components/Lists/base/List";
 import ClickNavigation from "src/Components/Navigation/ClickNavigation";
 import { ConnectedPenaltyListItem } from "src/ConnectedComponents/Lists/Penalty/PenaltyListItem";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     penalties: Penalty[];
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
 }
 
 const AdaptedPenaltyList: React.FunctionComponent<Props> = (props: Props) => {
@@ -37,8 +38,7 @@ const AdaptedPenaltyList: React.FunctionComponent<Props> = (props: Props) => {
 }
 
 
-interface InputProps {
-    navigation: any
+interface InputProps extends Omit<Props, "penalties"> {
 }
 
 /**

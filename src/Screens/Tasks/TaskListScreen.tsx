@@ -11,7 +11,7 @@ import { getKey } from "src/Screens/common/screenUtils";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State { 

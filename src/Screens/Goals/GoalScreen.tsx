@@ -22,7 +22,7 @@ import { ScreenNavigation, ScreenParams } from "src/common/Navigator";
 
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State {
@@ -73,7 +73,7 @@ export default class GoalScreen extends React.Component<Props, State> {
             toastMessage: "",
             showAdd: false,
         }
-        this.navigation = new ScreenNavigation(this.props.navigation)
+        this.navigation = new ScreenNavigation(this.props);
         this.unsubscribe = () => {};
     }
 

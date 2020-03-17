@@ -13,7 +13,7 @@ import { View, Text } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State {

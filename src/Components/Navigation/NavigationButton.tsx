@@ -1,12 +1,13 @@
 import React from "react";
 import { Button } from "react-native";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 type Empty = {
 
 }
 
 interface Props { 
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     title: string;
     color?: string;
     parameters: Empty;

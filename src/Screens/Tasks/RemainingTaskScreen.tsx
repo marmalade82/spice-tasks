@@ -6,7 +6,7 @@ import TaskQuery, { TaskLogic, ActiveTaskQuery } from "src/Models/Task/TaskQuery
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State {

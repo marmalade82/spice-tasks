@@ -4,7 +4,7 @@ import { ColumnView, FreeTextView, HeaderText, BodyText } from "src/Components/B
 import { ScrollView, Text, StyleSheet, } from "react-native";
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 const localStyle = StyleSheet.create({

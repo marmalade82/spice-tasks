@@ -1,10 +1,11 @@
 import React from "react";
 import { ConnectedTaskList } from "./Task/TaskList";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     id: string;
     table: "task" | "goal";
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
 }
 
 export default class ConnectedSingleList extends React.Component<Props> {

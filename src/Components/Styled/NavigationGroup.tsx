@@ -4,9 +4,10 @@ import MyDate from "src/common/Date";
 import { NavigationRow, ScreenHeader, DocumentView } from "src/Components/Styled/Styled";
 import { CONTAINER_VERTICAL_MARGIN, ROW_CONTAINER_HEIGHT, Styles, LEFT_SECOND_MARGIN, PRIMARY_COLOR_LIGHT } from "./Styles";
 import { StyleProp, ViewStyle } from "react-native";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
-    navigation: any
+    navigation: Navigation<ScreenParams>
     rows: Row[]
     style?: StyleProp<ViewStyle>
 }

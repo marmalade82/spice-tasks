@@ -10,7 +10,7 @@ import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
 
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State { 

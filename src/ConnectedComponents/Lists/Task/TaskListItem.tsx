@@ -9,10 +9,11 @@ import {
 
 import Task from "src/Models/Task/Task";
 import withObservables from "@nozbe/with-observables";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     task: Task
-    navigation: any
+    navigation: Navigation<ScreenParams>
     onTaskAction: OnTaskAction;
 }
 
@@ -36,8 +37,7 @@ const AdaptedTaskListItem: React.FunctionComponent<Props> = function(props: Prop
 }
 
 interface InputProps extends Props {
-    task: Task,
-    navigation: any,
+
 }
 
 const enhance = withObservables(['task'], (props: InputProps) => {

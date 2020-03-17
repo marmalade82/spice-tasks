@@ -5,6 +5,7 @@ import { ColumnView, RowView, BodyText, HeaderText } from "src/Components/Basic/
 import ClickNavigation from "src/Components/Navigation/ClickNavigation";
 import { ROW_CONTAINER_HEIGHT, ROW_HEIGHT, PRIMARY_COLOR, ICON_CONTAINER_WIDTH, Styles, TEXT_VERTICAL_MARGIN, TEXT_HORIZONTAL_MARGIN, LEFT_FIRST_MARGIN, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION, SECONDARY_COLOR } from "./Styles";
 import StyledIcon from "./Icon";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     number?: number;
@@ -15,7 +16,7 @@ interface Props {
 }
 
 interface navOptions {
-    navigation: any
+    navigation: Navigation<ScreenParams>
     destination: string,
     parameters: object,
     type: "push" | "navigate",

@@ -7,7 +7,7 @@ import { EarnedReward } from "src/Screens";
 import EarnedRewardLogic from "src/Models/Reward/EarnedRewardLogic";
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State {

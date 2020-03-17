@@ -7,6 +7,7 @@ import GoalSchema from "src/Models/Goal/GoalSchema";
 export enum TaskParentTypes {
     GOAL = "goal",
     TASK = "task",
+    NONE = "none",
 }
 
 interface ITask {

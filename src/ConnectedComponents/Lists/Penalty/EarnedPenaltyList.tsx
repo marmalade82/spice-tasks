@@ -13,10 +13,11 @@ import SwipeRow from "src/Components/Basic/SwipeRow";
 import { View } from "react-native";
 import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
 import { OnEarnedPenaltyAction } from "src/Components/Lists/Items/EarnedPenaltyListItem";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     earned: EarnedPenalty[];
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     paginate?: number;
     emptyText?: string;
     onSwipeRight?: (id: string) => void;

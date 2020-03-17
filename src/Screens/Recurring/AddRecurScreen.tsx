@@ -12,7 +12,7 @@ import { getKey } from "../common/screenUtils";
 
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State { 

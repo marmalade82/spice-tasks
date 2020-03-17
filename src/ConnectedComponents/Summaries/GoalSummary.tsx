@@ -10,10 +10,11 @@ import GoalSummary, { ModalChoices } from "src/Components/Summaries/GoalSummary"
 import { GoalType } from "src/Models/Goal/GoalLogic";
 import { RewardTypes } from "src/Models/Reward/RewardLogic";
 import { PenaltyTypes } from "src/Models/Penalty/PenaltyLogic";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     goal: Goal,
-    navigation: any,
+    navigation: Navigation<ScreenParams>,
     onModalChoice: (s: ModalChoices) => void;
 }
 
@@ -79,10 +80,8 @@ const AdaptedGoalSummary: React.FunctionComponent<Props> = (props: Props) => {
 }
 
 
-interface InputProps {
-    goal: Goal,
-    navigation: any,
-    onModalChoice: (s: ModalChoices) => void;
+interface InputProps extends Props {
+
 }
 
 /**

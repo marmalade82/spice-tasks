@@ -9,12 +9,13 @@ import { Summary, IconButton, ModalIconButton, ModalRow } from "src/Components/S
 import MyDate from "src/common/Date";
 import { booleanLiteral } from "@babel/types";
 import v from "voca";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 export type ModalChoices = "enable" | "disable" | "delete"
 
 interface Props {
     recur: Recur
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     onModalChoice: (s: ModalChoices) => void;
 }
 

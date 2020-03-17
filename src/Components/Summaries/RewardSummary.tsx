@@ -5,6 +5,7 @@ import Style from "src/Style/Style";
 import { RowView, ColumnView, Image, HeaderText, BodyText } from "src/Components/Basic/Basic";
 import MyDate from "src/common/Date";
 import { Summary, IconButton } from "src/Components/Styled/Styled";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
     title: string;
     details: string;
     expireDate: Date
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     onChoice: OnChoice;
 }
 

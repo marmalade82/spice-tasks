@@ -8,13 +8,14 @@ import {
 } from "src/Models/Penalty/Penalty";
 import PenaltySummary, {OnChoice} from "src/Components/Summaries/PenaltySummary";
 import { StyleProp, ViewStyle } from "react-native";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 
 
 interface Props {
     penalty: Penalty,
     style: StyleProp<ViewStyle>;
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     onChoice: OnChoice;
 }
 
@@ -35,11 +36,8 @@ const AdaptedPenaltySummary: React.FunctionComponent<Props> = (props: Props) => 
 
 }
 
-interface InputProps {
-    penalty: Penalty
-    style: StyleProp<ViewStyle>
-    navigation: any;
-    onChoice: OnChoice
+interface InputProps extends Props{
+
 }
 
 /**

@@ -8,10 +8,11 @@ import {
 
 import Penalty from "src/Models/Penalty/Penalty";
 import withObservables from "@nozbe/with-observables";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     penalty: Penalty
-    navigation: any,
+    navigation: Navigation<ScreenParams>,
 }
 
 const AdaptedPenaltyListItem: React.FunctionComponent<Props> = function(props: Props) {
@@ -31,9 +32,8 @@ const AdaptedPenaltyListItem: React.FunctionComponent<Props> = function(props: P
     );
 }
 
-interface InputProps {
-    penalty: Penalty
-    navigation: any,
+interface InputProps extends Props {
+
 }
 
 /**

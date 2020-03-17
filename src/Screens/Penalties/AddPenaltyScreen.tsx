@@ -9,11 +9,12 @@ import SaveButton from "src/Components/Basic/SaveButton";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State {
@@ -43,6 +44,7 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
     }
 
     penaltyFormRef: React.RefObject<AddPenaltyForm>
+    navigation: MainNavigator<"AddPenalty">;
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -52,10 +54,11 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
         }
 
         this.penaltyFormRef = React.createRef();
+        this.navigation = new ScreenNavigation(this.props);
     }
 
     componentDidMount = async () => {
-        const id = this.props.navigation.getParam('id', '');
+        const id = this.navigation.getParam('id', '');
         const penalty = await new PenaltyQuery().get(id); 
         if(penalty) {
             let data: AddPenaltyData = {
@@ -72,11 +75,11 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
                 penalty: undefined
             })
         }
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onSave)
+        dispatcher.addEventListener(getKey(this.navigation), this.onSave)
     }
 
     componentWillUnmount = () => {
-        dispatcher.removeEventListener(getKey(this.props.navigation), this.onSave)
+        dispatcher.removeEventListener(getKey(this.navigation), this.onSave)
     }
 
     onSave = () => {
@@ -104,7 +107,7 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
                 void new PenaltyQuery().create(penaltyData).catch();
             }
 
-            this.props.navigation.goBack();
+            this.navigation.goBack();
         }
     }
 

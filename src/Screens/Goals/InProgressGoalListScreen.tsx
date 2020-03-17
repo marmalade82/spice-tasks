@@ -5,10 +5,11 @@ import { ScreenHeader, DocumentView, ClickRow, ListPicker, ListItem } from "src/
 import List from "src/Components/Lists/base/List";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import GoalQuery, { GoalLogic, ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State {
@@ -24,6 +25,7 @@ export default class InProgressGoalListScreen extends React.Component<Props, Sta
     }
 
     unsubscribe: () => void;
+    navigation: MainNavigator<"InProgressGoals">;
     constructor(props: Props ) {
 
         super(props);
@@ -34,6 +36,7 @@ export default class InProgressGoalListScreen extends React.Component<Props, Sta
         }
 
         this.unsubscribe = () => {}
+        this.navigation = new ScreenNavigation(this.props);
     }
 
     componentDidMount = () => {
@@ -93,7 +96,7 @@ export default class InProgressGoalListScreen extends React.Component<Props, Sta
               list: () => {
                   return (
                       <ConnectedGoalList
-                        navigation={this.props.navigation}
+                        navigation={this.navigation}
                         type={"in-progress-not-due"}
                         onGoalAction={this.onGoalAction}
                       ></ConnectedGoalList>

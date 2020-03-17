@@ -11,10 +11,11 @@ import withObservables from "@nozbe/with-observables";
 import RecurQuery from "src/Models/Recurrence/RecurQuery";
 import List from "src/Components/Lists/base/List";
 import { View } from "react-native";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     recurs: Recur[];
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
 }
 
 const AdaptedRecurList: React.FunctionComponent<Props> = (props: Props) => {
@@ -37,8 +38,7 @@ const AdaptedRecurList: React.FunctionComponent<Props> = (props: Props) => {
     )
 }
 
-interface InputProps {
-    navigation: any
+interface InputProps extends Omit<Props, "recurs"> {
 }
 
 

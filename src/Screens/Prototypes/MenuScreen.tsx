@@ -3,7 +3,7 @@ import { View, Text, Button } from "react-native";
 import Style from "src/Style/Style";
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State {

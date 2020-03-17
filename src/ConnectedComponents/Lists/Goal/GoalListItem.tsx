@@ -9,10 +9,11 @@ import {
 
 import Goal from "src/Models/Goal/Goal";
 import withObservables from "@nozbe/with-observables";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     goal: Goal,
-    navigation: any,
+    navigation: Navigation<ScreenParams>,
     onGoalAction: OnGoalAction;
 }
 

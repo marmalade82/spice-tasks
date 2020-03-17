@@ -4,9 +4,10 @@ import { ColumnView, RowView, Image, HeaderText, BodyText, } from "src/Component
 import { ConnectedEarnedPenaltyList } from "src/ConnectedComponents/Lists/Penalty/EarnedPenaltyList";
 import { DocumentView } from "src/Components/Styled/Styled";
 import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State {
@@ -21,8 +22,10 @@ export default class EarnedPenaltyListScreen extends React.Component<Props, Stat
         }
     }
 
+    navigation: MainNavigator<"EarnedPenalties">
     constructor(props: Props) {
         super(props);
+        this.navigation = new ScreenNavigation(props);
     }
 
     onEarnedPenaltyAction = (id: string, action: "use") => {
@@ -37,7 +40,7 @@ export default class EarnedPenaltyListScreen extends React.Component<Props, Stat
         return (
             <DocumentView>
                 <ConnectedEarnedPenaltyList
-                    navigation={this.props.navigation}
+                    navigation={this.navigation}
                     onEarnedPenaltyAction={this.onEarnedPenaltyAction}
                     onSwipeRight={(id: string) => {
                         this.onEarnedPenaltyAction(id, "use")

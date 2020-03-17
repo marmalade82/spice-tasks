@@ -8,9 +8,10 @@ import withObservables from "@nozbe/with-observables";
 import TaskQuery, { ActiveTaskQuery } from "src/Models/Task/TaskQuery";
 import { ConnectedGoalTaskItem} from "src/ConnectedComponents/Lists/Composite/GoalTaskItem";
 import GoalQuery, { ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
-    navigation: any
+    navigation: Navigation<ScreenParams>
     tasks: Task[]
     goals: Goal[]
 }
@@ -111,8 +112,7 @@ const AdaptedGoalTaskList: React.FunctionComponent<Props> = function(props: Prop
     )
 }
 
-interface InputProps {
-    navigation: any
+interface InputProps extends Props {
     type: "dueAndOverdueActive" | "startedButNotDueActive" | "notStartedActive"
 }
 

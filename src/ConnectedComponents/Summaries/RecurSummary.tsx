@@ -8,10 +8,11 @@ import {
 } from "src/Models/Recurrence/Recur";
 import RecurSummary, { ModalChoices } from "src/Components/Summaries/RecurSummary";
 import GoalQuery, { Goal } from "src/Models/Goal/GoalQuery";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     recur: Recur,
-    navigation: any,
+    navigation: Navigation<ScreenParams>,
     onModalChoice: (s: ModalChoices) => void;
     goals: Goal[];
 }
@@ -41,10 +42,8 @@ const AdaptedRecurSummary: React.FunctionComponent<Props> = (props: Props) => {
 }
 
 
-interface InputProps {
-    recur: Recur,
-    navigation: any,
-    onModalChoice: (s: ModalChoices) => void;
+interface InputProps extends Omit<Props, "goals"> {
+
 }
 
 /**

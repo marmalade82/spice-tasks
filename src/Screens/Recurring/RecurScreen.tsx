@@ -12,7 +12,7 @@ import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 
 
 interface Props {
-    navigation: any
+    navigation: object
 }
 
 interface State {

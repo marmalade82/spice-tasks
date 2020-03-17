@@ -17,10 +17,11 @@ import SwipeRow from "src/Components/Basic/SwipeRow";
 import { View } from "react-native"
 import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
 import { OnGoalAction } from "src/Components/Lists/Items/GoalListItem";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     goals: Goal[];
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     paginate?: number;
     onSwipeRight?: (id: string) => void;
     onGoalAction: OnGoalAction;

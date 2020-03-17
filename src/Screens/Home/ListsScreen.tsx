@@ -25,9 +25,11 @@ import FootSpacer from "src/Components/Basic/FootSpacer";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
+import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navigator";
+import { TaskParentTypes } from "src/Models/Task/Task";
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State {
@@ -54,6 +56,7 @@ export default class ListsScreen extends React.Component<Props, State> {
     }
     
     unsub: () => void;
+    navigation: MainNavigator<"Lists">
     constructor(props: Props) {
         super(props);
 
@@ -64,6 +67,7 @@ export default class ListsScreen extends React.Component<Props, State> {
         }
 
         this.unsub = () => {};
+        this.navigation = new ScreenNavigation(this.props);
     }
 
     componentDidMount = () => {
@@ -79,10 +83,10 @@ export default class ListsScreen extends React.Component<Props, State> {
             })
         })
 
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd);
+        dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd);
 
         this.unsub = () => {
-            dispatcher.removeEventListener(getKey(this.props.navigation), this.onClickAdd);
+            dispatcher.removeEventListener(getKey(this.navigation), this.onClickAdd);
             earnedRewardSub.unsubscribe();
             earnedPenaltiesSub.unsubscribe();
         }
@@ -126,7 +130,7 @@ export default class ListsScreen extends React.Component<Props, State> {
                     ></BackgroundTitle>
 
                     <ConnectedEarnedRewardList
-                        navigation={this.props.navigation}
+                        navigation={this.navigation}
                         paginate={4}
                         type={"unused"}
                         onSwipeRight={(id) => {
@@ -140,7 +144,7 @@ export default class ListsScreen extends React.Component<Props, State> {
                     ></BackgroundTitle>
 
                     <ConnectedEarnedPenaltyList
-                        navigation={this.props.navigation}
+                        navigation={this.navigation}
                         paginate={4}
                         type={"unused"}
                         onEarnedPenaltyAction={this.onEarnedPenaltyAction}
@@ -154,7 +158,7 @@ export default class ListsScreen extends React.Component<Props, State> {
                         }}
                     ></BackgroundTitle>
                     <NavigationList
-                        navigation={this.props.navigation}
+                        navigation={this.navigation}
                     ></NavigationList>
                     <FootSpacer></FootSpacer>
                 </ScrollView>
@@ -171,7 +175,10 @@ export default class ListsScreen extends React.Component<Props, State> {
                             iconType={"goal"}
                             iconBackground={"white"}
                             onPress={() => {
-                                this.props.navigation.navigate("AddGoal")
+                                this.navigation.navigate("AddGoal", {
+                                    id: "",
+                                    parent_id: "",
+                                })
                                 this.setState({
                                     showAdd: false,
                                 })
@@ -182,7 +189,11 @@ export default class ListsScreen extends React.Component<Props, State> {
                             iconType={"task"}
                             iconBackground={"white"}
                             onPress={() => {
-                                this.props.navigation.navigate("AddTask")
+                                this.navigation.navigate("AddTask", {
+                                    id: "",
+                                    parent_id: "",
+                                    parent_type: TaskParentTypes.NONE,
+                                })
                                 this.setState({
                                     showAdd: false,
                                 })
@@ -193,7 +204,10 @@ export default class ListsScreen extends React.Component<Props, State> {
                             iconType={"reward"}
                             iconBackground={"white"}
                             onPress={() => {
-                                this.props.navigation.navigate("AddReward")
+                                this.navigation.navigate("AddReward", {
+                                    id: "",
+                                    parent_id: "",
+                                })
                                 this.setState({
                                     showAdd: false,
                                 })
@@ -204,7 +218,10 @@ export default class ListsScreen extends React.Component<Props, State> {
                             iconType={"penalty"}
                             iconBackground={"white"}
                             onPress={() => {
-                                this.props.navigation.navigate("AddPenalty")
+                                this.navigation.navigate("AddPenalty", {
+                                    id: "",
+                                    parent_id: "",
+                                })
                                 this.setState({
                                     showAdd: false,
                                 })
@@ -218,7 +235,7 @@ export default class ListsScreen extends React.Component<Props, State> {
 }
 
 interface NavListProps {
-    navigation: any;
+    navigation: FullNavigation;
 }
 
 class NavigationList extends React.Component<NavListProps> {

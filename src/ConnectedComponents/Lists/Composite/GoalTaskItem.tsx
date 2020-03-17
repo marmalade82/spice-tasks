@@ -5,6 +5,7 @@ import { Task } from "src/Models/Task/Task";
 import withObservables from "@nozbe/with-observables";
 import { TaskListItem, Task as ITask } from "src/Components/Lists/Items/TaskListItem";
 import { GoalListItem, Goal as IGoal} from "src/Components/Lists/Items/GoalListItem";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 
 
@@ -12,7 +13,7 @@ interface Props {
     id: string;
     model: Goal | Task;
     accessibilityLabel?: string;
-    navigation: any,
+    navigation: Navigation<ScreenParams>,
     onItemAction: (id: string, action: "complete" | "fail", item: "goal" | "task") => void;
 }
 
@@ -65,11 +66,8 @@ const AdaptedGoalTaskItem: React.FunctionComponent<Props> = function(props: Prop
 
 }
 
-interface InputProps {
-    id: string;
-    model: Goal | Task
-    accessibilityLabel?: string;
-    navigation: any,
+interface InputProps extends Props {
+
 }
 
 const enhance = withObservables(['id', 'model'], (props: InputProps) => {

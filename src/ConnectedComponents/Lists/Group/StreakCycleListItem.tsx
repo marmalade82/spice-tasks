@@ -8,10 +8,11 @@ import {
 
 import StreakCycle from "src/Models/Group/StreakCycle";
 import withObservables from "@nozbe/with-observables";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     cycle: StreakCycle,
-    navigation: any,
+    navigation: Navigation<ScreenParams>,
 }
 
 const AdaptedStreakCycleListItem: React.FunctionComponent<Props> = function(props: Props) {

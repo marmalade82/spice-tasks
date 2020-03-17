@@ -3,11 +3,12 @@ import React from "react";
 import Item from "src/Components/Lists/Items/base/Item";
 import { ListItem, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     item: Task
     accessibilityLabel: string
-    navigation: any
+    navigation: Navigation<ScreenParams>
     onTaskAction: OnTaskAction
 }
 

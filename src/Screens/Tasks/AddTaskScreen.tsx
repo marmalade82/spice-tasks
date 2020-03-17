@@ -14,7 +14,7 @@ import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State { 

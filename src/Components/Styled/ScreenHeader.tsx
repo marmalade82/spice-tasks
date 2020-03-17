@@ -7,10 +7,11 @@ import {
 } from "./Styles";
 import { Icon } from "src/Components/Styled/Styled";
 import { View, StyleProp, ViewStyle } from "react-native";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     style?: StyleProp<ViewStyle>;
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     showBack: boolean;
     right?: (() => JSX.Element)[]
 }

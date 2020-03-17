@@ -29,7 +29,7 @@ export let countOfThings = (() => {
 
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State {

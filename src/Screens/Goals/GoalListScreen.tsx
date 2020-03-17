@@ -8,11 +8,12 @@ import { EventDispatcher } from "src/common/EventDispatcher";
 import { TouchableView } from "src/Components/Basic/Basic";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
+import { FullNavigation, MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 const dispatcher = new EventDispatcher();
@@ -34,19 +35,30 @@ export default class GoalListScreen extends React.Component<Props> {
         }
     }
 
+    navigation: MainNavigator<"Goals">;
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+
+        };
+
+        this.navigation = new ScreenNavigation(props);
+    }
+
     componentDidMount = () => {
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd);
+        dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd);
     }
 
     componentWillUnmount = () => {
-        dispatcher.removeEventListener(getKey(this.props.navigation) , this.onClickAdd);
+        dispatcher.removeEventListener(getKey(this.navigation) , this.onClickAdd);
     }
 
     onClickAdd = () => {
         const params = {
-            id: ""
+            id: "",
+            parent_id: "",
         };
-        this.props.navigation.navigate('AddGoal', params);
+        this.navigation.navigate('AddGoal', params);
     }
 
     onGoalAction = (id: string, action: "complete" | "fail") => {
@@ -64,7 +76,7 @@ export default class GoalListScreen extends React.Component<Props> {
         return (
             <DocumentView>
                 <ConnectedGoalList 
-                    navigation={this.props.navigation}
+                    navigation={this.navigation}
                     onGoalAction = {this.onGoalAction}
                 >
                 </ConnectedGoalList>

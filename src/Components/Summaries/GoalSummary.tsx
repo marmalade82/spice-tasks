@@ -8,12 +8,13 @@ import {
 import { Summary, IconButton, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
 import { booleanLiteral } from "@babel/types";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 export type ModalChoices = "complete" | "delete" | "incomplete"
 
 interface Props {
     goal: Goal
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     onModalChoice: (s: ModalChoices) => void;
     showReward: boolean;
     showPenalty: boolean;

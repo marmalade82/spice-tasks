@@ -11,7 +11,7 @@ import { EventDispatcher } from "src/common/EventDispatcher";
 import { getKey } from "../common/screenUtils";
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State { 

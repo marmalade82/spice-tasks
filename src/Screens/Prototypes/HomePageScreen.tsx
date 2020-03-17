@@ -6,7 +6,7 @@ import { NavigationRow, ScreenHeader, DocumentView } from "src/Components/Styled
 import ClickNavigation from "src/Components/Navigation/ClickNavigation";
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 

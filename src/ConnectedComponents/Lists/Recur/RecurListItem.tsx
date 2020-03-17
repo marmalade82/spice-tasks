@@ -10,11 +10,12 @@ import Recur from "src/Models/Recurrence/Recur";
 import withObservables from "@nozbe/with-observables";
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery from "src/Models/Goal/GoalQuery";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     recur: Recur,
     goals: Goal[],
-    navigation: any,
+    navigation: Navigation<ScreenParams>,
 }
 
 const AdaptedRecurListItem: React.FunctionComponent<Props> = function(props: Props) {
@@ -38,9 +39,7 @@ const AdaptedRecurListItem: React.FunctionComponent<Props> = function(props: Pro
     );
 }
 
-interface InputProps {
-    recur: Recur
-    navigation: any,
+interface InputProps extends Omit<Props, "goals"> {
 }
 
 const enhance = withObservables(['recur'], (props: InputProps) => {

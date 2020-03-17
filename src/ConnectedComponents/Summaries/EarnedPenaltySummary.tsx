@@ -9,6 +9,7 @@ import {
 import EarnedPenaltySummary, {OnChoice} from "src/Components/Summaries/EarnedPenaltySummary";
 import { StyleProp, ViewStyle } from "react-native";
 import Goal from "src/Models/Goal/Goal";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 
 
@@ -16,7 +17,7 @@ interface Props {
     earned: EarnedPenalty,
     goal: Goal,
     style: StyleProp<ViewStyle>;
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     onChoice: OnChoice;
 }
 
@@ -41,12 +42,8 @@ const AdaptedEarnedPenaltySummary: React.FunctionComponent<Props> = (props: Prop
 
 }
 
-interface InputProps {
-    earned: EarnedPenalty
-    goal: Goal,
-    style: StyleProp<ViewStyle>
-    navigation: any;
-    onChoice: OnChoice
+interface InputProps extends Props {
+
 }
 
 /**

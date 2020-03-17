@@ -6,7 +6,7 @@ import { DocumentView } from "src/Components/Styled/Styled";
 import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
 
 interface Props {
-    navigation: any
+    navigation: object
 }
 
 export default class UnusedPenaltiesScreen extends React.Component<Props> {

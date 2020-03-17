@@ -10,9 +10,13 @@ export interface Navigation<ScreenParams> {
 }
 
 export class ScreenNavigation<ScreenParams, Screen extends keyof ScreenParams> implements Navigation<ScreenParams> {
-    navigator: any;
-    constructor(navigator: any) {
-        this.navigator = navigator;
+    props: { navigation: any };
+    constructor(props: {navigation: any}) {
+        this.props = props;
+    }
+
+    private get navigator() {
+      return this.props.navigation;
     }
 
     goBack = () => {
@@ -89,3 +93,7 @@ const NavigatorParams = {
 } as const;
 
 export type ScreenParams = typeof NavigatorParams;
+
+export type FullNavigation = Navigation<ScreenParams>;
+
+export type MainNavigator<Screen extends keyof ScreenParams> = ScreenNavigation<ScreenParams, Screen>

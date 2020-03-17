@@ -9,11 +9,12 @@ import {
 
 import EarnedReward from "src/Models/Reward/EarnedReward";
 import withObservables from "@nozbe/with-observables";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 
 interface Props {
     earned: EarnedReward
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     onAction: OnEarnedRewardAction,
 }
 

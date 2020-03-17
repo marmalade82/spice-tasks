@@ -8,10 +8,11 @@ import {
 
 import Reward from "src/Models/Reward/Reward";
 import withObservables from "@nozbe/with-observables";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     reward: Reward
-    navigation: any
+    navigation: Navigation<ScreenParams>
 }
 
 const AdaptedRewardListItem: React.FunctionComponent<Props> = function(props: Props) {
@@ -31,9 +32,8 @@ const AdaptedRewardListItem: React.FunctionComponent<Props> = function(props: Pr
     );
 }
 
-interface InputProps {
-    reward: Reward
-    navigation: any
+interface InputProps extends Props {
+
 }
 
 /**

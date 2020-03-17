@@ -15,10 +15,11 @@ import SwipeRow from "src/Components/Basic/SwipeRow";
 import { View } from "react-native";
 import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
 import { OnEarnedRewardAction } from "src/Components/Lists/Items/EarnedRewardListItem";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     earned: EarnedReward[];
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     paginate?: number;
     emptyText?: string;
     onSwipeRight?: (id: string) => void;

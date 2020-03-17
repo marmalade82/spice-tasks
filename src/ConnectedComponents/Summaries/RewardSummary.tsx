@@ -8,13 +8,14 @@ import {
 } from "src/Models/Reward/Reward";
 import RewardSummary, {OnChoice} from "src/Components/Summaries/RewardSummary";
 import { StyleProp, ViewStyle } from "react-native";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 
 
 interface Props {
     reward: Reward,
     style: StyleProp<ViewStyle>;
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     onChoice: OnChoice;
 }
 
@@ -35,11 +36,8 @@ const AdaptedRewardSummary: React.FunctionComponent<Props> = (props: Props) => {
 
 }
 
-interface InputProps {
-    reward: Reward
-    style: StyleProp<ViewStyle>
-    navigation: any;
-    onChoice: OnChoice
+interface InputProps extends Props {
+
 }
 
 /**

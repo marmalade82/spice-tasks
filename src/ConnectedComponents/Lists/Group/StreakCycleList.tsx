@@ -19,10 +19,11 @@ import { ConnectedStreakCycleListItem } from "src/ConnectedComponents/Lists/Grou
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import { switchMap } from "rxjs/operators";
 import { Observable } from "rxjs";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     cycles: StreakCycle[];
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     paginate?: number;
     emptyText? : string;
     onSwipeRight?: (id: string) => void;

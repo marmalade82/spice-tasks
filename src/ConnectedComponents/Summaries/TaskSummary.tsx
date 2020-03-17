@@ -7,10 +7,11 @@ import {
     Task
 } from "src/Models/Task/Task";
 import TaskSummary from "src/Components/Summaries/TaskSummary";
+import { FullNavigation } from "src/common/Navigator";
 
 interface Props {
     task: Task,
-    navigation: any,
+    navigation: FullNavigation,
     onModalChoice: (s: "complete" | "delete") => void;
 }
 
@@ -36,10 +37,8 @@ const AdaptedTaskSummary: React.FunctionComponent<Props> = (props: Props) => {
 }
 
 
-interface InputProps {
-    task: Task
-    navigation: any
-    onModalChoice: (s: "complete" | "delete") => void;
+interface InputProps extends Props {
+
 }
 
 /**

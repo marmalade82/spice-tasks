@@ -9,6 +9,7 @@ import Item from "src/Components/Lists/Items/base/Item";
 import { PenaltyTypes } from "src/Models/Penalty/PenaltyLogic";
 import { ListItem, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface EarnedPenalty {
     id: string;
@@ -22,7 +23,7 @@ interface EarnedPenalty {
 interface Props {
     item: EarnedPenalty;
     accessibilityLabel: string
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     onAction: OnEarnedPenaltyAction
 }
 

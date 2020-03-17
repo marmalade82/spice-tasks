@@ -6,7 +6,7 @@ import { DocumentView } from "src/Components/Styled/Styled";
 
 
 interface Props {
-    navigation: any
+    navigation: object
 }
 
 export default class RecurListScreen extends React.Component<Props> {

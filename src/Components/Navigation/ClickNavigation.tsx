@@ -1,9 +1,10 @@
 
 import React from "react";
 import { View, TouchableOpacity, TouchableHighlight, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     parameters: object;
     destination: string;
     navType: "navigate" | "push";

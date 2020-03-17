@@ -9,11 +9,12 @@ import {
 
 import EarnedPenalty from "src/Models/Penalty/EarnedPenalty";
 import withObservables from "@nozbe/with-observables";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 
 interface Props {
     earned: EarnedPenalty
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     onEarnedPenaltyAction: OnEarnedPenaltyAction;
 }
 

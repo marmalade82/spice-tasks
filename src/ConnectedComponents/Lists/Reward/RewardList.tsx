@@ -9,10 +9,11 @@ import RewardQuery from "src/Models/Reward/RewardQuery";
 import List from "src/Components/Lists/base/List";
 import ClickNavigation from "src/Components/Navigation/ClickNavigation";
 import { ConnectedRewardListItem } from "src/ConnectedComponents/Lists/Reward/RewardListItem";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     rewards: Reward[];
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
 }
 
 const AdaptedRewardList: React.FunctionComponent<Props> = (props: Props) => {
@@ -37,8 +38,7 @@ const AdaptedRewardList: React.FunctionComponent<Props> = (props: Props) => {
 }
 
 
-interface InputProps {
-    navigation: any
+interface InputProps extends Omit<Props, "rewards"> {
 }
 
 /**

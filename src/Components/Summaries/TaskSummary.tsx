@@ -7,10 +7,11 @@ import {
 } from "src/Components/Basic/Basic";
 import { Summary, IconButton, ModalIconButton, ModalRow } from "src/Components/Styled/Styled"
 import MyDate from "src/common/Date";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     task: Task
-    navigation: any
+    navigation: Navigation<ScreenParams>
     onModalChoice: (s: "complete" | "delete") => void;
 }
 

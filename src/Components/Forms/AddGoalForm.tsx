@@ -30,9 +30,10 @@ import { EventDispatcher, IEventDispatcher, fromEvent } from "src/common/EventDi
 import { ROW_CONTAINER_HEIGHT, CONTAINER_VERTICAL_MARGIN } from "../Styled/Styles";
 import FootSpacer from "../Basic/FootSpacer";
 import { startDate, dueDate } from "./common/utils";
+import { FullNavigation } from "src/common/Navigator";
 
 interface Props {
-    navigation: Navigator
+    navigation: FullNavigation
     onDataChange: (d: State) => void;
     rewardChoices: Observable<LabelValue[]>
     penaltyChoices: Observable<LabelValue[]>

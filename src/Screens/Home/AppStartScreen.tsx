@@ -27,9 +27,11 @@ import FootSpacer from "src/Components/Basic/FootSpacer";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
+import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navigator";
+import { TaskParentTypes } from "src/Models/Task/Task";
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 
@@ -61,6 +63,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
     }
 
     unsub: () => void;
+    navigation: MainNavigator<"AppStart">;
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -73,6 +76,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
             ongoingGoalsCount: 0,
         }
         this.unsub = () => {}
+        this.navigation = new ScreenNavigation(this.props);
     }
 
     componentDidMount = async () => {
@@ -109,9 +113,9 @@ export default class AppStartScreen extends React.Component<Props, State> {
                     ongoingGoalsCount: count
                 })
             }) ;
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd)
+        dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd)
         this.unsub = () => {
-            dispatcher.removeEventListener(getKey(this.props.navigation), this.onClickAdd)
+            dispatcher.removeEventListener(getKey(this.navigation), this.onClickAdd)
             timeSub.unsubscribe();
             dueTodaySub.unsubscribe();
             inProgressSub.unsubscribe();
@@ -163,7 +167,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         }}
                     ></BackgroundTitle>
                     <ConnectedTaskList
-                        navigation={this.props.navigation}
+                        navigation={this.navigation}
                         type={"due-today"}
                         parentId={""}
                         paginate={4}
@@ -189,7 +193,10 @@ export default class AppStartScreen extends React.Component<Props, State> {
                             iconType={"goal"}
                             iconBackground={"white"}
                             onPress={() => {
-                                this.props.navigation.navigate("AddGoal")
+                                this.navigation.navigate("AddGoal", {
+                                    id: "",
+                                    parent_id: ""
+                                })
                                 this.setState({
                                     showAdd: false,
                                 })
@@ -200,7 +207,11 @@ export default class AppStartScreen extends React.Component<Props, State> {
                             iconType={"task"}
                             iconBackground={"white"}
                             onPress={() => {
-                                this.props.navigation.navigate("AddTask")
+                                this.navigation.navigate("AddTask", {
+                                    id: "",
+                                    parent_id: "",
+                                    parent_type: TaskParentTypes.NONE,
+                                })
                                 this.setState({
                                     showAdd: false,
                                 })
@@ -211,7 +222,10 @@ export default class AppStartScreen extends React.Component<Props, State> {
                             iconType={"reward"}
                             iconBackground={"white"}
                             onPress={() => {
-                                this.props.navigation.navigate("AddReward")
+                                this.navigation.navigate("AddReward", {
+                                    id: "",
+                                    parent_id: "",
+                                })
                                 this.setState({
                                     showAdd: false,
                                 })
@@ -222,7 +236,10 @@ export default class AppStartScreen extends React.Component<Props, State> {
                             iconType={"penalty"}
                             iconBackground={"white"}
                             onPress={() => {
-                                this.props.navigation.navigate("AddPenalty")
+                                this.navigation.navigate("AddPenalty", {
+                                    id: "",
+                                    parent_id: "",
+                                })
                                 this.setState({
                                     showAdd: false,
                                 })
@@ -242,7 +259,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         }}
                     ></BackgroundTitle>
                     <ConnectedTaskList
-                        navigation={this.props.navigation}
+                        navigation={this.navigation}
                         type={"overdue"}
                         parentId={""}
                         paginate={4}
@@ -267,7 +284,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                     ></BackgroundTitle>
 
                     <ConnectedGoalList
-                        navigation={this.props.navigation}
+                        navigation={this.navigation}
                         type={"ongoing"}
                         paginate={4}
                         onSwipeRight={(id: string) => {
@@ -291,7 +308,7 @@ interface StatusListProps {
     inProgressGoalsCount: number;
     earnedRewardsCount: number;
     earnedPenaltiesCount: number;
-    navigation: any;
+    navigation: FullNavigation;
 }
 const AdaptedStatusList: React.FunctionComponent<StatusListProps> = (props: StatusListProps) => {
 
@@ -334,7 +351,7 @@ const AdaptedStatusList: React.FunctionComponent<StatusListProps> = (props: Stat
 }
 
 interface AllStatusListProps {
-    navigation: any
+    navigation: object
 }
 
 /**

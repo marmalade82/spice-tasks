@@ -22,10 +22,11 @@ import { prependToMemberExpression } from "@babel/types";
 import { OnTaskAction } from "src/Components/Lists/Items/TaskListItem";
 import StreakCycleQuery, { ChildStreakCycleQuery } from "src/Models/Group/StreakCycleQuery";
 import { switchMap } from "rxjs/operators";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     tasks: Task[];
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     paginate?: number;
     onSwipeRight?: (id: string) => void;
     emptyText?: string;

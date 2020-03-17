@@ -3,11 +3,12 @@ import { View, StyleSheet, Text } from "react-native";
 import Item from "src/Components/Lists/Items/base/Item";
 import { ListItem } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
     item: Reward
     accessibilityLabel: string
-    navigation: any
+    navigation: Navigation<ScreenParams>
 }
 
 interface State {

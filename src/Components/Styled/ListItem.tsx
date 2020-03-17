@@ -6,9 +6,10 @@ import {
 import { View, Text } from "react-native";
 import { Icon as NIcon } from "react-native-elements";
 import { Icon } from "src/Components/Styled/Styled";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props {
-    navigation: any;
+    navigation: Navigation<ScreenParams>;
     destination: string;
     params: object;
     text: string;

@@ -20,10 +20,11 @@ import { NavigationStackProp} from "react-navigation-stack";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "src/Screens/common/screenUtils";
+import { FullNavigation, MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 
 interface Props {
-    navigation: any;
+    navigation: object;
 }
 
 interface State { 
@@ -40,6 +41,7 @@ type OmitFromGoal = "parentId" | "state" | "active" | "lastRefreshed" |
 var dispatcher = new EventDispatcher();
 
 export default class AddGoalScreen extends React.Component<Props, State> {
+    navigation: MainNavigator<"AddGoal">
     goalFormRef: React.RefObject<AddGoalForm>;
     constructor(props) {
         super(props);
@@ -49,6 +51,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             showToast: false,
         }
         this.goalFormRef = React.createRef();
+        this.navigation = new ScreenNavigation(this.props);
     }
     static navigationOptions = ({navigation}) => {
         return {
@@ -67,7 +70,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
     }
 
     componentDidMount = async () => {
-        const id = this.props.navigation.getParam('id', '');
+        const id = this.navigation.getParam('id', '');
         const goal = await new GoalQuery().get(id); 
         if(goal) {
             let data: AddGoalData = {
@@ -95,11 +98,11 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 goal: undefined
             })
         }
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onSave);
+        dispatcher.addEventListener(getKey(this.navigation), this.onSave);
     }
 
     componentWillUnmount = () => {
-        dispatcher.removeEventListener(getKey(this.props.navigation), this.onSave);
+        dispatcher.removeEventListener(getKey(this.navigation), this.onSave);
     }
 
 
@@ -141,12 +144,12 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                     })
                 } else {
                     // update was successful
-                    this.props.navigation.goBack();
+                    this.navigation.goBack();
                 }
             } else {
                 void GoalLogic.create(goalData, data.repeats)
 
-                this.props.navigation.goBack();
+                this.navigation.goBack();
             }
         }
     }
@@ -202,10 +205,10 @@ export default class AddGoalScreen extends React.Component<Props, State> {
     }
 
     renderGoalForm = () => {
-        const id = this.props.navigation.getParam('id', '');
+        const id = this.navigation.getParam('id', '');
         return (
             <AddGoalForm
-                navigation={this.props.navigation}
+                navigation={this.navigation}
                 onDataChange={(data: AddGoalData) => {
                     this.setState({
                         data: data
