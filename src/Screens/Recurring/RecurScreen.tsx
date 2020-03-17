@@ -9,6 +9,7 @@ import {
 } from "src/Components/Basic/Basic";
 import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 
 interface Props {
@@ -28,15 +29,17 @@ export default class RecurScreen extends React.Component<Props, State> {
         }
     }
 
+    navigation: MainNavigator<"Recur">;
     constructor(props: Props) {
         super(props);
         this.state = {
             recur: undefined
         }
+        this.navigation = new ScreenNavigation(props);
     }
 
     componentDidMount = async () => {
-        const id = this.props.navigation.getParam('id', '');
+        const id = this.navigation.getParam('id', '');
         const recur = await new RecurQuery().get(id); 
 
         if(recur) {
@@ -52,7 +55,7 @@ export default class RecurScreen extends React.Component<Props, State> {
     }
 
     onModalChoice = (str: "enable" | "disable" | "delete") => {
-        const id = this.props.navigation.getParam('id', '');
+        const id = this.navigation.getParam('id', '');
         switch(str) {
             case "enable": {
                 new RecurLogic(id).enable()
@@ -96,7 +99,7 @@ export default class RecurScreen extends React.Component<Props, State> {
         if(this.state.recur) {
             return (
                 <ConnectedRecurSummary
-                    navigation={this.props.navigation}
+                    navigation={this.navigation}
                     recur={this.state.recur} 
                     onModalChoice={this.onModalChoice}
                 ></ConnectedRecurSummary>
@@ -110,8 +113,8 @@ export default class RecurScreen extends React.Component<Props, State> {
             ,   render: () => {
                     return (
                         <ConnectedGoalList
-                            navigation={this.props.navigation}
-                            parentId={this.props.navigation.getParam('id', '')}
+                            navigation={this.navigation}
+                            parentId={this.navigation.getParam('id', '')}
                             type={"recurring"}
                             onGoalAction={this.onGoalAction}
                         ></ConnectedGoalList>

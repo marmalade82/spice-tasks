@@ -8,6 +8,7 @@ import Item from "src/Components/Lists/Items/base/Item";
 import { RewardType } from "src/Models/Reward/RewardLogic";
 import { ListItem, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
+import { FullNavigation } from "src/common/Navigator";
 
 interface EarnedReward {
     id: string;
@@ -23,7 +24,7 @@ export type OnEarnedRewardAction = (id: string, action: "use") => void;
 export interface Props {
     item: EarnedReward;
     accessibilityLabel: string
-    navigation: any;
+    navigation: FullNavigation;
     onAction: OnEarnedRewardAction;
 }
 

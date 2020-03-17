@@ -6,6 +6,7 @@ import { ConnectedRewardSummary } from "src/ConnectedComponents/Summaries/Reward
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 
 interface Props {
@@ -23,16 +24,18 @@ export default class RewardScreen extends React.Component<Props, State> {
         }
     }
 
+    navigation: MainNavigator<"Reward">;
     constructor(props: Props) {
         super(props);
 
         this.state = {
 
         }
+        this.navigation = new ScreenNavigation(props);
     }
 
     componentDidMount = async () => {
-        const reward = await new RewardQuery().get(this.props.navigation.getParam("id", ""));
+        const reward = await new RewardQuery().get(this.navigation.getParam("id", ""));
         if(reward) {
             this.setState({
                 reward: reward,
@@ -56,7 +59,7 @@ export default class RewardScreen extends React.Component<Props, State> {
     }
 
     onChoice = (choice: "delete") => {
-        const id = this.props.navigation.getParam("id", "");
+        const id = this.navigation.getParam("id", "");
         switch(choice) {
             case "delete": {
 
@@ -73,7 +76,7 @@ export default class RewardScreen extends React.Component<Props, State> {
                 <ConnectedRewardSummary
                     reward={this.state.reward}
                     style={{ flex: 9 }}
-                    navigation={this.props.navigation}
+                    navigation={this.navigation}
                     onChoice={this.onChoice}
                 >
                 </ConnectedRewardSummary>

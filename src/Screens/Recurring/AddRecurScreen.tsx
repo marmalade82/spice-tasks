@@ -9,6 +9,7 @@ import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 
 interface Props {
@@ -23,11 +24,14 @@ interface State {
 const dispatcher = new EventDispatcher();
 
 export default class AddRecurScreen extends React.Component<Props, State> {
+
+    navigation: MainNavigator<"AddRecur">;
     constructor(props: Props) {
         super(props);
         this.state = {
             data: AddRecurDefault(),
         }
+        this.navigation = new ScreenNavigation(props);
     }
 
     static navigationOptions = ({navigation}) => {
@@ -47,7 +51,7 @@ export default class AddRecurScreen extends React.Component<Props, State> {
     }
 
     componentDidMount = async () => {
-        const id = this.props.navigation.getParam('id', '');
+        const id = this.navigation.getParam('id', '');
         const recur = await new RecurQuery().get(id); 
         if(recur) {
             let data: AddRecurData = {
@@ -62,11 +66,11 @@ export default class AddRecurScreen extends React.Component<Props, State> {
                 recur: undefined
             })
         }
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onSave)
+        dispatcher.addEventListener(getKey(this.navigation), this.onSave)
     }
 
     componentWillUnmount = () => {
-        dispatcher.removeEventListener(getKey(this.props.navigation), this.onSave)
+        dispatcher.removeEventListener(getKey(this.navigation), this.onSave)
     }
 
     onSave = () => {
@@ -82,7 +86,7 @@ export default class AddRecurScreen extends React.Component<Props, State> {
             // do nothing. We DO NOT create recurrences from this form.
         }
 
-        this.props.navigation.goBack();
+        this.navigation.goBack();
     }
 
     render = () => {

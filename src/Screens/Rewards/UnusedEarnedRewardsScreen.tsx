@@ -5,6 +5,7 @@ import { ConnectedEarnedRewardList } from "src/ConnectedComponents/Lists/Reward/
 import { DocumentView } from "src/Components/Styled/Styled";
 import { EarnedReward } from "src/Screens";
 import EarnedRewardLogic from "src/Models/Reward/EarnedRewardLogic";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 interface Props {
     navigation: object;
@@ -22,8 +23,10 @@ export default class UnusedEarnedRewardsScreen extends React.Component<Props, St
         }
     }
 
+    navigation: MainNavigator<"UnusedEarnedRewards">
     constructor(props: Props) {
         super(props);
+        this.navigation = new ScreenNavigation(props);
     }
 
     onEarnedRewardAction = (id: string, action: "use") => {
@@ -38,7 +41,7 @@ export default class UnusedEarnedRewardsScreen extends React.Component<Props, St
         return (
             <DocumentView>
                 <ConnectedEarnedRewardList
-                    navigation={this.props.navigation}
+                    navigation={this.navigation}
                     type={"active"}
                     onEarnedRewardAction={this.onEarnedRewardAction}
                     onSwipeRight={(id) => {

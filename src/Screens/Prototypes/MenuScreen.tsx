@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Button } from "react-native";
 import Style from "src/Style/Style";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 interface Props {
     navigation: object;
@@ -10,13 +11,14 @@ interface State {
 }
 
 export default class MenuScreen extends React.Component<Props, State> {
+    navigation: MainNavigator<"Menu">
     constructor(props: Props) {
         super(props);
-
+        this.navigation = new ScreenNavigation(props);
     }
     
     navigate = (screen: string) => {
-        this.props.navigation.navigate(screen);
+        this.navigation.navigate(screen as any, {});
     }
 
     render = () => {

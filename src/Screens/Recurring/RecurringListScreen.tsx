@@ -3,6 +3,7 @@ import React from "react";
 import {View, Button, Text, StyleSheet } from "react-native";
 import { ConnectedRecurList } from "src/ConnectedComponents/Lists/Recur/RecurList";
 import { DocumentView } from "src/Components/Styled/Styled";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 
 interface Props {
@@ -16,11 +17,17 @@ export default class RecurListScreen extends React.Component<Props> {
         }
     }
 
+    navigation: MainNavigator<"Recurrings">;
+    constructor(props: Props) {
+        super(props);
+        this.navigation = new ScreenNavigation(props);
+    }
+
     render = () => {
         return (
             <DocumentView>
                 <ConnectedRecurList 
-                    navigation={this.props.navigation}
+                    navigation={this.navigation}
                 >
                 </ConnectedRecurList>
             </DocumentView>

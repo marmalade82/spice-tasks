@@ -5,6 +5,7 @@ import { ConnectedEarnedRewardSummary } from "src/ConnectedComponents/Summaries/
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 
 interface Props {
@@ -23,16 +24,18 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
         }
     }
 
+    navigation: MainNavigator<"EarnedReward">
     constructor(props: Props) {
         super(props);
 
         this.state = {
 
         }
+        this.navigation = new ScreenNavigation(props);
     }
 
     componentDidMount = async () => {
-        const earned = await new EarnedRewardQuery().get(this.props.navigation.getParam("id", ""));
+        const earned = await new EarnedRewardQuery().get(this.navigation.getParam("id", ""));
         if(earned) {
             this.setState({
                 earnedReward: earned,
@@ -66,11 +69,11 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
     }
 
     private onChoice = (choice: "use") => {
-        const id = this.props.navigation.getParam("id", "");
+        const id = this.navigation.getParam("id", "");
         switch(choice) {
             case "use": {
                 void new EarnedRewardLogic(id).use();
-                this.props.navigation.goBack();
+                this.navigation.goBack();
             } break;
             default: {
 
@@ -85,7 +88,7 @@ export default class EarnedRewardScreen extends React.Component<Props, State> {
                     earned={this.state.earnedReward}
                     style={{ flex: 9 }}
                     goal={this.state.sourceGoal}
-                    navigation={this.props.navigation}
+                    navigation={this.navigation}
                     onChoice={this.onChoice}
                 >
                 </ConnectedEarnedRewardSummary>

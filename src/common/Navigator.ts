@@ -4,19 +4,18 @@ import { any } from 'prop-types';
 
 export interface Navigation<ScreenParams> {
     navigate: <T extends keyof ScreenParams>(screen: T, params: ScreenParams[T]) => void;
-
     push: <T extends keyof ScreenParams>(screen: T, params: ScreenParams[T]) => void;
     state: any;
 }
 
 export class ScreenNavigation<ScreenParams, Screen extends keyof ScreenParams> implements Navigation<ScreenParams> {
-    props: { navigation: any };
-    constructor(props: {navigation: any}) {
+    props: { navigation: object };
+    constructor(props: {navigation: object}) {
         this.props = props;
     }
 
     private get navigator() {
-      return this.props.navigation;
+      return this.props.navigation as any;
     }
 
     goBack = () => {

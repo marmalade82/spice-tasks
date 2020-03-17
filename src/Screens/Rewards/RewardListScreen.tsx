@@ -7,6 +7,7 @@ import { DocumentView } from "src/Components/Styled/Styled";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { getKey } from "../common/screenUtils";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 interface Props {
     navigation: object
@@ -32,26 +33,33 @@ export default class RewardListScreen extends React.Component<Props> {
         }
     }
 
+    navigation: MainNavigator<"Rewards">
+    constructor(props: Props) {
+        super(props);
+        this.navigation = new ScreenNavigation(props);
+    }
+
     componentDidMount = () => {
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd)
+        dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd)
     }
 
     componentWillUnmount = () => {
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd)
+        dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd)
     }
 
     onClickAdd = () => {
         const params = {
-            id: ""
+            id: "",
+            parent_id: "",
         };
-        this.props.navigation.navigate('AddReward', params);
+        this.navigation.navigate('AddReward', params);
     }
 
     render = () => {
         return (
             <DocumentView>
                 <ConnectedRewardList 
-                    navigation={this.props.navigation}
+                    navigation={this.navigation}
                 >
                 </ConnectedRewardList>
             </DocumentView>

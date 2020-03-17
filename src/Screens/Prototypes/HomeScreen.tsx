@@ -2,6 +2,7 @@ import React from "react";
 import Home from "src/Components/Home";
 import { View, Button, StyleSheet } from "react-native";
 import Style from "src/Style/Style";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 interface Props {
     navigation: object;
@@ -25,6 +26,7 @@ export default class HomeScreen extends React.Component<Props, State> {
         }
     }
 
+    navigation: MainNavigator<"Home">;
     constructor(props: Props) {
         super(props);
 
@@ -34,6 +36,7 @@ export default class HomeScreen extends React.Component<Props, State> {
                 'EarnedRewards', "Penalties", "AddPenalty", "HomePage", "AppStart", "Recurrings",
             ]
         }
+        this.navigation = new ScreenNavigation(props);
     }
 
     renderScreenButtons = () => {
@@ -41,7 +44,7 @@ export default class HomeScreen extends React.Component<Props, State> {
             return (
                 <Button 
                     title={screenName}
-                    onPress={() => this.props.navigation.navigate(screenName)}
+                    onPress={() => this.navigation.navigate(screenName as any, {})}
                     key={screenName}
                 ></Button>
             );
@@ -51,12 +54,6 @@ export default class HomeScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <View style={[Style.container, localStyle.container]}>
-                <Button
-                    title={"Drawer"}
-                    onPress={() => {
-                        this.props.navigation.toggleDrawer()
-                    }}
-                ></Button>
                 {this.renderScreenButtons()}
             </View>
         )

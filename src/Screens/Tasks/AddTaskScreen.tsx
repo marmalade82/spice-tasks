@@ -12,6 +12,7 @@ import SaveButton from "src/Components/Basic/SaveButton";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 interface Props {
     navigation: object;
@@ -44,6 +45,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
         }
     }
 
+    navigation: MainNavigator<"AddTask">
     taskFormRef: React.RefObject<AddTaskForm>
     constructor(props: Props) {
         super(props);
@@ -53,10 +55,11 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             toast: "",
         }
         this.taskFormRef = React.createRef()
+        this.navigation = new ScreenNavigation(props);
     }
 
     componentDidMount = async () => {
-        const id = this.props.navigation.getParam('id', '');
+        const id = this.navigation.getParam('id', '');
         const task = await new TaskQuery().get(id); 
         if(task) {
             let data: AddTaskData = {
@@ -77,7 +80,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             })
 
         } else {
-            const parentId = this.props.navigation.getParam('parent_id', '');
+            const parentId = this.navigation.getParam('parent_id', '');
             let parentGoal = await new GoalQuery().get(parentId);
             const data = AddTaskDefault();
             if(parentGoal) {
@@ -98,11 +101,11 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             })
         }
 
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onSave);
+        dispatcher.addEventListener(getKey(this.navigation), this.onSave);
     }
 
     componentWillUnmount = () => {
-        dispatcher.removeEventListener(getKey(this.props.navigation), this.onSave);
+        dispatcher.removeEventListener(getKey(this.navigation), this.onSave);
     }
 
     onSave = () => {
@@ -118,10 +121,10 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             });
         } else {
             // Parent id only changes if task does not already exist
-            const parentId = this.state.task ? this.state.task.parentId : this.props.navigation.getParam('parent_id', '');
+            const parentId = this.state.task ? this.state.task.parentId : this.navigation.getParam('parent_id', '');
             const parentType: TaskParentTypes | string = this.state.task ? 
                                 this.state.task.parentType : 
-                                this.props.navigation.getParam('parent_type', TaskParentTypes.TASK);
+                                this.navigation.getParam('parent_type', TaskParentTypes.TASK);
 
             if(parentType !== TaskParentTypes.GOAL && parentType !== TaskParentTypes.TASK) {
                 throw new Error("Invalid parent type for a task");
@@ -142,7 +145,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                 void TaskLogic.create(taskData);
             }
 
-            this.props.navigation.goBack();
+            this.navigation.goBack();
         }
     }
 
@@ -190,7 +193,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             return false;
         } else if(this.state.task && this.state.task.parentId !== "") {
             return true;
-        } else if (this.props.navigation.getParam("parent_id", "") !== "") {
+        } else if (this.navigation.getParam("parent_id", "") !== "") {
             return true;
         }
         return false;

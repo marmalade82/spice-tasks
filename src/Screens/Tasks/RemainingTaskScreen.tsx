@@ -4,6 +4,7 @@ import { ScreenHeader, DocumentView, ClickRow, ListPicker, ListItem } from "src/
 import List from "src/Components/Lists/base/List";
 import TaskQuery, { TaskLogic, ActiveTaskQuery } from "src/Models/Task/TaskQuery";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 interface Props {
     navigation: object;
@@ -23,6 +24,8 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
             title: 'Remaining Tasks',
         }
     }
+    
+    navigation: MainNavigator<"RemainingTasks">;
     constructor(props: Props ){
         super(props);
 
@@ -33,6 +36,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
             inProgressCount: 0,
         }
         this.unsubscribe = () => {};
+        this.navigation = new ScreenNavigation(props);
     }
 
     componentDidMount = () => {
@@ -106,7 +110,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
               list: () => {
                   return (
                     <ConnectedTaskList
-                        navigation={this.props.navigation}
+                        navigation={this.navigation}
                         type={"active-due-soon-today"}
                         parentId={""}
                         onTaskAction={this.onTaskAction}
@@ -121,7 +125,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
               list: () => {
                   return (
                       <ConnectedTaskList
-                        navigation={this.props.navigation}
+                        navigation={this.navigation}
                         type={"in-progress-but-not-due-today"}
                         parentId={""}
                         onTaskAction={this.onTaskAction}
@@ -137,7 +141,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
               list: () => {
                   return (
                     <ConnectedTaskList
-                        navigation={this.props.navigation}
+                        navigation={this.navigation}
                         type={"completed-today"}
                         parentId={""}
                         onTaskAction={this.onTaskAction}

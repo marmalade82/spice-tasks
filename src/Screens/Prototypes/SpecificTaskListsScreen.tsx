@@ -8,6 +8,7 @@ import {
     ScreenHeader, DocumentView, ClickRow, 
     ListPicker, NavigationRow, ListItem,
 } from "src/Components/Styled/Styled";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 interface Props {
     navigation: object,
@@ -24,12 +25,14 @@ export default class SpecificTaskListScreen extends React.Component<Props, State
         }
     }
 
+    navigation : MainNavigator<"SpecificTaskLists">
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            current: parseInt(this.props.navigation.getParam("index", 0)),
+            current: 0
         }
+        this.navigation = new ScreenNavigation(props);
     }
 
     render = () => {
@@ -114,7 +117,7 @@ export default class SpecificTaskListScreen extends React.Component<Props, State
         return (
             <ListItem
                 destination={"SpecificTask"}
-                navigation={this.props.navigation}
+                navigation={this.navigation}
                 params={{}}
                 text={text}
                 subtext={subtext}

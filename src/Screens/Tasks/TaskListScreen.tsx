@@ -9,6 +9,8 @@ import { TaskLogic } from "src/Models/Task/TaskQuery";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { getKey } from "src/Screens/common/screenUtils";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
+import { TaskParentTypes } from "src/Models/Task/Task";
 
 interface Props {
     navigation: object;
@@ -17,27 +19,15 @@ interface Props {
 interface State { 
 }
 
-const localStyle = StyleSheet.create({
-    container: {
-        justifyContent: "flex-start",
-        alignItems: 'stretch',
-        backgroundColor: "lightyellow",
-        flex: 1
-    },
-    button: {
-        position: 'absolute',
-        right: 25,
-        bottom: 25,
-    }
-});
-
 const dispatcher = new EventDispatcher();
 
 export default class TaskListScreen extends React.Component<Props, State> {
+    navigation: MainNavigator<"Tasks">
     constructor(props: Props) {
         super(props);
         this.state = {
         }
+        this.navigation = new ScreenNavigation(props);
     }
 
     static navigationOptions = ({navigation}) => {
@@ -57,18 +47,20 @@ export default class TaskListScreen extends React.Component<Props, State> {
     }
 
     componentDidMount = () => {
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd)
+        dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd)
     }
 
     componentWillUnmount = () => {
-        dispatcher.removeEventListener(getKey(this.props.navigation), this.onClickAdd)
+        dispatcher.removeEventListener(getKey(this.navigation), this.onClickAdd)
     }
 
     onClickAdd = () => {
         const params = {
-            id: ""
+            id: "",
+            parent_id: "",
+            parent_type: TaskParentTypes.NONE,
         };
-        this.props.navigation.navigate('AddTask', params);
+        this.navigation.navigate('AddTask', params);
     }
 
     onTaskAction = (id: string, action: "complete" | "fail") => {
@@ -86,7 +78,7 @@ export default class TaskListScreen extends React.Component<Props, State> {
         return (
             <DocumentView>
                 <ConnectedTaskList
-                    navigation={this.props.navigation}
+                    navigation={this.navigation}
                     parentId={""}
                     type={"all"}
                     onTaskAction={this.onTaskAction}

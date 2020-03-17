@@ -9,6 +9,7 @@ import { DocumentView, ScreenHeader, Toast } from "src/Components/Styled/Styled"
 import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { getKey } from "../common/screenUtils";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 interface Props {
     navigation: object;
@@ -41,6 +42,7 @@ export default class AddRewardScreen extends React.Component<Props, State> {
         }
     }
 
+    navigation: MainNavigator<"AddReward">;
     rewardFormRef: React.RefObject<AddRewardForm>
     constructor(props: Props) {
         super(props);
@@ -50,10 +52,11 @@ export default class AddRewardScreen extends React.Component<Props, State> {
             showToast: false,
         }
         this.rewardFormRef = React.createRef();
+        this.navigation = new ScreenNavigation(props);
     }
 
     componentDidMount = async () => {
-        const id = this.props.navigation.getParam('id', '');
+        const id = this.navigation.getParam('id', '');
         const reward = await new RewardQuery().get(id); 
         if(reward) {
             let data: AddRewardData = {
@@ -70,11 +73,11 @@ export default class AddRewardScreen extends React.Component<Props, State> {
                 reward: undefined
             })
         }
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onSave);
+        dispatcher.addEventListener(getKey(this.navigation), this.onSave);
     }
 
     componentWillUnmount = () => {
-        dispatcher.removeEventListener(getKey(this.props.navigation), this.onSave);
+        dispatcher.removeEventListener(getKey(this.navigation), this.onSave);
     }
 
     onSave = () => {
@@ -103,7 +106,7 @@ export default class AddRewardScreen extends React.Component<Props, State> {
                 void new RewardQuery().create(rewardData).catch();
             }
 
-            this.props.navigation.goBack();
+            this.navigation.goBack();
         }
 
     }

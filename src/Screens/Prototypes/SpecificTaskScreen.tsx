@@ -11,6 +11,7 @@ import {
 } from "src/Components/Styled/Styled";
 import { View, Text } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 interface Props {
     navigation: object;
@@ -28,6 +29,8 @@ export default class SpecificTaskScreen extends React.Component<Props, State> {
             title: 'Specific Task',
         }
     }
+
+    navigation: MainNavigator<"SpecificTask">;
     constructor(props: Props ){
         super(props);
 
@@ -35,6 +38,7 @@ export default class SpecificTaskScreen extends React.Component<Props, State> {
             current: -1,
             showMore: false,
         }
+        this.navigation = new ScreenNavigation(props);
     }
 
     render = () => {
@@ -117,7 +121,7 @@ export default class SpecificTaskScreen extends React.Component<Props, State> {
                         number={2}
                         text={"Active"}
                         navOptions={{
-                            navigation: this.props.navigation,
+                            navigation: this.navigation,
                             destination: "SpecificTaskLists",
                             type: "push",
                             parameters: {
@@ -136,7 +140,7 @@ export default class SpecificTaskScreen extends React.Component<Props, State> {
                         number={2}
                         text={"Completed"}
                         navOptions={{
-                            navigation: this.props.navigation,
+                            navigation: this.navigation,
                             destination: "SpecificTaskLists",
                             type: "push",
                             parameters: {

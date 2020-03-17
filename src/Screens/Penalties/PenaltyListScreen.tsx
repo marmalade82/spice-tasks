@@ -6,6 +6,7 @@ import { DocumentView } from "src/Components/Styled/Styled";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 interface Props {
     navigation: object
@@ -38,26 +39,34 @@ export default class PenaltyListScreen extends React.Component<Props> {
         }
     }
 
+
+    navigation: MainNavigator<"Penalties">
+    constructor(props: Props) {
+        super(props);
+        this.navigation = new ScreenNavigation(props);
+    }
+
     componentDidMount = () => {
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd);
+        dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd);
     }
 
     componentWillUnmount = () => {
-        dispatcher.removeEventListener(getKey(this.props.navigation), this.onClickAdd);
+        dispatcher.removeEventListener(getKey(this.navigation), this.onClickAdd);
     }
 
     onClickAdd = () => {
         const params = {
-            id: ""
+            id: "",
+            parent_id: "",
         };
-        this.props.navigation.navigate('AddPenalty', params);
+        this.navigation.navigate('AddPenalty', params);
     }
 
     render = () => {
         return (
             <DocumentView>
                 <ConnectedPenaltyList 
-                    navigation={this.props.navigation}
+                    navigation={this.navigation}
                 >
                 </ConnectedPenaltyList>
             </DocumentView>

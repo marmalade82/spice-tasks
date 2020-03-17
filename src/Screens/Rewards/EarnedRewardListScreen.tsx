@@ -3,6 +3,7 @@ import { ColumnView, RowView, Image, HeaderText, BodyText, } from "src/Component
 import { ConnectedEarnedRewardList } from "src/ConnectedComponents/Lists/Reward/EarnedRewardList";
 import { DocumentView } from "src/Components/Styled/Styled";
 import EarnedRewardLogic from "src/Models/Reward/EarnedRewardLogic";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 interface Props {
     navigation: object;
@@ -20,8 +21,10 @@ export default class EarnedRewardListScreen extends React.Component<Props, State
         }
     }
 
+    navigation: MainNavigator<"EarnedRewards">
     constructor(props: Props) {
         super(props);
+        this.navigation = new ScreenNavigation(props);
     }
 
     onEarnedRewardAction = (id: string, action: "use") => {
@@ -36,7 +39,7 @@ export default class EarnedRewardListScreen extends React.Component<Props, State
         return (
             <DocumentView>
                 <ConnectedEarnedRewardList
-                    navigation={this.props.navigation}
+                    navigation={this.navigation}
                     onEarnedRewardAction={this.onEarnedRewardAction}
                     onSwipeRight={(id) => {
                         this.onEarnedRewardAction(id, "use")

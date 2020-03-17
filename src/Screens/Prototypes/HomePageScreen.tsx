@@ -4,6 +4,7 @@ import { ColumnView, RowView, BodyText, HeaderText, TouchableView } from "src/Co
 import MyDate from "src/common/Date";
 import { NavigationRow, ScreenHeader, DocumentView } from "src/Components/Styled/Styled";
 import ClickNavigation from "src/Components/Navigation/ClickNavigation";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 interface Props {
     navigation: object;
@@ -21,8 +22,10 @@ export default class HomePageScreen extends React.Component<Props, State> {
         }
     }
 
+    navigation: MainNavigator<"HomePage">
     constructor(props: Props) {
         super(props);
+        this.navigation = new ScreenNavigation(props);
     }
 
     render = () => {
@@ -33,7 +36,7 @@ export default class HomePageScreen extends React.Component<Props, State> {
                     number={4}
                     text={"Tasks Remaining"}
                     navOptions={{
-                        navigation: this.props.navigation,
+                        navigation: this.navigation,
                         destination: "RemainingTasks",
                         parameters: {},
                         type: "navigate",
@@ -45,7 +48,7 @@ export default class HomePageScreen extends React.Component<Props, State> {
                     number={2}
                     text={"Overdue"}
                     navOptions={{
-                        navigation: this.props.navigation,
+                        navigation: this.navigation,
                         destination: "Overdue",
                         parameters: {},
                         type: "navigate",
@@ -57,7 +60,7 @@ export default class HomePageScreen extends React.Component<Props, State> {
                     number={1}
                     text={"Goal In Progress"}
                     navOptions={{
-                        navigation: this.props.navigation,
+                        navigation: this.navigation,
                         destination: "InProgressGoals",
                         parameters: {},
                         type: "navigate",
@@ -69,7 +72,7 @@ export default class HomePageScreen extends React.Component<Props, State> {
                     number={5}
                     text={"Rewards Earned"}
                     navOptions={{
-                        navigation: this.props.navigation,
+                        navigation: this.navigation,
                         destination: "EarnedRewards",
                         parameters: {},
                         type: "navigate",
@@ -81,7 +84,7 @@ export default class HomePageScreen extends React.Component<Props, State> {
                     number={1}
                     text={"Penalty Pending"}
                     navOptions={{
-                        navigation: this.props.navigation,
+                        navigation: this.navigation,
                         destination: "EarnedPenalties",
                         parameters: {},
                         type: "navigate",

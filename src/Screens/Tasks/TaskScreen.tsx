@@ -13,6 +13,7 @@ import ConnectedSingleList from "src/ConnectedComponents/Lists/SingleList";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
+import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 
 
 interface Props {
@@ -47,6 +48,7 @@ export default class TaskScreen extends React.Component<Props, State> {
     }
 
     unsubscribe: () => void;
+    navigation: MainNavigator<"Task">
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -56,10 +58,11 @@ export default class TaskScreen extends React.Component<Props, State> {
             showAdd: false,
         }
         this.unsubscribe = () => {};
+        this.navigation = new ScreenNavigation(props);
     }
 
     componentDidMount = async () => {
-        const id = this.props.navigation.getParam('id', '');
+        const id = this.navigation.getParam('id', '');
         const task = await new TaskQuery().get(id); 
 
         if(task) {
@@ -86,11 +89,11 @@ export default class TaskScreen extends React.Component<Props, State> {
                 task: undefined
             });
         }
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd)
+        dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd)
     }
 
     componentWillUnmount = () => {
-        dispatcher.removeEventListener(getKey(this.props.navigation), this.onClickAdd)
+        dispatcher.removeEventListener(getKey(this.navigation), this.onClickAdd)
         this.unsubscribe();
     }
 
@@ -101,7 +104,7 @@ export default class TaskScreen extends React.Component<Props, State> {
     }
 
     onCompleteTask = () => {
-        void new TaskLogic(this.props.navigation.getParam("id", "")).complete();
+        void new TaskLogic(this.navigation.getParam("id", "")).complete();
     }
 
     onTaskAction = (id: string, action: "complete" | "fail") => {
@@ -141,8 +144,8 @@ export default class TaskScreen extends React.Component<Props, State> {
                         }}
                     ></BackgroundTitle>
                     <ConnectedTaskList
-                        navigation={this.props.navigation}
-                        parentId={this.props.navigation.getParam('id', '')}
+                        navigation={this.navigation}
+                        parentId={this.navigation.getParam('id', '')}
                         type={"parent-active"}
                         paginate={4}
                         onSwipeRight={(id: string) => {
@@ -156,8 +159,8 @@ export default class TaskScreen extends React.Component<Props, State> {
                         }}
                     ></BackgroundTitle>
                     <ConnectedTaskList
-                        navigation={this.props.navigation}
-                        parentId={this.props.navigation.getParam('id', '')}
+                        navigation={this.navigation}
+                        parentId={this.navigation.getParam('id', '')}
                         type={"parent-inactive"}
                         onTaskAction={this.onTaskAction}
                         paginate={4}
@@ -177,8 +180,9 @@ export default class TaskScreen extends React.Component<Props, State> {
                             iconType={"task"}
                             iconBackground={"white"}
                             onPress={() => {
-                                this.props.navigation.push("AddTask", {
-                                    parent_id: this.props.navigation.getParam("id", ""),
+                                this.navigation.push("AddTask", {
+                                    id: "",
+                                    parent_id: this.navigation.getParam("id", ""),
                                     parent_type: TaskParentTypes.TASK,
                                 })
                                 this.setState({
@@ -198,7 +202,7 @@ export default class TaskScreen extends React.Component<Props, State> {
         if(this.state.task) {
             return (
                 <ConnectedTaskSummary
-                    navigation={this.props.navigation}
+                    navigation={this.navigation}
                     task={this.state.task} 
                     onModalChoice={this.onModalChoice}
                 ></ConnectedTaskSummary>
