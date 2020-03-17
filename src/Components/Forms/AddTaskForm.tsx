@@ -91,7 +91,12 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
         if(this.props.dateRange ) {
             const startMin = this.props.dateRange[0];
             if(start < startMin) {
-                return "Start date cannot be before " + startMin.toString();
+                return "Start date cannot be before " + new MyDate(startMin).format("MM/DD");
+            }
+
+            const startMax = this.props.dateRange[1];
+            if(start > startMax) {
+                return "Start date cannot be after " + new MyDate(startMax).format("MM/DD")
             }
         }
 
