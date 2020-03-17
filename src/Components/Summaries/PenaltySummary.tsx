@@ -12,7 +12,8 @@ interface Props {
     style: StyleProp<ViewStyle>
     title: string;
     details: string;
-    expireDate: Date
+    expireDate: Date;
+    id: string;
     navigation: Navigation<ScreenParams>;
     onChoice: OnChoice;
 }
@@ -33,7 +34,8 @@ export default class PenaltySummary extends React.Component<Props, State> {
                         onPress={() => {
                             this.props.navigation.push(
                                 "AddPenalty", {
-                                    id: this.props.navigation.getParam('id', ''),
+                                    id: this.props.id,
+                                    parent_id: "",
                                 }
                             );
                         }}

@@ -24,6 +24,7 @@ const AdaptedPenaltySummary: React.FunctionComponent<Props> = (props: Props) => 
 
     return (
         <PenaltySummary
+            id={penalty.id}
             style={props.style}
             expireDate={penalty.expireDate}
             navigation={props.navigation}

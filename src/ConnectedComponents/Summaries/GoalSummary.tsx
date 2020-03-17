@@ -56,6 +56,7 @@ const AdaptedGoalSummary: React.FunctionComponent<Props> = (props: Props) => {
     }, [])
 
     const mappedGoal = {
+        id: goal.id,
         title: goal.title,
         details: goal.details,
         start_date: goal.startDate,

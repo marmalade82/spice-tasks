@@ -7,25 +7,25 @@ import { ROW_CONTAINER_HEIGHT, ROW_HEIGHT, PRIMARY_COLOR, ICON_CONTAINER_WIDTH, 
 import StyledIcon from "./Icon";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 
-interface Props {
+interface Props<T extends keyof ScreenParams> {
     number?: number;
     icon?: "goal" | "task" | "reward" | "penalty" | "recur" | "earned_reward" | "earned_penalty";
     text: string;
-    navOptions?: navOptions
+    navOptions?: navOptions<T>
     style?: StyleProp<ViewStyle>
 }
 
-interface navOptions {
+interface navOptions<T extends keyof ScreenParams> {
     navigation: Navigation<ScreenParams>
-    destination: string,
-    parameters: object,
+    destination: T,
+    parameters: ScreenParams[T],
     type: "push" | "navigate",
 }
 
 
-export default class NavigationRow extends React.Component<Props> {
+export default class NavigationRow<T extends keyof ScreenParams> extends React.Component<Props<T>> {
 
-    constructor(props: Props ) {
+    constructor(props: Props<T> ) {
         super(props);
     }
 

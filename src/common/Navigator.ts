@@ -5,6 +5,7 @@ import { any } from 'prop-types';
 export interface Navigation<ScreenParams> {
     navigate: <T extends keyof ScreenParams>(screen: T, params: ScreenParams[T]) => void;
     push: <T extends keyof ScreenParams>(screen: T, params: ScreenParams[T]) => void;
+    goBack: (dest? : null) => void;
     state: any;
 }
 
@@ -18,8 +19,8 @@ export class ScreenNavigation<ScreenParams, Screen extends keyof ScreenParams> i
       return this.props.navigation as any;
     }
 
-    goBack = () => {
-        this.navigator.goBack();
+    goBack = (dest? : null) => {
+        this.navigator.goBack(dest);
     }
 
     getParam: <T extends keyof ScreenParams[Screen]>(param: T, fallback: ScreenParams[Screen][T]) => ScreenParams[Screen][T] = (param, fallback) => {
@@ -87,6 +88,7 @@ const NavigatorParams = {
   , EarnedPenalty: Single
   , UnusedEarnedPenalties: None
   , Lists: None
+  , StreakCycle: Single
   , Test: None
   , None: None,
 } as const;

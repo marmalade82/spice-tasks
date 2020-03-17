@@ -9,6 +9,7 @@ import { Navigation, ScreenParams } from "src/common/Navigator";
 
 
 interface Props {
+    id: string;
     style: StyleProp<ViewStyle>
     title: string;
     details: string;
@@ -33,7 +34,8 @@ export default class RewardSummary extends React.Component<Props, State> {
                         onPress={() => {
                             this.props.navigation.push(
                                 "AddReward", {
-                                    id: this.props.navigation.getParam('id', ''),
+                                    id: this.props.id,
+                                    parent_id: "",
                                 }
                             );
                         }}

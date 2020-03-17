@@ -24,6 +24,7 @@ interface State {
 }
 
 interface Recur {
+    id: string;
     active: boolean;
     title: string;
     details: string;
@@ -42,7 +43,7 @@ export default class RecurSummary extends React.Component<Props, State> {
 
 
     render = () => {
-        const { title, active, details, type } = this.props.recur;
+        const { id, title, active, details, type } = this.props.recur;
         return (
             <Summary
                 style={{}}
@@ -65,7 +66,8 @@ export default class RecurSummary extends React.Component<Props, State> {
                                 onPress={() => {
                                     this.props.navigation.push(
                                         "AddRecur", {
-                                            id: this.props.navigation.getParam('id', ''),
+                                            id: id,
+                                            parent_id: "",
                                         }
                                     );
                                 }}

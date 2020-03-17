@@ -8,6 +8,7 @@ import {
 import { Summary, IconButton, ModalIconButton, ModalRow } from "src/Components/Styled/Styled"
 import MyDate from "src/common/Date";
 import { Navigation, ScreenParams } from "src/common/Navigator";
+import { TaskParentTypes } from "src/Models/Task/Task";
 
 interface Props {
     task: Task
@@ -20,6 +21,7 @@ interface State {
 }
 
 interface Task {
+    id: string;
     title: string;
     instructions: string;
     start_date: Date;
@@ -37,7 +39,7 @@ export default class TaskSummary extends React.Component<Props, State> {
     }
 
     render = () => {
-        const { title, due_date, start_date, instructions, active } = this.props.task
+        const { title, due_date, start_date, instructions, active, id } = this.props.task
         return (
             <Summary
                 iconType={"task"}
@@ -63,7 +65,9 @@ export default class TaskSummary extends React.Component<Props, State> {
                                 onPress={() => {
                                     this.props.navigation.push(
                                         "AddTask", {
-                                            id: this.props.navigation.getParam('id', ''),
+                                            id: id,
+                                            parent_id: "",
+                                            parent_type: TaskParentTypes.NONE,
                                         }
                                     );
                                 }}

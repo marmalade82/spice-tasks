@@ -3,10 +3,10 @@ import React from "react";
 import { View, TouchableOpacity, TouchableHighlight, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 
-interface Props {
+interface Props<T extends keyof ScreenParams> {
     navigation: Navigation<ScreenParams>;
-    parameters: object;
-    destination: string;
+    parameters: ScreenParams[T];
+    destination: T;
     navType: "navigate" | "push";
     style?: StyleProp<ViewStyle>
 }
@@ -23,8 +23,8 @@ const localStyle = StyleSheet.create({
     },
 });
 
-export default class ClickNavigation extends React.Component<Props, State> {
-    constructor(props: Props) {
+export default class ClickNavigation<T extends keyof ScreenParams> extends React.Component<Props<T>, State> {
+    constructor(props: Props<T>) {
         super(props);
     }
 

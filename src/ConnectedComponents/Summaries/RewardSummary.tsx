@@ -24,6 +24,7 @@ const AdaptedRewardSummary: React.FunctionComponent<Props> = (props: Props) => {
 
     return (
         <RewardSummary
+            id={reward.id}
             style={props.style}
             expireDate={reward.expireDate}
             navigation={props.navigation}

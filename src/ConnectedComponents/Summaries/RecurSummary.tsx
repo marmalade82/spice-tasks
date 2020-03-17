@@ -24,6 +24,7 @@ const AdaptedRecurSummary: React.FunctionComponent<Props> = (props: Props) => {
     })[0];
 
     const mappedRecur = {
+        id: recur.id,
         active: recur.active,
         type: recur.type,
         title: latestGoal ? latestGoal.title : "",

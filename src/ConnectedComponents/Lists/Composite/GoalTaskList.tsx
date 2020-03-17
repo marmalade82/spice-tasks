@@ -6,7 +6,7 @@ import List from "src/Components/Lists/base/List";
 import { Model } from "@nozbe/watermelondb";
 import withObservables from "@nozbe/with-observables";
 import TaskQuery, { ActiveTaskQuery } from "src/Models/Task/TaskQuery";
-import { ConnectedGoalTaskItem} from "src/ConnectedComponents/Lists/Composite/GoalTaskItem";
+import { ConnectedGoalTaskItem, OnItemAction} from "src/ConnectedComponents/Lists/Composite/GoalTaskItem";
 import GoalQuery, { ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 
@@ -14,6 +14,7 @@ interface Props {
     navigation: Navigation<ScreenParams>
     tasks: Task[]
     goals: Goal[]
+    onItemAction: OnItemAction;
 }
 
 type Item = {
@@ -48,6 +49,7 @@ const AdaptedGoalTaskList: React.FunctionComponent<Props> = function(props: Prop
                     id={item.id}
                     model={item.model}
                     navigation={props.navigation}
+                    onItemAction={props.onItemAction}
                 ></ConnectedGoalTaskItem>
             )
         }

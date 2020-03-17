@@ -374,7 +374,10 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     accessibilityLabel={"goal-specific-reward"}
                     emptyType={"earned-reward"}
                     onEmptyPress={() => {
-                        this.props.navigation.navigate("AddReward")
+                        this.props.navigation.navigate("AddReward", {
+                            id: "",
+                            parent_id: "",
+                        })
                     }}
                 ></this.SpecificRewardInput>
             );
@@ -393,7 +396,10 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     accessibilityLabel={"goal-specific-penalty"}
                     emptyType={"earned-penalty"}
                     onEmptyPress={() => {
-                        this.props.navigation.navigate("AddPenalty")
+                        this.props.navigation.navigate("AddPenalty", {
+                            id: "",
+                            parent_id: "",
+                        })
                     }}
                 ></this.SpecificPenaltyInput>
             )

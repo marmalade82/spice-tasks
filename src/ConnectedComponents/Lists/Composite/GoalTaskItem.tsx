@@ -14,8 +14,11 @@ interface Props {
     model: Goal | Task;
     accessibilityLabel?: string;
     navigation: Navigation<ScreenParams>,
-    onItemAction: (id: string, action: "complete" | "fail", item: "goal" | "task") => void;
+    onItemAction: OnItemAction;
 }
+
+export type OnItemAction = (id: string, action: "complete" | "fail", item: "goal" | "task") => void;
+ 
 
 
 const AdaptedGoalTaskItem: React.FunctionComponent<Props> = function(props: Props) {

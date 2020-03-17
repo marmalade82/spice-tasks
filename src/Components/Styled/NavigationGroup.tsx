@@ -6,26 +6,26 @@ import { CONTAINER_VERTICAL_MARGIN, ROW_CONTAINER_HEIGHT, Styles, LEFT_SECOND_MA
 import { StyleProp, ViewStyle } from "react-native";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 
-interface Props {
+interface Props<T extends keyof ScreenParams> {
     navigation: Navigation<ScreenParams>
-    rows: Row[]
+    rows: (Row<T>)[]
     style?: StyleProp<ViewStyle>
 }
 
 interface State {
 }
 
-interface Row {
+interface Row<T extends keyof ScreenParams> {
     text: string;
     number?: number;
     icon?: "goal" | "task" | "reward" | "penalty" | "recur" | "earned_reward" | "earned_penalty";
-    navParams: object;
-    navDestination: string;
+    navParams: ScreenParams[T];
+    navDestination: T;
     navType?: "navigate" | "push";
 }
 
-export default class NavigationGroup extends React.Component<Props, State> {
-    constructor(props: Props) {
+export default class NavigationGroup<T extends keyof ScreenParams> extends React.Component<Props<T>, State> {
+    constructor(props: Props<T>) {
         super(props);
     }
 

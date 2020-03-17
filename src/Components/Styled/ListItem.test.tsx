@@ -10,7 +10,7 @@ test('Sanity check: test succeeds in running', async () => {
         <ListItem 
             navigation={makeNavigation({})}
             params={{}}
-            destination="Nowhere"
+            destination="None"
             text={"Hello"}
             subtext={"Goodbye"}
             number={5}

@@ -8,10 +8,10 @@ import { Icon as NIcon } from "react-native-elements";
 import { Icon } from "src/Components/Styled/Styled";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 
-interface Props {
+interface Props<T extends keyof ScreenParams> {
     navigation: Navigation<ScreenParams>;
-    destination: string;
-    params: object;
+    destination: T;
+    params: ScreenParams[T];
     text: string;
     subtext: string;
     number: number;
@@ -21,8 +21,8 @@ interface Props {
     footerIcons? : (() => JSX.Element)[]
 }
 
-export default class ListItem extends React.Component<Props> {
-    constructor(props: Props) {
+export default class ListItem<T extends keyof ScreenParams> extends React.Component<Props<T>> {
+    constructor(props: Props<T>) {
         super(props)
     }
 

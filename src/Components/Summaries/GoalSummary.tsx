@@ -25,6 +25,7 @@ interface State {
 }
 
 interface Goal {
+    id: string;
     title: string;
     details: string;
     start_date: Date;
@@ -76,7 +77,8 @@ export default class GoalSummary extends React.Component<Props, State> {
                                 onPress={() => {
                                     this.props.navigation.push(
                                         "AddGoal", {
-                                            id: this.props.navigation.getParam('id', ''),
+                                            id: this.props.goal.id,
+                                            parent_id: "", //We let the internal task determine the correct parent.
                                         }
                                     );
                                 }}

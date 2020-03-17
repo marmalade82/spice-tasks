@@ -2,26 +2,19 @@ import React from "react";
 import { Button } from "react-native";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 
-type Empty = {
-
-}
-
-interface Props { 
+interface Props<T extends keyof ScreenParams> { 
     navigation: Navigation<ScreenParams>;
     title: string;
     color?: string;
-    parameters: Empty;
-    destination: string;
+    parameters: ScreenParams[T];
+    destination: T;
     accessibilityLabel: string;
 }
 
-interface Navigator {
-    navigate: (dest: string, params: Empty) => void;
-}
 
 interface State { }
 
-export default class NavigationButton extends React.Component<Props, State> {
+export default class NavigationButton <T extends keyof ScreenParams> extends React.Component<Props<T>, State> {
 
 
     onPress = () => {
