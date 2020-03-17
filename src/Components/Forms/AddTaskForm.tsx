@@ -173,7 +173,7 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
 
     private dateRange = () => {
         if(this.props.dateRange) {
-            return ` (${new MyDate().format("MM/DD") + " - " + new MyDate().format("MM/DD")})`
+            return ` (${new MyDate(this.props.dateRange[0]).format("MM/DD") + " - " + new MyDate(this.props.dateRange[1]).format("MM/DD")})`
         } else {
             return "";
         }

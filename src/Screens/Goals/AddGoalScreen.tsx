@@ -133,8 +133,17 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             };
 
             if(this.state.goal) {
-                void new GoalLogic(this.state.goal.id).update(goalData)
-                this.props.navigation.goBack();
+                const message = await new GoalLogic(this.state.goal.id).update(goalData)
+                if(message !== undefined) {
+                    // update was not successful, we have an error message.
+                    this.setState({
+                        showToast: true,
+                        toast: message,
+                    })
+                } else {
+                    // update was successful
+                    this.props.navigation.goBack();
+                }
             } else {
                 void GoalLogic.create(goalData, data.repeats)
 

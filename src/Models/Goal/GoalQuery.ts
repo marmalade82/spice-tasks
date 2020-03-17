@@ -472,9 +472,38 @@ export class GoalLogic {
         //goalData.latestCycleId = new MyDate(goalData.startDate).prevMidnight().toDate();
         const goal = await new GoalQuery().get(this.id);
         if(goal) {
-            const tx = await ActiveTransaction.new();
-            tx.addUpdate(new GoalQuery(), goal, goalData);
-            tx.commitAndReset();
+            const children = await new ChildTaskQuery(goal.id).all();
+            const message = validateAgainstChildren(goalData, children);
+            if(message === undefined) {
+                const tx = await ActiveTransaction.new();
+                tx.addUpdate(new GoalQuery(), goal, goalData);
+                tx.commitAndReset();
+                return undefined;
+            } else {
+                return message;
+            }
+        }
+
+        function validateAgainstChildren(data: Partial<IGoal>, children: Task[]) {
+            let message = "";
+            const invalid = children.find((task) => {
+                if(data.startDate && task.startDate < data.startDate) {
+                    message = "Goal update failed: New start date is after the date of a subtask";
+                    return true;
+                }
+
+                if(data.dueDate && task.dueDate > data.dueDate) {
+                    message = "Goal update failed: New due date is before the date of a subtask";
+                    return true;
+                }
+
+                return false;
+            })
+            
+            if(invalid) {
+                return message;
+            }
+            return undefined;
         }
     }
 

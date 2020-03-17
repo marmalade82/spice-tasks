@@ -67,21 +67,33 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             let parentGoal = await new GoalQuery().get(task.parentId);
 
             if(parentGoal) {
-                data.start_date = parentGoal.startDate;
                 this.setState({
                     dateRange: [ parentGoal.startDate, parentGoal.dueDate]
                 })
-            }
-
+            } 
             this.setState({
                 task: task,
                 data: data,
             })
 
         } else {
-            let parentGoal = await new GoalQuery().get(this.props.navigation.getParam('parent_id', ''))
+            const parentId = this.props.navigation.getParam('parent_id', '');
+            let parentGoal = await new GoalQuery().get(parentId);
+            const data = AddTaskDefault();
+            if(parentGoal) {
+                data.start_date = parentGoal.startDate;
+                this.setState({
+                    dateRange: parentGoal ? [parentGoal.startDate, parentGoal.dueDate] : undefined,
+                })
+            } else {
+                let parentTask = await new TaskQuery().get(parentId);
+                if(parentTask) {
+                    data.start_date = parentTask.startDate;
+                }
+            }
+
             this.setState({
-                dateRange: parentGoal ? [parentGoal.startDate, parentGoal.dueDate] : undefined,
+                data: data,
                 task: undefined,
             })
         }
@@ -156,7 +168,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
         );
     }
 
-    renderTaskForm = () => {
+    private renderTaskForm = () => {
         return (
                 <AddTaskForm
                     data={this.state.data}
@@ -166,11 +178,22 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                         });
                     }}
                     style={{}}
-                    hasParent = { this.state.dateRange ? false : (this.state.task ? this.state.task.parentId !== "" : false) }
+                    hasParent = { this.hasParent() }
                     dateRange={this.state.dateRange}
                     ref={this.taskFormRef}
                 ></AddTaskForm>
         );
+    }
+
+    private hasParent = () => {
+        if(this.state.dateRange) {
+            return false;
+        } else if(this.state.task && this.state.task.parentId !== "") {
+            return true;
+        } else if (this.props.navigation.getParam("parent_id", "") !== "") {
+            return true;
+        }
+        return false;
     }
 }
 
