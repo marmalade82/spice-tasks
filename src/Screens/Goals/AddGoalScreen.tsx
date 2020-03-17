@@ -17,14 +17,13 @@ import PenaltyQuery, { Penalty } from "src/Models/Penalty/PenaltyQuery";
 import SaveButton from "src/Components/Basic/SaveButton";
 
 import { NavigationStackProp} from "react-navigation-stack";
-import { Single, Child, None } from "App";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "src/Screens/common/screenUtils";
 
 
 interface Props {
-    navigation: NavigationStackProp<Child>
+    navigation: any;
 }
 
 interface State { 

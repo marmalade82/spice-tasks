@@ -4,7 +4,6 @@ import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import { DocumentView, Icon } from "src/Components/Styled/Styled";
 import { GoalLogic } from "src/Models/Goal/GoalQuery";
 import { NavigationStackProp } from "react-navigation-stack";
-import { Single, Child, None } from "App";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { TouchableView } from "src/Components/Basic/Basic";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
@@ -13,7 +12,7 @@ import { getKey } from "../common/screenUtils";
 
 
 interface Props {
-    navigation: NavigationStackProp<None>
+    navigation: any;
 }
 
 const dispatcher = new EventDispatcher();

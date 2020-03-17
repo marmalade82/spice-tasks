@@ -178,7 +178,7 @@ const enhance = withObservables(['type'], (props: InputProps) => {
                     })
 
                     const latest = sorted[0];
-                    return new TaskQuery().queryInSCycle(latest ? latest.id : "").observe()
+                    return new ActiveTaskQuery().queryInSCycle(latest ? latest.id : "").observe()
                 }))
             }
         } break;

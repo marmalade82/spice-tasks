@@ -181,6 +181,12 @@ export class ActiveTaskQuery extends ModelQuery<Task, ITask> {
         );
     }
 
+    queryInSCycle = (cycleId: string) => {
+        return this.query(
+            Q.where(TaskSchema.name.PARENT, cycleId )
+        )
+    }
+
     /**
      * Query for tasks that are active, and due either today, or in the past (overdue).
      */

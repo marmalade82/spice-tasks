@@ -10,7 +10,6 @@ import TaskQuery, { TaskLogic, ActiveTaskQuery, ChildTaskQuery } from "src/Model
 import FootSpacer from "src/Components/Basic/FootSpacer";
 import { TaskParentTypes } from "src/Models/Task/Task";
 import {  NavigationStackProp } from "react-navigation-stack";
-import { Single, Child, None } from "App";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
@@ -18,12 +17,12 @@ import { GoalType } from "src/Models/Goal/GoalLogic";
 import { ConnectedStreakCycleList } from "src/ConnectedComponents/Lists/Group/StreakCycleList";
 import StreakCycleQuery, { ChildStreakCycleQuery } from "src/Models/Group/StreakCycleQuery";
 import { switchMap } from "rxjs/operators";
-import MyDate from "src/common/Date";
 
+import { ScreenNavigation, ScreenParams } from "src/common/Navigator";
 
 
 interface Props {
-    navigation: NavigationStackProp<Single>
+    navigation: any;
 }
 
 interface State {
@@ -39,6 +38,7 @@ interface State {
 }
 
 const dispatcher = new EventDispatcher();
+
 
 export default class GoalScreen extends React.Component<Props, State> {
 
@@ -59,6 +59,7 @@ export default class GoalScreen extends React.Component<Props, State> {
     }
 
     unsubscribe : () => void;
+    navigation: ScreenNavigation<ScreenParams, "Goal">
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -72,12 +73,12 @@ export default class GoalScreen extends React.Component<Props, State> {
             toastMessage: "",
             showAdd: false,
         }
-
+        this.navigation = new ScreenNavigation(this.props.navigation)
         this.unsubscribe = () => {};
     }
 
     componentDidMount = async () => {
-        const id = this.props.navigation.getParam('id', '');
+        const id = this.navigation.getParam('id', '');
         const goal = await new GoalQuery().get(id); 
 
         if(goal) {
@@ -131,11 +132,11 @@ export default class GoalScreen extends React.Component<Props, State> {
             });
         }
 
-        dispatcher.addEventListener(getKey(this.props.navigation), this.onClickAdd)
+        dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd)
     }
 
     componentWillUnmount = () => {
-        dispatcher.removeEventListener(getKey(this.props.navigation), this.onClickAdd)
+        dispatcher.removeEventListener(getKey(this.navigation), this.onClickAdd)
         this.unsubscribe()
     }
 
@@ -147,13 +148,14 @@ export default class GoalScreen extends React.Component<Props, State> {
 
     onEditGoal = () => {
         const params = {
-            id: this.props.navigation.getParam('id', ''),
+            id: this.navigation.getParam('id', ''),
+            parent_id: "",
         };
-        this.props.navigation.navigate('AddGoal', params);
+        this.navigation.navigate('AddGoal', params);
     }
 
     onCompleteGoal = async () => {
-        const id = this.props.navigation.getParam("id", "");
+        const id = this.navigation.getParam("id", "");
         const logic = new GoalLogic(id);
         debugger;
         if( await logic.isStreak() && (! (await logic.metMinimum()))) {
@@ -167,7 +169,7 @@ export default class GoalScreen extends React.Component<Props, State> {
     }
 
     onFailGoal = async () => {
-        const id = this.props.navigation.getParam("id", "");
+        const id = this.navigation.getParam("id", "");
         void new GoalLogic(id).fail();
     }
 
@@ -227,8 +229,9 @@ export default class GoalScreen extends React.Component<Props, State> {
                             iconType={"task"}
                             iconBackground={"white"}
                             onPress={() => {
-                                this.props.navigation.push("AddTask", {
-                                    parent_id: this.props.navigation.getParam("id", ""),
+                                this.navigation.push("AddTask", {
+                                    id: "",
+                                    parent_id: this.navigation.getParam("id", ""),
                                     parent_type: TaskParentTypes.GOAL,
                                 })
                                 this.setState({
@@ -249,7 +252,7 @@ export default class GoalScreen extends React.Component<Props, State> {
             return (
                     <ConnectedGoalSummary
                         goal={this.state.goal} 
-                        navigation={this.props.navigation}
+                        navigation={this.navigation}
                         onModalChoice={this.onModalChoice}
                         key={"summary"}
                     ></ConnectedGoalSummary>
@@ -276,8 +279,8 @@ export default class GoalScreen extends React.Component<Props, State> {
                             ></BackgroundTitle>
 
                             <ConnectedTaskList
-                                navigation={this.props.navigation}
-                                parentId={this.props.navigation.getParam('id', '')}
+                                navigation={this.navigation}
+                                parentId={this.navigation.getParam('id', '')}
                                 type={"current-cycle"}
                                 paginate={4}
                                 onSwipeRight={(id: string) => {
@@ -293,9 +296,9 @@ export default class GoalScreen extends React.Component<Props, State> {
                             ></BackgroundTitle>
 
                             <ConnectedStreakCycleList
-                                navigation={this.props.navigation}
+                                navigation={this.navigation}
                                 type={"previous"}
-                                goalId={this.props.navigation.getParam('id', '')}
+                                goalId={this.navigation.getParam('id', '')}
                                 paginate={4}
                             ></ConnectedStreakCycleList>
                         </View>
@@ -313,8 +316,8 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 }}
                             ></BackgroundTitle>
                             <ConnectedTaskList
-                                navigation={this.props.navigation}
-                                parentId={this.props.navigation.getParam('id', '')}
+                                navigation={this.navigation}
+                                parentId={this.navigation.getParam('id', '')}
                                 type={"parent-active"}
                                 paginate={4}
                                 onSwipeRight={(id: string) => {
@@ -328,8 +331,8 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 }}
                             ></BackgroundTitle>
                             <ConnectedTaskList
-                                navigation={this.props.navigation}
-                                parentId={this.props.navigation.getParam('id', '')}
+                                navigation={this.navigation}
+                                parentId={this.navigation.getParam('id', '')}
                                 paginate={4}
                                 emptyText={"No inactive subtasks"}
                                 type={"parent-inactive"}
