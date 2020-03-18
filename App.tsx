@@ -54,6 +54,7 @@ const ScreenDirectory: Record<keyof Omit<ScreenParams, "None" | "StreakCycle">, 
   , Lists: Screens.Lists
   , Test: Screens.Test
   , StreakCycles: Screens.StreakCycles
+  , Star: Screens.Star
 };
 
 
@@ -102,6 +103,30 @@ DashNavigator.navigationOptions = {
   showLabel: false,
 }
 
+const GoalNavigator = createStackNavigator(
+  ScreenDirectory,
+  { initialRouteName: "Star"
+  , defaultNavigationOptions: ({navigation}) => {
+      return {
+        header: header,
+      }
+    }
+  }
+)
+GoalNavigator.navigationOptions = {
+  title: "Lists",
+  tabBarIcon: ( { focused, horizontal, tintColor }) => {
+    return (
+      <Icon
+        type={"reward"}
+        color={tintColor}
+        backgroundColor={"transparent"}
+      > 
+      </Icon>
+    )
+  }
+}
+
 const ListNavigator = createStackNavigator(
   ScreenDirectory,
   { initialRouteName: 'Lists'
@@ -132,6 +157,7 @@ const backgroundTabColor = TAB_GREY;
 const AppNavigator = createBottomTabNavigator(
   {
     Dash: DashNavigator,
+    Star: GoalNavigator,
     Lists: ListNavigator
   },
   { tabBarOptions: {

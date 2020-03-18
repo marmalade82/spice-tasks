@@ -10,10 +10,6 @@ import {
     IconButton, ModalRow, ModalIconButton, Icon, Modal,
 } from "src/Components/Styled/Styled";
 
-import { 
-    CONTAINER_VERTICAL_MARGIN, ROW_CONTAINER_HEIGHT, Styles, 
-    LEFT_SECOND_MARGIN, PRIMARY_COLOR_LIGHT, LEFT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, RIGHT_SECOND_MARGIN, ROW_HEIGHT
-} from "src/Components/Styled/Styles";
 import withObservables from "@nozbe/with-observables";
 import GoalQuery, { GoalLogic, ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
 import TaskQuery, { TaskLogic, ActiveTaskQuery } from "src/Models/Task/TaskQuery";

@@ -43,4 +43,6 @@ target 'Spice' do
 
   # Automatically detect installed unimodules
   use_unimodules!
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
 end

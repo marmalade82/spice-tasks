@@ -91,7 +91,8 @@ const NavigatorParams = {
   , StreakCycle: Single
   , StreakCycles: None
   , Test: None
-  , None: None,
+  , None: None
+  , Star: None
 } as const;
 
 export type ScreenParams = typeof NavigatorParams;
