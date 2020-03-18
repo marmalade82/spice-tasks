@@ -1,11 +1,8 @@
 import React from "react";
-import {View, Button, Text, StyleSheet } from "react-native";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import { DocumentView, Icon } from "src/Components/Styled/Styled";
 import { GoalLogic } from "src/Models/Goal/GoalQuery";
-import { NavigationStackProp } from "react-navigation-stack";
 import { EventDispatcher } from "src/common/EventDispatcher";
-import { TouchableView } from "src/Components/Basic/Basic";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
 import { FullNavigation, MainNavigator, ScreenNavigation } from "src/common/Navigator";

@@ -89,6 +89,7 @@ const NavigatorParams = {
   , UnusedEarnedPenalties: None
   , Lists: None
   , StreakCycle: Single
+  , StreakCycles: None
   , Test: None
   , None: None,
 } as const;

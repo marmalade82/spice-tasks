@@ -34,6 +34,7 @@ import UnusedEarnedPenaltiesScreen from "src/Screens/Penalties/UnusedEarnedPenal
 import RewardScreen from "src/Screens/Rewards/RewardScreen";
 import PenaltyScreen from "src/Screens/Penalties/PenaltyScreen";
 import ListsScreen from "src/Screens/Home/ListsScreen"
+import StreakCycleListScreen from "src/Screens/Goals/CycleListScreen";
 
 export {
     HomeScreen as Home,
@@ -70,4 +71,5 @@ export {
     PenaltyScreen as Penalty,
     TestScreen as Test,
     ListsScreen as Lists,
+    StreakCycleListScreen as StreakCycles,
 }

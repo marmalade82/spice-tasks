@@ -14,8 +14,9 @@ import {
 import { IconButton, Icon, ScreenHeader } from 'src/Components/Styled/Styled';
 import ActiveTransaction from 'src/Models/common/Transaction';
 import { countOfThings } from 'src/Screens/Prototypes/TestScreen';
+import { ScreenParams } from 'src/common/Navigator';
 
-const ScreenDirectory = {
+const ScreenDirectory: Record<keyof Omit<ScreenParams, "None" | "StreakCycle">, any> = {
   Home: {
       screen: Screens.Home,
     }
@@ -52,6 +53,7 @@ const ScreenDirectory = {
   , UnusedEarnedPenalties: Screens.UnusedEarnedPenalties
   , Lists: Screens.Lists
   , Test: Screens.Test
+  , StreakCycles: Screens.StreakCycles
 };
 
 
