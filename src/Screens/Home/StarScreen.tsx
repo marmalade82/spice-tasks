@@ -17,6 +17,7 @@ import {
 } from "react-native-svg";
 
 import * as d3 from "d3";
+import BarChart from "src/Components/Charts/BarChart";
 
 
 interface Props {
@@ -65,48 +66,26 @@ export default class StarScreen extends React.Component<Props, State> {
         return (
             <DocumentView>
                 <View style={
-                    { flex: 1,
+                    { flex: 0,
+                      height: 100,
+                      width: "100%",
                       justifyContent: "flex-start",
-                      backgroundColor: "transparent",
+                      alignItems: "center",
+                      marginTop: 50,
                     }}
                     
                 >
-                    
-                    <Svg
-                        height={300}
-                        width={300}
-                        viewBox={[0, 0, this.width, this.height].join(" ")}
-                    >
-                        {this.renderBars(results)}
-                    </Svg>
+                   <BarChart
+                        height={100}
+                        width={200}
+                        data={results}
+                        max={1}
+                        barFill={"steelblue"}
+                        spacing={50}
+                   ></BarChart> 
 
                 </View>
             </DocumentView>
         );
-    }
-
-    private renderBars = (data: number[]) => {
-        const x = d3.scaleBand<number>()
-                    .domain(d3.range(data.length))
-                    .range([0, this.width])
-        const y = d3.scaleLinear()
-                    .domain([0, 1])
-                    .range([0, this.height])
-        return (
-            data.map((num, index) => {
-                return (
-                    <Rect
-                        x={x(index)}
-                        y={0}
-                        width={x.bandwidth()}
-                        height={y(num) - 1}
-                        strokeWidth={1}
-                        stroke={"black"}
-                        fill={"grey"}
-                        key={index}
-                    ></Rect>
-                )
-            })
-        )
     }
 }
