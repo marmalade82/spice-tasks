@@ -17,7 +17,7 @@ import {
 } from "react-native-svg";
 
 import * as d3 from "d3";
-import BarChart from "src/Components/Charts/BarChart";
+import BarChart, { LineChart }from "src/Components/Charts/BarChart";
 
 
 interface Props {
@@ -83,7 +83,24 @@ export default class StarScreen extends React.Component<Props, State> {
                         barFill={"steelblue"}
                         spacing={50}
                    ></BarChart> 
-
+                </View>
+                <View style={
+                    { flex: 0,
+                      height: 100,
+                      width: "100%",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                      marginTop: 50,
+                    }}
+                    
+                >
+                    <LineChart
+                        height={100}
+                        width={200}
+                        yData={results}
+                        xData={[10, 20, 30, 40, 50, 60, 70]}
+                        max={1}
+                   ></LineChart> 
                 </View>
             </DocumentView>
         );

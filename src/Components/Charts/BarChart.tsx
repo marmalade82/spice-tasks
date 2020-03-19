@@ -2,8 +2,10 @@
 import React from "react";
 import {
     Svg, Circle, Rect, G,
-    Line, Text,
+    Line, Text, Path
 } from "react-native-svg";
+
+import { View, Text as T} from "react-native";
 
 import * as d3 from "d3";
 
@@ -165,3 +167,102 @@ export class BarChart extends React.Component<Props, State> {
 }
 
 export default BarChart;
+
+
+interface LineProps { 
+    height: number;
+    width: number;
+    yData: number[];
+    xData: number[];
+    max: number;
+}
+
+
+export class LineChart extends React.Component<LineProps> {
+
+
+    render = () => {
+        return (
+            <View
+            >
+                <Svg
+                    height={this.props.height}
+                    width={this.props.width}
+                    viewBox={[0, 0, this.props.width, this.props.height].join(" ")}
+                >
+                {this.renderLine()}
+                </Svg>
+                <T>
+                    {this.substrings(this.props.xData, 2).join("/").toString()}
+                </T>
+            </View>
+        )
+    }
+
+    private height = () => {
+        return this.props.height;
+    }
+
+    private width = () => {
+        return this.props.width;
+    }
+
+    private xScale = () => {
+        const max = d3.max(this.props.xData)
+
+        return (d3.scaleLinear()
+            .domain([0, max ? max : 1])
+            .range([0, this.width()])
+        );
+    }
+
+    private yScale = () => {
+        const max = this.props.max;
+
+        return (d3.scaleLinear()
+            .domain([0, max])
+            .range([0, this.height()])
+        );
+    }
+
+    private renderLine = () => {
+        const { yData: data } = this.props
+        const x = this.xScale();
+        const y = this.yScale();
+        const path: string = this.props.xData.map((vals: number) => {
+            const x1 = x(vals);
+            return (
+                `${x1},${Math.random() * 100}`
+            )
+        }).join(" ");
+
+        return (
+            <Path
+                fill="none"
+                stroke="black"
+                strokeWidth={2}
+                d={"M 0,50  L " + path}
+            >
+
+            </Path>
+        )
+    }
+
+    /**
+     * Creates an array of all n-length substrings of the arr @arr , in the order
+     * that they occur in @arr
+     */
+    private substrings = (arr: number[], n: number) => {
+        const result: number[][] = []
+        
+        for(let i = 0, total = arr.length; i + n <= total; i++) {
+            const inner: number[] = [];
+            for(let j = i, max = Math.min(j + n, total); j < max; j++) {
+                inner.push(arr[j]);
+            }
+            result.push(inner);
+        }
+
+        return result;
+    }
+}
