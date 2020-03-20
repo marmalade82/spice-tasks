@@ -12,12 +12,8 @@ import {
 
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navigator";
-import {
-    Svg, Circle, Rect,
-} from "react-native-svg";
 
-import * as d3 from "d3";
-import BarChart, { LineChart }from "src/Components/Charts/BarChart";
+import { BarChart, LineChart }from "src/Components/Charts/Charts";
 
 
 interface Props {
@@ -63,6 +59,16 @@ export default class StarScreen extends React.Component<Props, State> {
             0,
         ]
 
+        const results2: [number, number][] = [
+            [ 10, 0.6],
+            [ 20, 0.7],
+            [ 30, 0],
+            [ 40, 1.0],
+            [ 50, 1.0],
+            [ 70, 0.8],
+            [ 80, 0],
+        ]
+
         return (
             <DocumentView>
                 <View style={
@@ -72,16 +78,20 @@ export default class StarScreen extends React.Component<Props, State> {
                       justifyContent: "flex-start",
                       alignItems: "center",
                       marginTop: 50,
+                      backgroundColor:"lightgreen",
                     }}
                     
                 >
                    <BarChart
-                        height={100}
-                        width={200}
+                        height={150}
+                        width={300}
                         data={results}
                         max={1}
                         barFill={"steelblue"}
                         spacing={50}
+                        xAxisMargin={20}
+                        yAxisMargin={20}
+                        outerMargin={20}
                    ></BarChart> 
                 </View>
                 <View style={
@@ -91,15 +101,18 @@ export default class StarScreen extends React.Component<Props, State> {
                       justifyContent: "flex-start",
                       alignItems: "center",
                       marginTop: 50,
+                      backgroundColor: "lightblue"
                     }}
                     
                 >
                     <LineChart
-                        height={100}
-                        width={200}
-                        yData={results}
-                        xData={[10, 20, 30, 40, 50, 60, 70]}
-                        max={1}
+                        height={150}
+                        width={300}
+                        data={results2}
+                        yMax={1}
+                        xAxisMargin={20}
+                        yAxisMargin={20}
+                        outerMargin={20}
                    ></LineChart> 
                 </View>
             </DocumentView>
