@@ -7,6 +7,7 @@ import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
 import { RewardTypes } from "./RewardLogic";
 import { Q } from "@nozbe/watermelondb";
 import { Conditions } from "src/Models/common/queryUtils";
+import MyDate from "src/common/Date";
 
 export default class EarnedRewardQuery extends ModelQuery<EarnedReward, IEarnedReward> {
     constructor() {
@@ -21,7 +22,7 @@ export default class EarnedRewardQuery extends ModelQuery<EarnedReward, IEarnedR
 
     default = () => {
         return {
-            earnedDate: new Date(),
+            earnedDate: MyDate.Now().toDate(),
             active: true,
             type: RewardTypes.SPECIFIC,
             goalId: "",

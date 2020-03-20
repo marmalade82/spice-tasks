@@ -4,6 +4,7 @@ import {
     DatePickerAndroid, TimePickerAndroid, StyleSheet, Button 
 } from "react-native";
 import Style from "src/Style/Style";
+import MyDate from "src/common/Date";
 
 interface Props {
     onChange: (dateTime: Date) => void
@@ -76,7 +77,7 @@ export default class DateTimePicker extends React.Component<Props, State> {
         });
 
         if(timeOpts.action === TimePickerAndroid.timeSetAction) {
-            let date = new Date();
+            let date = MyDate.Now().toDate();
             date.setHours(timeOpts.hour);
             date.setMinutes(timeOpts.minute);
             this.setState({

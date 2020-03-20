@@ -5,7 +5,7 @@ import {
 } from "src/Models/Penalty/Penalty";
 import RewardSchema from "src/Models/Reward/RewardSchema";
 import { Q } from "@nozbe/watermelondb";
-
+import MyDate from "src/common/Date";
 
 export default class PenaltyQuery extends ModelQuery<Penalty, IPenalty> {
     constructor() {
@@ -22,7 +22,7 @@ export default class PenaltyQuery extends ModelQuery<Penalty, IPenalty> {
         return {
             title: "Default Penalty",
             details: "",
-            expireDate: new Date(),
+            expireDate: MyDate.Now().toDate(),
             type: "penalty",
         } as const;
     }

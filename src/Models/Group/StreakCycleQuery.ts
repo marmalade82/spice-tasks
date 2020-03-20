@@ -5,6 +5,7 @@ import { GroupSchema } from "src/Models/Group/GroupSchema";
 import { startDate, dueDate } from "src/Components/Forms/common/utils";
 import { Conditions } from "../common/queryUtils";
 import GoalQuery from "../Goal/GoalQuery";
+import MyDate from "src/common/Date";
 
 
 function endsOnBeforeConditions(d: Date) {
@@ -21,8 +22,8 @@ export class StreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle> {
         return {
             type: "streak_cycle" as "streak_cycle",
             parentGoalId: "",
-            startDate: startDate(new Date()),
-            endDate: dueDate(new Date()),
+            startDate: startDate(MyDate.Now().toDate()),
+            endDate: dueDate(MyDate.Now().toDate()),
         };
     }
 

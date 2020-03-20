@@ -7,6 +7,7 @@ import EarnedRewardSchema from "src/Models/Reward/EarnedRewardSchema";
 import { PenaltyTypes } from "./PenaltyLogic";
 import { Q } from "@nozbe/watermelondb";
 import { Conditions } from "src/Models/common/queryUtils";
+import MyDate from "src/common/Date";
 
 export default class EarnedPenaltyQuery extends ModelQuery<EarnedPenalty, IEarnedPenalty> {
     constructor() {
@@ -21,7 +22,7 @@ export default class EarnedPenaltyQuery extends ModelQuery<EarnedPenalty, IEarne
 
     default = () => {
         return {
-            earnedDate: new Date(),
+            earnedDate: MyDate.Now().toDate(),
             active: true,
             type: PenaltyTypes.SPECIFIC,
             goalId: "",

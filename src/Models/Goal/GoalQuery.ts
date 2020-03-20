@@ -35,11 +35,11 @@ export class GoalQuery extends ModelQuery<Goal, IGoal>{
         const Default: IGoal = {
             title: 'Default Goal',
             goalType: GoalType.NORMAL,
-            startDate: new Date(),
-            dueDate: new Date(),
+            startDate: MyDate.Now().toDate(),
+            dueDate: MyDate.Now().toDate(),
             streakMinimum: 2,
             streakType: 'weekly',
-            streakDailyStart: new Date(),
+            streakDailyStart: MyDate.Now().toDate(),
             streakWeeklyStart: 'sunday',
             streakMonthlyStart: 1,
             parentId: "",
@@ -50,7 +50,7 @@ export class GoalQuery extends ModelQuery<Goal, IGoal>{
             details: "",
             recurId: "",
             latestCycleId: "",
-            lastRefreshed: new Date(),
+            lastRefreshed: MyDate.Now().toDate(),
             rewardId: "",
             penaltyId: "",
         };
@@ -321,7 +321,7 @@ export class GoalLogic {
 
                 tx.addUpdate(new GoalQuery(), goal, {
                     latestCycleId: latestCycleId ? latestCycleId : initialLatestCycle.id,
-                    lastRefreshed: new Date(),
+                    lastRefreshed: MyDate.Now().toDate(),
                 })
             } else {
                 // If there's no initial latest cycle at all, then there are no tasks. All we can do is add an initial cycle.
@@ -331,7 +331,7 @@ export class GoalLogic {
                     endDate: goal.currentCycleEnd(),
                 })
                 tx.addUpdate(new GoalQuery(), goal, {
-                    lastRefreshed: new Date(),
+                    lastRefreshed: MyDate.Now().toDate(),
                 });
             }
 

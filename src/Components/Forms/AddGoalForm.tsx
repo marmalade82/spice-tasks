@@ -31,6 +31,7 @@ import { ROW_CONTAINER_HEIGHT, CONTAINER_VERTICAL_MARGIN } from "../Styled/Style
 import FootSpacer from "../Basic/FootSpacer";
 import { startDate, dueDate } from "./common/utils";
 import { FullNavigation } from "src/common/Navigator";
+import MyDate from "src/common/Date";
 
 interface Props {
     navigation: FullNavigation
@@ -73,8 +74,8 @@ function Default(): State {
     return {
         title: "",
         type: GoalType.NORMAL,
-        start_date: startDate(new Date()),
-        due_date: dueDate(new Date()),
+        start_date: startDate(MyDate.Now().toDate()),
+        due_date: dueDate(MyDate.Now().toDate()),
         reward: RewardTypes.NONE,
         rewardId: "",
         penalty: PenaltyTypes.NONE,

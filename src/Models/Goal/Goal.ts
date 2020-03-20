@@ -109,13 +109,13 @@ export default class Goal extends Model implements IGoal {
         }
         switch(this.streakType) {
             case "daily": {
-                const today = new MyDate( startDate(new Date())).toDate();
+                const today = new MyDate( startDate(MyDate.Now().toDate())).toDate();
                 return correctDate(today); 
             } break;
             case "weekly": {
                 const dayName = new MyDate( this.startDate).dayName();
                 const day = new MyDate().setDay(dayName);
-                if( day.toDate() > new Date() ) {
+                if( day.toDate() > MyDate.Now().toDate() ) {
                     day.subtract(1, "weeks");
                 }
 
@@ -124,14 +124,14 @@ export default class Goal extends Model implements IGoal {
             case "monthly": {
                 const dayInMonth = new MyDate(this.startDate).dayOfMonth();
                 const date = new MyDate().setDayOfMonth(dayInMonth);
-                if( date.toDate() > new Date()) {
+                if( date.toDate() > MyDate.Now().toDate()) {
                     date.subtract(1, "months")
                 }
 
                 return correctDate(startDate(date.toDate()))
             } break;
             default: {
-                return correctDate(new Date());
+                return correctDate(MyDate.Now().toDate());
             }
         }
     }
@@ -144,13 +144,13 @@ export default class Goal extends Model implements IGoal {
         }
         switch(this.streakType) {
             case "daily": {
-                const today = new MyDate( dueDate(new Date())).toDate();
+                const today = new MyDate( dueDate(MyDate.Now().toDate())).toDate();
                 return correctDate(today);
             } break;
             case "weekly": {
                 const dayName = new MyDate( this.dueDate).dayName();
                 const day = new MyDate().setDay(dayName);
-                if( day.toDate() < new Date() ) {
+                if( day.toDate() < MyDate.Now().toDate() ) {
                     day.add(1, "weeks");
                 }
 
@@ -159,14 +159,14 @@ export default class Goal extends Model implements IGoal {
             case "monthly": {
                 const dayInMonth = new MyDate(this.dueDate).dayOfMonth();
                 const date = new MyDate().setDayOfMonth(dayInMonth);
-                if( date.toDate() < new Date()) {
+                if( date.toDate() < MyDate.Now().toDate()) {
                     date.add(1, "months")
                 }
 
                 return correctDate(dueDate(date.toDate()))
             } break;
             default: {
-                return correctDate(new Date());
+                return correctDate(MyDate.Now().toDate());
             }
         }
     }

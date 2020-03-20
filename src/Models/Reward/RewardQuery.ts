@@ -5,7 +5,7 @@ import {
 } from "src/Models/Reward/Reward";
 import RewardSchema from "src/Models/Reward/RewardSchema";
 import { Q } from "@nozbe/watermelondb";
-
+import MyDate from "src/common/Date";
 
 
 export default class RewardQuery extends ModelQuery<Reward, IReward> {
@@ -23,7 +23,7 @@ export default class RewardQuery extends ModelQuery<Reward, IReward> {
         return {
             title: "Default Reward",
             details: "",
-            expireDate: new Date(),
+            expireDate: MyDate.Now().toDate(),
             type: "reward",
         } as const;
     }

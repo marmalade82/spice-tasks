@@ -38,7 +38,7 @@ function Default(): State {
     return {
         name: "",
         description: "",
-        start_date: startDate(new Date()),
+        start_date: startDate(MyDate.Now().toDate()),
     };
 }
 

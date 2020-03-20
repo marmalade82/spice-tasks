@@ -30,9 +30,9 @@ export default class GlobalQuery extends ModelQuery<Global, IGlobal> {
 
     default = () => {
         return {
-            current: new Date(),
+            current: MyDate.Now().toDate(),
             count: 0,
-            lastNotifiedDate: new Date(),
+            lastNotifiedDate: MyDate.Now().toDate(),
         }
     }
 
@@ -92,7 +92,7 @@ export class GlobalLogic {
         const current = await new GlobalQuery().current();
 
         await new GlobalQuery().update(current, {
-            lastNotifiedDate: new Date(),
+            lastNotifiedDate: MyDate.Now().toDate(),
         });
     }
 }

@@ -63,7 +63,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            currentDate: new Date(),
+            currentDate: MyDate.Now().toDate(),
             showMore: false,
             showAdd: false,
             dueTodayCount: 0,
@@ -78,7 +78,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
     componentDidMount = async () => {
         let timeSub: Subscription = Global_Timer.subscribe(() => {
             this.setState({
-                currentDate: new Date()
+                currentDate: MyDate.Now().toDate()
             })
         });
 

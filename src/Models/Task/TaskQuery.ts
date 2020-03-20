@@ -27,8 +27,8 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
         let def: ITask = {
             title: "Default Task",
             instructions: "",
-            startDate: new Date(),
-            dueDate: new Date(),
+            startDate: MyDate.Now().toDate(),
+            dueDate: MyDate.Now().toDate(),
             parentId: "",
             active: true,
             state: 'open',
@@ -385,7 +385,7 @@ export class TaskLogic {
                     return {
                         active: false,
                         state: "complete",
-                        completedDate: new Date(),
+                        completedDate: MyDate.Now().toDate(),
                     } as const;
                 } 
                 case "fail": {

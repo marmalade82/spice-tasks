@@ -93,13 +93,13 @@ export class RecurQuery extends ModelQuery<Recur, IRecur> {
     default = () => {
         const def: IRecur = {
             type: "daily",
-            date: new Date(), 
+            date: MyDate.Now().toDate(), 
             // are these necessary? It would be simpler to just assume that they recur at the same time.
-            time: new Date(),
+            time: MyDate.Now().toDate(),
             weekDay: "sunday",
             monthDay: 1,
             active: true,
-            lastRefreshed: new Date() // no need to calculate it if it was just created...
+            lastRefreshed: MyDate.Now().toDate() // no need to calculate it if it was just created...
         }
 
         return def;
@@ -120,21 +120,21 @@ export class RecurLogic {
         switch(repeats) {
             case "daily": {
                 return {
-                    lastRefreshed: new Date(),
+                    lastRefreshed: MyDate.Now().toDate(),
                     active: true,
                     type: "daily",
                 } as const;
             } break;
             case "weekly": {
                 return {
-                    lastRefreshed: new Date(),
+                    lastRefreshed: MyDate.Now().toDate(),
                     active: true,
                     type: "weekly",
                 } as const;
             } break;
             default: {
                 return {
-                    lastRefreshed: new Date(),
+                    lastRefreshed: MyDate.Now().toDate(),
                     active: true,
                     type: "monthly",
                 } as const;
@@ -219,7 +219,7 @@ export class RecurLogic {
 
             // now we need to mark this recurrence as having been refreshed today.
             new RecurQuery().update(recur, {
-                lastRefreshed: new Date()
+                lastRefreshed: MyDate.Now().toDate()
             })
         }
     }

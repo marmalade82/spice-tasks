@@ -18,6 +18,7 @@ import PushNotification from "src/Notification";
 import { Observable } from "rxjs";
 import { LabelValue } from "src/common/types";
 import Swipeable from "react-native-gesture-handler/Swipeable";
+import MyDate from "src/common/Date";
 
 export let countOfThings = (() => {
     let count = 0;
@@ -74,7 +75,7 @@ export default class TestScreen extends React.Component<Props, State> {
         this.state = {
             text : "Hi",
             choice: "4",
-            date: new Date(),
+            date: MyDate.Now().toDate(),
             count: 0,
             dynChoice: "APPLES",
         }
