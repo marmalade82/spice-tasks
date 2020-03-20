@@ -16,16 +16,22 @@ export default class MyDate {
         return new MyDate(new Date(0))
     }
 
+    private static NowMoment = new MyDate(new Date());
+
+    static TEST_ONLY_SetNow = (date: MyDate) => {
+        MyDate.NowMoment = new MyDate(date.toDate());
+    }
+
     static Now = () => {
-        return new MyDate(new Date());
+        return new MyDate(MyDate.NowMoment.toDate());
     }
 
     timeToNow = () => {
-        return this.m.toNow();
+        return this.m.to(MyDate.NowMoment.toDate());
     }
 
     timeFromNow = () => {
-        return this.m.fromNow();
+        return this.m.from(MyDate.NowMoment.toDate());
     }
 
     format = (format: string) => {
