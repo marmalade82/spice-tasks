@@ -93,15 +93,15 @@ test.skip("User can sort by start date", async () => {
 
     async function setup() {
         await createGoals({
-            startDate: new MyDate().subtract(1, "days").toDate()
+            startDate: MyDate.Now().subtract(1, "days").toDate()
         }, 1);
 
         await createGoals({
-            startDate: new MyDate().subtract(3, "days").toDate()
+            startDate: MyDate.Now().subtract(3, "days").toDate()
         }, 1);
 
         await createGoals({
-            startDate: new MyDate().subtract(2, "days").toDate()
+            startDate: MyDate.Now().subtract(2, "days").toDate()
         }, 1);
     }
 
@@ -118,15 +118,15 @@ test.skip("User can sort by due date", async () => {
 
     async function setup() {
         await createGoals({
-            dueDate: new MyDate().subtract(1, "days").toDate()
+            dueDate: MyDate.Now().subtract(1, "days").toDate()
         }, 1);
 
         await createGoals({
-            dueDate: new MyDate().subtract(1, "days").toDate()
+            dueDate: MyDate.Now().subtract(1, "days").toDate()
         }, 1);
 
         await createGoals({
-            dueDate: new MyDate().subtract(1, "days").toDate()
+            dueDate: MyDate.Now().subtract(1, "days").toDate()
         }, 1);
     }
 

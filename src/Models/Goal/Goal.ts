@@ -114,7 +114,7 @@ export default class Goal extends Model implements IGoal {
             } break;
             case "weekly": {
                 const dayName = new MyDate( this.startDate).dayName();
-                const day = new MyDate().setDay(dayName);
+                const day = MyDate.Now().setDay(dayName);
                 if( day.toDate() > MyDate.Now().toDate() ) {
                     day.subtract(1, "weeks");
                 }
@@ -123,7 +123,7 @@ export default class Goal extends Model implements IGoal {
             } break;
             case "monthly": {
                 const dayInMonth = new MyDate(this.startDate).dayOfMonth();
-                const date = new MyDate().setDayOfMonth(dayInMonth);
+                const date = MyDate.Now().setDayOfMonth(dayInMonth);
                 if( date.toDate() > MyDate.Now().toDate()) {
                     date.subtract(1, "months")
                 }
@@ -149,7 +149,7 @@ export default class Goal extends Model implements IGoal {
             } break;
             case "weekly": {
                 const dayName = new MyDate( this.dueDate).dayName();
-                const day = new MyDate().setDay(dayName);
+                const day = MyDate.Now().setDay(dayName);
                 if( day.toDate() < MyDate.Now().toDate() ) {
                     day.add(1, "weeks");
                 }
@@ -158,7 +158,7 @@ export default class Goal extends Model implements IGoal {
             } break;
             case "monthly": {
                 const dayInMonth = new MyDate(this.dueDate).dayOfMonth();
-                const date = new MyDate().setDayOfMonth(dayInMonth);
+                const date = MyDate.Now().setDayOfMonth(dayInMonth);
                 if( date.toDate() < MyDate.Now().toDate()) {
                     date.add(1, "months")
                 }

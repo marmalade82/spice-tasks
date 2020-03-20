@@ -31,7 +31,7 @@ test("User can view all earned rewards present", async () => {
     async function setup() {
         await DB.get().action(async () => {
             await createEarnedRewards({
-                earnedDate: new MyDate().toDate(),
+                earnedDate: MyDate.Now().toDate(),
                 active: true,
                 type: RewardTypes.TWO_DICE,
             }, 4);

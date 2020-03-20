@@ -46,7 +46,7 @@ describe("Validation", () => {
             fireEvent.changeText(nameInput, "Dummy value");
 
             const dueInput = getByLabelText("value-input-task-due-date");
-            fireEvent.changeText(dueInput, new MyDate().add(1, "weeks").add(1, "days").toDate().toString());
+            fireEvent.changeText(dueInput, MyDate.Now().add(1, "weeks").add(1, "days").toDate().toString());
 
             await wait(async () => {
                 getByLabelText("toast");
@@ -64,7 +64,7 @@ describe("Validation", () => {
             fireEvent.changeText(nameInput, "Dummy value");
 
             const startInput = getByLabelText("value-input-task-start-date");
-            fireEvent.changeText(startInput, new MyDate().subtract(1, "weeks").subtract(1, "days").toDate().toString());
+            fireEvent.changeText(startInput, MyDate.Now().subtract(1, "weeks").subtract(1, "days").toDate().toString());
 
             await wait(async () => {
                 getByLabelText("toast");
@@ -79,8 +79,8 @@ describe("Validation", () => {
 
             await DB.get().action(async () => {
                 const goal = (await createGoals({
-                    startDate: new MyDate().subtract(1, "weeks").toDate(),
-                    dueDate: new MyDate().add(1, "weeks").toDate(),
+                    startDate: MyDate.Now().subtract(1, "weeks").toDate(),
+                    dueDate: MyDate.Now().add(1, "weeks").toDate(),
                 }, 1))[0];
 
                 opts.parentId = goal.id;

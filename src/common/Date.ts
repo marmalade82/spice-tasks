@@ -8,12 +8,8 @@ type timeUnit = "seconds" | "minutes" | "hours" | "days" | "weeks" | "months";
 
 export default class MyDate {
     m: Moment;
-    constructor(date?: Date) {
-        if(date) {
-            this.m = moment(date);
-        } else {
-            this.m = moment() // initialize moment to now
-        }
+    constructor(date: Date) {
+        this.m = moment(date);
     }
 
     static Zero = () => {
@@ -21,7 +17,7 @@ export default class MyDate {
     }
 
     static Now = () => {
-        return new MyDate();
+        return new MyDate(new Date());
     }
 
     timeToNow = () => {
@@ -49,8 +45,8 @@ export default class MyDate {
     }
 
     isSomeTimeToday = () => {
-        const start = new MyDate().prevMidnight().toDate();
-        const end = new MyDate().nextMidnight().toDate();
+        const start = MyDate.Now().prevMidnight().toDate();
+        const end = MyDate.Now().nextMidnight().toDate();
         return this.m.isSameOrAfter(start) && this.m.isBefore(end);
     }
 
@@ -123,21 +119,21 @@ export default class MyDate {
             case "daily": {
                 // if daily, then the next cycle is the most recent occurrence of the time.
                 let oldTime = new MyDate(input as TimeCycle<typeof type>);
-                let nextCycleDate = new MyDate().setTime(oldTime);
+                let nextCycleDate = MyDate.Now().setTime(oldTime);
                 if(nextCycleDate.isTodayInPast()) {
                    nextCycleDate.add(1, "days");
                 }
                 this.m = moment(nextCycleDate.toDate());
             } break;
             case "weekly": {
-                let nextCycleDate = new MyDate().setDay(input as TimeCycle<typeof type>).prevMidnight();
+                let nextCycleDate = MyDate.Now().setDay(input as TimeCycle<typeof type>).prevMidnight();
                 if (nextCycleDate.isWithinWeekInPast()) {
                     nextCycleDate.add(1, "weeks")
                 }
                 this.m = moment(nextCycleDate.toDate())
             } break;
             case "monthly": {
-                let nextCycleDate = new MyDate().setDayOfMonth(input as TimeCycle<typeof type>).prevMidnight();
+                let nextCycleDate = MyDate.Now().setDayOfMonth(input as TimeCycle<typeof type>).prevMidnight();
                 if (nextCycleDate.isWithinMonthInPast()) {
                     nextCycleDate.add(1, "months")
                 }
@@ -158,7 +154,7 @@ export default class MyDate {
             case "daily": {
                 // if daily, then the cycle is the most recent occurrence of the time.
                 let oldTime = new MyDate(input as TimeCycle<typeof type>);
-                let lastCycleDate = new MyDate().setTime(oldTime);
+                let lastCycleDate = MyDate.Now().setTime(oldTime);
                 if(lastCycleDate.isTodayInFuture()) {
                    lastCycleDate.subtract(1, "days");
                 }
@@ -166,14 +162,14 @@ export default class MyDate {
             } break;
             case "weekly": {
                 // cycle is most recent occurence, midnight.
-                let lastCycleDate = new MyDate().setDay(input as TimeCycle<typeof type>).prevMidnight();
+                let lastCycleDate = MyDate.Now().setDay(input as TimeCycle<typeof type>).prevMidnight();
                 if (lastCycleDate.isWithinWeekInFuture()) {
                     lastCycleDate.subtract(1, "weeks")
                 }
                 this.m = moment(lastCycleDate.toDate())
             } break;
             case "monthly": {
-                let lastCycleDate = new MyDate().setDayOfMonth(input as TimeCycle<typeof type>).prevMidnight();
+                let lastCycleDate = MyDate.Now().setDayOfMonth(input as TimeCycle<typeof type>).prevMidnight();
                 if (lastCycleDate.isWithinMonthInFuture()) {
                     lastCycleDate.subtract(1, "months")
                 }
@@ -213,27 +209,27 @@ export default class MyDate {
     }
 
     isTodayInFuture = () => {
-        return this.m.isAfter( MyDate.Now().toDate() ) && this.m.isSameOrBefore( new MyDate().nextMidnight().toDate())
+        return this.m.isAfter( MyDate.Now().toDate() ) && this.m.isSameOrBefore( MyDate.Now().nextMidnight().toDate())
     }
 
     isWithinWeekInFuture = () => {
-        return this.m.isAfter(MyDate.Now().toDate() ) && this.m.isSameOrBefore( new MyDate().add(1, "weeks").toDate());
+        return this.m.isAfter(MyDate.Now().toDate() ) && this.m.isSameOrBefore( MyDate.Now().add(1, "weeks").toDate());
     }
 
     isWithinMonthInFuture = () => {
-        return this.m.isAfter(MyDate.Now().toDate()) && this.m.isSameOrBefore( new MyDate().add(1, "months").toDate())
+        return this.m.isAfter(MyDate.Now().toDate()) && this.m.isSameOrBefore( MyDate.Now().add(1, "months").toDate())
     }
 
     isTodayInPast = () => {
-        return this.m.isSameOrAfter( new MyDate().prevMidnight().toDate()) && this.m.isBefore(MyDate.Now().toDate());
+        return this.m.isSameOrAfter( MyDate.Now().prevMidnight().toDate()) && this.m.isBefore(MyDate.Now().toDate());
     }
 
     isWithinWeekInPast = () => {
-        return this.m.isSameOrAfter( new MyDate().subtract(1, "weeks").toDate()) && this.m.isBefore(MyDate.Now().toDate());
+        return this.m.isSameOrAfter( MyDate.Now().subtract(1, "weeks").toDate()) && this.m.isBefore(MyDate.Now().toDate());
     }
 
     isWithinMonthInPast = () => {
-        return this.m.isSameOrAfter( new MyDate().subtract(1, "months").toDate()) && this.m.isBefore(MyDate.Now().toDate());
+        return this.m.isSameOrAfter( MyDate.Now().subtract(1, "months").toDate()) && this.m.isBefore(MyDate.Now().toDate());
     }
 
     inNext = ( unit: timeUnit, duration: number) => {

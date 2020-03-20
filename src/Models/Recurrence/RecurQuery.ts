@@ -37,7 +37,7 @@ export class RecurQuery extends ModelQuery<Recur, IRecur> {
 
     queryUnprocessed = () => {
         return this.store().query(
-            ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+            ...[...Conditions.lastRefreshedOnOrBefore(MyDate.Now().subtract(1, "days").toDate()),
                 ...activeCondition(),
             ]
         );
@@ -49,7 +49,7 @@ export class RecurQuery extends ModelQuery<Recur, IRecur> {
 
     queryDailyUnprocessed = () => {
         return this.store().query(
-            ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+            ...[...Conditions.lastRefreshedOnOrBefore(MyDate.Now().subtract(1, "days").toDate()),
                 ...activeCondition(),
                 Q.where(RecurSchema.name.TYPE, "daily"),
             ]
@@ -62,7 +62,7 @@ export class RecurQuery extends ModelQuery<Recur, IRecur> {
 
     queryWeeklyUnprocessed = () => {
         return this.store().query(
-            ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+            ...[...Conditions.lastRefreshedOnOrBefore(MyDate.Now().subtract(1, "days").toDate()),
                 ...activeCondition(),
                 Q.where(RecurSchema.name.TYPE, "weekly"),
                 ]
@@ -75,7 +75,7 @@ export class RecurQuery extends ModelQuery<Recur, IRecur> {
 
     queryMonthlyUnprocessed = () => {
         return this.store().query(
-            ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+            ...[...Conditions.lastRefreshedOnOrBefore(MyDate.Now().subtract(1, "days").toDate()),
                 ...activeCondition(),
                 Q.where(RecurSchema.name.TYPE, "monthly"),
                 ]
@@ -230,7 +230,7 @@ export class RecurLogic {
         // then we add the goal until we have reached the current start date/time.
         let start = d;
         let goals: Promise<IGoal>[] = [];
-        while(new MyDate().isInOrAfterNextCycleAfterDate(start, unit)) {
+        while(MyDate.Now().isInOrAfterNextCycleAfterDate(start, unit)) {
             const next = new MyDate(start).add(1, unit);
             const clone = GoalLogic.cloneRelativeTo(d, next.toDate(), goal)
             const promisify = new Promise<IGoal>((resolve) => {

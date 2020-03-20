@@ -59,16 +59,16 @@ describe("streak tasks recur despite being very far in past" , () => {
                     active: true,
                     streakMinimum: 3,
                     goalType: GoalType.STREAK,
-                    startDate: startDate(new MyDate().subtract(1, "months").toDate()),
-                    dueDate: dueDate(new MyDate().add(1, "months").toDate()),
+                    startDate: startDate(MyDate.Now().subtract(1, "months").toDate()),
+                    dueDate: dueDate(MyDate.Now().add(1, "months").toDate()),
                     streakType: "daily",
                     latestCycleId: "",
                 }, 1))[0];
 
                 const cycle = (await createStreakCycles({
                     parentGoalId: goal.id,
-                    startDate: startDate(new MyDate().subtract(4, "days").toDate()),
-                    endDate: dueDate(new MyDate().subtract(4, "days").toDate()),
+                    startDate: startDate(MyDate.Now().subtract(4, "days").toDate()),
+                    endDate: dueDate(MyDate.Now().subtract(4, "days").toDate()),
                 }, 1))[0];
 
                 opts.goalId = goal.id
@@ -76,21 +76,21 @@ describe("streak tasks recur despite being very far in past" , () => {
                 await createTasks({
                     title: "middle", 
                     active: false,
-                    startDate: new MyDate().subtract(6, "days").toDate(),
+                    startDate: MyDate.Now().subtract(6, "days").toDate(),
                     parentId: opts.goalId,
                 }, 1)
 
                 await createTasks({
                     title: "latest", 
                     active: false,
-                    startDate: new MyDate().subtract(4, "days").toDate(),
+                    startDate: MyDate.Now().subtract(4, "days").toDate(),
                     parentId: cycle.id,
                 }, 2)
 
                 await createTasks({
                     title: "oldest", 
                     active: false,
-                    startDate: new MyDate().subtract(7, "days").toDate(),
+                    startDate: MyDate.Now().subtract(7, "days").toDate(),
                     parentId: opts.goalId,
                 }, 1)
             })
@@ -128,8 +128,8 @@ describe("streak tasks recur despite being very far in past" , () => {
                     title: "streak",
                     active: true,
                     streakMinimum: 3,
-                    startDate: startDate(new MyDate().subtract(10, "weeks").toDate()),
-                    dueDate: dueDate(new MyDate().add(10, "weeks").toDate()),
+                    startDate: startDate(MyDate.Now().subtract(10, "weeks").toDate()),
+                    dueDate: dueDate(MyDate.Now().add(10, "weeks").toDate()),
                     goalType: GoalType.STREAK,
                     streakType: "weekly",
                     latestCycleId: "",
@@ -139,28 +139,28 @@ describe("streak tasks recur despite being very far in past" , () => {
 
                 const cycle = (await createStreakCycles({
                     parentGoalId: opts.goalId,
-                    startDate: startDate(new MyDate().subtract(4, "weeks").toDate()),
-                    endDate: dueDate(new MyDate().subtract(4, "weeks").toDate()),
+                    startDate: startDate(MyDate.Now().subtract(4, "weeks").toDate()),
+                    endDate: dueDate(MyDate.Now().subtract(4, "weeks").toDate()),
                 }, 1))[0];
 
                 await createTasks({
                     title: "middle", 
                     active: false,
-                    startDate: new MyDate().subtract(6, "weeks").toDate(),
+                    startDate: MyDate.Now().subtract(6, "weeks").toDate(),
                     parentId: opts.goalId,
                 }, 1)
 
                 await createTasks({
                     title: "latest", 
                     active: false,
-                    startDate: new MyDate().subtract(4, "weeks").toDate(),
+                    startDate: MyDate.Now().subtract(4, "weeks").toDate(),
                     parentId: cycle.id,
                 }, 2)
 
                 await createTasks({
                     title: "oldest", 
                     active: false,
-                    startDate: new MyDate().subtract(7, "weeks").toDate(),
+                    startDate: MyDate.Now().subtract(7, "weeks").toDate(),
                     parentId: opts.goalId,
                 }, 1)
             })
@@ -199,8 +199,8 @@ describe("streak tasks recur despite being very far in past" , () => {
                     active: true,
                     streakMinimum: 3,
                     goalType: GoalType.STREAK,
-                    startDate: startDate(new MyDate().subtract(10, "months").toDate()),
-                    dueDate: dueDate(new MyDate().add(10, "months").toDate()),
+                    startDate: startDate(MyDate.Now().subtract(10, "months").toDate()),
+                    dueDate: dueDate(MyDate.Now().add(10, "months").toDate()),
                     streakType: "monthly",
                     latestCycleId: "",
                 }, 1)
@@ -209,28 +209,28 @@ describe("streak tasks recur despite being very far in past" , () => {
 
                 const cycle = (await createStreakCycles({
                     parentGoalId: opts.goalId,
-                    startDate: startDate(new MyDate().subtract(4, "months").toDate()),
-                    endDate: dueDate(new MyDate().subtract(4, "months").toDate()),
+                    startDate: startDate(MyDate.Now().subtract(4, "months").toDate()),
+                    endDate: dueDate(MyDate.Now().subtract(4, "months").toDate()),
                 }, 1))[0];
 
                 await createTasks({
                     title: "middle", 
                     active: false,
-                    startDate: new MyDate().subtract(6, "months").toDate(),
+                    startDate: MyDate.Now().subtract(6, "months").toDate(),
                     parentId: opts.goalId,
                 }, 1)
 
                 await createTasks({
                     title: "latest", 
                     active: false,
-                    startDate: new MyDate().subtract(4, "months").toDate(),
+                    startDate: MyDate.Now().subtract(4, "months").toDate(),
                     parentId: cycle.id,
                 }, 2)
 
                 await createTasks({
                     title: "oldest", 
                     active: false,
-                    startDate: new MyDate().subtract(7, "months").toDate(),
+                    startDate: MyDate.Now().subtract(7, "months").toDate(),
                     parentId: opts.goalId,
                 }, 1)
             })
@@ -289,7 +289,7 @@ describe("Processing partially processed streak goals", () => {
                     streakType: "daily",
                     goalType: GoalType.STREAK,
                     active: true,
-                    lastRefreshed: new MyDate().subtract(1, "days").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(1, "days").toDate(),
                 }, 1)
 
                 opts.goal_1 = goal_1[0].id;
@@ -298,7 +298,7 @@ describe("Processing partially processed streak goals", () => {
                     streakType: "weekly",
                     goalType: GoalType.STREAK,
                     active: true,
-                    lastRefreshed: new MyDate().subtract(1, "days").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(1, "days").toDate(),
                 }, 1)
 
                 opts.goal_2 = goal_2[0].id;
@@ -307,7 +307,7 @@ describe("Processing partially processed streak goals", () => {
                     streakType: "monthly",
                     goalType: GoalType.STREAK,
                     active: true,
-                    lastRefreshed: new MyDate().subtract(2, "days").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(2, "days").toDate(),
                 }, 1)
 
                 opts.goal_3 = goal_3[0].id;
@@ -316,7 +316,7 @@ describe("Processing partially processed streak goals", () => {
                     streakType: "daily",
                     goalType: GoalType.STREAK,
                     active: true,
-                    lastRefreshed: new MyDate().toDate(),
+                    lastRefreshed: MyDate.Now().toDate(),
                 }, 1)
 
                 opts.goal_4 = goal_4[0].id;
@@ -325,7 +325,7 @@ describe("Processing partially processed streak goals", () => {
                     streakType: "daily",
                     goalType: GoalType.STREAK,
                     active: false,
-                    lastRefreshed: new MyDate().toDate(),
+                    lastRefreshed: MyDate.Now().toDate(),
                 }, 1)
 
                 opts.goal_5 = goal_5[0].id;
@@ -372,20 +372,20 @@ describe("streak tasks have proper values", () => {
                     streakType: "daily",
                     goalType: GoalType.STREAK,
                     active: true,
-                    startDate: startDate(new MyDate().subtract(10, "days").toDate()),
-                    dueDate: dueDate(new MyDate().add(10, "days").toDate()),
+                    startDate: startDate(MyDate.Now().subtract(10, "days").toDate()),
+                    dueDate: dueDate(MyDate.Now().add(10, "days").toDate()),
                     latestCycleId: "",
-                    lastRefreshed: new MyDate().subtract(1, "days").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(1, "days").toDate(),
                 }, 1))[0];
                 const cycle = (await createStreakCycles({
                     parentGoalId: goal_1.id,
-                    startDate: startDate(new MyDate().subtract(1, "days").toDate()),
-                    endDate: dueDate(new MyDate().subtract(1, "days").toDate()),
+                    startDate: startDate(MyDate.Now().subtract(1, "days").toDate()),
+                    endDate: dueDate(MyDate.Now().subtract(1, "days").toDate()),
                 }, 1))[0];
                 await createTasks({
                     title: "latest", 
                     active: false,
-                    startDate: new MyDate().subtract(1, "days").toDate(),
+                    startDate: MyDate.Now().subtract(1, "days").toDate(),
                     parentId: cycle.id,
                 }, 1)
             });

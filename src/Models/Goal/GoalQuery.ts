@@ -84,7 +84,7 @@ export class GoalQuery extends ModelQuery<Goal, IGoal>{
     queryInRecentRecurrence = (recurId: string) => {
         return this.query(
             ...[ Q.where(GoalSchema.name.RECUR_ID, recurId),
-                ...Conditions.createdAfter( new MyDate().subtract(2, "months").toDate() )
+                ...Conditions.createdAfter( MyDate.Now().subtract(2, "months").toDate() )
             ]
         )
     }
@@ -190,7 +190,7 @@ export class ActiveGoalQuery extends ModelQuery<Goal, IGoal>{
 
     queryUnprocessed = () => {
         return this.query(
-            ...[...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+            ...[...Conditions.lastRefreshedOnOrBefore(MyDate.Now().subtract(1, "days").toDate()),
             ]
         );
     }
@@ -201,7 +201,7 @@ export class ActiveGoalQuery extends ModelQuery<Goal, IGoal>{
 
     queryUnprocessedStreaks = () => {
         return this.query(
-            ...[ ...Conditions.lastRefreshedOnOrBefore(new MyDate().subtract(1, "days").toDate()),
+            ...[ ...Conditions.lastRefreshedOnOrBefore(MyDate.Now().subtract(1, "days").toDate()),
                  ...Conditions.isStreak(),
             ]
         )
@@ -552,7 +552,7 @@ export class GoalLogic {
                 };
                 default: {
                     tx.addCreate(new EarnedRewardQuery(), {
-                        earnedDate: new MyDate().toDate(),
+                        earnedDate: MyDate.Now().toDate(),
                         type: goal.rewardType,
                         goalId: this.id,
                     })

@@ -33,7 +33,7 @@ test("User can view all penalties in the database", async () => {
         await DB.get().action(async () => {
             await createPenalties({
                 title: "Penalty",
-                expireDate: new MyDate().toDate(),
+                expireDate: MyDate.Now().toDate(),
                 details: "",
             }, 2)
         });

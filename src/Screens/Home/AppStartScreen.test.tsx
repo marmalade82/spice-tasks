@@ -37,15 +37,15 @@ describe("Viewing data", () => {
             await DB.get().action(async () => {
                 await createTasks({
                     active: true,
-                    dueDate: new MyDate().toDate(),
+                    dueDate: MyDate.Now().toDate(),
                 }, 1)
                 await createTasks({
                     active: true,
-                    dueDate: new MyDate().prevMidnight().toDate(),
+                    dueDate: MyDate.Now().prevMidnight().toDate(),
                 }, 1)
                 await createTasks({
                     active: true,
-                    dueDate: new MyDate().nextMidnight().subtract(1, "minutes").toDate(),
+                    dueDate: MyDate.Now().nextMidnight().subtract(1, "minutes").toDate(),
                 }, 1)
             });
         }
@@ -67,15 +67,15 @@ describe("Viewing data", () => {
             await DB.get().action(async () => {
                 await createTasks({
                     active: true,
-                    dueDate: new MyDate().subtract(1, "days").toDate(),
+                    dueDate: MyDate.Now().subtract(1, "days").toDate(),
                 }, 1)
                 await createTasks({
                     active: true,
-                    dueDate: new MyDate().subtract(1, "days").prevMidnight().toDate(),
+                    dueDate: MyDate.Now().subtract(1, "days").prevMidnight().toDate(),
                 }, 1)
                 await createTasks({
                     active: true,
-                    dueDate: new MyDate().subtract(1, "days").nextMidnight().subtract(1, "minutes").toDate(),
+                    dueDate: MyDate.Now().subtract(1, "days").nextMidnight().subtract(1, "minutes").toDate(),
                 }, 1)
             });
         }
@@ -97,18 +97,18 @@ describe("Viewing data", () => {
             await DB.get().action(async () => {
                 await createGoals({
                     active: true,
-                    startDate: new MyDate().subtract(1, "days").toDate(),
-                    dueDate: new MyDate().toDate(),
+                    startDate: MyDate.Now().subtract(1, "days").toDate(),
+                    dueDate: MyDate.Now().toDate(),
                 }, 1)
                 await createGoals({
                     active: true,
-                    startDate: new MyDate().subtract(1, "days").toDate(),
-                    dueDate: new MyDate().add(1, "days").toDate(),
+                    startDate: MyDate.Now().subtract(1, "days").toDate(),
+                    dueDate: MyDate.Now().add(1, "days").toDate(),
                 }, 1)
                 await createGoals({
                     active: true,
-                    startDate: new MyDate().subtract(2, "days").toDate(),
-                    dueDate: new MyDate().subtract(1, "days").toDate(),
+                    startDate: MyDate.Now().subtract(2, "days").toDate(),
+                    dueDate: MyDate.Now().subtract(1, "days").toDate(),
                 }, 1)
             });
         }
@@ -148,15 +148,15 @@ describe("Using lists", () => {
             await DB.get().action(async () => {
                 opts.id = (await createTasks({
                     active: true,
-                    dueDate: new MyDate().subtract(1, "days").toDate(),
+                    dueDate: MyDate.Now().subtract(1, "days").toDate(),
                 }, 1))[0].id;
                 await createTasks({
                     active: true,
-                    dueDate: new MyDate().subtract(1, "days").prevMidnight().toDate(),
+                    dueDate: MyDate.Now().subtract(1, "days").prevMidnight().toDate(),
                 }, 1)
                 await createTasks({
                     active: true,
-                    dueDate: new MyDate().subtract(1, "days").nextMidnight().subtract(1, "minutes").toDate(),
+                    dueDate: MyDate.Now().subtract(1, "days").nextMidnight().subtract(1, "minutes").toDate(),
                 }, 1)
             });
 
@@ -189,15 +189,15 @@ describe("Using lists", () => {
             await DB.get().action(async () => {
                 opts.id = (await createTasks({
                     active: true,
-                    dueDate: new MyDate().subtract(1, "days").toDate(),
+                    dueDate: MyDate.Now().subtract(1, "days").toDate(),
                 }, 1))[0].id;
                 await createTasks({
                     active: true,
-                    dueDate: new MyDate().subtract(1, "days").prevMidnight().toDate(),
+                    dueDate: MyDate.Now().subtract(1, "days").prevMidnight().toDate(),
                 }, 1)
                 await createTasks({
                     active: true,
-                    dueDate: new MyDate().subtract(1, "days").nextMidnight().subtract(1, "minutes").toDate(),
+                    dueDate: MyDate.Now().subtract(1, "days").nextMidnight().subtract(1, "minutes").toDate(),
                 }, 1)
             });
 
@@ -228,18 +228,18 @@ describe("Using lists", () => {
             await DB.get().action(async () => {
                 opts.id = (await createGoals({
                     active: true,
-                    startDate: new MyDate().subtract(1, "days").toDate(),
-                    dueDate: new MyDate().toDate(),
+                    startDate: MyDate.Now().subtract(1, "days").toDate(),
+                    dueDate: MyDate.Now().toDate(),
                 }, 1))[0].id
                 await createGoals({
                     active: true,
-                    startDate: new MyDate().subtract(1, "days").toDate(),
-                    dueDate: new MyDate().add(1, "days").toDate(),
+                    startDate: MyDate.Now().subtract(1, "days").toDate(),
+                    dueDate: MyDate.Now().add(1, "days").toDate(),
                 }, 1)
                 await createGoals({
                     active: true,
-                    startDate: new MyDate().subtract(2, "days").toDate(),
-                    dueDate: new MyDate().subtract(1, "days").toDate(),
+                    startDate: MyDate.Now().subtract(2, "days").toDate(),
+                    dueDate: MyDate.Now().subtract(1, "days").toDate(),
                 }, 1)
             });
             return opts;
@@ -269,18 +269,18 @@ describe("Using lists", () => {
             await DB.get().action(async () => {
                 opts.id = (await createGoals({
                     active: true,
-                    startDate: new MyDate().subtract(1, "days").toDate(),
-                    dueDate: new MyDate().toDate(),
+                    startDate: MyDate.Now().subtract(1, "days").toDate(),
+                    dueDate: MyDate.Now().toDate(),
                 }, 1))[0].id
                 await createGoals({
                     active: true,
-                    startDate: new MyDate().subtract(1, "days").toDate(),
-                    dueDate: new MyDate().add(1, "days").toDate(),
+                    startDate: MyDate.Now().subtract(1, "days").toDate(),
+                    dueDate: MyDate.Now().add(1, "days").toDate(),
                 }, 1)
                 await createGoals({
                     active: true,
-                    startDate: new MyDate().subtract(2, "days").toDate(),
-                    dueDate: new MyDate().subtract(1, "days").toDate(),
+                    startDate: MyDate.Now().subtract(2, "days").toDate(),
+                    dueDate: MyDate.Now().subtract(1, "days").toDate(),
                 }, 1)
             });
             return opts;

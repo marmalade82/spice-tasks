@@ -49,7 +49,7 @@ test.skip("User can view the summary of the earned reward", async() => {
             const earned = (await createEarnedRewards({
                 goalId: goal.id,
                 type: RewardTypes.TWO_DICE,
-                earnedDate: new MyDate().add(1, "days").toDate(),
+                earnedDate: MyDate.Now().add(1, "days").toDate(),
             }, 1))[0];
 
             opts.id = earned.id;
@@ -90,7 +90,7 @@ describe.skip("Earned reward is two dice", () => {
                 const earned = (await createEarnedRewards({
                     goalId: goal.id,
                     type: RewardTypes.TWO_DICE,
-                    earnedDate: new MyDate().add(1, "days").toDate(),
+                    earnedDate: MyDate.Now().add(1, "days").toDate(),
                 }, 1))[0];
 
                 opts.id = earned.id;

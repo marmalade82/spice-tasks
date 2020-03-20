@@ -185,10 +185,10 @@ describe("Validation", () => {
         fireEvent.changeText(summaryInput, "Dummy value");
 
         const dueInput = getByLabelText("value-input-goal-due-date");
-        fireEvent.changeText(dueInput, new MyDate().toDate().toString());
+        fireEvent.changeText(dueInput, MyDate.Now().toDate().toString());
 
         const startInput = getByLabelText("value-input-goal-start-date");
-        fireEvent.changeText(startInput, new MyDate().add(1, "days").toDate().toString());
+        fireEvent.changeText(startInput, MyDate.Now().add(1, "days").toDate().toString());
 
         {
             // render the save button, which shares an event dispatcher with the goal screen.

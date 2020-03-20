@@ -39,15 +39,15 @@ test("a notification is generated for overdue goals/tasks", async () => {
     async function setup() {
         await DB.get().action(async () => {
             await createGlobal({
-                lastNotifiedDate: new MyDate().subtract(5, "days").toDate()
+                lastNotifiedDate: MyDate.Now().subtract(5, "days").toDate()
             })
 
             await createGoals({
-                dueDate: new MyDate().subtract(1, "days").toDate()
+                dueDate: MyDate.Now().subtract(1, "days").toDate()
             }, 1)
 
             await createTasks({
-                dueDate: new MyDate().subtract(3, "days").toDate()
+                dueDate: MyDate.Now().subtract(3, "days").toDate()
             }, 2)
 
         } )
@@ -69,15 +69,15 @@ test("a notification is generated for tasks due sometime today", async () => {
     async function setup() {
         await DB.get().action(async () => {
             await createGlobal({
-                lastNotifiedDate: new MyDate().subtract(5, "days").toDate()
+                lastNotifiedDate: MyDate.Now().subtract(5, "days").toDate()
             })
 
             await createGoals({
-                dueDate: new MyDate().toDate()
+                dueDate: MyDate.Now().toDate()
             }, 1)
 
             await createTasks({
-                dueDate: new MyDate().toDate()
+                dueDate: MyDate.Now().toDate()
             }, 3)
 
         } )
@@ -100,15 +100,15 @@ test("a notification is not generated if it has already been generated today", a
     async function setup() {
         await DB.get().action(async () => {
             await createGlobal({
-                lastNotifiedDate: new MyDate().toDate()
+                lastNotifiedDate: MyDate.Now().toDate()
             })
 
             await createGoals({
-                dueDate: new MyDate().toDate()
+                dueDate: MyDate.Now().toDate()
             }, 1)
 
             await createTasks({
-                dueDate: new MyDate().toDate()
+                dueDate: MyDate.Now().toDate()
             }, 3)
 
         } )

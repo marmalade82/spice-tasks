@@ -55,8 +55,8 @@ describe("Recurring goal recurs despite being very far in past", () => {
                     title: "Older",
                     active: true,
                     recurId: opts.recurId,
-                    startDate: new MyDate().subtract(3, "days").toDate(),
-                    dueDate: new MyDate().subtract(3, "days").add(30, "minutes").toDate(),
+                    startDate: MyDate.Now().subtract(3, "days").toDate(),
+                    dueDate: MyDate.Now().subtract(3, "days").add(30, "minutes").toDate(),
                     
                 }, 2)
 
@@ -64,24 +64,24 @@ describe("Recurring goal recurs despite being very far in past", () => {
                     title: "Latest",
                     active: true,
                     recurId: opts.recurId,
-                    startDate: new MyDate().subtract(2, "days").toDate(),
-                    dueDate: new MyDate().subtract(2, "days").add(30, "minutes").toDate(),
+                    startDate: MyDate.Now().subtract(2, "days").toDate(),
+                    dueDate: MyDate.Now().subtract(2, "days").add(30, "minutes").toDate(),
                 }, 1)
 
                 await createGoals({
                     title: "Oldest",
                     active: true,
                     recurId: opts.recurId,
-                    startDate: new MyDate().subtract(5, "days").toDate(),
-                    dueDate: new MyDate().subtract(5, "days").add(30, "minutes").toDate(),
+                    startDate: MyDate.Now().subtract(5, "days").toDate(),
+                    dueDate: MyDate.Now().subtract(5, "days").add(30, "minutes").toDate(),
                 }, 2)
 
                 await createGoals({
                     title: "Unrelated",
                     active: true,
                     recurId: "",
-                    startDate: new MyDate().subtract(2, "days").toDate(),
-                    dueDate: new MyDate().subtract(2, "days").add(30, "minutes").toDate(),
+                    startDate: MyDate.Now().subtract(2, "days").toDate(),
+                    dueDate: MyDate.Now().subtract(2, "days").add(30, "minutes").toDate(),
                 }, 1)
             })
             return opts;
@@ -119,8 +119,8 @@ describe("Recurring goal recurs despite being very far in past", () => {
                     title: "Older",
                     active: true,
                     recurId: opts.recurId,
-                    startDate: new MyDate().subtract(3, "weeks").toDate(),
-                    dueDate: new MyDate().subtract(3, "weeks").add(30, "minutes").toDate(),
+                    startDate: MyDate.Now().subtract(3, "weeks").toDate(),
+                    dueDate: MyDate.Now().subtract(3, "weeks").add(30, "minutes").toDate(),
                     
                 }, 2)
 
@@ -128,24 +128,24 @@ describe("Recurring goal recurs despite being very far in past", () => {
                     title: "Latest",
                     active: true,
                     recurId: opts.recurId,
-                    startDate: new MyDate().subtract(2, "weeks").toDate(),
-                    dueDate: new MyDate().subtract(2, "weeks").add(30, "minutes").toDate(),
+                    startDate: MyDate.Now().subtract(2, "weeks").toDate(),
+                    dueDate: MyDate.Now().subtract(2, "weeks").add(30, "minutes").toDate(),
                 }, 1)
 
                 await createGoals({
                     title: "Oldest",
                     active: true,
                     recurId: opts.recurId,
-                    startDate: new MyDate().subtract(5, "weeks").toDate(),
-                    dueDate: new MyDate().subtract(5, "weeks").add(30, "minutes").toDate(),
+                    startDate: MyDate.Now().subtract(5, "weeks").toDate(),
+                    dueDate: MyDate.Now().subtract(5, "weeks").add(30, "minutes").toDate(),
                 }, 2)
 
                 await createGoals({
                     title: "Unrelated",
                     active: true,
                     recurId: "",
-                    startDate: new MyDate().subtract(2, "weeks").toDate(),
-                    dueDate: new MyDate().subtract(2, "weeks").add(30, "minutes").toDate(),
+                    startDate: MyDate.Now().subtract(2, "weeks").toDate(),
+                    dueDate: MyDate.Now().subtract(2, "weeks").add(30, "minutes").toDate(),
                 }, 1)
             })
             return opts;
@@ -184,8 +184,8 @@ describe("Recurring goal recurs despite being very far in past", () => {
                     title: "Older",
                     active: true,
                     recurId: opts.recurId,
-                    startDate: new MyDate().subtract(3, "months").toDate(),
-                    dueDate: new MyDate().subtract(3, "months").add(30, "minutes").toDate(),
+                    startDate: MyDate.Now().subtract(3, "months").toDate(),
+                    dueDate: MyDate.Now().subtract(3, "months").add(30, "minutes").toDate(),
                     
                 }, 2)
 
@@ -193,24 +193,24 @@ describe("Recurring goal recurs despite being very far in past", () => {
                     title: "Latest",
                     active: true,
                     recurId: opts.recurId,
-                    startDate: new MyDate().subtract(2, "months").toDate(),
-                    dueDate: new MyDate().subtract(2, "months").add(30, "minutes").toDate(),
+                    startDate: MyDate.Now().subtract(2, "months").toDate(),
+                    dueDate: MyDate.Now().subtract(2, "months").add(30, "minutes").toDate(),
                 }, 1)
 
                 await createGoals({
                     title: "Oldest",
                     active: true,
                     recurId: opts.recurId,
-                    startDate: new MyDate().subtract(5, "months").toDate(),
-                    dueDate: new MyDate().subtract(5, "months").add(30, "minutes").toDate(),
+                    startDate: MyDate.Now().subtract(5, "months").toDate(),
+                    dueDate: MyDate.Now().subtract(5, "months").add(30, "minutes").toDate(),
                 }, 2)
 
                 await createGoals({
                     title: "Unrelated",
                     active: true,
                     recurId: "",
-                    startDate: new MyDate().subtract(2, "months").toDate(),
-                    dueDate: new MyDate().subtract(2, "months").add(30, "minutes").toDate(),
+                    startDate: MyDate.Now().subtract(2, "months").toDate(),
+                    dueDate: MyDate.Now().subtract(2, "months").add(30, "minutes").toDate(),
                 }, 1)
             })
             return opts;
@@ -267,7 +267,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_1 = await createRecurrences({
                     type: "daily",
                     active: true,
-                    lastRefreshed: new MyDate().subtract(1, "days").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(1, "days").toDate(),
                 }, 1)
 
                 opts.recur_1 = recur_1[0].id;
@@ -275,7 +275,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_2 = await createRecurrences({
                     type: "daily",
                     active: true,
-                    lastRefreshed: new MyDate().subtract(1, "days").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(1, "days").toDate(),
                 }, 1)
 
                 opts.recur_2 = recur_2[0].id;
@@ -283,7 +283,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_3 = await createRecurrences({
                     type: "daily",
                     active: true,
-                    lastRefreshed: new MyDate().subtract(2, "days").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(2, "days").toDate(),
                 }, 1)
 
                 opts.recur_3 = recur_3[0].id;
@@ -291,7 +291,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_4 = await createRecurrences({
                     type: "daily",
                     active: true,
-                    lastRefreshed: new MyDate().toDate(),
+                    lastRefreshed: MyDate.Now().toDate(),
                 }, 1)
 
                 opts.recur_4 = recur_4[0].id;
@@ -299,7 +299,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_5 = await createRecurrences({
                     type: "daily",
                     active: false,
-                    lastRefreshed: new MyDate().toDate(),
+                    lastRefreshed: MyDate.Now().toDate(),
                 }, 1)
 
                 opts.recur_5 = recur_5[0].id;
@@ -348,7 +348,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_1 = await createRecurrences({
                     type: "weekly",
                     active: true,
-                    lastRefreshed: new MyDate().subtract(1, "weeks").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(1, "weeks").toDate(),
                 }, 1)
 
                 opts.recur_1 = recur_1[0].id;
@@ -356,7 +356,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_2 = await createRecurrences({
                     type: "weekly",
                     active: true,
-                    lastRefreshed: new MyDate().subtract(1, "weeks").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(1, "weeks").toDate(),
                 }, 1)
 
                 opts.recur_2 = recur_2[0].id;
@@ -364,7 +364,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_3 = await createRecurrences({
                     type: "weekly",
                     active: true,
-                    lastRefreshed: new MyDate().subtract(2, "weeks").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(2, "weeks").toDate(),
                 }, 3)
 
                 opts.recur_3 = recur_3[0].id;
@@ -372,7 +372,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_4 = await createRecurrences({
                     type: "weekly",
                     active: true,
-                    lastRefreshed: new MyDate().toDate(),
+                    lastRefreshed: MyDate.Now().toDate(),
                 }, 1)
 
                 opts.recur_4 = recur_4[0].id;
@@ -380,7 +380,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_5 = await createRecurrences({
                     type: "weekly",
                     active: false,
-                    lastRefreshed: new MyDate().subtract(5, "weeks").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(5, "weeks").toDate(),
                 }, 1)
 
                 opts.recur_5 = recur_5[0].id;
@@ -388,7 +388,7 @@ describe("Processing partially processed recurrences", () => {
                 await createRecurrences({
                     type: "daily",
                     active: true,
-                    lastRefreshed: new MyDate().subtract(2, "weeks").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(2, "weeks").toDate(),
                 }, 1)
             })
             return opts;
@@ -434,7 +434,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_1 = await createRecurrences({
                     type: "monthly",
                     active: true,
-                    lastRefreshed: new MyDate().subtract(1, "months").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(1, "months").toDate(),
                 }, 1)
 
                 opts.recur_1 = recur_1[0].id;
@@ -442,7 +442,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_2 = await createRecurrences({
                     type: "monthly",
                     active: true,
-                    lastRefreshed: new MyDate().subtract(1, "months").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(1, "months").toDate(),
                 }, 1)
 
                 opts.recur_2 = recur_2[0].id;
@@ -450,7 +450,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_3 = await createRecurrences({
                     type: "monthly",
                     active: true,
-                    lastRefreshed: new MyDate().subtract(2, "months").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(2, "months").toDate(),
                 }, 3)
 
                 opts.recur_3 = recur_3[0].id;
@@ -458,7 +458,7 @@ describe("Processing partially processed recurrences", () => {
                 const recur_4 = await createRecurrences({
                     type: "monthly",
                     active: true,
-                    lastRefreshed: new MyDate().toDate(),
+                    lastRefreshed: MyDate.Now().toDate(),
                 }, 1)
 
                 opts.recur_4 = recur_4[0].id;
@@ -466,13 +466,13 @@ describe("Processing partially processed recurrences", () => {
                 const recur_5 = await createRecurrences({
                     type: "monthly",
                     active: false,
-                    lastRefreshed: new MyDate().subtract(5, "months").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(5, "months").toDate(),
                 }, 1)
 
                 await createRecurrences({
                     type: "daily",
                     active: true,
-                    lastRefreshed: new MyDate().subtract(2, "weeks").toDate(),
+                    lastRefreshed: MyDate.Now().subtract(2, "weeks").toDate(),
                 }, 1)
             })
             return opts;

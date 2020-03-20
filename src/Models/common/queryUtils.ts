@@ -60,51 +60,51 @@ function completeConditions() {
 
 function dueTodayConditions() {
     return [
-        Q.where(name.DUE_ON, Q.lt(new MyDate().nextMidnight().toDate().valueOf())),
-        Q.where(name.DUE_ON, Q.gte(new MyDate().prevMidnight().toDate().valueOf())),
+        Q.where(name.DUE_ON, Q.lt(MyDate.Now().nextMidnight().toDate().valueOf())),
+        Q.where(name.DUE_ON, Q.gte(MyDate.Now().prevMidnight().toDate().valueOf())),
     ]
 }
 
 function dueInFutureConditions() {
     return [
-        Q.where(name.DUE_ON, Q.gte(new MyDate().toDate().valueOf()))
+        Q.where(name.DUE_ON, Q.gte(MyDate.Now().toDate().valueOf()))
     ]
 }
 
 function overdueConditions() {
     return [
-        Q.where(name.DUE_ON, Q.lt(new MyDate().prevMidnight().toDate().valueOf())),
+        Q.where(name.DUE_ON, Q.lt(MyDate.Now().prevMidnight().toDate().valueOf())),
     ];
 }
 
 function startedConditions() {
     return [
-        Q.where(name.STARTS_ON, Q.lte(new MyDate().toDate().valueOf())),
+        Q.where(name.STARTS_ON, Q.lte(MyDate.Now().toDate().valueOf())),
     ]
 }
 
 function notDueConditions() {
     return [
-        Q.where(name.DUE_ON, Q.gte(new MyDate().nextMidnight().toDate().valueOf()))
+        Q.where(name.DUE_ON, Q.gte(MyDate.Now().nextMidnight().toDate().valueOf()))
     ]
 }
 
 function notStartedConditions() {
     return [
-        Q.where(name.STARTS_ON, Q.gt(new MyDate().toDate().valueOf())),
+        Q.where(name.STARTS_ON, Q.gt(MyDate.Now().toDate().valueOf())),
     ]
 }
 
 function completedTodayConditions() {
     return [
-        Q.where(name.COMPLETED_ON, Q.lt(new MyDate().nextMidnight().toDate().valueOf())),
-        Q.where(name.COMPLETED_ON, Q.gte(new MyDate().prevMidnight().toDate().valueOf())),
+        Q.where(name.COMPLETED_ON, Q.lt(MyDate.Now().nextMidnight().toDate().valueOf())),
+        Q.where(name.COMPLETED_ON, Q.gte(MyDate.Now().prevMidnight().toDate().valueOf())),
     ]
 }
 
 function notOverdueConditions() {
     return [
-        Q.where(name.DUE_ON, Q.gte(new MyDate().toDate().valueOf()))
+        Q.where(name.DUE_ON, Q.gte(MyDate.Now().toDate().valueOf()))
     ]
 }
 

@@ -33,7 +33,7 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
             active: true,
             state: 'open',
             completedDate: MyDate.Zero().toDate(),
-            createdAt: new MyDate().toDate(),
+            createdAt: MyDate.Now().toDate(),
             parentType: TaskParentTypes.TASK,
         };
         return def;
