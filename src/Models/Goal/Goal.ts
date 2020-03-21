@@ -148,16 +148,18 @@ export default class Goal extends Model implements IGoal {
                 return correctDate(today);
             } break;
             case "weekly": {
-                const dayName = new MyDate( this.dueDate).dayName();
+                const dayName = new MyDate( this.startDate).subtract(1, "days").asDueDate().dayName();
                 const day = MyDate.Now().setDay(dayName);
                 if( day.toDate() < MyDate.Now().toDate() ) {
                     day.add(1, "weeks");
                 }
 
+                let date = correctDate(dueDate(day.toDate()));
+                console.log("GENERATED NEXT CYCLE END: " + date);
                 return correctDate(dueDate(day.toDate()));
             } break;
             case "monthly": {
-                const dayInMonth = new MyDate(this.dueDate).dayOfMonth();
+                const dayInMonth = new MyDate(this.startDate).subtract(1, "days").asDueDate().dayOfMonth();
                 const date = MyDate.Now().setDayOfMonth(dayInMonth);
                 if( date.toDate() < MyDate.Now().toDate()) {
                     date.add(1, "months")

@@ -403,7 +403,7 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
         await destroyAll();
     })
 
-    test("daily", async () => {
+    test("daily sequence", async () => {
         const { goalId, firstCycleId } = await setup();
         const originalDate = MyDate.Now();
 
@@ -429,7 +429,7 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
             expect(new MyDate(latestCycle.startDate).equals(new MyDate(goals[0].startDate))).toBeTruthy();
 
             await asyncTestWithTag("zero day test", validateLatestTasks, goalId);
-            await asyncTestWithTag("first day test", validateCurrentCycle, goalId, 0);
+            await asyncTestWithTag("zero day test", validateCurrentCycle, goalId, 0, "days", originalDate);
         })
 
         MyDate.TEST_ONLY_NowAdd(1, "days");
@@ -445,9 +445,9 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
             expect(cycles.length).toEqual(2);
             expect(tasks.length).toEqual(2 * 2);
 
-            await asyncTestWithTag("first day test", validateLatestCycle, goalId);
+            await asyncTestWithTag("first day test", validateLatestCycle, goalId, firstCycleId);
             await asyncTestWithTag("first day test", validateLatestTasks, goalId);
-            await asyncTestWithTag("first day test", validateCurrentCycle, goalId, 1);
+            await asyncTestWithTag("first day test", validateCurrentCycle, goalId, 1, "days", originalDate);
         })
 
 
@@ -461,9 +461,9 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
             expect(tasks.length).toEqual(2 * 3);
             expect(cycles.length).toEqual(3);
 
-            await asyncTestWithTag("second day test", validateLatestCycle, goalId);
+            await asyncTestWithTag("second day test", validateLatestCycle, goalId, firstCycleId);
             await asyncTestWithTag("second day test", validateLatestTasks, goalId);
-            await asyncTestWithTag("second day test", validateCurrentCycle, goalId, 2);
+            await asyncTestWithTag("second day test", validateCurrentCycle, goalId, 2, "days", originalDate);
         })
 
         MyDate.TEST_ONLY_NowAdd(1, "days");
@@ -476,58 +476,11 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
             expect(tasks.length).toEqual(2 * 4);
             expect(cycles.length).toEqual(4);
 
-            await asyncTestWithTag("third day test", validateLatestCycle, goalId);
+            await asyncTestWithTag("third day test", validateLatestCycle, goalId, firstCycleId);
             await asyncTestWithTag("third day test", validateLatestTasks, goalId);
-            await asyncTestWithTag("third day test", validateCurrentCycle, goalId, 3);
+            await asyncTestWithTag("third day test", validateCurrentCycle, goalId, 3, "days", originalDate);
         })
 
-        async function validateLatestCycle(goalId: string) {
-            const goal = await new GoalQuery().get(goalId);
-            if(!goal) {
-                throw new Error("goal not found");
-            }
-
-            const latestCycle = await new ChildStreakCycleQuery(goalId).latest();
-            if(!latestCycle) {
-                throw new Error("latest goal is not correct");
-            }
-
-            const currentCycleStart = new MyDate(goal.currentCycleStart());
-            expect(latestCycle.id).not.toEqual(firstCycleId);
-            expect(latestCycle.id).toEqual(goal.latestCycleId);
-            expect(latestCycle.parentGoalId).toEqual(goal.id);
-            expect(new MyDate(latestCycle.startDate).equals(currentCycleStart)).toBeTruthy();
-            expect(new MyDate(latestCycle.endDate).equals(new MyDate(goal.currentCycleEnd()))).toBeTruthy();
-            expect(new MyDate(latestCycle.startDate).equals(MyDate.Now().asStartDate())).toBeTruthy();
-        }
-
-        async function validateLatestTasks(goalId: string) {
-            const goal = await new GoalQuery().get(goalId);
-            if(!goal) {
-                throw new Error("goal not found");
-            }
-
-            const latestCycle = await new ChildStreakCycleQuery(goalId).latest();
-            if(!latestCycle) {
-                throw new Error("latest goal is not correct");
-            }
-
-            const currentCycleStart = new MyDate(goal.currentCycleStart());
-            const latestTasks = (await new ChildTaskQuery(latestCycle.id).all());
-            expect(latestTasks.length).toEqual(2);
-            expect( latestTasks[0].startDate).toEqual(latestCycle.startDate);
-            expect( latestTasks[0].startDate).toEqual(currentCycleStart.toDate());
-            expect( new MyDate(latestTasks[0].startDate).equals(currentCycleStart) ).toBeTruthy();
-        }
-
-        async function validateCurrentCycle(goalId: string, daysDiff: number) {
-            const goal = await new GoalQuery().get(goalId);
-            if(!goal) {
-                throw new Error("goal not found");
-            }
-            const currentCycleStart = new MyDate(goal.currentCycleStart());
-            expect( currentCycleStart.equals(originalDate.clone().add(daysDiff, "days").asStartDate())).toBeTruthy();
-        }
 
         async function setup() {
             const opts = {
@@ -569,4 +522,299 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
             return opts;
         }
     }, 20000)
+
+
+    test("monthly sequence", async () => {
+        const { goalId, firstCycleId } = await setup();
+        const originalDate = MyDate.Now();
+
+        expect(MyDate.Now().equals(new MyDate(new Date()))).toBeTruthy();
+
+        await wait(async () => {
+            const goals = await new GoalQuery().all();
+            const tasks = await new TaskQuery().all();
+            const cycles = await new StreakCycleQuery().all();
+            const latestCycle = await new ChildStreakCycleQuery(goalId).latest();
+
+            expect(goals.length).toEqual(1);
+            expect(tasks.length).toEqual(2);
+            expect(cycles.length).toEqual(1);
+
+            if(!latestCycle) {
+                throw new Error("latest goal is not correct");
+            }
+            expect(latestCycle.id === firstCycleId).toEqual(true);
+            expect(goals[0].latestCycleId).toEqual("");
+            expect(new MyDate(latestCycle.startDate).equals(new MyDate(goals[0].currentCycleStart()))).toBeTruthy();
+            expect(new MyDate(latestCycle.endDate).equals(new MyDate(goals[0].currentCycleEnd()))).toBeTruthy();
+            expect(new MyDate(latestCycle.startDate).equals(new MyDate(goals[0].startDate))).toBeTruthy();
+
+            await asyncTestWithTag("zero month test", validateLatestTasks, goalId);
+            await asyncTestWithTag("zero month test", validateCurrentCycle, goalId, 0, "months", originalDate);
+        })
+
+        MyDate.TEST_ONLY_NowAdd(1, "months");
+        await new GoalLogic(goalId).generateNextStreakTasks();
+        await wait(async () => {
+            const goals = await new GoalQuery().all();
+            const tasks = await new TaskQuery().all();
+            const cycles = await new StreakCycleQuery().all();
+
+            expect(goals.length).toEqual(1);
+            expect(cycles.length).toEqual(2);
+            expect(tasks.length).toEqual(2 * 2);
+
+            await asyncTestWithTag("first month test", validateLatestCycle, goalId, firstCycleId);
+            await asyncTestWithTag("first month test", validateLatestTasks, goalId);
+            await asyncTestWithTag("first month test", validateCurrentCycle, goalId, 1, "months", originalDate);
+        })
+
+
+        MyDate.TEST_ONLY_NowAdd(1, "months");
+        await new GoalLogic(goalId).generateNextStreakTasks();
+        await wait(async () => {
+            const goals = await new GoalQuery().all();
+            const tasks = await new TaskQuery().all();
+            const cycles = await new StreakCycleQuery().all();
+            expect(goals.length).toEqual(1);
+            expect(tasks.length).toEqual(2 * 3);
+            expect(cycles.length).toEqual(3);
+
+            await asyncTestWithTag("second month test", validateLatestCycle, goalId, firstCycleId);
+            await asyncTestWithTag("second month test", validateLatestTasks, goalId);
+            await asyncTestWithTag("second month test", validateCurrentCycle, goalId, 2, "months", originalDate);
+        })
+
+        MyDate.TEST_ONLY_NowAdd(1, "months");
+        await new GoalLogic(goalId).generateNextStreakTasks();
+        await wait(async () => {
+            const goals = await new GoalQuery().all();
+            const tasks = await new TaskQuery().all();
+            const cycles = await new StreakCycleQuery().all();
+            expect(goals.length).toEqual(1);
+            expect(tasks.length).toEqual(2 * 4);
+            expect(cycles.length).toEqual(4);
+
+            await asyncTestWithTag("third month test", validateLatestCycle, goalId, firstCycleId);
+            await asyncTestWithTag("third month test", validateLatestTasks, goalId);
+            await asyncTestWithTag("third month test", validateCurrentCycle, goalId, 3, "months", originalDate);
+        })
+
+
+        async function setup() {
+            const opts = {
+                goalId: "",
+                firstCycleId: "",
+            }
+
+            await DB.get().action(async () => {
+                const goal = (await createGoals({
+                    title: "Parent",
+                    active: true,
+                    goalType: GoalType.STREAK,
+                    startDate: MyDate.Now().asStartDate().toDate(),
+                    dueDate: MyDate.Now().add(7, "months").asDueDate().toDate(),
+                    streakType: "monthly",
+                    lastRefreshed: MyDate.Now().toDate(),
+                    latestCycleId: "",
+                }, 1))[0];
+
+
+                const cycle = (await createStreakCycles({
+                    parentGoalId: goal.id,
+                    startDate: goal.currentCycleStart(),
+                    endDate: goal.currentCycleEnd(),
+                }, 1))[0];
+
+                const start = {
+
+                }
+                const tasks = (await createTasks({
+                    active: true,
+                    parentId: cycle.id,
+                    startDate: new MyDate(cycle.startDate).asStartDate().toDate(),
+                    dueDate: new MyDate(cycle.startDate).asDueDate().toDate()
+                }, 2));
+
+                opts.goalId = goal.id;
+                opts.firstCycleId = cycle.id;
+            })
+
+
+            return opts;
+        }
+    }, 20000)
+
+    test("weekly sequence", async () => {
+        const { goalId, firstCycleId } = await setup();
+        const originalDate = MyDate.Now();
+
+        expect(MyDate.Now().equals(new MyDate(new Date()))).toBeTruthy();
+
+        await wait(async () => {
+            const goals = await new GoalQuery().all();
+            const tasks = await new TaskQuery().all();
+            const cycles = await new StreakCycleQuery().all();
+            const latestCycle = await new ChildStreakCycleQuery(goalId).latest();
+
+            expect(goals.length).toEqual(1);
+            expect(tasks.length).toEqual(2);
+            expect(cycles.length).toEqual(1);
+
+            if(!latestCycle) {
+                throw new Error("latest goal is not correct");
+            }
+            expect(latestCycle.id === firstCycleId).toEqual(true);
+            expect(goals[0].latestCycleId).toEqual("");
+            expect(new MyDate(latestCycle.startDate).equals(new MyDate(goals[0].currentCycleStart()))).toBeTruthy();
+            expect(new MyDate(latestCycle.endDate).equals(new MyDate(goals[0].currentCycleEnd()))).toBeTruthy();
+            expect(new MyDate(latestCycle.startDate).equals(new MyDate(goals[0].startDate))).toBeTruthy();
+
+            await asyncTestWithTag("zero week test", validateLatestTasks, goalId);
+            await asyncTestWithTag("zero week test", validateCurrentCycle, goalId, 0, "weeks", originalDate);
+        })
+
+        MyDate.TEST_ONLY_NowAdd(1, "weeks");
+        await new GoalLogic(goalId).generateNextStreakTasks();
+        await wait(async () => {
+            const goals = await new GoalQuery().all();
+            const tasks = await new TaskQuery().all();
+            const cycles = await new StreakCycleQuery().all();
+
+            expect(goals.length).toEqual(1);
+            expect(cycles.length).toEqual(2);
+            expect(tasks.length).toEqual(2 * 2);
+
+            await asyncTestWithTag("first week test", validateLatestCycle, goalId, firstCycleId);
+            await asyncTestWithTag("first week test", validateLatestTasks, goalId);
+            await asyncTestWithTag("first week test", validateCurrentCycle, goalId, 1, "weeks", originalDate);
+        })
+
+
+        MyDate.TEST_ONLY_NowAdd(1, "weeks");
+        await new GoalLogic(goalId).generateNextStreakTasks();
+        await wait(async () => {
+            const goals = await new GoalQuery().all();
+            const tasks = await new TaskQuery().all();
+            const cycles = await new StreakCycleQuery().all();
+            expect(goals.length).toEqual(1);
+            expect(tasks.length).toEqual(2 * 3);
+            expect(cycles.length).toEqual(3);
+
+            await asyncTestWithTag("second week test", validateLatestCycle, goalId, firstCycleId);
+            await asyncTestWithTag("second week test", validateLatestTasks, goalId);
+            await asyncTestWithTag("second week test", validateCurrentCycle, goalId, 2, "weeks", originalDate);
+        })
+
+        MyDate.TEST_ONLY_NowAdd(1, "weeks");
+        await new GoalLogic(goalId).generateNextStreakTasks();
+        await wait(async () => {
+            const goals = await new GoalQuery().all();
+            const tasks = await new TaskQuery().all();
+            const cycles = await new StreakCycleQuery().all();
+            expect(goals.length).toEqual(1);
+            expect(tasks.length).toEqual(2 * 4);
+            expect(cycles.length).toEqual(4);
+
+            await asyncTestWithTag("third week test", validateLatestCycle, goalId, firstCycleId);
+            await asyncTestWithTag("third week test", validateLatestTasks, goalId);
+            await asyncTestWithTag("third week test", validateCurrentCycle, goalId, 3, "weeks", originalDate);
+        })
+
+
+        async function setup() {
+            const opts = {
+                goalId: "",
+                firstCycleId: "",
+            }
+
+            await DB.get().action(async () => {
+                const goal = (await createGoals({
+                    title: "Parent",
+                    active: true,
+                    goalType: GoalType.STREAK,
+                    startDate: MyDate.Now().asStartDate().toDate(),
+                    dueDate: MyDate.Now().add(7, "weeks").asDueDate().toDate(),
+                    streakType: "weekly",
+                    lastRefreshed: MyDate.Now().toDate(),
+                    latestCycleId: "",
+                }, 1))[0];
+
+
+                const cycle = (await createStreakCycles({
+                    parentGoalId: goal.id,
+                    startDate: goal.currentCycleStart(),
+                    endDate: goal.currentCycleEnd(),
+                }, 1))[0];
+
+                const start = {
+
+                }
+                const tasks = (await createTasks({
+                    active: true,
+                    parentId: cycle.id,
+                    startDate: new MyDate(cycle.startDate).asStartDate().toDate(),
+                    dueDate: new MyDate(cycle.startDate).asDueDate().toDate()
+                }, 2));
+
+                opts.goalId = goal.id;
+                opts.firstCycleId = cycle.id;
+            })
+
+
+            return opts;
+        }
+    }, 20000)
+
+    async function validateLatestCycle(goalId: string, firstCycleId: string) {
+        const goal = await new GoalQuery().get(goalId);
+        if(!goal) {
+            throw new Error("goal not found");
+        }
+
+        const latestCycle = await new ChildStreakCycleQuery(goalId).latest();
+        if(!latestCycle) {
+            throw new Error("latest goal is not correct");
+        }
+
+        const currentCycleStart = new MyDate(goal.currentCycleStart());
+        expect(latestCycle.id).not.toEqual(firstCycleId);
+        expect(latestCycle.id).toEqual(goal.latestCycleId);
+        expect(latestCycle.parentGoalId).toEqual(goal.id);
+        new MyDate(latestCycle.startDate).assertEquals(currentCycleStart, "latest cycle starts on correct day");
+        expect(new MyDate(latestCycle.startDate).equals(currentCycleStart)).toBeTruthy();
+        new MyDate(latestCycle.endDate).assertEquals(new MyDate(goal.currentCycleEnd()), "latest cycle ends on correct day");
+        expect(new MyDate(latestCycle.endDate).equals(new MyDate(goal.currentCycleEnd()))).toBeTruthy();
+        expect(new MyDate(latestCycle.startDate).equals(MyDate.Now().asStartDate())).toBeTruthy();
+    }
+
+    async function validateLatestTasks(goalId: string) {
+        const goal = await new GoalQuery().get(goalId);
+        if(!goal) {
+            throw new Error("goal not found");
+        }
+
+        const latestCycle = await new ChildStreakCycleQuery(goalId).latest();
+        if(!latestCycle) {
+            throw new Error("latest goal is not correct");
+        }
+
+        const currentCycleStart = new MyDate(goal.currentCycleStart());
+        const latestTasks = (await new ChildTaskQuery(latestCycle.id).all());
+        expect(latestTasks.length).toEqual(2);
+        expect( latestTasks[0].startDate).toEqual(latestCycle.startDate);
+        expect( latestTasks[0].startDate).toEqual(currentCycleStart.toDate());
+        expect( new MyDate(latestTasks[0].startDate).equals(currentCycleStart) ).toBeTruthy();
+    }
+
+    async function validateCurrentCycle(goalId: string, diff: number, timeUnit: "days" | "weeks" | "months", originalDate: MyDate) {
+        const goal = await new GoalQuery().get(goalId);
+        if(!goal) {
+            throw new Error("goal not found");
+        }
+        const currentCycleStart = new MyDate(goal.currentCycleStart());
+        const currentCycleEnd = new MyDate(goal.currentCycleEnd());
+        expect( currentCycleStart.equals(originalDate.clone().add(diff, timeUnit).asStartDate())).toBeTruthy();
+        currentCycleEnd.assertEquals(originalDate.clone().subtract(1, "days").add(diff + 1, timeUnit).asDueDate(), "current cycle end is correct")
+    }
 })

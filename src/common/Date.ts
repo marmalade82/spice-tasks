@@ -57,6 +57,14 @@ export default class MyDate {
         return new MyDate(this.toDate());
     }
 
+    assertEquals = (other: MyDate, tag: string) => {
+        if (Math.abs(this.diff(other.toDate(), "minutes")) <= 1) {
+            return true;
+        } else {
+            throw new Error("Unequal " + tag + "~\nthis: " + this.toDate().toString() + "\nexpected: " + other.toDate().toString())
+        }
+    }
+
     equals = (other: MyDate) => {
         return Math.abs(this.diff(other.toDate(), "minutes")) <= 1
     }
