@@ -14,7 +14,7 @@
     "lint": "tslint --project tsconfig.json",
     "compile": "tsc",
     "devtools": "react-devtools",
-    "release-install": "react-native run-android --variant=release"
+    "release-install": "react-native run-android --variant=release",
   },
   "jest": {
     "preset": "@testing-library/react-native",

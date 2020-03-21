@@ -262,7 +262,7 @@ export class GoalLogic {
         }
     }
 
-    isStreak = async () => {
+    private isStreak = async () => {
         const goal: IGoal | null = await new GoalQuery().get(this.id);
         if(goal) {
             return goal.goalType === GoalType.STREAK;
@@ -275,7 +275,7 @@ export class GoalLogic {
      * We meet the minimum if the sum of completable goals and already-completed goals
      * is gte the actual minimum of the goal.
      */
-    metMinimum = async () => {
+    private metMinimum = async () => {
         const goal: IGoal | null = await new GoalQuery().get(this.id);
         const activeTasks: number = await new ActiveTaskQuery().queryHasParent(this.id).fetchCount();
         const completedTasks: number = await new ChildTaskQuery(this.id).queryCompleted().fetchCount();
@@ -311,10 +311,11 @@ export class GoalLogic {
                 const afterCycles = await new ChildStreakCycleQuery(goal.id).endsAfter(initialLatestCycle.endDate)
                 const latestCycleTasks: Task[] = await new TaskQuery().inStreakCycle(initialLatestCycle.id);
                 const latestCycleEndDate: Date = initialLatestCycle.endDate;
+                const latestCycleStartDate: Date = initialLatestCycle.startDate;
 
                 //Generate all missing cycles.
                 const { latestCycleId, newTx } = 
-                        await this._generateNextStreakTasks(latestCycleTasks, goal.id, latestCycleEndDate, unit, 
+                        await this._generateNextStreakTasks(latestCycleTasks, goal.id, latestCycleStartDate, unit, 
                                 afterCycles, goal.currentCycleStart());
 
                 tx.consume(newTx);
@@ -339,7 +340,7 @@ export class GoalLogic {
         }
     }
 
-    _generateNextStreakTasks = async (latestTasks: Task[], goalId: string, 
+    private _generateNextStreakTasks = async (latestTasks: Task[], goalId: string, 
                                 latestCycleStart: Date,
                                 unit: "days" | "weeks" | "months",
                                 afterCycles: StreakCycle[],
@@ -360,8 +361,8 @@ export class GoalLogic {
                 startDate: cycle.start,
                 endDate: cycle.end,
             })
-            latestTasks.forEach((task) => {
-                const clone = TaskLogic.cloneRelativeTo(latestCycleStart, cycle.start, task);
+            latestTasks.forEach((latestTask) => {
+                const clone = TaskLogic.cloneRelativeTo(latestCycleStart, cycle.start, latestTask);
                 clone.parentId = newCycle.id;
                 tx.addCreate(new TaskQuery(), clone);
             });
@@ -372,7 +373,7 @@ export class GoalLogic {
         // Determine whether the latest cycle is one of the already existing cycles, or one
         // of the newly created cycles.
         const sortedDescended = afterCycles.sort((a, b) => {
-            return a.startDate.valueOf() - b.startDate.valueOf();
+            return b.startDate.valueOf() - a.startDate.valueOf();
         })
         latestCycleId = sortedDescended[0] && sortedDescended[0].startDate > start ? sortedDescended[0].id : latestCycleId;
 
@@ -529,14 +530,20 @@ export class GoalLogic {
     }
 
     complete = async () => {
-        const tx = await ActiveTransaction.new();
-        tx.consume(await this.completeGoalAndDescendants({
-            id: this.id
-        }));
+        if( await this.isStreak() && (! (await this.metMinimum()))) {
+              return "Goal cannot be completed. Streak minimum has not been met yet.";
+        } else {
+            const tx = await ActiveTransaction.new();
+            tx.consume(await this.completeGoalAndDescendants({
+                id: this.id
+            }));
 
-        tx.consume(await this.earnReward())
+            tx.consume(await this.earnReward())
+            await tx.commitAndReset();
 
-        await tx.commitAndReset();
+            return undefined;
+        }
+
     }
 
     private earnReward = async () => {

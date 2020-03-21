@@ -2,6 +2,7 @@
 import moment from "moment";
 import { Moment } from "moment";
 import { TouchableHighlightBase } from "react-native";
+import { dueDate } from "src/Components/Forms/common/utils";
 
 
 type timeUnit = "seconds" | "minutes" | "hours" | "days" | "weeks" | "months";
@@ -13,21 +14,47 @@ export default class MyDate {
     }
 
     static Zero = () => {
-        return new MyDate(new Date(0))
+        return new MyDate(new Date())
     }
 
-    private static NowMoment = new MyDate(new Date());
+    private static NowMoment = new MyDate(new Date(Date.now()));
 
     static TEST_ONLY_SetNow = (date: MyDate) => {
         MyDate.NowMoment = new MyDate(date.toDate());
+    }
+
+    static TEST_ONLY_NowAdd = (n: number, timeUnit: timeUnit) => {
+        MyDate.NowMoment = MyDate.Now().add(n, timeUnit);
+    }
+
+    static TEST_ONLY_NowSubtract = (n: number, timeUnit: timeUnit) => {
+        MyDate.NowMoment = MyDate.Now().subtract(n, timeUnit);
     }
 
     static Now = () => {
         return new MyDate(MyDate.NowMoment.toDate());
     }
 
+    asStartDate = () => {
+        this.prevMidnight();
+        return this;
+    }
+
+    asDueDate = () => {
+        this.nextMidnight().subtract(1, "minutes");
+        return this;
+    }
+
     timeToNow = () => {
         return this.m.to(MyDate.NowMoment.toDate());
+    }
+
+    clone = () => {
+        return new MyDate(this.toDate());
+    }
+
+    equals = (other: MyDate) => {
+        return Math.abs(this.diff(other.toDate(), "minutes")) <= 1
     }
 
     timeFromNow = () => {
@@ -149,7 +176,7 @@ export default class MyDate {
         return this;
     }
 
-    diff =  (d: Date, timeUnit) => {
+    diff =  (d: Date, timeUnit: timeUnit) => {
         return this.m.diff(d, timeUnit);
     }
 

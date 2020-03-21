@@ -156,15 +156,16 @@ export default class GoalScreen extends React.Component<Props, State> {
 
     onCompleteGoal = async () => {
         const id = this.navigation.getParam("id", "");
-        const logic = new GoalLogic(id);
-        debugger;
-        if( await logic.isStreak() && (! (await logic.metMinimum()))) {
+        const message = await new GoalLogic(id).complete();
+
+        if(message !== undefined) {
             this.setState({
                 toastVisible: true,
-                toastMessage: "Goal cannot be completed. Streak minimum has not been met yet.",
+                toastMessage: message,
             })
         } else {
-            void new GoalLogic(id).complete();
+            // completing was a success, so do nothing
+            message
         }
     }
 

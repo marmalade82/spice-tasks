@@ -339,14 +339,17 @@ export class TaskLogic {
         tx.commitAndReset();
     }
 
-    static cloneRelativeTo = (oldDate, newDate: Date, task: Task) => {
+    static cloneRelativeTo = (oldDate: Date, newDate: Date, task: Task) => {
+        const diff = new MyDate(task.startDate).diff(oldDate, "minutes");
+        console.log("difference is " + diff + " between " + task.startDate + " and " + oldDate);
+        const newStart = new MyDate(newDate).add( new MyDate(task.startDate).diff(oldDate, "minutes"), "minutes") 
         const newTask : Omit<ITask, "createdAt" | "completedDate"> = {
             title: task.title,
             parentId: task.parentId,
             instructions: task.instructions,
             active: true,
             state: 'open',
-            startDate: new MyDate(newDate).add( new MyDate(task.startDate).diff(oldDate, "minutes"), "minutes").toDate(),
+            startDate: newStart.toDate(),
             dueDate: new MyDate(newDate).add( new MyDate(task.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
             parentType: task.parentType,
         }
