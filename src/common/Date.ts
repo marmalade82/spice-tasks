@@ -17,7 +17,7 @@ export default class MyDate {
         return new MyDate(new Date())
     }
 
-    private static NowMoment = new MyDate(new Date(Date.now()));
+    private static NowMoment: undefined | MyDate = undefined;
 
     static TEST_ONLY_SetNow = (date: MyDate) => {
         MyDate.NowMoment = new MyDate(date.toDate());
@@ -32,7 +32,11 @@ export default class MyDate {
     }
 
     static Now = () => {
-        return new MyDate(MyDate.NowMoment.toDate());
+        if(MyDate.NowMoment === undefined) {
+            return new MyDate(new Date(Date.now()));
+        } else {
+            return new MyDate(MyDate.NowMoment.toDate());
+        }
     }
 
     asStartDate = () => {
@@ -46,7 +50,7 @@ export default class MyDate {
     }
 
     timeToNow = () => {
-        return this.m.to(MyDate.NowMoment.toDate());
+        return this.m.to(MyDate.Now().toDate());
     }
 
     clone = () => {
@@ -58,7 +62,7 @@ export default class MyDate {
     }
 
     timeFromNow = () => {
-        return this.m.from(MyDate.NowMoment.toDate());
+        return this.m.from(MyDate.Now().toDate());
     }
 
     format = (format: string) => {
