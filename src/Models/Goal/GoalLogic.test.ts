@@ -7,7 +7,7 @@ import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cle
 import { 
     makeNavigation, destroyAll,
     createGoals, createTasks,
-    createRecurrences, createStreakCycles,
+    createRecurrences, createStreakCycles, asyncTestWithTag,
 } from "src/common/test-utils";
 import MyDate from "src/common/Date";
 
@@ -423,9 +423,13 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
                 throw new Error("latest goal is not correct");
             }
             expect(latestCycle.id === firstCycleId).toEqual(true);
+            expect(goals[0].latestCycleId).toEqual("");
             expect(new MyDate(latestCycle.startDate).equals(new MyDate(goals[0].currentCycleStart()))).toBeTruthy();
             expect(new MyDate(latestCycle.endDate).equals(new MyDate(goals[0].currentCycleEnd()))).toBeTruthy();
             expect(new MyDate(latestCycle.startDate).equals(new MyDate(goals[0].startDate))).toBeTruthy();
+
+            await asyncTestWithTag("zero day test", validateLatestTasks, goalId);
+            await asyncTestWithTag("first day test", validateCurrentCycle, goalId, 0);
         })
 
         MyDate.TEST_ONLY_NowAdd(1, "days");
@@ -441,23 +445,11 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
             expect(cycles.length).toEqual(2);
             expect(tasks.length).toEqual(2 * 2);
 
-            const latestCycle = await new ChildStreakCycleQuery(goalId).latest();
-            if(!latestCycle) {
-                throw new Error("latest goal is not correct");
-            }
-
-            const currentCycleStart = new MyDate(goals[0].currentCycleStart());
-            expect(latestCycle.id !== firstCycleId).toEqual(true);
-            expect(new MyDate(latestCycle.startDate).equals(currentCycleStart)).toBeTruthy();
-            expect(new MyDate(latestCycle.endDate).equals(new MyDate(goals[0].currentCycleEnd()))).toBeTruthy();
-            expect(new MyDate(latestCycle.startDate).equals(MyDate.Now().asStartDate())).toBeTruthy();
-
-            const latestTasks = (await new ChildTaskQuery(latestCycle.id).all());
-            expect(latestTasks.length).toEqual(2);
-            expect( latestTasks[0].startDate).toEqual(latestCycle.startDate);
-            expect( latestTasks[0].startDate).toEqual(currentCycleStart.toDate());
-            expect( new MyDate(latestTasks[0].startDate).equals(currentCycleStart) ).toBeTruthy();
+            await asyncTestWithTag("first day test", validateLatestCycle, goalId);
+            await asyncTestWithTag("first day test", validateLatestTasks, goalId);
+            await asyncTestWithTag("first day test", validateCurrentCycle, goalId, 1);
         })
+
 
         MyDate.TEST_ONLY_NowAdd(1, "days");
         await new GoalLogic(goalId).generateNextStreakTasks();
@@ -469,15 +461,9 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
             expect(tasks.length).toEqual(2 * 3);
             expect(cycles.length).toEqual(3);
 
-            const latestCycle = await new ChildStreakCycleQuery(goalId).latest();
-            if(!latestCycle) {
-                throw new Error("latest goal is not correct");
-            }
-            expect(latestCycle.id !== firstCycleId).toEqual(true);
-            expect(new MyDate(latestCycle.startDate).equals(new MyDate(goals[0].currentCycleStart()))).toBeTruthy();
-            expect(new MyDate(latestCycle.endDate).equals(new MyDate(goals[0].currentCycleEnd()))).toBeTruthy();
-            expect(new MyDate(latestCycle.startDate).equals(MyDate.Now().asStartDate())).toBeTruthy();
-            expect((await new ChildTaskQuery(latestCycle.id).all()).length).toEqual(2);
+            await asyncTestWithTag("second day test", validateLatestCycle, goalId);
+            await asyncTestWithTag("second day test", validateLatestTasks, goalId);
+            await asyncTestWithTag("second day test", validateCurrentCycle, goalId, 2);
         })
 
         MyDate.TEST_ONLY_NowAdd(1, "days");
@@ -490,22 +476,58 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
             expect(tasks.length).toEqual(2 * 4);
             expect(cycles.length).toEqual(4);
 
+            await asyncTestWithTag("third day test", validateLatestCycle, goalId);
+            await asyncTestWithTag("third day test", validateLatestTasks, goalId);
+            await asyncTestWithTag("third day test", validateCurrentCycle, goalId, 3);
+        })
+
+        async function validateLatestCycle(goalId: string) {
+            const goal = await new GoalQuery().get(goalId);
+            if(!goal) {
+                throw new Error("goal not found");
+            }
+
             const latestCycle = await new ChildStreakCycleQuery(goalId).latest();
             if(!latestCycle) {
                 throw new Error("latest goal is not correct");
             }
-            const currentCycleStart = new MyDate(goals[0].currentCycleStart());
 
-            expect(latestCycle.id !== firstCycleId).toEqual(true);
+            const currentCycleStart = new MyDate(goal.currentCycleStart());
+            expect(latestCycle.id).not.toEqual(firstCycleId);
+            expect(latestCycle.id).toEqual(goal.latestCycleId);
+            expect(latestCycle.parentGoalId).toEqual(goal.id);
             expect(new MyDate(latestCycle.startDate).equals(currentCycleStart)).toBeTruthy();
-            expect(new MyDate(latestCycle.endDate).equals(new MyDate(goals[0].currentCycleEnd()))).toBeTruthy();
+            expect(new MyDate(latestCycle.endDate).equals(new MyDate(goal.currentCycleEnd()))).toBeTruthy();
             expect(new MyDate(latestCycle.startDate).equals(MyDate.Now().asStartDate())).toBeTruthy();
+        }
+
+        async function validateLatestTasks(goalId: string) {
+            const goal = await new GoalQuery().get(goalId);
+            if(!goal) {
+                throw new Error("goal not found");
+            }
+
+            const latestCycle = await new ChildStreakCycleQuery(goalId).latest();
+            if(!latestCycle) {
+                throw new Error("latest goal is not correct");
+            }
+
+            const currentCycleStart = new MyDate(goal.currentCycleStart());
             const latestTasks = (await new ChildTaskQuery(latestCycle.id).all());
             expect(latestTasks.length).toEqual(2);
-            expect( currentCycleStart.equals(originalDate.clone().add(3, "days").asStartDate())).toBeTruthy();
+            expect( latestTasks[0].startDate).toEqual(latestCycle.startDate);
             expect( latestTasks[0].startDate).toEqual(currentCycleStart.toDate());
             expect( new MyDate(latestTasks[0].startDate).equals(currentCycleStart) ).toBeTruthy();
-        })
+        }
+
+        async function validateCurrentCycle(goalId: string, daysDiff: number) {
+            const goal = await new GoalQuery().get(goalId);
+            if(!goal) {
+                throw new Error("goal not found");
+            }
+            const currentCycleStart = new MyDate(goal.currentCycleStart());
+            expect( currentCycleStart.equals(originalDate.clone().add(daysDiff, "days").asStartDate())).toBeTruthy();
+        }
 
         async function setup() {
             const opts = {

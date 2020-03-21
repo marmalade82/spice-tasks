@@ -19,6 +19,7 @@ import GlobalQuery from "src/Models/Global/GlobalQuery";
 import EarnedPenalty, { IEarnedPenalty } from "src/Models/Penalty/EarnedPenalty";
 import { StreakCycle, IStreakCycle } from "src/Models/Group/StreakCycle";
 import { GroupSchema } from "src/Models/Group/GroupSchema";
+import { exportDefaultDeclaration } from "@babel/types";
 var chance = require("chance");
 var Chance = new chance();
 
@@ -157,4 +158,13 @@ export function waitForAsyncLifecycleMethods(time?: number) {
             resolve();
         }, time ? time : 1000);
     })
+}
+
+export async function asyncTestWithTag(tag: string, expectation: any, ...args: any[]) {
+    try {
+        await expectation(...args);
+    } catch (e) {
+        e.message = tag + "\n" + e.message
+        throw e;
+    }
 }
