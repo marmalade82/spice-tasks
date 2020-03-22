@@ -315,6 +315,7 @@ export class TaskLogic {
                 }
             }
 
+
             tx.addCreate(new TaskQuery(), d);
         } else {
             //If the parent is a task instead, we inherit start and due dates from the parent. ALWAYS.

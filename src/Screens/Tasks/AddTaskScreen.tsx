@@ -153,21 +153,18 @@ export default class AddTaskScreen extends React.Component<Props, State> {
         } else {
             // Parent id only changes if task does not already exist
             const parentId = this.state.task ? this.state.task.parent.id : this.navigation.getParam('parent_id', '');
-            const parentType: TaskParentTypes | string = this.state.task ? 
-                                this.state.task.parent.type : 
-                                this.navigation.getParam('parent_type', TaskParentTypes.TASK);
+            const parentType: TaskParentTypes = this.state.task ? this.state.task.parent.type : 
+                                this.navigation.getParam('parent_type', TaskParentTypes.NONE);
 
-            if(parentType !== TaskParentTypes.GOAL && parentType !== TaskParentTypes.TASK) {
-                throw new Error("Invalid parent type for a task");
-            } 
-            
             const data = this.state.data;
             const taskData = {
                 title: data.name,
                 startDate: data.start_date,
                 instructions: data.description,
-                parentId: parentId,
-                parentType: parentType,
+                parent: {
+                    id: parentId,
+                    type: parentType,
+                }
             };
 
             if(this.state.task) {
