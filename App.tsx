@@ -13,8 +13,6 @@ import {
 } from 'src/Components/Styled/Styles';
 import { IconButton, Icon, ScreenHeader } from 'src/Components/Styled/Styled';
 import ActiveTransaction from 'src/Models/common/Transaction';
-import { countOfThings } from 'src/Screens/Prototypes/TestScreen';
-import { ScreenParams } from 'src/common/Navigator';
 import { ScreenDirectory } from "src/common/NavigatorScreens";
 
 

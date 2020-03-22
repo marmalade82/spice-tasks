@@ -1,8 +1,5 @@
 
-import { render } from '@testing-library/react-native';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from "react-navigation-stack";
-import React from "react";
+jest.mock("src/Notification");
 
 jest
   .mock('react-native/Libraries/Animated/src/NativeAnimatedHelper')
@@ -55,6 +52,12 @@ jest
     };
   });
 
+import { render } from '@testing-library/react-native';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from "react-navigation-stack";
+import React from "react";
+import { ScreenDirectory } from './NavigatorScreens';
+
 export function renderWithNavigation( initialRouteName: string, screens: object, navigatorConfig = {} ) {
     const AppNavigator = createStackNavigator(
       {
@@ -69,4 +72,7 @@ export function renderWithNavigation( initialRouteName: string, screens: object,
     return { ...render(<App />), navigationContainer: App };
 }
 
-test("Fake test", () => {} );
+test("Fake test", () => {
+  renderWithNavigation("AppStart", ScreenDirectory);
+
+} );
