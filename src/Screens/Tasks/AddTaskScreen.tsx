@@ -14,6 +14,7 @@ import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
 import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
 import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
+import { GoalType } from "src/Models/Goal/GoalLogic";
 
 interface Props {
     navigation: object;
@@ -101,9 +102,15 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             case TaskParentTypes.GOAL: {
                 const parent = await new GoalQuery().get(parentId);
                 if(parent) {
-                    this.setState({
-                        dateRange: [ parent.startDate, parent.dueDate]
-                    })
+                    if(parent.goalType === GoalType.NORMAL) {
+                        this.setState({
+                            dateRange: [ parent.startDate, parent.dueDate]
+                        })
+                    } else {
+                        this.setState({
+                            dateRange: [ parent.currentCycleStart(), parent.currentCycleEnd() ]
+                        });
+                    }
 
                     if(!task) {
                         data.start_date = parent.startDate;
