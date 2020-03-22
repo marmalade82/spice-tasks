@@ -24,7 +24,6 @@ interface Props {
     data: State | false
     onDataChange: (d: State) => void;
     style: StyleProp<ViewStyle>;
-    hasParent? : boolean;
     dateRange?: [Date, Date]
 }
 
@@ -156,7 +155,7 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                         onInvalidDataChange={this.onChangeStart}
                         accessibilityLabel={"task-start-date"}
                         revalidate={this.startDateRefresh}
-                        readonly={this.props.hasParent}
+                        readonly={this.inherited()}
                     ></this.StartDateInput>
 
                     <FootSpacer></FootSpacer>
@@ -165,9 +164,21 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
         );
     }
 
+    private inherited = () => {
+        if(this.props.dateRange) {
+            const start = new MyDate(this.props.dateRange[0]);
+            const end = new MyDate(this.props.dateRange[1]);
+            if(start.sameDayAs(end)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private title = () => {
         return (
-            `Date${this.props.hasParent ? " (From Parent)" : this.dateRange()}`
+            `Date${this.inherited() ? " (Inherited)" : this.dateRange()}`
         )
     }
 

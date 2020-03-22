@@ -13,6 +13,7 @@ import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
 import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
+import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
 
 interface Props {
     navigation: object;
@@ -61,47 +62,70 @@ export default class AddTaskScreen extends React.Component<Props, State> {
     componentDidMount = async () => {
         const id = this.navigation.getParam('id', '');
         const task = await new TaskQuery().get(id); 
+        let data = AddTaskDefault();
         if(task) {
-            let data: AddTaskData = {
+            data = {
                 name: task.title,
                 start_date: task.startDate,
                 description: task.instructions,
             }
-            let parentGoal = await new GoalQuery().get(task.parent.id);
+        } 
 
-            if(parentGoal) {
-                this.setState({
-                    dateRange: [ parentGoal.startDate, parentGoal.dueDate]
-                })
-            } 
-            this.setState({
-                task: task,
-                data: data,
-            })
+        const parentType = task && task.parent ? task.parent.type : this.navigation.getParam('parent_type', TaskParentTypes.NONE);
+        const parentId = task && task.parent ? task.parent.id : this.navigation.getParam('parent_id', '');
+        switch(parentType) {
+            case TaskParentTypes.TASK: {
+                const parent = await new TaskQuery().get(parentId);
+                if(parent) {
+                    this.setState({
+                        dateRange: [ parent.startDate, parent.dueDate ]
+                    })
 
-        } else {
-            const parentId = this.navigation.getParam('parent_id', '');
-            let parentGoal = await new GoalQuery().get(parentId);
-            const data = AddTaskDefault();
-            if(parentGoal) {
-                data.start_date = parentGoal.startDate;
-                this.setState({
-                    dateRange: parentGoal ? [parentGoal.startDate, parentGoal.dueDate] : undefined,
-                })
-            } else {
-                let parentTask = await new TaskQuery().get(parentId);
-                if(parentTask) {
-                    data.start_date = parentTask.startDate;
+                    if(!task) {
+                        data.start_date = parent.startDate;
+                    }
                 }
-            }
+            } break;
+            case TaskParentTypes.CYCLE: {
+                const parent = await new StreakCycleQuery().get(parentId);
+                if(parent) {
+                    this.setState({
+                        dateRange: [ parent.startDate, parent.endDate ]
+                    })
 
-            this.setState({
-                data: data,
-                task: undefined,
-            })
+                    if(!task) {
+                        data.start_date = parent.startDate;
+                    }
+                }
+            } break;
+            case TaskParentTypes.GOAL: {
+                const parent = await new GoalQuery().get(parentId);
+                if(parent) {
+                    this.setState({
+                        dateRange: [ parent.startDate, parent.dueDate]
+                    })
+
+                    if(!task) {
+                        data.start_date = parent.startDate;
+                    }
+                }
+            } break;
+            case TaskParentTypes.NONE: {
+                // Do nothing
+            } break;
+            default: {
+                // Do nothing
+            }
         }
 
+        this.setState({
+            task: task ? task : undefined,
+            data: data,
+        })
+
+
         dispatcher.addEventListener(getKey(this.navigation), this.onSave);
+
     }
 
     componentWillUnmount = () => {
@@ -181,22 +205,10 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                         });
                     }}
                     style={{}}
-                    hasParent = { this.hasParent() }
                     dateRange={this.state.dateRange}
                     ref={this.taskFormRef}
                 ></AddTaskForm>
         );
-    }
-
-    private hasParent = () => {
-        if(this.state.dateRange) {
-            return false;
-        } else if(this.state.task && this.state.task.parent.id !== "") {
-            return true;
-        } else if (this.navigation.getParam("parent_id", "") !== "") {
-            return true;
-        }
-        return false;
     }
 }
 

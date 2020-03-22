@@ -83,6 +83,10 @@ export default class MyDate {
         return this;
     }
 
+    sameDayAs = (other: MyDate) => {
+        return this.clone().prevMidnight().equals(other.clone().prevMidnight());
+    }
+
     add = (n: number, val: timeUnit): this => {
         this.m = this.m.add(n, val);
 
