@@ -67,7 +67,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                 start_date: task.startDate,
                 description: task.instructions,
             }
-            let parentGoal = await new GoalQuery().get(task.parentId);
+            let parentGoal = await new GoalQuery().get(task.parent.id);
 
             if(parentGoal) {
                 this.setState({
@@ -121,9 +121,9 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             });
         } else {
             // Parent id only changes if task does not already exist
-            const parentId = this.state.task ? this.state.task.parentId : this.navigation.getParam('parent_id', '');
+            const parentId = this.state.task ? this.state.task.parent.id : this.navigation.getParam('parent_id', '');
             const parentType: TaskParentTypes | string = this.state.task ? 
-                                this.state.task.parentType : 
+                                this.state.task.parent.type : 
                                 this.navigation.getParam('parent_type', TaskParentTypes.TASK);
 
             if(parentType !== TaskParentTypes.GOAL && parentType !== TaskParentTypes.TASK) {
@@ -191,7 +191,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
     private hasParent = () => {
         if(this.state.dateRange) {
             return false;
-        } else if(this.state.task && this.state.task.parentId !== "") {
+        } else if(this.state.task && this.state.task.parent.id !== "") {
             return true;
         } else if (this.navigation.getParam("parent_id", "") !== "") {
             return true;

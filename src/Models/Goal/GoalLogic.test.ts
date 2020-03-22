@@ -17,6 +17,8 @@ import TaskQuery, { ActiveTaskQuery, ChildTaskQuery } from "../Task/TaskQuery";
 import { dueDate, startDate } from "src/Components/Forms/common/utils";
 import StreakCycle from "../Group/StreakCycle";
 import StreakCycleQuery, { ChildStreakCycleQuery } from "../Group/StreakCycleQuery";
+import { GoalParentTypes } from "./Goal";
+import { TaskParentTypes } from "../Task/Task";
 
 
 describe("streak tasks recur despite being very far in past" , () => {
@@ -77,21 +79,30 @@ describe("streak tasks recur despite being very far in past" , () => {
                     title: "middle", 
                     active: false,
                     startDate: MyDate.Now().subtract(6, "days").toDate(),
-                    parentId: opts.goalId,
+                    parent: {
+                        id: opts.goalId,
+                        type: TaskParentTypes.GOAL,
+                    }
                 }, 1)
 
                 await createTasks({
                     title: "latest", 
                     active: false,
                     startDate: MyDate.Now().subtract(4, "days").toDate(),
-                    parentId: cycle.id,
+                    parent: {
+                        id: cycle.id,
+                        type: TaskParentTypes.TASK,
+                    }
                 }, 2)
 
                 await createTasks({
                     title: "oldest", 
                     active: false,
                     startDate: MyDate.Now().subtract(7, "days").toDate(),
-                    parentId: opts.goalId,
+                    parent: {
+                        id: opts.goalId,
+                        type: TaskParentTypes.GOAL,
+                    }
                 }, 1)
             })
 
@@ -147,21 +158,30 @@ describe("streak tasks recur despite being very far in past" , () => {
                     title: "middle", 
                     active: false,
                     startDate: MyDate.Now().subtract(6, "weeks").toDate(),
-                    parentId: opts.goalId,
+                    parent: {
+                        id: opts.goalId,
+                        type: TaskParentTypes.GOAL,
+                    }
                 }, 1)
 
                 await createTasks({
                     title: "latest", 
                     active: false,
                     startDate: MyDate.Now().subtract(4, "weeks").toDate(),
-                    parentId: cycle.id,
+                    parent: {
+                        id: cycle.id,
+                        type: TaskParentTypes.CYCLE,
+                    }
                 }, 2)
 
                 await createTasks({
                     title: "oldest", 
                     active: false,
                     startDate: MyDate.Now().subtract(7, "weeks").toDate(),
-                    parentId: opts.goalId,
+                    parent: {
+                        id: opts.goalId,
+                        type: TaskParentTypes.GOAL,
+                    }
                 }, 1)
             })
 
@@ -217,21 +237,30 @@ describe("streak tasks recur despite being very far in past" , () => {
                     title: "middle", 
                     active: false,
                     startDate: MyDate.Now().subtract(6, "months").toDate(),
-                    parentId: opts.goalId,
+                    parent: {
+                        id: opts.goalId,
+                        type: TaskParentTypes.GOAL,
+                    }
                 }, 1)
 
                 await createTasks({
                     title: "latest", 
                     active: false,
                     startDate: MyDate.Now().subtract(4, "months").toDate(),
-                    parentId: cycle.id,
+                    parent: {
+                        id: cycle.id,
+                        type: TaskParentTypes.CYCLE,
+                    }
                 }, 2)
 
                 await createTasks({
                     title: "oldest", 
                     active: false,
                     startDate: MyDate.Now().subtract(7, "months").toDate(),
-                    parentId: opts.goalId,
+                    parent: {
+                        id: opts.goalId,
+                        type: TaskParentTypes.GOAL,
+                    }
                 }, 1)
             })
 
@@ -386,7 +415,10 @@ describe("streak tasks have proper values", () => {
                     title: "latest", 
                     active: false,
                     startDate: MyDate.Now().subtract(1, "days").toDate(),
-                    parentId: cycle.id,
+                    parent: {
+                        id: cycle.id,
+                        type: TaskParentTypes.CYCLE,
+                    }
                 }, 1)
             });
 
@@ -509,7 +541,10 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
 
                 const tasks = (await createTasks({
                     active: true,
-                    parentId: cycle.id,
+                    parent: {
+                        id: cycle.id,
+                        type: TaskParentTypes.CYCLE,
+                    },
                     startDate: cycle.startDate,
                     dueDate: cycle.endDate,
                 }, 2));
@@ -631,7 +666,10 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
                 }
                 const tasks = (await createTasks({
                     active: true,
-                    parentId: cycle.id,
+                    parent: {
+                        id: cycle.id,
+                        type: TaskParentTypes.CYCLE,
+                    },
                     startDate: new MyDate(cycle.startDate).asStartDate().toDate(),
                     dueDate: new MyDate(cycle.startDate).asDueDate().toDate()
                 }, 2));
@@ -752,7 +790,10 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
                 }
                 const tasks = (await createTasks({
                     active: true,
-                    parentId: cycle.id,
+                    parent: {
+                        id: cycle.id,
+                        type: TaskParentTypes.CYCLE,
+                    },
                     startDate: new MyDate(cycle.startDate).asStartDate().toDate(),
                     dueDate: new MyDate(cycle.startDate).asDueDate().toDate()
                 }, 2));

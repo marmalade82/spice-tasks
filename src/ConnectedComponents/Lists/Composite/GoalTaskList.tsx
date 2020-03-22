@@ -61,7 +61,7 @@ const AdaptedGoalTaskList: React.FunctionComponent<Props> = function(props: Prop
         // We want to show all models with no parents, and all children whose parents aren't in the list.
         const segregated: Segregated = (props.goals as (Goal | Task)[]).concat(props.tasks).reduce(segregate, { roots: [], rootsMap: {}, children: [], childrenMap: {}});
         const validChildren = segregated.children.filter((child: Goal | Task) => {
-            return segregated.rootsMap[child.parentId] === undefined && segregated.childrenMap[child.parentId] === undefined;
+            return segregated.rootsMap[child.parent.id] === undefined && segregated.childrenMap[child.parent.id] === undefined;
         });
         const models: (Goal | Task)[] = [...segregated.roots, ...validChildren];
 
@@ -76,7 +76,7 @@ const AdaptedGoalTaskList: React.FunctionComponent<Props> = function(props: Prop
         return items;
 
         function segregate(acc: Segregated, el: Goal | Task) {
-            if(el.parentId) {
+            if(el.parent.id) {
                 // then it was a child
                 const newVal = {
                     roots: acc.roots,

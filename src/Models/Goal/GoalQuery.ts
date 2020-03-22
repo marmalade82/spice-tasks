@@ -1,8 +1,8 @@
 import DB from "src/Models/Database";
-import { Goal, IGoal} from "src/Models/Goal/Goal";
+import { Goal, IGoal, GoalParentTypes} from "src/Models/Goal/Goal";
 import GoalSchema from "src/Models/Goal/GoalSchema";
 import TaskSchema from "src/Models/Task/TaskSchema";
-import { Task, ITask } from "src/Models/Task/Task";
+import { Task, ITask, TaskParentTypes } from "src/Models/Task/Task";
 import ModelQuery from "src/Models/base/Query";
 import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils";
 import { Q, Database, Model } from "@nozbe/watermelondb";
@@ -21,10 +21,16 @@ import RecurQuery, { RecurLogic, Recur } from "../Recurrence/RecurQuery";
 import StreakCycleQuery, { ChildStreakCycleQuery } from "../Group/StreakCycleQuery";
 import StreakCycle from "../Group/StreakCycle";
 import { Condition } from "@nozbe/watermelondb/QueryDescription";
+import { assignAll } from "src/common/types";
 
 export class GoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
         super(GoalSchema.table);
+    }
+
+    assign = (target: Goal, source: IGoal) => {
+        return assignAll(['parent'], target, source) as Goal;
+        target.parent = source.parent;
     }
 
     queries = () => {
@@ -42,7 +48,6 @@ export class GoalQuery extends ModelQuery<Goal, IGoal>{
             streakDailyStart: MyDate.Now().toDate(),
             streakWeeklyStart: 'sunday',
             streakMonthlyStart: 1,
-            parentId: "",
             active: true,
             state: "open",
             rewardType: RewardTypes.NONE,
@@ -53,6 +58,10 @@ export class GoalQuery extends ModelQuery<Goal, IGoal>{
             lastRefreshed: MyDate.Now().toDate(),
             rewardId: "",
             penaltyId: "",
+            parent: {
+                id: "",
+                type: GoalParentTypes.NONE,
+            }
         };
         return Default;
     }
@@ -131,6 +140,11 @@ export class ActiveGoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
         super(GoalSchema.table);
     }
+
+    assign = (target: Goal, source: IGoal) => {
+        return assignAll([], target, source) as Goal;
+    }
+
     default = () => {
         let def = new GoalQuery().default();
         def.active = true;
@@ -216,6 +230,11 @@ export class CompleteGoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
         super(GoalSchema.table);
     }
+
+    assign = (target: Goal, source: IGoal) => {
+        return assignAll([], target, source) as Goal;
+    }
+
     default = () => {
         let def = new GoalQuery().default();
         def.active = false;
@@ -363,7 +382,10 @@ export class GoalLogic {
             })
             latestTasks.forEach((latestTask) => {
                 const clone = TaskLogic.cloneRelativeTo(latestCycleStart, cycle.start, latestTask);
-                clone.parentId = newCycle.id;
+                clone.parent = {
+                    id: newCycle.id,
+                    type: TaskParentTypes.CYCLE,
+                };
                 tx.addCreate(new TaskQuery(), clone);
             });
             latestCycleId = newCycle.id;
@@ -447,7 +469,6 @@ export class GoalLogic {
             title: goal.title,
             details: goal.details,
             goalType: goal.goalType,
-            parentId: goal.parentId,
             state: 'open',
             active: true,
             rewardType: goal.rewardType,
@@ -464,6 +485,7 @@ export class GoalLogic {
             rewardId: goal.rewardId,
             penaltyType: goal.penaltyType,
             penaltyId: goal.penaltyId,
+            parent: goal.parent,
         }
         return newGoal;
     }

@@ -64,13 +64,21 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
 
     abstract default(): IModel
 
+    assign = (target: Model, source: Partial<IModel>): Model => {
+        Object.assign(target, source);
+        return target;
+    }
+
+    /**Specifies the assignment from the interface to the model itself. */
+    //abstract assign(target: Model, source: Partial<IModel>): Model;
+
     create = async (props: Exact<Partial<IModel>>) => {
         const Default = this.default();
         let id = "";
         await DB.get().action(async () => {
             let m = await this.store().create((m: Model) => {
-                Object.assign(m, Default);
-                Object.assign(m, props);
+                this.assign(m, Default);
+                this.assign(m, props);
             }) as Model;
             id = m.id;
         });
@@ -81,8 +89,8 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
     prepareCreate = (schema: Exact<Partial<IModel>>) => {
         const Default = this.default();
         return this.store().prepareCreate((m: Model) => {
-            Object.assign(m, Default);
-            Object.assign(m, schema)
+            this.assign(m, Default);
+            this.assign(m, schema)
         })
     }
 
@@ -92,8 +100,8 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
             await DB.get().batch(
                 ...models.map((model) => {
                     return this.store().prepareCreate((m: Model) => {
-                        Object.assign(m, Default);
-                        Object.assign(m, model);
+                        this.assign(m, Default);
+                        this.assign(m, model);
                     })
                 })
             )
@@ -103,14 +111,14 @@ export default abstract class ModelQuery<Model extends M & IModel, IModel> imple
     update = async (model: Model, props: Exact<Partial<IModel>>) => {
         return await DB.get().action(async () => {
             await model.update((m: Model) => {
-                Object.assign(m, props);
+                this.assign(m, props);
             });
         });
     }
 
     prepareUpdate = (model: Model, schema: Exact<Partial<IModel>>) => {
         return model.prepareUpdate((m: Model) => {
-            Object.assign(m, schema);
+            this.assign(m, schema);
         })
     }
 

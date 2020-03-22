@@ -29,12 +29,15 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
             instructions: "",
             startDate: MyDate.Now().toDate(),
             dueDate: MyDate.Now().toDate(),
-            parentId: "",
             active: true,
             state: 'open',
             completedDate: MyDate.Zero().toDate(),
             createdAt: MyDate.Now().toDate(),
-            parentType: TaskParentTypes.TASK,
+            parent: {
+                id: "",
+                type: TaskParentTypes.NONE,
+            },
+            
         };
         return def;
     }
@@ -239,7 +242,10 @@ export class ChildTaskQuery extends ModelQuery<Task, ITask> {
 
     default = () => {
         let def = new TaskQuery().default();
-        def.parentId = this.parent;
+        def.parent = {
+            id: this.parent,
+            type: TaskParentTypes.NONE,
+        }
         return def;
     }
 
@@ -275,7 +281,7 @@ export class TaskLogic {
     }
 
     static create = async (d: Partial<ITask>) => {
-        const parentId = d.parentId ? d.parentId : ""
+        const parentId = d.parent ? d.parent.id : ""
         const parentGoal = await new GoalQuery().get(parentId);
         const tx = await ActiveTransaction.new();
 
@@ -303,7 +309,10 @@ export class TaskLogic {
                 })
             } else {
                 finalCurrentCycle = currentCycle; 
-                d.parentId = finalCurrentCycle.id;  // reassign the parent field to the cycle where it belongs.
+                d.parent = { // reassign the parent field to the cycle where it belongs.
+                    id: finalCurrentCycle.id,
+                    type: TaskParentTypes.CYCLE
+                }
             }
 
             tx.addCreate(new TaskQuery(), d);
@@ -345,13 +354,12 @@ export class TaskLogic {
         const newStart = new MyDate(newDate).add( new MyDate(task.startDate).diff(oldDate, "minutes"), "minutes") 
         const newTask : Omit<ITask, "createdAt" | "completedDate"> = {
             title: task.title,
-            parentId: task.parentId,
             instructions: task.instructions,
             active: true,
             state: 'open',
             startDate: newStart.toDate(),
             dueDate: new MyDate(newDate).add( new MyDate(task.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
-            parentType: task.parentType,
+            parent: task.parent,
         }
         return newTask;
     }

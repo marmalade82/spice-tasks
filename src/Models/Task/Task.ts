@@ -3,10 +3,13 @@ import { Model } from "@nozbe/watermelondb";
 import { field, date, relation, action, readonly} from "@nozbe/watermelondb/decorators";
 import TaskSchema from "src/Models/Task/TaskSchema";
 import GoalSchema from "src/Models/Goal/GoalSchema";
+import { GoalParentTypes } from "../Goal/Goal";
+import { assignAll } from "src/common/types";
 
 export enum TaskParentTypes {
     GOAL = "goal",
     TASK = "task",
+    CYCLE = "cycle",
     NONE = "none",
 }
 
@@ -15,12 +18,18 @@ interface ITask {
     startDate: Date;
     dueDate: Date;
     instructions: string;
-    parentId: string;
-    parentType: TaskParentTypes
     active: boolean;
     state: 'open' | 'in_progress' | 'complete' | 'cancelled';
     completedDate: Date;
     createdAt: Date;
+    parent: ParentInfo;
+}
+
+// TODO FIX OBJECT ASSIGN ISSUE.
+
+interface ParentInfo {
+    readonly id: string;
+    readonly type: TaskParentTypes;
 }
 
 const name = TaskSchema.name
@@ -42,12 +51,13 @@ export default class Task extends Model implements ITask {
     @date(name.STARTS_ON) startDate!: Date
     @date(name.DUE_ON) dueDate!: Date
     @field(name.INSTRUCTIONS) instructions!: string
-    @field(name.PARENT) parentId! : string
     @field(name.ACTIVE) active! : boolean
     @field(name.STATE) state! : 'open' | 'in_progress' | 'complete' | 'cancelled';
     @date(name.COMPLETED_ON) completedDate! : Date
     @date(name.CREATED_ON) createdAt!: Date
-    @field(name.PARENT_TABLE) parentType!: TaskParentTypes;
+
+    @field(name.PARENT) private parentId! : string
+    @field(name.PARENT_TABLE) private parentType!: TaskParentTypes;
 
     /* Relations */
     @relation(GoalSchema.table, name.PARENT) parentGoal
@@ -56,9 +66,21 @@ export default class Task extends Model implements ITask {
     /* Actions */
     @action async createChild(child: ITask) {
         await this.collections.get(Task.table).create((task: Task) => {
-            Object.assign(task, child);
+            assignAll([], task, child);
             task.parentId = this.id;
         });
+    }
+
+    get parent() {
+        return {
+            id: this.parentId,
+            type: this.parentType,
+        }
+    }
+
+    set parent(info: ParentInfo) {
+        this.parentId = info.id;
+        this.parentType = info.type;
     }
 }
 

@@ -6,6 +6,7 @@ import { startDate, dueDate } from "src/Components/Forms/common/utils";
 import { Conditions } from "../common/queryUtils";
 import GoalQuery from "../Goal/GoalQuery";
 import MyDate from "src/common/Date";
+import { assignAll } from "src/common/types";
 
 
 function endsOnBeforeConditions(d: Date) {
@@ -16,6 +17,10 @@ export class StreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle> {
 
     constructor() {
         super(GroupSchema.table);
+    }
+
+    assign = (target: StreakCycle, source: Partial<IStreakCycle>) => {
+        return assignAll([], target, source) as StreakCycle;
     }
 
     default = () => {
@@ -48,6 +53,10 @@ export class ChildStreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle>
     constructor(parentId: string) {
         super(GroupSchema.table);
         this.goalId = parentId;
+    }
+
+    assign = (target: StreakCycle, source: Partial<IStreakCycle>) => {
+        return assignAll([], target, source) as StreakCycle;
     }
 
     default = () => {

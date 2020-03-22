@@ -15,6 +15,7 @@ import Notification from "src/Notification";
 import TaskQuery, { ActiveTaskQuery } from "../Task/TaskQuery";
 import GoalQuery, { Goal, GoalLogic, ActiveGoalQuery } from 'src/Models/Goal/GoalQuery';
 import RecurQuery, { RecurLogic } from "src/Models/Recurrence/RecurQuery";
+import { assignAll } from "src/common/types";
 
 const name = GlobalSchema.name
 
@@ -22,6 +23,10 @@ export default class GlobalQuery extends ModelQuery<Global, IGlobal> {
 
     constructor() {
         super(GlobalSchema.table);
+    }
+
+    assign = (target: Global, source: Partial<IGlobal>) => {
+        return assignAll([], target, source) as Global;
     }
 
     queries = () => {

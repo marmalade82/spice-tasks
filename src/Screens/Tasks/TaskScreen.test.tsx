@@ -11,6 +11,7 @@ import TaskScreen from "src/Screens/Tasks/TaskScreen";
 import { TaskQuery, Task, ITask, ActiveTaskQuery } from "src/Models/Task/TaskQuery";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
 import DB from "src/Models/Database";
+import { TaskParentTypes } from "src/Models/Task/Task";
 
 
 afterEach(cleanup);
@@ -47,7 +48,10 @@ test("User has access to the complete button and more button", async() => {
             opts.parentId = parent.id
 
             const child = (await DB.get().collections.get('tasks').create((task: Task) => {
-                task.parentId = parent.id;
+                task.parent = {
+                    id: parent.id,
+                    type: TaskParentTypes.TASK,
+                }
                 task.title= "Child";
                 task.active = true;
                 task.state = 'open';
@@ -143,7 +147,10 @@ test("User can mark a task (and its children) as Complete/Inactive in the databa
             opts.parentId = parent.id
 
             const child = (await DB.get().collections.get('tasks').create((task: Task) => {
-                task.parentId = parent.id;
+                task.parent = {
+                    id: parent.id,
+                    type: TaskParentTypes.TASK,
+                }
                 task.title= "Child";
                 task.active = true;
                 task.state = 'open';
@@ -215,7 +222,10 @@ test.skip("User can view both active and inactive tasks", async () => {
 
             for(let i = 0; i < 3; i++) {
                 (await DB.get().collections.get('tasks').create((task: Task) => {
-                    task.parentId = parent.id;
+                    task.parent = {
+                        id: parent.id,
+                        type: TaskParentTypes.TASK,
+                    }
                     task.title= "Active Child " + i.toString();
                     task.active = true;
                     task.state = 'open';
@@ -224,7 +234,10 @@ test.skip("User can view both active and inactive tasks", async () => {
 
             for(let i = 0; i < 2; i++) {
                 (await DB.get().collections.get('tasks').create((task: Task) => {
-                    task.parentId = parent.id;
+                    task.parent = {
+                        id: parent.id,
+                        type: TaskParentTypes.TASK,
+                    }
                     task.title= "Inactive Child " + i.toString();
                     task.active = false;
                     task.state = 'open';
@@ -278,7 +291,10 @@ describe("list interactions", () => {
                 }, 1))[0].id;
 
                 opts.taskId=(await createTasks({
-                    parentId: opts.parentId,
+                    parent : {
+                        id: opts.parentId,
+                        type: TaskParentTypes.TASK,
+                    },
                     active: true,
                 }, 2))[0].id
             });
@@ -320,7 +336,10 @@ describe("list interactions", () => {
                 }, 1))[0].id;
 
                 opts.taskId=(await createTasks({
-                    parentId: opts.parentId,
+                    parent : {
+                        id: opts.parentId,
+                        type: TaskParentTypes.TASK,
+                    },
                     active: true,
                 }, 2))[0].id
             });

@@ -17,6 +17,8 @@ import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 import { PenaltyTypes } from "src/Models/Penalty/PenaltyLogic";
 import { EarnedPenaltyQuery } from "src/Models/Penalty/EarnedPenaltyQuery";
+import { GoalParentTypes } from "src/Models/Goal/Goal";
+import { TaskParentTypes } from "src/Models/Task/Task";
 
 afterEach(cleanup)
 
@@ -75,7 +77,10 @@ describe("Using the complete button", () => {
 
                 opts.parentId = parent.id;
                 const child = await DB.get().collections.get("tasks").create((task: Task) => {
-                    task.parentId = parent.id;
+                    task.parent = {
+                        id: parent.id,
+                        type: TaskParentTypes.GOAL,
+                    },
                     task.active = true;
                     task.title = "Child";
                     task.state = "open"
@@ -466,14 +471,20 @@ test("User can view active and inactive tasks", async () => {
             opts.parentId = parent.id;
 
             const activeChildren = await createTasks({
-                parentId: parent.id,
+                parent: {
+                    id: parent.id,
+                    type: TaskParentTypes.GOAL,
+                },
                 active: true,
                 title: "Active Child",
                 state: "open",
             }, 3);
 
             const inactiveChildren = await createTasks({
-                parentId: parent.id,
+                parent: {
+                    id: parent.id,
+                    type: TaskParentTypes.GOAL,
+                },
                 active: false,
                 title: "Inactive Child",
                 state: "open",
@@ -546,7 +557,10 @@ describe("Using the incomplete button", () => {
 
                 opts.parentId = parent.id;
                 const child = await DB.get().collections.get("tasks").create((task: Task) => {
-                    task.parentId = parent.id;
+                    task.parent= {
+                        id: parent.id,
+                        type: TaskParentTypes.GOAL,
+                    };
                     task.active = true;
                     task.title = "Child";
                     task.state = "open"
@@ -744,7 +758,10 @@ describe("streak goal tests", () => {
                 opts.parentId = parent.id;
 
                 await createTasks({
-                    parentId : parent.id,
+                    parent: {
+                        id: parent.id,
+                        type: TaskParentTypes.GOAL,
+                    },
                     active : true,
                     title : "Child",
                     state : "open",
@@ -827,7 +844,10 @@ describe("streak goal tests", () => {
                 opts.parentId = parent.id;
 
                 await createTasks({
-                    parentId : parent.id,
+                    parent: {
+                        id: parent.id,
+                        type: TaskParentTypes.GOAL,
+                    },
                     active : true,
                     title : "Child",
                     state : "open",
@@ -882,7 +902,10 @@ describe("list interactions", () => {
                 }, 1))[0].id;
 
                 opts.taskId=(await createTasks({
-                    parentId: opts.goalId,
+                    parent: {
+                        id: opts.goalId,
+                        type: TaskParentTypes.GOAL,
+                    },
                     active: true,
                 }, 2))[0].id
             });
@@ -924,7 +947,10 @@ describe("list interactions", () => {
                 }, 1))[0].id;
 
                 opts.taskId=(await createTasks({
-                    parentId: opts.goalId,
+                    parent: {
+                        id: opts.goalId,
+                        type: TaskParentTypes.GOAL,
+                    },
                     active: true,
                 }, 2))[0].id
             });

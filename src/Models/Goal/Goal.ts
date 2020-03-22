@@ -16,13 +16,18 @@ import MyDate from "src/common/Date";
 import { startDate, dueDate } from "src/Components/Forms/common/utils";
 
 
+export enum GoalParentTypes {
+    GOAL = "goal",
+    RECUR = "recur",
+    NONE = "none",
+}
+
 interface IGoal extends IStreak{
     title: string;
     details: string;
     goalType: GoalType;
     startDate: Date;
     dueDate: Date;
-    parentId: string;
     state: "open" | "in_progress" | "complete" | "cancelled"
     active: boolean;
     rewardType: RewardType;
@@ -31,6 +36,7 @@ interface IGoal extends IStreak{
     latestCycleId: string;
     rewardId: string;
     penaltyId: string;
+    parent: ParentInfo;
 }
 
 interface IStreak {
@@ -40,6 +46,11 @@ interface IStreak {
     streakWeeklyStart: string;  // sunday, monday, tuesday, etc.
     streakMonthlyStart: number; // Specific day of month it starts on
     lastRefreshed: Date;
+}
+
+interface ParentInfo {
+    readonly id: string;
+    readonly type: GoalParentTypes;
 }
 
 const name = GoalSchema.name;
@@ -65,7 +76,6 @@ export default class Goal extends Model implements IGoal {
     @date(name.STREAK_DAILY_START) streakDailyStart!: Date;
     @field(name.STREAK_WEEKLY_START) streakWeeklyStart!: string;
     @field(name.STREAK_MONTHLY_START) streakMonthlyStart!: number;
-    @field(name.PARENT) parentId!: string;
     @field(name.STATE) state!: "open" | "in_progress" | "complete" | "cancelled";
     @field(name.ACTIVE) active!: boolean;
     @field(name.REWARD_TYPE) rewardType!: RewardType;
@@ -76,6 +86,13 @@ export default class Goal extends Model implements IGoal {
     @field(name.REWARD_ID) rewardId!: string;
     @field(name.PENALTY_TYPE) penaltyType!: PenaltyTypes;
     @field(name.PENALTY_ID) penaltyId!: string;
+    
+
+    //TODO: FIX USAGES OF OBJECT.ASSIGN
+
+    @field(name.PARENT) private parentId!: string;
+    @field(name.PARENT_TABLE) private parentType!: GoalParentTypes;
+
     get reward() {
         return this.rewardRelation.observe().pipe(filter((r) => {
             return r ? true : false;
@@ -92,6 +109,18 @@ export default class Goal extends Model implements IGoal {
     @relation(GoalSchema.table, name.PARENT) parentGoal
     @relation(RewardSchema.table, name.REWARD_ID) rewardRelation!: Relation<Reward>;
     @relation(RewardSchema.table, name.PENALTY_ID) penaltyRelation!: Relation<Penalty>;
+
+    get parent() {
+        return {
+            id: this.parentId,
+            type: this.parentType,
+        }
+    }
+
+    set parent(info: ParentInfo) {
+        this.parentId = info.id;
+        this.parentType = info.type;
+    }
 
     isStreak = () => {
         return this.goalType === GoalType.STREAK;

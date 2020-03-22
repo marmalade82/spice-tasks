@@ -1,6 +1,7 @@
 
 
 import React from "react";
+import { assignAll } from "src/common/types";
 
 interface DataProps<Data> {
     data: Data | false;
@@ -29,15 +30,15 @@ export default abstract class DataComponent<Props, State extends Data, Data>
     }
     
     reviseState = <K extends keyof Data>(p: Pick<State, K>, data: Data) => {
-        let newData = Object.assign({}, data) as Data;
-        Object.assign(newData, p) as Data;
+        let newData = assignAll([], {}, data) as Data;
+        assignAll([], newData, p) as Data;
 
         return newData;
     }
 
     reviseData = <K extends keyof Data>(p: Pick<Data, K>) => {
-        let newData = Object.assign({}, this.props.data) as Data;
-        Object.assign(newData, p) as Data;
+        let newData = assignAll([], {}, this.props.data) as Data;
+        assignAll([], newData, p) as Data;
 
         return newData;
     }
