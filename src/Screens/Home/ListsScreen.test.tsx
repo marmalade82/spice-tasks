@@ -146,7 +146,7 @@ describe("using lists", () => {
     }, 10000);
 })
 
-describe("Navigation", () => {
+describe.skip("Navigation", () => {
     test("Can navigate to list of all goals screen", async () => {
         const { getByLabelText, queryNavigation, navigation, component, intake } = renderWithNavigation("Lists", {});
         intake( render(component()));

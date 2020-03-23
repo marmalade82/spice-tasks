@@ -35,6 +35,7 @@ function makeNavigation(params: {}, key?: string): any {
             }
         }),
         goBack: jest.fn(),
+        replace: jest.fn(),
         state: {
             key: Chance.guid(),
         }

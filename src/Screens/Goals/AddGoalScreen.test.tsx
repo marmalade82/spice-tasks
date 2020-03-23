@@ -256,7 +256,6 @@ describe("Validation", () => {
             fireEvent.press(saveButton);
         }
 
-
         await wait(async () => {
             const toast = getByLabelText("toast");
         })

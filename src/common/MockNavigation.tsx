@@ -69,6 +69,10 @@ export function renderWithNavigation<T extends keyof ScreenParams>(initialRoute:
                 return null;
             }
         },
+        replace: function <T extends keyof ScreenParams>(route: T, params: ScreenParams[T]) {
+            this.goBack(null);
+            this.push(route, params);
+        },
         navigate: function <T extends keyof ScreenParams>(screen: T, params: ScreenParams[T]) {
             let found = stack.find((navState) => {
                 return navState.route === screen;
@@ -86,8 +90,8 @@ export function renderWithNavigation<T extends keyof ScreenParams>(initialRoute:
         },
         goBack: function (thing?: null) {
             if(stack.length > 1) {
-                stack[stack.length - 1].renderFns.unmount();
-                stack.pop();
+                const popped = stack.pop();
+                popped ? popped.renderFns.unmount(): null;
             }
         },
         get state() {

@@ -41,6 +41,7 @@ describe("Streak goals", () => {
             await waitForAsyncLifecycleMethods()
             const saveButton = getByLabelText("input-save-button");
             fireEvent.press(saveButton);
+            await waitForAsyncLifecycleMethods()
         }
 
         {   // After creating a goal, we should arrive at the created goal to do further work.

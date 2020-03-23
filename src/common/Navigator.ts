@@ -5,6 +5,7 @@ import { any } from 'prop-types';
 export interface Navigation<ScreenParams> {
     navigate: <T extends keyof ScreenParams>(screen: T, params: ScreenParams[T]) => void;
     push: <T extends keyof ScreenParams>(screen: T, params: ScreenParams[T]) => void;
+    replace: <T extends keyof ScreenParams>(screen: T, params: ScreenParams[T]) => void;
     goBack: (dest? : null) => void;
     state: any;
 }
@@ -20,7 +21,7 @@ export class ScreenNavigation<ScreenParams, Screen extends keyof ScreenParams> i
     }
 
     goBack = (dest? : null) => {
-        this.navigator.goBack(dest);
+        this.navigator.goBack(null);
     }
 
     getParam: <T extends keyof ScreenParams[Screen]>(param: T, fallback: ScreenParams[Screen][T]) => ScreenParams[Screen][T] = (param, fallback) => {
@@ -33,6 +34,10 @@ export class ScreenNavigation<ScreenParams, Screen extends keyof ScreenParams> i
 
     push = <T extends keyof ScreenParams>(screen: T, params: ScreenParams[T]) => {
         this.navigator.push(screen, params);
+    }
+
+    replace = <T extends keyof ScreenParams>(screen: T, params: ScreenParams[T]) => {
+        this.navigator.replace(screen, params);
     }
 
     get state() {
