@@ -259,13 +259,16 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
      */
 
     render = () => {
+        const SummaryInput = this.SummaryInput;
+        const StartDateInput = this.StartDateInput;
+
         return (
             <ColumnView style={[{
                 backgroundColor: "transparent",
             }]}>
                 <ScrollView>
 
-                    <this.SummaryInput
+                    <SummaryInput
                         style={{
                             marginTop: CONTAINER_VERTICAL_MARGIN,
                         }}
@@ -276,7 +279,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         onInvalidDataChange={this.onChangeTitle}
                         accessibilityLabel={"goal-summary"}
                     >
-                    </this.SummaryInput>
+                    </SummaryInput>
 
                     <StringInput
                         title={"Details"}
@@ -297,7 +300,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                     />
                     { this.renderStreakForm() }
 
-                    <this.StartDateInput
+                    <StartDateInput
                         title={"Starts on"}
                         type={"date"}
                         data={ this.data().start_date }
@@ -305,7 +308,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         onInvalidDataChange={ this.onChangeStartDate }
                         accessibilityLabel={ "goal-start-date" }
                         revalidate={this.startDateRefresh}
-                    ></this.StartDateInput>
+                    ></StartDateInput>
 
                     <DateTimeInput
                         title={"Due on"} 
@@ -365,8 +368,9 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
     renderByRewardType = () => {
         if(this.data().reward === RewardTypes.SPECIFIC) {
+            const SpecificRewardInput = this.SpecificRewardInput;
             return (
-                <this.SpecificRewardInput
+                <SpecificRewardInput
                     title={"Specific Reward"}
                     data={this.data().rewardId}
                     onValidDataChange={this.onChangeSpecificReward}
@@ -380,15 +384,16 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                             parent_id: "",
                         })
                     }}
-                ></this.SpecificRewardInput>
+                ></SpecificRewardInput>
             );
         }
     }
 
     renderByPenaltyType = () => {
         if(this.data().penalty === PenaltyTypes.SPECIFIC) {
+            const SpecificPenaltyInput = this.SpecificPenaltyInput;
             return (
-                <this.SpecificPenaltyInput
+                <SpecificPenaltyInput
                     title={"Specific Penalty"}
                     data={this.data().penaltyId}
                     onValidDataChange={this.onChangeSpecificPenalty}
@@ -402,7 +407,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                             parent_id: "",
                         })
                     }}
-                ></this.SpecificPenaltyInput>
+                ></SpecificPenaltyInput>
             )
         }
     }

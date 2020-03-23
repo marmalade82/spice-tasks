@@ -87,18 +87,19 @@ export default class AddPenaltyForm extends DataComponent<Props, State, State> {
     }
 
     render = () => {
+        const NameInput = this.NameInput;
         return (
             <ColumnView style={[{
                 backgroundColor: "transparent",
             }, this.props.style]}>
-                <this.NameInput
+                <NameInput
                     title={"Name"} 
                     data={this.data().name}
                     placeholder={"Name of this penalty"}
                     onValidDataChange={this.onChangeName}
                     onInvalidDataChange={this.onChangeName}
                     accessibilityLabel={"penalty-name"}
-                ></this.NameInput>
+                ></NameInput>
 
                 <StringInput
                     title={"Details"}

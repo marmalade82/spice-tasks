@@ -1,6 +1,6 @@
 import React from "react";
 import { View, ScrollView, SafeAreaView, Button } from "react-native";
-import { AddGoalForm, AddGoalData, AddGoalDefault, ValidateGoalForm } from "src/Components/Forms/AddGoalForm";
+import AddGoalForm, { AddGoalData, AddGoalDefault, ValidateGoalForm } from "src/Components/Forms/AddGoalForm";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { GoalQuery, Goal, IGoal, GoalLogic } from "src/Models/Goal/GoalQuery";

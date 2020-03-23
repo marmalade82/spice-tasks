@@ -124,20 +124,22 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
     }
 
     render = () => {
+        const SummaryInput = this.SummaryInput;
+        const StartDateInput = this.StartDateInput;
         return (
             <ColumnView style={[{
                 backgroundColor: "transparent",
             },this.props.style]}>
 
                 <ScrollView>
-                    <this.SummaryInput
+                    <SummaryInput
                         title={"Name"} 
                         data={this.data().name}
                         placeholder={"Name of this task"}
                         onValidDataChange={this.onChangeName}
                         onInvalidDataChange={this.onChangeName}
                         accessibilityLabel={"task-name"}
-                    ></this.SummaryInput>
+                    ></SummaryInput>
 
                     <StringInput
                         title={"Description"}
@@ -147,7 +149,7 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                         accessibilityLabel={"task-description"}
                     />
 
-                    <this.StartDateInput
+                    <StartDateInput
                         title={this.title()}
                         type={"date"}
                         data={this.data().start_date}
@@ -156,7 +158,7 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                         accessibilityLabel={"task-start-date"}
                         revalidate={this.startDateRefresh}
                         readonly={this.inherited()}
-                    ></this.StartDateInput>
+                    ></StartDateInput>
 
                     <FootSpacer></FootSpacer>
                 </ScrollView>
