@@ -158,7 +158,7 @@ export function waitForAsyncLifecycleMethods(time?: number) {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve();
-        }, time ? time : 1000);
+        }, time ? time : 100);
     })
 }
 
