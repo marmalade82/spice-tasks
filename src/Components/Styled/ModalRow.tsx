@@ -12,7 +12,7 @@ interface Props {
     iconType: "complete" | "delete" | "goal" | "task" | 
         "reward" | "penalty" | "fail" | "none";
     iconBackground?: string;
-    accessibilityLabel?: string;
+    accessibilityLabel: string;
     onPress: () => void;
 
 }

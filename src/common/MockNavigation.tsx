@@ -13,7 +13,7 @@ type NavigatorState<T extends keyof ScreenParams> = {
     },
     params: ScreenParams[T],
     route: T,
-    component: JSX.Element,
+    component: any,
     renderFns: any,
     /*renderFns: {
         getByLabelText: any,
@@ -36,18 +36,38 @@ export function renderWithNavigation<T extends keyof ScreenParams>(initialRoute:
     let stuff: any;
     let navigation = {
         push: function <T extends keyof ScreenParams>(route: T, params: ScreenParams[T]) {
-            console.log("navigating to " + route);
             let Component: new (props: Props) => React.Component<Props, {}> = directory[route as string];
-            console.log("Component is " + Component);
             stack.push({
                 state: {
                     key: Chance.guid(),
                 },
-                component: <Component navigation={navigation}></Component>,
+                component: (
+                    undefined
+                ),
                 params: params,
                 route: route,
                 renderFns: undefined,
             })
+
+            stack[stack.length-1].component = (
+                <View
+                >
+                    <Component navigation={navigation}></Component>
+                    { renderHeaderButtons() }
+                </View>
+            )
+
+            function renderHeaderButtons() {
+                const navOptions: any = Component["navigationOptions"];
+                if(navOptions) {
+                    const options = navOptions({navigation: navigation});
+                    if(options.right && options.right[0]) {
+                        return (options.right[0])();
+                    }
+                }
+
+                return null;
+            }
         },
         navigate: function <T extends keyof ScreenParams>(screen: T, params: ScreenParams[T]) {
             let found = stack.find((navState) => {
@@ -93,8 +113,6 @@ export function renderWithNavigation<T extends keyof ScreenParams>(initialRoute:
 
     return {
         getByLabelText: (...args) => {
-            console.log("BELOW: " + (stack[stack.length - 2] ? stack[stack.length-2].renderFns : "BEGIN"))
-            console.log(stack[stack.length - 1].renderFns)
             return stack[stack.length - 1].renderFns.getByLabelText(...args)
            // return stuff.getByLabelText(...args);
         },
@@ -108,6 +126,9 @@ export function renderWithNavigation<T extends keyof ScreenParams>(initialRoute:
         navigation,
         component: () => {
             return stack[stack.length - 1].component;
+        },
+        get params() {
+            return stack[stack.length - 1].params;
         },
         intake: (renderResults: any) => {
             stack[stack.length - 1].renderFns = renderResults;

@@ -186,6 +186,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                 >
                         <ModalRow
                             text={"Goal"}
+                            accessibilityLabel={"add-goal"}
                             iconType={"goal"}
                             iconBackground={"white"}
                             onPress={() => {
@@ -200,6 +201,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         ></ModalRow>
                         <ModalRow
                             text={"Task"}
+                            accessibilityLabel={"add-task"}
                             iconType={"task"}
                             iconBackground={"white"}
                             onPress={() => {
@@ -215,6 +217,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         ></ModalRow>
                         <ModalRow
                             text={"Reward"}
+                            accessibilityLabel={"add-reward"}
                             iconType={"reward"}
                             iconBackground={"white"}
                             onPress={() => {
@@ -228,6 +231,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                             }}
                         ></ModalRow>
                         <ModalRow
+                            accessibilityLabel={"add-penalty"}
                             text={"Penalty"}
                             iconType={"penalty"}
                             iconBackground={"white"}

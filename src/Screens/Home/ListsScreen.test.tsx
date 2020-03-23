@@ -146,8 +146,8 @@ describe("using lists", () => {
     }, 10000);
 })
 
-describe.only("Navigation", () => {
-    test.only("Can navigate to list of all goals screen", async () => {
+describe("Navigation", () => {
+    test("Can navigate to list of all goals screen", async () => {
         const { getByLabelText, queryNavigation, navigation, component, intake } = renderWithNavigation("Lists", {});
         intake( render(component()));
         expect(queryNavigation.currentRoute).toEqual("Lists");
@@ -156,9 +156,11 @@ describe.only("Navigation", () => {
             fireEvent.press(goalDest);
         }
         
-        intake(render (component()) )
         expect(queryNavigation.currentRoute).toEqual("Goals"); 
-        getByLabelText("goals-screen");
+        intake(render (component()) )
+        await wait(() => {
+            getByLabelText("goals-screen");
+        })
 
         navigation.goBack();
         expect(queryNavigation.currentRoute).toEqual("Lists");
@@ -170,11 +172,13 @@ describe.only("Navigation", () => {
         
         intake(render (component()))
         expect(queryNavigation.currentRoute).toEqual("Goals"); 
-        getByLabelText("goals-screen");
+        await wait(() => {
+            getByLabelText("goals-screen");
+        })
 
     }, 10000)
 
-    test("Can navigate to list of all goals screen", async () => {
+    test("Can navigate to list of all tasks screen", async () => {
         const { getByLabelText, queryNavigation, navigation, component, intake } = renderWithNavigation("Lists", {});
         intake( render(component()));
         expect(queryNavigation.currentRoute).toEqual("Lists");
@@ -186,5 +190,33 @@ describe.only("Navigation", () => {
         intake(render (component()) )
         expect(queryNavigation.currentRoute).toEqual("Tasks"); 
         getByLabelText("tasks-screen");
+    }, 10000)
+
+    test("Can navigate to list of all rewards screen", async () => {
+        const { getByLabelText, queryNavigation, navigation, component, intake } = renderWithNavigation("Lists", {});
+        intake( render(component()));
+        expect(queryNavigation.currentRoute).toEqual("Lists");
+        {
+            const rewardDest = getByLabelText("input-dest-rewards")
+            fireEvent.press(rewardDest);
+        }
+        
+        intake(render (component()) )
+        expect(queryNavigation.currentRoute).toEqual("Rewards"); 
+        getByLabelText("rewards-screen");
+    }, 10000)
+
+    test("Can navigate to list of all penalties screen", async () => {
+        const { getByLabelText, queryNavigation, navigation, component, intake } = renderWithNavigation("Lists", {});
+        intake( render(component()));
+        expect(queryNavigation.currentRoute).toEqual("Lists");
+        {
+            const penaltyDest = getByLabelText("input-dest-penalties")
+            fireEvent.press(penaltyDest);
+        }
+        
+        intake(render (component()) )
+        expect(queryNavigation.currentRoute).toEqual("Penalties"); 
+        getByLabelText("penalties-screen");
     }, 10000)
 })

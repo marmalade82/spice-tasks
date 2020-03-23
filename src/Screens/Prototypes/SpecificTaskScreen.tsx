@@ -95,6 +95,7 @@ export default class SpecificTaskScreen extends React.Component<Props, State> {
                                     >
                                         <ModalRow
                                             text={"Complete"}
+                                            accessibilityLabel={"complete"}
                                             iconType={"complete"}
                                             onPress={() => {
                                                 this.setState({
@@ -104,6 +105,7 @@ export default class SpecificTaskScreen extends React.Component<Props, State> {
                                         ></ModalRow>
                                         <ModalRow
                                             text={"Delete"}
+                                            accessibilityLabel={"delete"}
                                             iconType={"delete"}
                                             onPress={() => {
                                                 this.setState({
