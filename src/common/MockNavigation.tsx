@@ -2,6 +2,7 @@ import { render } from "@testing-library/react-native";
 import { ScreenParams } from "./Navigator";
 import { ScreenDirectory } from "./NavigatorScreens";
 import React from "react";
+import { View } from "react-native";
 
 var chance = require("chance");
 var Chance = new chance();
@@ -12,6 +13,7 @@ type NavigatorState<T extends keyof ScreenParams> = {
     },
     params: ScreenParams[T],
     route: T,
+    component: JSX.Element,
     renderFns: any,
     /*renderFns: {
         getByLabelText: any,
@@ -31,23 +33,21 @@ interface Props {
 export function renderWithNavigation<T extends keyof ScreenParams>(initialRoute: T, initialParams: ScreenParams[T]) {
     let directory = ScreenDirectory;
     let stack: NavigatorState<any>[] = [];
+    let stuff: any;
     let navigation = {
         push: function <T extends keyof ScreenParams>(route: T, params: ScreenParams[T]) {
             console.log("navigating to " + route);
+            let Component: new (props: Props) => React.Component<Props, {}> = directory[route as string];
+            console.log("Component is " + Component);
             stack.push({
                 state: {
                     key: Chance.guid(),
                 },
+                component: <Component navigation={navigation}></Component>,
                 params: params,
                 route: route,
                 renderFns: undefined,
             })
-            let Component: new (props: Props) => React.Component<Props, {}> = directory[route as string];
-            const results = render(
-                <Component navigation={navigation}></Component>
-            )
-
-            stack[stack.length - 1].renderFns = results;
         },
         navigate: function <T extends keyof ScreenParams>(screen: T, params: ScreenParams[T]) {
             let found = stack.find((navState) => {
@@ -93,7 +93,10 @@ export function renderWithNavigation<T extends keyof ScreenParams>(initialRoute:
 
     return {
         getByLabelText: (...args) => {
+            console.log("BELOW: " + (stack[stack.length - 2] ? stack[stack.length-2].renderFns : "BEGIN"))
+            console.log(stack[stack.length - 1].renderFns)
             return stack[stack.length - 1].renderFns.getByLabelText(...args)
+           // return stuff.getByLabelText(...args);
         },
         queryByLabelText: (...args) => {
             return stack[stack.length - 1].renderFns.queryByLabelText(...args)
@@ -102,7 +105,13 @@ export function renderWithNavigation<T extends keyof ScreenParams>(initialRoute:
             return stack[stack.length - 1].renderFns.queryAllByLabelText(...args)
         },
         queryNavigation: queryNavigation,
-        navigation
+        navigation,
+        component: () => {
+            return stack[stack.length - 1].component;
+        },
+        intake: (renderResults: any) => {
+            stack[stack.length - 1].renderFns = renderResults;
+        }
     }
 
 }

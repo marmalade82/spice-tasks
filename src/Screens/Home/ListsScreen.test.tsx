@@ -13,6 +13,7 @@ import {
     createGoals,
     createEarnedRewards,
     createEarnedPenalties,
+    waitForAsyncLifecycleMethods,
 } from "src/common/test-utils";
 import MyDate from "src/common/Date";
 import ListsScreen from "./ListsScreen";
@@ -145,19 +146,19 @@ describe("using lists", () => {
     }, 10000);
 })
 
-describe("Navigation", () => {
-    test("Can navigate to list of all goals screen", async () => {
-        const { getByLabelText, queryNavigation, navigation } = renderWithNavigation("Lists", {});
+describe.only("Navigation", () => {
+    test.only("Can navigate to list of all goals screen", async () => {
+        const { getByLabelText, queryNavigation, navigation, component, intake } = renderWithNavigation("Lists", {});
+        intake( render(component()));
         expect(queryNavigation.currentRoute).toEqual("Lists");
-
         {
             const goalDest = getByLabelText("input-dest-goals")
             fireEvent.press(goalDest);
         }
         
-        await wait(async () => {
-            expect(queryNavigation.currentRoute).toEqual("Goals"); 
-        });
+        intake(render (component()) )
+        expect(queryNavigation.currentRoute).toEqual("Goals"); 
+        getByLabelText("goals-screen");
 
         navigation.goBack();
         expect(queryNavigation.currentRoute).toEqual("Lists");
@@ -167,23 +168,23 @@ describe("Navigation", () => {
             fireEvent.press(goalDest);
         }
         
-        await wait(async () => {
-            expect(queryNavigation.currentRoute).toEqual("Goals"); 
-        });
+        intake(render (component()))
+        expect(queryNavigation.currentRoute).toEqual("Goals"); 
+        getByLabelText("goals-screen");
 
     }, 10000)
 
     test("Can navigate to list of all goals screen", async () => {
-        const { getByLabelText, queryNavigation, navigation } = renderWithNavigation("Lists", {});
+        const { getByLabelText, queryNavigation, navigation, component, intake } = renderWithNavigation("Lists", {});
+        intake( render(component()));
         expect(queryNavigation.currentRoute).toEqual("Lists");
-
         {
-            const goalDest = getByLabelText("input-dest-goals")
-            fireEvent.press(goalDest);
+            const taskDest = getByLabelText("input-dest-tasks")
+            fireEvent.press(taskDest);
         }
         
-        await wait(async () => {
-            expect(queryNavigation.currentRoute).toEqual("Goals"); 
-        });
+        intake(render (component()) )
+        expect(queryNavigation.currentRoute).toEqual("Tasks"); 
+        getByLabelText("tasks-screen");
     }, 10000)
 })

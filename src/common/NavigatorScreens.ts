@@ -2,8 +2,9 @@
 import { ScreenParams } from 'src/common/Navigator';
 import * as Screens from "src/Screens";
 import React from "react";
+import { View } from 'react-native';
 
-export const ScreenDirectory: Record<keyof Omit<ScreenParams, "None" | "StreakCycle">, any> = {
+export const ScreenDirectory: Record<keyof Omit<ScreenParams, "StreakCycle">, any> = {
   Home: Screens.Home
   , Goal: Screens.Goal
   , Goals: Screens.GoalList
@@ -40,4 +41,5 @@ export const ScreenDirectory: Record<keyof Omit<ScreenParams, "None" | "StreakCy
   , Test: Screens.Test
   , StreakCycles: Screens.StreakCycles
   , Star: Screens.Star
+  , None: View
 };
