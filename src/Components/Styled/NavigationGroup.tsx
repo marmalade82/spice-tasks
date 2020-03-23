@@ -22,6 +22,7 @@ interface Row<T extends keyof ScreenParams> {
     navParams: ScreenParams[T];
     navDestination: T;
     navType?: "navigate" | "push";
+    accessibilityLabel: string;
 }
 
 export default class NavigationGroup<T extends keyof ScreenParams> extends React.Component<Props<T>, State> {
@@ -63,7 +64,10 @@ export default class NavigationGroup<T extends keyof ScreenParams> extends React
                     }
                 }
 
-                const { number, icon, text, navParams, navDestination, navType } = row;
+                const { number, icon, text, navParams, 
+                    navDestination, navType ,
+                    accessibilityLabel,
+                } = row;
                 return (
                     <NavigationRow
                         number={number}
@@ -79,6 +83,7 @@ export default class NavigationGroup<T extends keyof ScreenParams> extends React
                         style={
                             style
                         }
+                        accessibilityLabel={accessibilityLabel}
                     >
                     </NavigationRow>
                 );

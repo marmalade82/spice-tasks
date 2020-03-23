@@ -13,6 +13,7 @@ interface Props<T extends keyof ScreenParams> {
     text: string;
     navOptions?: navOptions<T>
     style?: StyleProp<ViewStyle>
+    accessibilityLabel?: string;
 }
 
 interface navOptions<T extends keyof ScreenParams> {
@@ -60,6 +61,7 @@ export default class NavigationRow<T extends keyof ScreenParams> extends React.C
                         destination={destination}
                         parameters={parameters}
                         navType={type}
+                        accessibilityLabel={this.props.accessibilityLabel}
                     >
                         {this.renderRow()}
                     </ClickNavigation>

@@ -16,6 +16,8 @@ import {
 } from "src/common/test-utils";
 import MyDate from "src/common/Date";
 import ListsScreen from "./ListsScreen";
+import { renderWithNavigation } from "src/common/MockNavigation";
+import { View, Button } from "react-native";
 
 describe("viewing data", () => {
     afterEach(async () => {
@@ -141,4 +143,33 @@ describe("using lists", () => {
             return opts;
         }
     }, 10000);
+})
+
+describe.only("Navigation", () => {
+    test.only("Can navigate to list of all goals screen", async () => {
+        const { getByLabelText, queryNavigation, navigation } = renderWithNavigation("Lists", {});
+        expect(queryNavigation.currentRoute).toEqual("Lists");
+
+        {
+            const goalDest = getByLabelText("input-dest-goals")
+            fireEvent.press(goalDest);
+        }
+        
+        await wait(async () => {
+            expect(queryNavigation.currentRoute).toEqual("Goals"); 
+        });
+
+        navigation.goBack();
+        expect(queryNavigation.currentRoute).toEqual("Lists");
+
+        {
+            const goalDest = getByLabelText("input-dest-goals")
+            fireEvent.press(goalDest);
+        }
+        
+        await wait(async () => {
+            expect(queryNavigation.currentRoute).toEqual("Goals"); 
+        });
+
+    }, 10000)
 })

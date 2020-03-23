@@ -9,6 +9,7 @@ interface Props<T extends keyof ScreenParams> {
     destination: T;
     navType: "navigate" | "push";
     style?: StyleProp<ViewStyle>
+    accessibilityLabel?: string;
 }
 
 interface State {}
@@ -40,6 +41,7 @@ export default class ClickNavigation<T extends keyof ScreenParams> extends React
                             this.props.navigation.navigate(this.props.destination, this.props.parameters);
                         }
                     }}
+                    accessibilityLabel={this.props.accessibilityLabel ? "input-" + this.props.accessibilityLabel : undefined}
                 >
                     {this.props.children}
                 </TouchableOpacity>

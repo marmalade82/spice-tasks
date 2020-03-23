@@ -9,8 +9,6 @@ import GoalQuery from "src/Models/Goal/GoalQuery";
 import MyDate from "src/common/Date";
 import { RewardTypes } from "src/Models/Reward/RewardLogic";
 import { PenaltyTypes } from "src/Models/Penalty/PenaltyLogic";
-import { renderWithNavigation } from "src/common/FakeTestFile.test";
-import { View } from "react-native";
 
 
 test('User view all desired initial fields for a normal goal', async () => {

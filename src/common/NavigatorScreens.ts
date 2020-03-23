@@ -1,11 +1,10 @@
 
 import { ScreenParams } from 'src/common/Navigator';
 import * as Screens from "src/Screens";
+import React from "react";
 
 export const ScreenDirectory: Record<keyof Omit<ScreenParams, "None" | "StreakCycle">, any> = {
-  Home: {
-      screen: Screens.Home,
-    }
+  Home: Screens.Home
   , Goal: Screens.Goal
   , Goals: Screens.GoalList
   , Menu: Screens.Menu

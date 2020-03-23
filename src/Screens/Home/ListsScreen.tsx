@@ -171,6 +171,7 @@ export default class ListsScreen extends React.Component<Props, State> {
                     }}
                 >
                         <ModalRow
+                            accessibilityLabel={"add-goal"}
                             text={"Goal"}
                             iconType={"goal"}
                             iconBackground={"white"}
@@ -185,6 +186,7 @@ export default class ListsScreen extends React.Component<Props, State> {
                             }}
                         ></ModalRow>
                         <ModalRow
+                            accessibilityLabel={"add-task"}
                             text={"Task"}
                             iconType={"task"}
                             iconBackground={"white"}
@@ -200,6 +202,7 @@ export default class ListsScreen extends React.Component<Props, State> {
                             }}
                         ></ModalRow>
                         <ModalRow
+                            accessibilityLabel={"add-reward"}
                             text={"Reward"}
                             iconType={"reward"}
                             iconBackground={"white"}
@@ -214,6 +217,7 @@ export default class ListsScreen extends React.Component<Props, State> {
                             }}
                         ></ModalRow>
                         <ModalRow
+                            accessibilityLabel={"add-penalty"}
                             text={"Penalty"}
                             iconType={"penalty"}
                             iconBackground={"white"}
@@ -251,41 +255,49 @@ class NavigationList extends React.Component<NavListProps> {
                     , icon: "goal"
                     , navParams: {}
                     , navDestination: "Goals"
+                    , accessibilityLabel: "dest-goals"
                     },
                     { text: "Tasks"
                     , icon: "task"
                     , navParams: {}
                     , navDestination: "Tasks"
+                    , accessibilityLabel: "dest-tasks"
                     },
                     { text: "Rewards"
                     , icon: "reward"
                     , navParams: {}
                     , navDestination: "Rewards"
+                    , accessibilityLabel: "dest-rewards"
                     },
                     { text: "Penalties"
                     , icon: "penalty"
                     , navParams: {}
                     , navDestination: "Penalties"
+                    , accessibilityLabel: "dest-penalties"
                     },
                     { text: "Recurring Goals"
                     , icon: "recur"
                     , navParams: {}
                     , navDestination: "Recurrings"
+                    , accessibilityLabel: "dest-recurring-goals"
                     },
                     { text: "Earned Rewards"
                     , icon: "earned_reward"
                     , navParams: {}
                     , navDestination: "EarnedRewards"
+                    , accessibilityLabel: "dest-earned-rewards"
                     },
                     { text: "Earned Penalties"
                     , icon: "earned_penalty"
                     , navParams: {}
                     , navDestination: "EarnedPenalties"
+                    , accessibilityLabel: "dest-earned-penalties"
                     },
                     { text: "Menu"
                     , icon: "goal"
                     , navParams: {}
                     , navDestination: "Menu"
+                    , accessibilityLabel: "dest-menu"
                     }
                 ]}
             >

@@ -53,11 +53,12 @@ jest
   });
 
 import { render } from '@testing-library/react-native';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from "react-navigation-stack";
+//import { createAppContainer } from 'react-navigation';
+//import { createStackNavigator } from "react-navigation-stack";
 import React from "react";
 import { ScreenDirectory } from './NavigatorScreens';
 
+/*
 export function renderWithNavigation( initialRouteName: string, screens: object, navigatorConfig = {} ) {
     const AppNavigator = createStackNavigator(
       {
@@ -70,9 +71,10 @@ export function renderWithNavigation( initialRouteName: string, screens: object,
     const App = createAppContainer(AppNavigator);
   
     return { ...render(<App />), navigationContainer: App };
-}
+}*/
 
 test("Fake test", () => {
-  renderWithNavigation("AppStart", ScreenDirectory);
+  //renderWithNavigation("AppStart", ScreenDirectory);
 
+  
 } );

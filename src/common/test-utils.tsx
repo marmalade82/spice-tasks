@@ -20,6 +20,7 @@ import EarnedPenalty, { IEarnedPenalty } from "src/Models/Penalty/EarnedPenalty"
 import { StreakCycle, IStreakCycle } from "src/Models/Group/StreakCycle";
 import { GroupSchema } from "src/Models/Group/GroupSchema";
 import { exportDefaultDeclaration } from "@babel/types";
+
 var chance = require("chance");
 var Chance = new chance();
 
@@ -168,3 +169,4 @@ export async function asyncTestWithTag(tag: string, expectation: any, ...args: a
         throw e;
     }
 }
+
