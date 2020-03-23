@@ -62,7 +62,7 @@ export default class EarnedPenaltyScreen extends React.Component<Props, State> {
     render = () => {
         
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"earned-penalty"}>
                 {this.renderSummary()}
             </DocumentView>
 

@@ -157,7 +157,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"add-goal"}>
                 { this.renderGoalForm() }
                 <Toast
                     visible={this.state.showToast}

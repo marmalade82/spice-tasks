@@ -70,7 +70,7 @@ export default class StarScreen extends React.Component<Props, State> {
         ]
 
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"star"}>
                 <View style={
                     { flex: 0,
                       height: 100,

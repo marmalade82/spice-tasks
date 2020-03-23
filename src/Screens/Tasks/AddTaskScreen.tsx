@@ -179,7 +179,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"add-task"}>
                 <ScrollView style={{
                     backgroundColor: "transparent",
                 }}>

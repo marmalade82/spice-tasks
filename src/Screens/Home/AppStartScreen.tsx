@@ -154,7 +154,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"app-start"}>
                 <ScrollView>
 
                     <BackgroundTitle title={`Due Today (${this.state.dueTodayCount})`}
@@ -296,74 +296,3 @@ export default class AppStartScreen extends React.Component<Props, State> {
     }
 
 }
-
-
-interface StatusListProps {
-    overdueTaskCount: number;
-    remainingTodayTaskCount: number;
-    inProgressGoalsCount: number;
-    earnedRewardsCount: number;
-    earnedPenaltiesCount: number;
-    navigation: FullNavigation;
-}
-const AdaptedStatusList: React.FunctionComponent<StatusListProps> = (props: StatusListProps) => {
-
-    return (
-        <NavigationGroup
-            navigation={props.navigation}
-            style={{
-                marginBottom: 0
-            }}
-            rows={[
-                { text: "Tasks Remaining"
-                , number: props.remainingTodayTaskCount
-                , navParams: {}
-                , navDestination: "RemainingTasks"
-                },
-                { text: "Overdue"
-                , number: props.overdueTaskCount
-                , navParams: {}
-                , navDestination: "Overdue"
-                },
-                { text: "Goals In Progress"
-                , number: props.inProgressGoalsCount
-                , navParams: {}
-                , navDestination: "InProgressGoals"
-                },
-                { text: "Unused Rewards"
-                , number: props.earnedRewardsCount
-                , navParams: {}
-                , navDestination: "UnusedEarnedRewards"
-                },
-                { text: "Pending Penalties"
-                , number: props.earnedPenaltiesCount
-                , navParams: {}
-                , navDestination: "UnusedEarnedPenalties"
-                },
-            ]}
-        >
-        </NavigationGroup>
-    );
-}
-
-interface AllStatusListProps {
-    navigation: object
-}
-
-/**
- * TODO : earnedRewardsCount and earnedPenaltiesCount are still incorrect.
- * TODO :   It is very likely that earned rewards are unnecessary -- no need to make user
- * TODO :   perform the action. Just generate the reward for them automatically.
- */
-const enhance = withObservables([], (_props: AllStatusListProps) => {
-    return {
-        overdueTaskCount: observableWithRefreshTimer(() => new ActiveTaskQuery().queryOverdue().observeCount()),
-        remainingTodayTaskCount: observableWithRefreshTimer(() => new ActiveTaskQuery().queryRemainingToday().observeCount()),
-        inProgressGoalsCount: observableWithRefreshTimer(() => new ActiveGoalQuery().queryStartedButNotDue().observeCount()),
-        earnedRewardsCount: observableWithRefreshTimer(() => new EarnedRewardQuery().queryUnused().observeCount()),
-        earnedPenaltiesCount: observableWithRefreshTimer(() => new EarnedPenaltyQuery().queryUnused().observeCount()),
-    }
-});
-
-var ConnectedStatusList = enhance(AdaptedStatusList);
-

@@ -78,7 +78,7 @@ export default class RecurScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"recur"}>
                 {this.renderSummary()}
                 <ColumnView style={{
                     flex: 1,

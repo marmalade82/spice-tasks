@@ -71,7 +71,7 @@ export default class GoalListScreen extends React.Component<Props> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"goals"}>
                 <ConnectedGoalList 
                     navigation={this.navigation}
                     onGoalAction = {this.onGoalAction}

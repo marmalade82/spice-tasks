@@ -25,7 +25,7 @@ export default class RecurListScreen extends React.Component<Props> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"recurrences"}>
                 <ConnectedRecurList 
                     navigation={this.navigation}
                 >

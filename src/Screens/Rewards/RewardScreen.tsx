@@ -51,7 +51,7 @@ export default class RewardScreen extends React.Component<Props, State> {
     render = () => {
         
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"reward"}>
                 {this.renderSummary()}
             </DocumentView>
 

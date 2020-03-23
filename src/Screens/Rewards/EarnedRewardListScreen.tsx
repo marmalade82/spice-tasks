@@ -37,7 +37,7 @@ export default class EarnedRewardListScreen extends React.Component<Props, State
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"earned-rewards"}>
                 <ConnectedEarnedRewardList
                     navigation={this.navigation}
                     onEarnedRewardAction={this.onEarnedRewardAction}

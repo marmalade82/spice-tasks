@@ -130,7 +130,7 @@ export default class TestScreen extends React.Component<Props, State> {
             }, 10000)
         })
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"test"}>
                     <PagedList
                         items={things}
                         renderItem={(thing) => {

@@ -57,7 +57,7 @@ export default class RewardListScreen extends React.Component<Props> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={'rewards'}>
                 <ConnectedRewardList 
                     navigation={this.navigation}
                 >

@@ -68,7 +68,7 @@ export default class InProgressGoalListScreen extends React.Component<Props, Sta
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"in-progress-goals"}>
                 <ListPicker
                     data={{
                         current: this.state.currentList

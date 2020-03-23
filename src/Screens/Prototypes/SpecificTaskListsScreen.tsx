@@ -37,7 +37,7 @@ export default class SpecificTaskListScreen extends React.Component<Props, State
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"specific-tasks"}>
                 <ListPicker
                     data={{
                         current: this.state.current

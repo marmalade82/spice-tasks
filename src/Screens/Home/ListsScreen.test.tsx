@@ -145,8 +145,8 @@ describe("using lists", () => {
     }, 10000);
 })
 
-describe.only("Navigation", () => {
-    test.only("Can navigate to list of all goals screen", async () => {
+describe("Navigation", () => {
+    test("Can navigate to list of all goals screen", async () => {
         const { getByLabelText, queryNavigation, navigation } = renderWithNavigation("Lists", {});
         expect(queryNavigation.currentRoute).toEqual("Lists");
 
@@ -171,5 +171,19 @@ describe.only("Navigation", () => {
             expect(queryNavigation.currentRoute).toEqual("Goals"); 
         });
 
+    }, 10000)
+
+    test("Can navigate to list of all goals screen", async () => {
+        const { getByLabelText, queryNavigation, navigation } = renderWithNavigation("Lists", {});
+        expect(queryNavigation.currentRoute).toEqual("Lists");
+
+        {
+            const goalDest = getByLabelText("input-dest-goals")
+            fireEvent.press(goalDest);
+        }
+        
+        await wait(async () => {
+            expect(queryNavigation.currentRoute).toEqual("Goals"); 
+        });
     }, 10000)
 })

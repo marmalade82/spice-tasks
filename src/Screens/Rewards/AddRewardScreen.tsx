@@ -113,7 +113,7 @@ export default class AddRewardScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <DocumentView >
+            <DocumentView accessibilityLabel={"add-reward"}>
                 <ScrollView style={{
                 }}>
                     { this.renderRewardForm() }

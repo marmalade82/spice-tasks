@@ -56,6 +56,7 @@ export function renderWithNavigation<T extends keyof ScreenParams>(initialRoute:
             if(found) {
                 // pop until the desired screen is on the top of the stack.
                 while(stack.length > 1 && stack[stack.length - 1].route !== screen) {
+                    stack[stack.length - 1].renderFns.unmount();
                     stack.pop();
                     stack[stack.length - 1].params = params;
                 } 

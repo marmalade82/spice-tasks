@@ -113,7 +113,7 @@ export default class AddPenaltyScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"add-penalty"}>
                 <ScrollView>
                     { this.renderPenaltyForm() }
                 </ScrollView>

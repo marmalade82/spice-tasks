@@ -33,7 +33,7 @@ export default class UnusedPenaltiesScreen extends React.Component<Props> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"unused-earned-penalties"}>
                 <ConnectedEarnedPenaltyList 
                     navigation={this.navigation}
                     type={"active"}

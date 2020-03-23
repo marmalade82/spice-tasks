@@ -30,7 +30,7 @@ export default class HomePageScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel="home-page">
 
                 <NavigationRow
                     number={4}

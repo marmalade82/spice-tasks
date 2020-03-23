@@ -82,7 +82,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={'remaining-tasks'}>
                 <ListPicker
                     data={{
                         current: this.state.currentList

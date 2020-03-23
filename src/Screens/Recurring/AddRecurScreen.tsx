@@ -91,7 +91,7 @@ export default class AddRecurScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"add-recur"}>
                 <ScrollView style={{
                     backgroundColor: "transparent",
                 }}>

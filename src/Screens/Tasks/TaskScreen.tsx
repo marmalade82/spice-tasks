@@ -134,7 +134,7 @@ export default class TaskScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"task"}>
                 <ScrollView>
 
                     {this.renderSummary()}

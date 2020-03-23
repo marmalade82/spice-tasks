@@ -76,7 +76,7 @@ export default class TaskListScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"tasks"}>
                 <ConnectedTaskList
                     navigation={this.navigation}
                     parentId={""}

@@ -64,7 +64,7 @@ export default class PenaltyListScreen extends React.Component<Props> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"penalties"}>
                 <ConnectedPenaltyList 
                     navigation={this.navigation}
                 >

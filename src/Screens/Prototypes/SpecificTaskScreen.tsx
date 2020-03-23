@@ -44,7 +44,7 @@ export default class SpecificTaskScreen extends React.Component<Props, State> {
     render = () => {
 
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"specific-task"}>
                 <ScrollView>
                     <Summary
                         style={{}}

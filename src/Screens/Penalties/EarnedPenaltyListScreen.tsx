@@ -38,7 +38,7 @@ export default class EarnedPenaltyListScreen extends React.Component<Props, Stat
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"earned-penalties"}>
                 <ConnectedEarnedPenaltyList
                     navigation={this.navigation}
                     onEarnedPenaltyAction={this.onEarnedPenaltyAction}

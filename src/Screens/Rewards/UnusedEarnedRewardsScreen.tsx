@@ -39,7 +39,7 @@ export default class UnusedEarnedRewardsScreen extends React.Component<Props, St
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel="unused-earned-reward">
                 <ConnectedEarnedRewardList
                     navigation={this.navigation}
                     type={"active"}

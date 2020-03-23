@@ -202,7 +202,7 @@ export default class GoalScreen extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <DocumentView>
+            <DocumentView accessibilityLabel={"goal"}>
                 <ScrollView>
                     {this.renderSummary()}
                     {this.renderLists()}
