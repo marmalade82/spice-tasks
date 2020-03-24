@@ -79,7 +79,7 @@ const enhance = withObservables([], (props: InputProps) => {
                 cycles: new GoalQuery().queryId(props.goalId ? props.goalId : "").observe().pipe(switchMap((goals) => {
                     const goal = goals[0];
                     if(goal) {
-                        return new ChildStreakCycleQuery(goal.id).queryEndsOnBefore(goal.currentCycleEnd()).observe();
+                        return observableWithRefreshTimer(() => new ChildStreakCycleQuery(goal.id).queryEndsOnBefore(goal.currentCycleEnd()).observe());
                     } else {
                         return new Observable<StreakCycle[]>((subscriber) => {
                             subscriber.next([])

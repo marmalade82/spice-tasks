@@ -90,6 +90,7 @@ export function renderWithNavigation<T extends keyof ScreenParams>(initialRoute:
         },
         goBack: function (thing?: null) {
             if(stack.length > 1) {
+                console.log("GOING BACK FROM " + stack[stack.length - 1].route)
                 const popped = stack.pop();
                 popped ? popped.renderFns.unmount(): null;
             }
@@ -125,6 +126,9 @@ export function renderWithNavigation<T extends keyof ScreenParams>(initialRoute:
         },
         queryAllByLabelText: (...args) => {
             return stack[stack.length - 1].renderFns.queryAllByLabelText(...args)
+        },
+        getByText: (...args) => {
+            return stack[stack.length - 1].renderFns.getByText(...args)
         },
         queryNavigation: queryNavigation,
         navigation,

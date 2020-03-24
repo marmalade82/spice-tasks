@@ -45,6 +45,7 @@ const DUE_DATE_CHANGE = 'due_date_change';
 
 export function ValidateTaskForm(form: AddTaskForm) {
     const state = form.data();
+    console.log(state);
     const nameMessage = form.validateName(state.name);
     if(nameMessage !== undefined) {
         return nameMessage;

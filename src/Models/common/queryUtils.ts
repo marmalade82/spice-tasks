@@ -141,8 +141,9 @@ function lastRefreshedOnOrBeforeConditions(d: Date) {
 }
 
 function startsOnOrAfterConditions(d: Date) {
+    let yesterday = new MyDate(d).subtract(1, "days").asDueDate().toDate();
     return [
-        Q.where(goalName.STARTS_AT, Q.gte(d.valueOf()))
+        Q.where(goalName.STARTS_AT, Q.gt(yesterday.valueOf()))
     ]
 }
 
@@ -153,8 +154,9 @@ function startsBeforeConditions(d: Date) {
 }
 
 function dueOnOrBeforeConditions(d: Date) {
+    let tmr = new MyDate(d).nextMidnight().toDate();
     return [
-        Q.where(goalName.DUE_AT, Q.lte(d.valueOf()))
+        Q.where(goalName.DUE_AT, Q.lt(tmr.valueOf()))
     ]
 }
 

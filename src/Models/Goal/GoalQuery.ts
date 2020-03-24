@@ -268,6 +268,7 @@ export class GoalLogic {
 
     static processSomeStreaks = async (n?: number) => {
         const goals: Goal[] = await new ActiveGoalQuery().unprocessedStreaks();
+        console.log("processing at most " + goals.length + " streaks ")
         await GoalLogic.process(goals, n)
     }
 
@@ -337,6 +338,7 @@ export class GoalLogic {
                         await this._generateNextStreakTasks(latestCycleTasks, goal.id, latestCycleStartDate, unit, 
                                 afterCycles, goal.currentCycleStart());
 
+                console.log("LATEST CYCLE ID: " + latestCycleId)
                 tx.consume(newTx);
 
                 tx.addUpdate(new GoalQuery(), goal, {

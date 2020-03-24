@@ -17,12 +17,17 @@ import {
 } from "src/common/test-utils";
 import MyDate from "src/common/Date";
 import { renderWithNavigation } from "src/common/MockNavigation";
-import { Test } from "src/Screens";
+import { GoalLogic } from "src/Models/Goal/GoalQuery";
+import StreakCycleQuery, { ChildStreakCycleQuery } from "src/Models/Group/StreakCycleQuery";
 
 
 describe("Streak goals", () => {
     test("creation", async () => {
-        const { getByLabelText, queryAllByLabelText, queryByLabelText, queryNavigation, navigation, component, params, intake } = renderWithNavigation("AppStart", {});
+        const { 
+            getByLabelText, queryAllByLabelText, queryByLabelText, 
+            queryNavigation, navigation, component, 
+            params, intake,
+        } = renderWithNavigation("AppStart", {});
         intake( render(component()));
 
         {   // Create a goal
@@ -127,6 +132,89 @@ describe("Streak goals", () => {
             })
         }
     })
+
+    test("Adding tasks and then waiting a day", async () => {
+
+        const { getByLabelText, queryAllByLabelText, queryByLabelText, queryNavigation, navigation, component, params, intake,
+        } = renderWithNavigation("AppStart", {});
+        intake( render(component()));
+
+        {   // Create a goal
+            const addGoal = getByLabelText("input-add-goal")
+            fireEvent.press(addGoal);
+            intake( render(component()));
+
+            const summaryInput = getByLabelText("input-goal-summary");
+            fireEvent.changeText(summaryInput, "Summary");
+
+            const typeChoice = getByLabelText("input-" + "streak" + "-goal-type");
+            fireEvent.press(typeChoice);
+
+            const dueDateInput = getByLabelText("value-input-goal-due-date");
+            fireEvent.changeText(dueDateInput, MyDate.Now().add(1, "days").toDate().toString());
+
+            await waitForAsyncLifecycleMethods()
+            const saveButton = getByLabelText("input-save-button");
+            fireEvent.press(saveButton);
+            await waitForAsyncLifecycleMethods()
+        }
+
+        {   // After creating a streak goal, we should arrive at the created goal.
+            // Now we add a task.
+            intake(render(component()));
+            
+            const addTaskButton = getByLabelText("input-add-goal-button");
+            fireEvent.press(addTaskButton);
+            await waitForAsyncLifecycleMethods();
+        }
+
+        {   // We create a task
+            intake(render(component()));
+            await wait(() => {
+                expect(queryNavigation.currentRoute).toEqual("AddTask");
+                getByLabelText("add-task-screen");
+            })
+
+            const nameInput = getByLabelText("input-task-name");
+            fireEvent.changeText(nameInput, "Name");
+
+            await waitForAsyncLifecycleMethods();
+            const saveButton = getByLabelText("input-save-button");
+            fireEvent.press(saveButton);
+            await waitForAsyncLifecycleMethods();
+        }
+
+        {   // after creating the task, we return to the goal, since we may want to add more tasks.
+            intake(render(component()));
+            await wait(() => {
+                expect(queryNavigation.currentRoute).toEqual("Goal");
+                getByLabelText("goal-screen");
+            })
+
+            // Now we simulate the passing of a day to generate a second cycle.
+            const id = navigation.getParam("id", "");
+            let cycles = await new ChildStreakCycleQuery(id).all();
+            expect(cycles.length).toEqual(1);
+            MyDate.TEST_ONLY_NowAdd(1, "days");
+            await GoalLogic.processSomeStreaks(3);
+
+            // Rerender screen, since we aren't going to wait for the refresh timer.
+            intake(render(component()));
+            await wait(async () => {
+                expect(queryNavigation.currentRoute).toEqual("Goal");
+                getByLabelText("goal-screen");
+                let cycles = await new ChildStreakCycleQuery(id).all();
+                expect(cycles.length).toEqual(2);
+            })
+
+            await wait(() => {
+                const tasks = queryAllByLabelText('task-list-item');
+                expect(tasks.length).toEqual(1);
+                const cycles = queryAllByLabelText('streakcycle-list-item');
+                expect(cycles.length).toEqual(2);
+            })
+        }
+    }, 15000)
 })
 
 
