@@ -133,7 +133,7 @@ describe("Streak goals", () => {
         }
     })
 
-    test("Adding tasks and then waiting a day", async () => {
+    test("Adding tasks and then waiting for one active cycle, and then one overdue cycle", async () => {
 
         const { getByLabelText, queryAllByLabelText, queryByLabelText, queryNavigation, navigation, component, params, intake,
         } = renderWithNavigation("AppStart", {});
@@ -193,8 +193,6 @@ describe("Streak goals", () => {
 
             // Now we simulate the passing of a day to generate a second cycle.
             const id = navigation.getParam("id", "");
-            let cycles = await new ChildStreakCycleQuery(id).all();
-            expect(cycles.length).toEqual(1);
             MyDate.TEST_ONLY_NowAdd(1, "days");
             await GoalLogic.processSomeStreaks(3);
 
@@ -213,6 +211,28 @@ describe("Streak goals", () => {
                 const cycles = queryAllByLabelText('streakcycle-list-item');
                 expect(cycles.length).toEqual(2);
             })
+
+            // Now we simulate the passing of a second day *PAST* the due date,
+            // so no cycle should be generated.
+            MyDate.TEST_ONLY_NowAdd(1, "days");
+            await GoalLogic.processSomeStreaks(3);
+
+            // Rerender screen, since we aren't going to wait for the refresh timer.
+            intake(render(component()));
+            await wait(async () => {
+                expect(queryNavigation.currentRoute).toEqual("Goal");
+                getByLabelText("goal-screen");
+                let cycles = await new ChildStreakCycleQuery(id).all();
+                expect(cycles.length).toEqual(2);
+            })
+
+            await wait(() => {
+                const tasks = queryAllByLabelText('task-list-item');
+                expect(tasks.length).toEqual(1);
+                const cycles = queryAllByLabelText('streakcycle-list-item');
+                expect(cycles.length).toEqual(2);
+            })
+
         }
     }, 15000)
 })
