@@ -43,6 +43,9 @@ describe("Streak goals", () => {
             const typeChoice = getByLabelText("input-" + "streak" + "-goal-type");
             fireEvent.press(typeChoice);
 
+            const cycleInput = getByLabelText("input-goal-number-cycles");
+            fireEvent.changeText(cycleInput, "2");
+
             await waitForAsyncLifecycleMethods()
             const saveButton = getByLabelText("input-save-button");
             fireEvent.press(saveButton);
@@ -84,6 +87,9 @@ describe("Streak goals", () => {
 
             const typeChoice = getByLabelText("input-" + "streak" + "-goal-type");
             fireEvent.press(typeChoice);
+
+            const cycleInput = getByLabelText("input-goal-number-cycles");
+            fireEvent.changeText(cycleInput, "2");
 
             await waitForAsyncLifecycleMethods()
             const saveButton = getByLabelText("input-save-button");
@@ -150,8 +156,8 @@ describe("Streak goals", () => {
             const typeChoice = getByLabelText("input-" + "streak" + "-goal-type");
             fireEvent.press(typeChoice);
 
-            const dueDateInput = getByLabelText("value-input-goal-due-date");
-            fireEvent.changeText(dueDateInput, MyDate.Now().add(1, "days").toDate().toString());
+            const cycleInput = getByLabelText("input-goal-number-cycles");
+            fireEvent.changeText(cycleInput, "2");
 
             await waitForAsyncLifecycleMethods()
             const saveButton = getByLabelText("input-save-button");

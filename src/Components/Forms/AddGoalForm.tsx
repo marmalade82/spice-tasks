@@ -174,7 +174,10 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
     }
 
     validateCycleCount = (cycles: number) => {
-        return cycles < 2 ? "Number of cycles must be at least 1" : undefined
+        if(this.data().type === GoalType.STREAK) {
+            return cycles < 2 ? "Number of cycles must be at least 2" : undefined
+        }
+        return undefined
     }
 
     validateSpecificReward = (rewardId: string) => {

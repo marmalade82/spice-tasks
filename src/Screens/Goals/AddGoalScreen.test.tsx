@@ -36,7 +36,6 @@ test('User can set type of goal to streak if desired', async () => {
     fireEvent.press(goalTypeInput);
     const goalChoice = getByLabelText("input-streak-goal-type");
     fireEvent.press(goalChoice);
-    const minimumText = await waitForElement(() => getByText("Minimum"));
     const streakTypeInput = getByLabelText("input-streak-type");
 });
 
@@ -124,8 +123,8 @@ test("User can fill out all fields of a streak goal and have them saved to datab
     const streakTypeChoice = getByLabelText("input-" + expected.streakType + "-streak-type" )
     fireEvent.press(streakTypeChoice);
 
-    const streakMinimumInput = getByLabelText("input-streak-minimum");
-    fireEvent.changeText(streakMinimumInput, expected.streakMinimum);
+    const cycleInput = getByLabelText("input-goal-number-cycles");
+    fireEvent.changeText(cycleInput, "2");
 
         {
             // render the save button, which shares an event dispatcher with the goal screen.
@@ -143,7 +142,8 @@ test("User can fill out all fields of a streak goal and have them saved to datab
         expect(createdGoal.goalType).toEqual(expected.type);
         expect(createdGoal.details).toEqual(expected.details)
         expect(createdGoal.streakType).toEqual(expected.streakType);
-        expect(createdGoal.streakMinimum.toString()).toEqual(expected.streakMinimum)
+        new MyDate(createdGoal.dueDate).assertEquals(MyDate.Now().add(1, "days").asDueDate(), "same due date");
+        new MyDate(createdGoal.startDate).assertEquals(MyDate.Now().asStartDate(), "same start date");
     })
 
     await destroyAllIn('goals');
