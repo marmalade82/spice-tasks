@@ -232,7 +232,6 @@ describe("Streak goals", () => {
                 const cycles = queryAllByLabelText('streakcycle-list-item');
                 expect(cycles.length).toEqual(2);
             })
-
         }
     }, 15000)
 })

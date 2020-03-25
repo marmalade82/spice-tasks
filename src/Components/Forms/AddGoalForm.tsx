@@ -18,6 +18,7 @@ import { Props as DynamicChoiceProps } from "src/Components/Inputs/DynamicChoice
 
 import { Props as SummaryProps } from "src/Components/Inputs/StringInput";
 import { Props as DateProps } from "src/Components/inputs/DateTimeInput";
+import { Props as NumberInputProps } from "src/Components/inputs/NumberInput";
 import { StreakForm, StreakDefault, StreakData }from "src/Components/Forms/AddGoalForm/StreakForm";
 import { ColumnView } from "../Basic/Basic";
 import { RewardChoices, RewardType, RewardTypes } from "src/Models/Reward/RewardLogic";
@@ -57,10 +58,6 @@ interface State {
 }
 
 
-interface Navigator {
-    navigate: (screen: string) => void
-}
-
 
 interface LabelValue {
     label: string,
@@ -97,6 +94,11 @@ export function ValidateGoalForm(form: AddGoalForm): string | undefined {
     const startDateMessage = form.validateStartDate(state.start_date);
     if(startDateMessage !== undefined) {
         return startDateMessage;
+    }
+
+    const cycleMessage = form.validateCycleCount(cyclesFromDueDate(state.start_date, state.due_date, state.streakData.type))
+    if(cycleMessage !== undefined) {
+        return cycleMessage;
     }
 
     const specificRewardMessage = form.validateSpecificReward(state.rewardId);
@@ -137,6 +139,12 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                             (s: string) => this.validateSpecificPenalty(s),
                             (s: string) => this.validateSpecificPenalty(s),
                             )
+    CycleInput = Validate<number, NumberInputProps>(
+                            NumberInput,
+                            (n: number) => this.validateCycleCount(n),
+                            (n: number) => this.validateCycleCount(n),
+                        );
+
     dispatcher: IEventDispatcher;
     startDateRefresh : Observable<boolean>;
 
@@ -165,6 +173,10 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         return start > this.data().due_date ? "Start date cannot be after due date" : undefined
     }
 
+    validateCycleCount = (cycles: number) => {
+        return cycles < 2 ? "Number of cycles must be at least 1" : undefined
+    }
+
     validateSpecificReward = (rewardId: string) => {
         switch(this.data().reward) {
             case RewardTypes.SPECIFIC: {
@@ -191,19 +203,19 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
      * Event handling functions
      */
 
-    onChangeTitle = (text: string) => {
+    private onChangeTitle = (text: string) => {
         this.setData({
             title: text
         })
     }
 
-    onChangeStreak = (data: StreakData ) => {
+    private onChangeStreak = (data: StreakData ) => {
         this.setData({
             streakData: data
         });
     }
 
-    onChangeStartDate = (date: Date) => {
+    private onChangeStartDate = (date: Date) => {
         this.setData({
             start_date: startDate(date)
         });
@@ -211,7 +223,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         this.dispatcher.fireEvent(START_DATE_CHANGE);
     }
 
-    onChangeDueDate = (date: Date) => {
+    private onChangeDueDate = (date: Date) => {
         this.setData({
             due_date: dueDate(date),
         });
@@ -220,7 +232,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         this.dispatcher.fireEvent(DUE_DATE_CHANGE);
     }
 
-    onChangeType = (type: string) => {
+    private onChangeType = (type: string) => {
         if(type === GoalType.NORMAL || type === GoalType.STREAK) {
             this.setData({
                 type: type
@@ -232,25 +244,45 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         }
     }
 
-    onChangeMinimum = (type: number) => {
 
-    }
-
-    onChangeDetails = (dets: string) => {
+    private onChangeDetails = (dets: string) => {
         this.setData({
             details: dets
         })
     }
 
-    onChangeSpecificReward = (rewardId: string) => {
+    private onChangeSpecificReward = (rewardId: string) => {
         this.setData({
             rewardId: rewardId,
         })
     }
 
-    onChangeSpecificPenalty = (penaltyId: string) => {
+    private onChangeSpecificPenalty = (penaltyId: string) => {
         this.setData({
             penaltyId: penaltyId
+        })
+    }
+
+    private onChangeCycles = (n : number) => {
+        // Calculates the due date from the number of cycles
+        let calcDueDate = new MyDate(this.data().start_date);
+        let unit: "days" | "weeks" | "months" = "days";
+        switch(this.data().streakData.type) {
+            case "daily": {
+                unit = "days";
+            } break;
+            case "weekly": {
+                unit = "weeks";
+            };
+            case "monthly": {
+                unit = "months";
+            }
+        }
+
+        calcDueDate.add(n, unit);
+
+        this.setData({
+            due_date: calcDueDate.subtract(1, unit).asDueDate().toDate(),
         })
     }
 
@@ -260,7 +292,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
     render = () => {
         const SummaryInput = this.SummaryInput;
-        const StartDateInput = this.StartDateInput;
 
         return (
             <ColumnView style={[{
@@ -298,25 +329,10 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         onValueChange={this.onChangeType}
                         accessibilityLabel={"goal-type"}
                     />
-                    { this.renderStreakForm() }
+                    { this.renderIfStreakGoal() }
 
-                    <StartDateInput
-                        title={"Starts on"}
-                        type={"date"}
-                        data={ this.data().start_date }
-                        onValidDataChange={ this.onChangeStartDate }
-                        onInvalidDataChange={ this.onChangeStartDate }
-                        accessibilityLabel={ "goal-start-date" }
-                        revalidate={this.startDateRefresh}
-                    ></StartDateInput>
+                    { this.renderIfNormalGoal() }
 
-                    <DateTimeInput
-                        title={"Due on"} 
-                        type={"date"}
-                        data={ this.data().due_date }
-                        onDataChange={ this.onChangeDueDate }
-                        accessibilityLabel = { "goal-due-date" }
-                    ></DateTimeInput>
 
                     { this.renderRepeats() }
 
@@ -351,22 +367,80 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         )
     }
 
-    renderStreakForm = () => {
+    private renderIfStreakGoal = () => {
         if(this.data().type === "streak") {
+            const StartDateInput = this.StartDateInput;
+            const CycleInput = this.CycleInput;
             return (
-                <StreakForm
-                    data={this.data().streakData}
-                    onDataChange={this.onChangeStreak}
-                    containerStyle={{
-                        flex: 3
+                <View
+                    style={{
+                        flex: 0
                     }}
-                />
+                >
+                    <StreakForm
+                        data={this.data().streakData}
+                        onDataChange={this.onChangeStreak}
+                        containerStyle={{
+                        }}
+                    />
+                    <StartDateInput
+                        title={"Starts on"}
+                        type={"date"}
+                        data={ this.data().start_date }
+                        onValidDataChange={ this.onChangeStartDate }
+                        onInvalidDataChange={ this.onChangeStartDate }
+                        accessibilityLabel={ "goal-start-date" }
+                        revalidate={this.startDateRefresh}
+                    ></StartDateInput>
+                    <CycleInput
+                        title={"Number of cycles"}
+                        data={cyclesFromDueDate(this.data().start_date, this.data().due_date, this.data().streakData.type)}
+                        type={"integer"}
+                        accessibilityLabel={"goal-number-cycles"}
+                        onValidDataChange={this.onChangeCycles}
+                        onInvalidDataChange={this.onChangeCycles}
+                    ></CycleInput>
+                </View>
             );
-        } else {
         }
+        return null
     };
 
-    renderByRewardType = () => {
+
+    private renderIfNormalGoal = () => {
+        if(this.data().type === "normal") {
+            const StartDateInput = this.StartDateInput;
+            return (
+                <View
+                    style={{
+                        flex: 0
+                    }}
+                >
+                    <StartDateInput
+                        title={"Starts on"}
+                        type={"date"}
+                        data={ this.data().start_date }
+                        onValidDataChange={ this.onChangeStartDate }
+                        onInvalidDataChange={ this.onChangeStartDate }
+                        accessibilityLabel={ "goal-start-date" }
+                        revalidate={this.startDateRefresh}
+                    ></StartDateInput>
+
+                    <DateTimeInput
+                        title={"Due on"} 
+                        type={"date"}
+                        data={ this.data().due_date }
+                        onDataChange={ this.onChangeDueDate }
+                        accessibilityLabel = { "goal-due-date" }
+                    ></DateTimeInput>
+                </View>
+            )
+        }
+
+        return null;
+    }
+
+    private renderByRewardType = () => {
         if(this.data().reward === RewardTypes.SPECIFIC) {
             const SpecificRewardInput = this.SpecificRewardInput;
             return (
@@ -389,7 +463,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         }
     }
 
-    renderByPenaltyType = () => {
+    private renderByPenaltyType = () => {
         if(this.data().penalty === PenaltyTypes.SPECIFIC) {
             const SpecificPenaltyInput = this.SpecificPenaltyInput;
             return (
@@ -412,7 +486,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         }
     }
 
-    renderRepeats = () => {
+    private renderRepeats = () => {
         if(this.props.formType !== "update") {
             return (
                     <ChoiceInput
@@ -437,4 +511,24 @@ export {
     AddGoalForm,
     Default as AddGoalDefault,
     State as AddGoalData,
+}
+
+
+function cyclesFromDueDate(start_date, due_date: Date, type: "daily" | "weekly" | "monthly") {
+    let unit: "days" | "weeks" | "months" = "days";
+    switch(type) {
+        case "daily": {
+            unit = "days";
+        } break;
+        case "weekly": {
+            unit = "weeks";
+        };
+        case "monthly": {
+            unit = "months";
+        }
+    }
+
+    let date = new MyDate(due_date).add(1, unit).asStartDate();
+
+    return Math.round(date.diff(start_date, unit))
 }

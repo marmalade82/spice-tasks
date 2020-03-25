@@ -9,16 +9,19 @@ import StringInput from "./StringInput";
 import { ColumnView } from "../Basic/Basic";
 import { CONTAINER_VERTICAL_MARGIN } from "../Styled/Styles";
 
-interface Props {
+export interface Props {
     title: string
-    value: number
+    data: number
     type: "integer" | "float" | "both"
     minimum?: number
     maximum?: number
     precision?: number
-    onValueChange: (n: number) => void
+    onDataChange: (n: number) => void
     accessibilityLabel: string;
     style?: StyleProp<ViewStyle>;
+    onBlur?: () => void;
+    success?: boolean;
+    failure?: string;
 }
 
 interface State {
@@ -34,37 +37,47 @@ export default class NumberInput extends React.Component<Props, State> {
         }
     }
 
-    onChangeText = (number: string) => {
+    private onChangeText = (number: string) => {
         // TODO: Write way to validate the number string to be only for numbers 
-
-        const n = parseInt(number)
-        this.props.onValueChange(n);
+        
+        let n = parseInt(number)
+        if(isNaN(n)) {
+            n = 0;
+        }
+        this.props.onDataChange(n);
+        console.log("CHANGED N TO " + n)
 
     }
 
-    onEndEditing = () => {
-        if (this.props.maximum !== undefined && this.props.maximum < this.props.value) {
+    private onEndEditing = () => {
+        if (this.props.maximum !== undefined && this.props.maximum < this.props.data) {
             Alert.alert("Maximum exceeded",
                     "Please enter a number less than " + this.props.maximum.toString());
         }
         
-        if (this.props.minimum !== undefined && this.props.minimum > this.props.value) {
+        if (this.props.minimum !== undefined && this.props.minimum > this.props.data) {
             Alert.alert("Minimum not met", 
                     "Please enter a number greater than " + this.props.minimum.toString());
 
         }
     }
 
-    onBlur = () => {
+    private onBlur = () => {
         Alert.alert("hello", "hello");
     }
 
     value = () => {
-        if(isNaN(this.props.value)) {
+        if(isNaN(this.props.data)) {
             return '';
         }
 
-        return this.props.value.toString()
+        return this.props.data.toString()
+    }
+
+    icon = () => {
+        if(this.props.failure !== undefined) {
+            return "attention";
+        }
     }
 
     render = () => {
@@ -83,6 +96,8 @@ export default class NumberInput extends React.Component<Props, State> {
                     keyboardType={"number-pad"}
                     onEndEditing={this.onEndEditing}
                     accessibilityLabel={this.props.accessibilityLabel}
+                    onBlur={this.props.onBlur}
+                    icon={this.icon()}
                 />
             </ColumnView>
         );

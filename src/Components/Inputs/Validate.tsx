@@ -17,7 +17,7 @@ interface Props<Data> {
     revalidate?: Observable<boolean>
 }
 
-interface State<Data> {
+interface State {
     errorMessage?: string;
 }
 
@@ -33,7 +33,7 @@ export function Validate<Data, T extends ComponentProps<Data>>(
         validateOnBlur: (d: Data) => string | undefined,
     ) {
 
-    return class Validated extends React.Component< FullProps<T, Data>, State<Data>> {
+    return class Validated extends React.Component< FullProps<T, Data>, State> {
 
         unsub: () => void;
         constructor(props: FullProps<T, Data>) {

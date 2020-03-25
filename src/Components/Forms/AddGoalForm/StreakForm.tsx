@@ -22,15 +22,9 @@ interface State {
     type: "daily" | "weekly" | "monthly"
 }
 
-const localStyle = StyleSheet.create({
-    container: {
-        flex: 1,
-    }
-})
-
 function Default(): State {
     return {
-        minimum: 2,
+        minimum: 0,
         type: "daily",
     }
 }
@@ -43,13 +37,13 @@ export default class StreakForm extends DataComponent<Props, State, State> {
     }
 
 
-    onChangeMinimum = (val: number) => {
+    private onChangeMinimum = (val: number) => {
         this.setData({
             minimum: val
         });
     }
 
-    onChangeType = (val: string) => {
+    private onChangeType = (val: string) => {
         if(val === "daily" || val === "weekly" || val === "monthly") {
             this.setData({
                 type: val
@@ -73,15 +67,6 @@ export default class StreakForm extends DataComponent<Props, State, State> {
                     backgroundColor: "transparent",
                 }, this.props.containerStyle]}
             >
-                <NumberInput
-                    title={"Minimum"}
-                    value={this.data().minimum}
-                    type={"integer"}
-                    minimum={2}
-                    precision={0}
-                    onValueChange={this.onChangeMinimum}
-                    accessibilityLabel={"streak-minimum"}
-                />
                 <ChoiceInput
                     title={"Streak Type"}
                     selectedValue={this.data().type} 
@@ -110,36 +95,6 @@ const streak_choices = [
     }
 ];
 
-const week_start_choices = [
-    { label: "Su"
-    , value: "sunday"
-    , key: "0"
-    },
-    { label: "Mo"
-    , value: "monday"
-    , key: "1"
-    },
-    { label: "Tu"
-    , value: "tuesday"
-    , key: "2"
-    },
-    { label: "We"
-    , value: "wednesday"
-    , key: "3"
-    },
-    { label: "Th"
-    , value: "thursday"
-    , key: "4"
-    },
-    { label: "Fr"
-    , value: "friday"
-    , key: "5"
-    },
-    { label: "Sa"
-    , value: "saturday"
-    , key: "6"
-    },
-];
 
 export {
     StreakForm,
