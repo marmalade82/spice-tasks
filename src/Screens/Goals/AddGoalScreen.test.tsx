@@ -242,4 +242,32 @@ describe("Validation", () => {
             const toast = getByLabelText("toast");
         })
     }, 20000)
+
+    test("start date cannot be in past", async () => {
+        const navigation = makeNavigation({}, "d")
+        const { getByLabelText, queryByLabelText, getByText, queryByText } = 
+                    render(<AddGoalScreen navigation={navigation}></AddGoalScreen>)
+        const toast = queryByLabelText('toast');
+        expect(toast).toEqual(null);
+
+        const summaryInput = getByLabelText("input-goal-summary");
+        fireEvent.changeText(summaryInput, "Dummy value");
+
+        const startInput = getByLabelText("value-input-goal-start-date");
+        fireEvent.changeText(startInput, MyDate.Now().subtract(1, "days").toDate().toString());
+
+        {
+            // render the save button, which shares an event dispatcher with the goal screen.
+            const { getByLabelText } = render(AddGoalScreen.navigationOptions({ navigation: navigation}).right[0]())
+            await waitForAsyncLifecycleMethods();
+            const saveButton = getByLabelText("input-save-button");
+            fireEvent.press(saveButton);
+        }
+
+        await wait(async () => {
+            const toast = getByLabelText("toast");
+            const createdGoals = (await new GoalQuery().all())
+            expect(createdGoals.length).toEqual(0);
+        })
+    }, 10000)
 })

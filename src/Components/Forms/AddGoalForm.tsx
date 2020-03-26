@@ -170,7 +170,15 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
     }
 
     validateStartDate = (start: Date) => {
-        return start > this.data().due_date ? "Start date cannot be after due date" : undefined
+        if (start > this.data().due_date) {
+            return "Start date cannot be after due date";
+        }
+
+        if(start < MyDate.Now().asStartDate().toDate()) {
+            return "Start date cannot be in past";
+        }
+
+        return undefined;
     }
 
     validateCycleCount = (cycles: number) => {

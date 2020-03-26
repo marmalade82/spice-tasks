@@ -100,6 +100,10 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
             }
         }
 
+        if(start < MyDate.Now().asStartDate().toDate()) {
+            return "Start date cannot be in past";
+        }
+
         return undefined;
     }
 

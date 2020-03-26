@@ -32,6 +32,31 @@ describe("Validation", () => {
         })
     })
 
+    test("Start date cannot be in past", async () => {
+        const navigation = makeNavigation({});
+        const { getByLabelText, queryByLabelText, getByText, queryByText } = 
+                    render(<AddTaskScreen navigation={navigation}></AddTaskScreen>)
+        const toast = queryByLabelText('toast');
+        expect(toast).toEqual(null);
+
+        const nameInput = getByLabelText("input-task-name");
+        fireEvent.changeText(nameInput, "Name");
+
+        const startInput = getByLabelText("value-input-task-start-date");
+        fireEvent.changeText(startInput, MyDate.Now().subtract(1, "days").toDate().toString());
+
+        {
+            const { getByLabelText } = render(AddTaskScreen.navigationOptions({ navigation }).right[0]())
+            await waitForAsyncLifecycleMethods();
+            const saveButton = getByLabelText("input-save-button");
+            fireEvent.press(saveButton);
+        }
+
+        await wait(async () => {
+            const toast = getByLabelText("toast");
+        })
+    }, 10000)
+
     test.skip("For normal goal parent, task start and due date is restricted by parent goal", async () => {
         const { parentId } = await setup();
 
