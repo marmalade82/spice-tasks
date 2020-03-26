@@ -11,7 +11,7 @@ import {
 
 
 interface Props {
-    type: "complete" | "delete" | "goal" | "task" | 
+    type: "complete" | "not-complete" | "in-progress" | "delete" | "goal" | "task" | 
         "reward" | "penalty" | "mandatory" | "attention" | "info" | "recur"| 
         "earned_reward" | "earned_penalty" | "right" | "left" | "first" | "last" | "none" | 
         "fail" | "add" | "arrow-left" | "save" |
@@ -54,6 +54,28 @@ export default class StyledIcon extends React.Component<Props, State>{
                 return (
                     <Icon
                         name={"check"}
+                        type={"feather"}
+                        color={this.props.color ? this.props.color : "white"}
+                        size={this.props.size ? this.props.size : 20}
+                    >
+                    </Icon>
+                );
+            } break;
+            case "not-complete": {
+                return (
+                    <Icon
+                        name={"x"}
+                        type={"feather"}
+                        color={this.props.color ? this.props.color : "white"}
+                        size={this.props.size ? this.props.size : 20}
+                    >
+                    </Icon>
+                );
+            } break;
+            case "in-progress": {
+                return (
+                    <Icon
+                        name={"sun"}
                         type={"feather"}
                         color={this.props.color ? this.props.color : "white"}
                         size={this.props.size ? this.props.size : 20}

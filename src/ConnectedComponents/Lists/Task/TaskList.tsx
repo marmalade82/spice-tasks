@@ -172,7 +172,7 @@ const enhance = withObservables(['type'], (props: InputProps) => {
                 const ids: string[] = cycles.map((cycle) => {
                     return cycle.id;
                 })
-                return new ChildOfTaskQuery(ids).queryOverdue().observe()
+                return new ChildOfTaskQuery(ids).queryActiveOverdue().observe()
             }))
             return {
                 tasks: observableWithRefreshTimer( () => {

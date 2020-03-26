@@ -17,7 +17,10 @@ interface Props<T extends keyof ScreenParams> {
     number: number;
     key: string;
     accessibilityLabel?: string;
-    type?: "goal" | "task" | "reward" | "penalty" | "recur" | "earned_reward" | "earned_penalty";
+    type?: "goal" | "task" | "reward" | "penalty" | "recur" | "earned_reward" | "earned_penalty" |
+            "complete" | "not-complete" | "in-progress";
+    color?: string;
+    size?: number;
     footerIcons? : (() => JSX.Element)[]
 }
 
@@ -58,6 +61,8 @@ export default class ListItem<T extends keyof ScreenParams> extends React.Compon
                             <Icon
                                 type={this.props.type ? this.props.type : "none"}
                                 backgroundColor={"transparent"}
+                                color={this.props.color}
+                                size={this.props.size}
                             ></Icon>
                             <Text style={{
                                     margin: 15,

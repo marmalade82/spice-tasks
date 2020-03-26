@@ -39,6 +39,10 @@ export default class MyDate {
         }
     }
 
+    static WithinInclusive = (start: Date, end: Date, actual: Date) => {
+        return start <= actual && actual <= end
+    }
+
     asStartDate = () => {
         this.prevMidnight();
         return this;

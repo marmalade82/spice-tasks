@@ -177,8 +177,6 @@ export default class AppStartScreen extends React.Component<Props, State> {
 
                     {this.renderOverdue()}
 
-                    {this.renderOngoingGoals()}
-
                     <FootSpacer></FootSpacer>
                 </ScrollView>
                 <AddModal
@@ -211,31 +209,6 @@ export default class AppStartScreen extends React.Component<Props, State> {
                 </View>
             );
         }
-        return null;
-    }
-
-    private renderOngoingGoals = () => {
-        if( this.state.ongoingGoalsCount > 0) {
-            return (
-                <View style={{flex: 0}}>
-                    <BackgroundTitle title={`Ongoing Goals (${this.state.ongoingGoalsCount})`}
-                        style={{
-                        }}
-                    ></BackgroundTitle>
-
-                    <ConnectedGoalList
-                        navigation={this.navigation}
-                        type={"ongoing"}
-                        paginate={4}
-                        onSwipeRight={(id: string) => {
-                            void new GoalLogic(id).complete();
-                        }}
-                        onGoalAction={this.onGoalAction}
-                    ></ConnectedGoalList>
-                </View>
-            );
-        }
-
         return null;
     }
 

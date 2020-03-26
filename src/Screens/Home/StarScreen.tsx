@@ -15,6 +15,11 @@ import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navi
 
 import { BarChart, LineChart }from "src/Components/Charts/Charts";
 import AddModal from "./common/AddModal";
+import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
+import { getKey } from "../common/screenUtils";
+import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
+import { GoalLogic, ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
+import { observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
 
 
 interface Props {
@@ -24,6 +29,7 @@ interface Props {
 
 interface State {
     ongoingGoalsCount: number;
+    futureGoalsCount: number;
     showAdd: boolean
 }
 
@@ -35,6 +41,14 @@ export default class StarScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
             title: 'Goal Dashboard',
+            right: [
+                () => { return (
+                    <HeaderAddButton
+                        dispatcher={dispatcher}
+                        eventName={getKey(navigation)}
+                    ></HeaderAddButton>
+                )}
+            ],
         }
     }
 
@@ -44,80 +58,92 @@ export default class StarScreen extends React.Component<Props, State> {
         super(props);
         this.state = {
             ongoingGoalsCount: 0,
+            futureGoalsCount: 0,
             showAdd: false,
         }
         this.unsub = () => {}
         this.navigation = new ScreenNavigation(this.props);
     }
 
+    componentDidMount = () => {
+        let ongoingGoalsSub = observableWithRefreshTimer(
+            () => new ActiveGoalQuery().queryStarted().observeCount()).subscribe((count) => {
+                this.setState({
+                    ongoingGoalsCount: count
+                })
+            }) ;
+
+        let futureGoalsSub = observableWithRefreshTimer(
+            () => new ActiveGoalQuery().queryNotStarted().observeCount()).subscribe((count) => {
+                this.setState({
+                    futureGoalsCount: count
+                })
+            });
+
+        dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd);
+        this.unsub = () => {
+            dispatcher.removeEventListener(getKey(this.navigation ), this.onClickAdd);
+            ongoingGoalsSub.unsubscribe();
+            futureGoalsSub.unsubscribe();
+        }
+    }
+
+    onClickAdd = () => {
+        this.setState({
+            showAdd: true
+        })
+    }
+
+    componentWillUnmount = () => {
+        this.unsub();
+    }
+
+    private onGoalAction = (id: string, action: "complete" | "fail") => {
+        switch(action) {
+            case "complete": {
+                void new GoalLogic(id).complete();
+            } break;
+            case "fail":{
+                void new GoalLogic(id).fail();
+            } break;
+        }
+    }
 
     render = () => {
-        const results = [
-            0.6,
-            0.7,
-            0,
-            1.0,
-            1.0,
-            0.8,
-            0,
-        ]
-
-        const results2: [number, number][] = [
-            [ 10, 0.6],
-            [ 20, 0.7],
-            [ 30, 0],
-            [ 40, 1.0],
-            [ 50, 1.0],
-            [ 70, 0.8],
-            [ 80, 0],
-        ]
 
         return (
             <DocumentView accessibilityLabel={"star"}>
-                <View style={
-                    { flex: 0,
-                      height: 100,
-                      width: "100%",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      marginTop: 50,
-                      backgroundColor:"lightgreen",
-                    }}
-                    
-                >
-                   <BarChart
-                        height={150}
-                        width={300}
-                        data={results}
-                        max={1}
-                        barFill={"steelblue"}
-                        spacing={50}
-                        xAxisMargin={20}
-                        yAxisMargin={20}
-                        outerMargin={20}
-                   ></BarChart> 
-                </View>
-                <View style={
-                    { flex: 0,
-                      height: 100,
-                      width: "100%",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      marginTop: 50,
-                      backgroundColor: "lightblue"
-                    }}
-                    
-                >
-                    <LineChart
-                        height={150}
-                        width={300}
-                        data={results2}
-                        yMax={1}
-                        xAxisMargin={20}
-                        yAxisMargin={20}
-                        outerMargin={20}
-                   ></LineChart> 
-                </View>
+                <ScrollView>
+                    <BackgroundTitle title={`Ongoing Goals (${this.state.ongoingGoalsCount})`}
+                        style={{
+                        }}
+                    ></BackgroundTitle>
+
+                    <ConnectedGoalList
+                        navigation={this.navigation}
+                        type={"ongoing"}
+                        paginate={4}
+                        onSwipeRight={(id: string) => {
+                            this.onGoalAction(id, "complete")
+                        }}
+                        onGoalAction={this.onGoalAction}
+                    ></ConnectedGoalList>
+
+
+                    <BackgroundTitle title={`Future Goals (${this.state.futureGoalsCount})`}
+                        style={{
+                        }}
+                    ></BackgroundTitle>
+                    <ConnectedGoalList
+                        navigation={this.navigation}
+                        type={"future"}
+                        paginate={4}
+                        onGoalAction={this.onGoalAction}
+                        emptyText={"You don't have any goals planned"}
+                    ></ConnectedGoalList>
+                </ScrollView>
+            
+
                 <AddModal
                     visible={this.state.showAdd}
                     onRequestClose={() => this.setState({ showAdd: false })}

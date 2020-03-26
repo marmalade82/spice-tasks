@@ -130,7 +130,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                     const ids: string[] = cycles.map((cycle) => {
                         return cycle.id;
                     })
-                    return new ChildOfTaskQuery(ids).queryOverdue().observeCount()
+                    return new ChildOfTaskQuery(ids).queryActiveOverdue().observeCount()
                 }))
                 return combineLatest([directChildCount, streakChildCount], (dCount, sCount) => dCount + sCount)
             })().subscribe((n) => {

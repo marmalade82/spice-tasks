@@ -18,6 +18,7 @@ import { View } from "react-native"
 import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
 import { OnGoalAction } from "src/Components/Lists/Items/GoalListItem";
 import { Navigation, ScreenParams } from "src/common/Navigator";
+import EmptyList from "src/Components/Lists/EmptyList";
 
 interface Props {
     goals: Goal[];
@@ -25,41 +26,58 @@ interface Props {
     paginate?: number;
     onSwipeRight?: (id: string) => void;
     onGoalAction: OnGoalAction;
+    emptyText?: string;
 }
 
 const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
     let swipeRef = useRef<SwipeRow>(null);
     const renderGoal = (item: Goal) => {
-        return (
-            <SwipeRow
-                ref={swipeRef}
-                renderSwipeRight={() => {
-                    return (
-                        <View style={{
-                            backgroundColor: PRIMARY_COLOR,
-                            flex: 0,
-                            height: ROW_CONTAINER_HEIGHT,
-                            width: "100%",
-                        }}>
-                        </View>
-                    )
-                }}
-                onSwipeRightOpen={() => { props.onSwipeRight ? props.onSwipeRight(item.id): null }}
-                key={item.id}
-            >
-                <ConnectedGoalListItem
-                    goal={item}
-                    navigation={props.navigation}
-                    onGoalAction={(id: string, action: "complete" | "fail") => {
-                        if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
-                            swipeRef.current.swipeRight();
-                        } else {
-                            props.onGoalAction(id, action);
-                        }
+        if(props.onSwipeRight) {
+            return (
+                <SwipeRow
+                    ref={swipeRef}
+                    renderSwipeRight={() => {
+                        return (
+                            <View style={{
+                                backgroundColor: PRIMARY_COLOR,
+                                flex: 0,
+                                height: ROW_CONTAINER_HEIGHT,
+                                width: "100%",
+                            }}>
+                            </View>
+                        )
                     }}
-                ></ConnectedGoalListItem>
-            </SwipeRow>
-        );
+                    onSwipeRightOpen={() => { props.onSwipeRight ? props.onSwipeRight(item.id): null }}
+                    key={item.id}
+                >
+                    <ConnectedGoalListItem
+                        goal={item}
+                        navigation={props.navigation}
+                        onGoalAction={(id: string, action: "complete" | "fail") => {
+                            if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
+                                swipeRef.current.swipeRight();
+                            } else {
+                                props.onGoalAction(id, action);
+                            }
+                        }}
+                    ></ConnectedGoalListItem>
+                </SwipeRow>
+            );
+        } else {
+            return (
+                    <ConnectedGoalListItem
+                        goal={item}
+                        navigation={props.navigation}
+                        onGoalAction={(id: string, action: "complete" | "fail") => {
+                            if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
+                                swipeRef.current.swipeRight();
+                            } else {
+                                props.onGoalAction(id, action);
+                            }
+                        }}
+                    ></ConnectedGoalListItem>
+            )
+        }
     }
 
     if(props.paginate) {
@@ -69,6 +87,13 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
                 pageMax={props.paginate}
                 renderItem={renderGoal}
                 renderEmptyItem={() => {return <EmptyListItem></EmptyListItem>}}
+                renderEmptyList={() => { 
+                    return (
+                        <EmptyList
+                            text={props.emptyText ? props.emptyText : "No goals here." }
+                        ></EmptyList>
+                    );
+                }}
             ></PagedList>
         )
     } else {
@@ -83,7 +108,7 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
 }
 
 interface InputProps extends Omit<Props, "goals"> {
-    type? : "overdue" | "in-progress-not-due" | "recurring" | "ongoing"
+    type? : "overdue" | "in-progress-not-due" | "recurring" | "ongoing" | "future";
     parentId?: string;
 }
 
@@ -114,6 +139,11 @@ const enhance = withObservables([], (props: InputProps) => {
                 goals: observableWithRefreshTimer( () => new ActiveGoalQuery().queryStarted().observe() ),
             }
         } break;
+        case "future": {
+            return {
+                goals: observableWithRefreshTimer( () => new ActiveGoalQuery().queryNotStarted().observe() ),
+            }
+        }
         default: {
             return {
                 goals: new GoalQuery().queryAll().observe()

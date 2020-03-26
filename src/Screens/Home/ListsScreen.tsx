@@ -97,7 +97,7 @@ export default class ListsScreen extends React.Component<Props, State> {
         this.unsub();
     }
 
-    onEarnedRewardAction = (id: string, action: "use") => {
+    private onEarnedRewardAction = (id: string, action: "use") => {
         switch(action) {
             case "use": {
                 void new EarnedRewardLogic(id).use();
@@ -105,7 +105,7 @@ export default class ListsScreen extends React.Component<Props, State> {
         }
     }
 
-    onEarnedPenaltyAction = (id: string, action: "use") => {
+    private onEarnedPenaltyAction = (id: string, action: "use") => {
         switch(action) {
             case "use": {
                 void new EarnedPenaltyLogic(id).use();
@@ -113,7 +113,7 @@ export default class ListsScreen extends React.Component<Props, State> {
         }
     }
 
-    onClickAdd = () => {
+    private onClickAdd = () => {
         this.setState({
             showAdd: true
         })

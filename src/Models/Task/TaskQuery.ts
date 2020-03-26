@@ -314,6 +314,13 @@ export class ChildOfTaskQuery extends ModelQuery<Task, ITask> {
             Q.and(...Conditions.overdue())
         )
     }
+
+    queryActiveOverdue = () => {
+        return this.query(
+            Q.and(...Conditions.overdue()),
+            Q.and(...Conditions.active()),
+        )
+    }
 }
 
 export {
