@@ -36,13 +36,6 @@ export default class StreakForm extends DataComponent<Props, State, State> {
         this.state = Default();
     }
 
-
-    private onChangeMinimum = (val: number) => {
-        this.setData({
-            minimum: val
-        });
-    }
-
     private onChangeType = (val: string) => {
         if(val === "daily" || val === "weekly" || val === "monthly") {
             this.setData({
@@ -54,7 +47,6 @@ export default class StreakForm extends DataComponent<Props, State, State> {
             })
         }
     }
-
 
     render = () => {
         return (
@@ -68,7 +60,7 @@ export default class StreakForm extends DataComponent<Props, State, State> {
                 }, this.props.containerStyle]}
             >
                 <ChoiceInput
-                    title={"Streak Type"}
+                    title={"Habit Type"}
                     selectedValue={this.data().type} 
                     choices={streak_choices}
                     onValueChange={this.onChangeType}

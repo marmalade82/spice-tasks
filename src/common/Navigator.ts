@@ -58,7 +58,10 @@ const None = { }
 
 const NavigatorParams = {
     Home: None
-  , Goal: Single
+  , Goal: {
+      title: "Goal" as "Goal" | "Habit",
+      ...Single,
+    }
   , Goals: None
   , Menu: None
   , AddGoal: {

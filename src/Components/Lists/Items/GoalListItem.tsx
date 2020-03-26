@@ -10,6 +10,7 @@ interface Props {
     accessibilityLabel: string
     navigation: Navigation<ScreenParams>
     onAction: OnGoalAction
+    destTitle: "Goal" | "Habit"
 }
 
 export type OnGoalAction = (id: string, action: "complete" | "fail") => void;
@@ -35,12 +36,15 @@ export default class GoalListItem extends Item<Props, State, Goal> {
     }
     
     render = () => {
-        const {id, title, due_date, type} = this.props.item
+        const {id, title, due_date, type, } = this.props.item
 
         return (
             <ListItem
                 navigation={this.props.navigation}
-                params={{id: id}}
+                params={{
+                    id: id,
+                    title: this.props.destTitle,
+                }}
                 destination={"Goal"}
                 accessibilityLabel={this.props.accessibilityLabel}
                 text={title}

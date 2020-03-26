@@ -365,6 +365,14 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         containerStyle={{
                         }}
                     />
+                    <CycleInput
+                        title={`Number of ${getCycleType(this.data().streakData.type)}`}
+                        data={cyclesFromDueDate(this.data().start_date, this.data().due_date, this.data().streakData.type)}
+                        type={"integer"}
+                        accessibilityLabel={"goal-number-cycles"}
+                        onValidDataChange={this.onChangeCycles}
+                        onInvalidDataChange={this.onChangeCycles}
+                    ></CycleInput>
                     <StartDateInput
                         title={"Starts on"}
                         type={"date"}
@@ -374,18 +382,18 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         accessibilityLabel={ "goal-start-date" }
                         revalidate={this.startDateRefresh}
                     ></StartDateInput>
-                    <CycleInput
-                        title={"Number of cycles"}
-                        data={cyclesFromDueDate(this.data().start_date, this.data().due_date, this.data().streakData.type)}
-                        type={"integer"}
-                        accessibilityLabel={"goal-number-cycles"}
-                        onValidDataChange={this.onChangeCycles}
-                        onInvalidDataChange={this.onChangeCycles}
-                    ></CycleInput>
                 </View>
             );
         }
         return null
+
+        function getCycleType(type: "daily" | "weekly" | "monthly") {
+            switch(type) {
+                case "daily": return "days"
+                case "weekly": return "weeks"
+                case "monthly": return "months"
+            }
+        }
     };
 
 

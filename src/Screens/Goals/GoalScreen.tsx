@@ -44,7 +44,7 @@ export default class GoalScreen extends React.Component<Props, State> {
 
     static navigationOptions = ({navigation}) => {
         return {
-            title: 'Goal',
+            title: navigation.getParam("title", 'Goal'),
             right: [
                 () => {
                     return (
@@ -267,6 +267,22 @@ export default class GoalScreen extends React.Component<Props, State> {
     private renderLists = () => {
         const goal = this.state.goal
         if(goal) {
+            var getCycleType = () => {
+                switch(goal.streakType) {
+                    case "daily": return "Day";
+                    case "weekly": return "Week";
+                    case "monthly": return "Month";
+                }
+            }
+
+            var getCurrentCycleType = () => {
+                switch(goal.streakType) {
+                    case "daily": return "Today";
+                    case "weekly": return "This Week";
+                    case "monthly": return "This Month";
+                }
+            }
+
             switch(goal.goalType) {
                 case GoalType.STREAK: {
                     return (
@@ -275,7 +291,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 flex: 0,
                             }}
                         >
-                            <BackgroundTitle title={`Current Cycle (${this.state.currentCycleCount})`}
+                            <BackgroundTitle title={`${getCurrentCycleType()} (${this.state.currentCycleCount})`}
                                 style={{
                                 }}
                             ></BackgroundTitle>
@@ -292,7 +308,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 onTaskAction={this.onTaskAction}
                             ></ConnectedTaskList>
 
-                            <BackgroundTitle title={`Previous Cycles (${this.state.previousCycleCount})`}
+                            <BackgroundTitle title={`Previous ${getCycleType()}s (${this.state.previousCycleCount})`}
                                 style={{
                                 }}
                             ></BackgroundTitle>

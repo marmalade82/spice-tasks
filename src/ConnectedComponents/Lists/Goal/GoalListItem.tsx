@@ -32,6 +32,7 @@ const AdaptedGoalListItem: React.FunctionComponent<Props> = function(props: Prop
             accessibilityLabel={"goal-list-item"}
             navigation={props.navigation}
             onAction={props.onGoalAction}
+            destTitle={goal.isStreak() ? "Habit" : "Goal"}
         ></GoalListItem>
     );
 }

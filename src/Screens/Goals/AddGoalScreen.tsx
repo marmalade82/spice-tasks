@@ -161,7 +161,8 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 const createdGoal = await GoalLogic.create(goalData, data.repeats)
 
                 this.navigation.replace("Goal", {
-                    id: createdGoal
+                    id: createdGoal.id,
+                    title: createdGoal.isStreak() ? "Habit" : "Goal",
                 })
             }
         }

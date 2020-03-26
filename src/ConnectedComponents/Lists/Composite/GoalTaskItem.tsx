@@ -61,6 +61,7 @@ const AdaptedGoalTaskItem: React.FunctionComponent<Props> = function(props: Prop
                 accessibilityLabel={props.accessibilityLabel ? props.accessibilityLabel : "goal-list-item"}
                 navigation={props.navigation}
                 onAction={createItemAction("goal")}
+                destTitle={goal.isStreak() ? "Habit" : "Goal"}
             >
 
             </GoalListItem>

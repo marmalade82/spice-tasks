@@ -552,7 +552,7 @@ export class GoalLogic {
 
         await tx.commitAndReset();
 
-        return goal.id;
+        return goal;
     }
 
     complete = async () => {
