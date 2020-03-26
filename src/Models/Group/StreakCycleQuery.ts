@@ -83,6 +83,12 @@ export class ChildStreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle>
         );
     }
 
+    queryStartsOnAfter = (date: Date) => {
+        return this.query(
+            Q.and(...Conditions.startsOnOrAfter(date))
+        )
+    }
+
     endsAfter = async(date: Date) => {
         return await this.queryEndsAfter(date).fetch();
     }

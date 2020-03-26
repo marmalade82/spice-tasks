@@ -20,6 +20,7 @@ import GoalQuery from "src/Models/Goal/GoalQuery";
 import { switchMap } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { Navigation, ScreenParams } from "src/common/Navigator";
+import MyDate from "src/common/Date";
 
 interface Props {
     cycles: StreakCycle[];
@@ -68,7 +69,7 @@ const AdaptedStreakCycleList: React.FunctionComponent<Props> = (props: Props) =>
 }
 
 interface InputProps extends Omit<Props, "cycles"> {
-    type?: "previous"
+    type?: "previous" | "future"
     goalId?: string
 }
 
@@ -79,7 +80,26 @@ const enhance = withObservables([], (props: InputProps) => {
                 cycles: new GoalQuery().queryId(props.goalId ? props.goalId : "").observe().pipe(switchMap((goals) => {
                     const goal = goals[0];
                     if(goal) {
-                        return observableWithRefreshTimer(() => new ChildStreakCycleQuery(goal.id).queryEndsOnBefore(goal.currentCycleEnd()).observe());
+                        return observableWithRefreshTimer(() => 
+                            new ChildStreakCycleQuery(goal.id).queryEndsOnBefore(goal.currentCycleEnd()).observe()
+                        );
+                    } else {
+                        return new Observable<StreakCycle[]>((subscriber) => {
+                            subscriber.next([])
+                        });
+                    }
+                }))
+            }
+        } break;
+        case "future": {
+            return {
+                cycles: new GoalQuery().queryId(props.goalId ? props.goalId : "").observe().pipe(switchMap((goals) => {
+                    const goal = goals[0];
+                    if(goal) {
+                        return observableWithRefreshTimer(() => {
+                            const tmr = MyDate.Now().add(1, "days");
+                            return new ChildStreakCycleQuery(goal.id).queryStartsOnAfter(tmr.toDate()).observe()
+                        })
                     } else {
                         return new Observable<StreakCycle[]>((subscriber) => {
                             subscriber.next([])

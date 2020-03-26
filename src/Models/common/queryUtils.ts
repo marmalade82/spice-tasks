@@ -153,6 +153,13 @@ function startsBeforeConditions(d: Date) {
     ]
 }
 
+function startsOnOrBeforeConditions(d: Date) {
+    let tmr = new MyDate(d).nextMidnight().toDate();
+    return [
+        Q.where(goalName.STARTS_AT, Q.lt(tmr.valueOf()))
+    ]
+}
+
 function dueOnOrBeforeConditions(d: Date) {
     let tmr = new MyDate(d).nextMidnight().toDate();
     return [
@@ -163,6 +170,13 @@ function dueOnOrBeforeConditions(d: Date) {
 function dueAfterConditions(d: Date) {
     return [
         Q.where(goalName.DUE_AT, Q.gt(d.valueOf()))
+    ]
+}
+
+function dueOnOrAfterConditions(d: Date) {
+    let yesterday = new MyDate(d).subtract(1, "days").asDueDate().toDate();
+    return [
+        Q.where(goalName.DUE_AT, Q.gt(yesterday.valueOf()))
     ]
 }
 
@@ -189,8 +203,10 @@ export const Conditions = {
     lastRefreshedOnOrBefore: lastRefreshedOnOrBeforeConditions,
     startsOnOrAfter: startsOnOrAfterConditions,
     startsBefore: startsBeforeConditions,
+    startsOnOrBefore: startsOnOrBeforeConditions,
     dueOnOrBefore: dueOnOrBeforeConditions,
     dueAfter: dueAfterConditions,
+    dueOnOrAfter: dueOnOrAfterConditions,
 }
 
 

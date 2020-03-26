@@ -196,6 +196,53 @@ export default class MyDate {
         return this.m.diff(d, timeUnit);
     }
 
+    thisCycleStart = (type: "daily" | "weekly" | "monthly", originalStart: Date): this => {
+        switch(type) {
+            case "daily": {
+                // no need to do anything
+            } break;
+            case "weekly": {
+                const weekName = new MyDate(originalStart).dayName();
+                this.setDay(weekName).asStartDate();
+                if(this.toDate() > MyDate.Now().toDate()) {
+                    this.subtract(1, "weeks").setDay(weekName);
+                }
+            } break;
+            case "monthly": {
+                const date = new MyDate(originalStart).dayOfMonth();
+                this.setDayOfMonth(date);
+                if(this.toDate() > MyDate.Now().toDate()) {
+                    this.subtract(1, "months").setDayOfMonth(date);
+                }
+            } break;
+            default: {
+
+            }
+        }
+        return this.asStartDate();
+    }
+
+    thisCycleEnd = (type: "daily" | "weekly" | "monthly", originalStart: Date): this => {
+        this.thisCycleStart(type, originalStart);
+
+        switch(type) {
+            case "daily": {
+                // No need to do anything
+            } break;
+            case "weekly": {
+                this.add(1, "weeks").subtract(1, "days");
+            } break;
+            case "monthly": {
+                this.add(1, "months").subtract(1, "days");
+            } break;
+            default: {
+
+            }
+        }
+
+        return this.asDueDate();
+    }
+
     lastCycleStart = (type: "daily" | "weekly" | "monthly", 
             input: TimeCycle<typeof type>) => {
 

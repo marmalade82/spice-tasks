@@ -23,6 +23,10 @@ import { OnTaskAction } from "src/Components/Lists/Items/TaskListItem";
 import StreakCycleQuery, { ChildStreakCycleQuery } from "src/Models/Group/StreakCycleQuery";
 import { switchMap } from "rxjs/operators";
 import { Navigation, ScreenParams } from "src/common/Navigator";
+import GoalQuery from "src/Models/Goal/GoalQuery";
+import { Observable } from "rxjs";
+import { GoalType } from "src/Models/Goal/GoalLogic";
+import MyDate from "src/common/Date";
 
 interface Props {
     tasks: Task[];
@@ -104,7 +108,7 @@ interface InputProps extends Omit<Props, "tasks"> {
         "parent-all" | "active" | "active-due-soon-today" |
         "completed-today" | "in-progress-but-not-due-today" |
         "overdue" | "remaining-today" | "due-today" | "in-progress" | 
-        "single" | "current-cycle";
+        "single" | "current-cycle" | "today-as-cycle";
     parentId: string  // shows all tasks that have this parent
     id?: string;
 }
@@ -168,6 +172,22 @@ const enhance = withObservables(['type'], (props: InputProps) => {
         case "single": {
             return {
                 tasks: new TaskQuery().queryId(props.id ? props.id : "").observe()
+            }
+        } break;
+        case "today-as-cycle": {
+            return {
+                tasks: new GoalQuery().queryId(props.parentId).observe().pipe(switchMap((goals) => {
+                    const goal = goals[0]
+                    if(goal && goal.goalType === GoalType.STREAK) {
+                        const thisStart: Date = MyDate.Now().thisCycleStart(goal.streakType, goal.startDate).toDate()
+                        const thisEnd: Date = MyDate.Now().thisCycleEnd(goal.streakType, goal.startDate).toDate()
+                        return new TaskQuery().queryStartsBetweenInclusive(thisStart, thisEnd).observe()
+                    } else {
+                        return new Observable<Task[]>((subscriber) => {
+                            subscriber.next([])
+                        });
+                    }
+                }))
             }
         } break;
         case "current-cycle": {

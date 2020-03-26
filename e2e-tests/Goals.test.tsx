@@ -229,7 +229,8 @@ describe("Streak goals", () => {
 
             await wait(() => {
                 const tasks = queryAllByLabelText('task-list-item');
-                expect(tasks.length).toEqual(1);
+                expect(tasks.length).toEqual(1); // Zero tasks? because we only show what is in *this* cycle.
+                                                // Or should it show 1 with the label "Last day".
                 const cycles = queryAllByLabelText('streakcycle-list-item');
                 expect(cycles.length).toEqual(2);
             })

@@ -48,6 +48,12 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
         )
     }
 
+    queryStartsBetweenInclusive = (left: Date, right) => {
+        return this.query(
+            Q.and(...Conditions.startsOnOrAfter(left), ...Conditions.startsOnOrBefore(right))
+        )
+    }
+
     queryCreatedBetween = (left: Date, right: Date) => {
         return this.query(
             ...[ ...Conditions.createdAfter(left), ...Conditions.createdBefore(right)]

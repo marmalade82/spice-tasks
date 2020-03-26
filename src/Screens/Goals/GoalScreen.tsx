@@ -19,6 +19,7 @@ import StreakCycleQuery, { ChildStreakCycleQuery } from "src/Models/Group/Streak
 import { switchMap } from "rxjs/operators";
 
 import { ScreenNavigation, ScreenParams } from "src/common/Navigator";
+import MyDate from "src/common/Date";
 
 
 interface Props {
@@ -285,42 +286,80 @@ export default class GoalScreen extends React.Component<Props, State> {
 
             switch(goal.goalType) {
                 case GoalType.STREAK: {
-                    return (
-                        <View
-                            style={{
-                                flex: 0,
-                            }}
-                        >
-                            <BackgroundTitle title={`${getCurrentCycleType()} (${this.state.currentCycleCount})`}
+                    if(MyDate.Now().toDate() < goal.startDate) {
+                        return (
+                            <View
                                 style={{
+                                    flex: 0
                                 }}
-                            ></BackgroundTitle>
+                            >
+                                <BackgroundTitle title={`First Tasks (${this.state.currentCycleCount})`}
+                                    style={{
+                                    }}
+                                ></BackgroundTitle>
 
-                            <ConnectedTaskList
-                                navigation={this.navigation}
-                                parentId={this.navigation.getParam('id', '')}
-                                type={"current-cycle"}
-                                paginate={4}
-                                onSwipeRight={(id: string) => {
-                                    this.onTaskAction(id, "complete")
-                                }}
-                                emptyText={"No active tasks"}
-                                onTaskAction={this.onTaskAction}
-                            ></ConnectedTaskList>
+                                <ConnectedTaskList
+                                    navigation={this.navigation}
+                                    parentId={this.navigation.getParam('id', '')}
+                                    type={"current-cycle"}
+                                    paginate={4}
+                                    onSwipeRight={(id: string) => {
+                                        this.onTaskAction(id, "complete")
+                                    }}
+                                    emptyText={"No active tasks"}
+                                    onTaskAction={this.onTaskAction}
+                                ></ConnectedTaskList>
+                                <BackgroundTitle title={`First ${getCycleType()}`}
+                                    style={{
+                                    }}
+                                ></BackgroundTitle>
 
-                            <BackgroundTitle title={`Previous ${getCycleType()}s (${this.state.previousCycleCount})`}
+                                <ConnectedStreakCycleList
+                                    navigation={this.navigation}
+                                    type={"future"}
+                                    goalId={this.navigation.getParam('id', '')}
+                                    paginate={4}
+                                ></ConnectedStreakCycleList>
+                            </View>
+                        )
+                    } else { 
+                        return (
+                            <View
                                 style={{
+                                    flex: 0,
                                 }}
-                            ></BackgroundTitle>
+                            >
+                                <BackgroundTitle title={`${getCurrentCycleType()} (${this.state.currentCycleCount})`}
+                                    style={{
+                                    }}
+                                ></BackgroundTitle>
 
-                            <ConnectedStreakCycleList
-                                navigation={this.navigation}
-                                type={"previous"}
-                                goalId={this.navigation.getParam('id', '')}
-                                paginate={4}
-                            ></ConnectedStreakCycleList>
-                        </View>
-                    )
+                                <ConnectedTaskList
+                                    navigation={this.navigation}
+                                    parentId={this.navigation.getParam('id', '')}
+                                    type={"today-as-cycle"}
+                                    paginate={4}
+                                    onSwipeRight={(id: string) => {
+                                        this.onTaskAction(id, "complete")
+                                    }}
+                                    emptyText={"No active tasks"}
+                                    onTaskAction={this.onTaskAction}
+                                ></ConnectedTaskList>
+
+                                <BackgroundTitle title={`Previous ${getCycleType()}s (${this.state.previousCycleCount})`}
+                                    style={{
+                                    }}
+                                ></BackgroundTitle>
+
+                                <ConnectedStreakCycleList
+                                    navigation={this.navigation}
+                                    type={"previous"}
+                                    goalId={this.navigation.getParam('id', '')}
+                                    paginate={4}
+                                ></ConnectedStreakCycleList>
+                            </View>
+                        )
+                    }
                 } break;
                 default: {
                     return (
