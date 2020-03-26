@@ -14,6 +14,7 @@ import { EventDispatcher } from "src/common/EventDispatcher";
 import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navigator";
 
 import { BarChart, LineChart }from "src/Components/Charts/Charts";
+import AddModal from "./common/AddModal";
 
 
 interface Props {
@@ -23,6 +24,7 @@ interface Props {
 
 interface State {
     ongoingGoalsCount: number;
+    showAdd: boolean
 }
 
 const dispatcher = new EventDispatcher();
@@ -42,6 +44,7 @@ export default class StarScreen extends React.Component<Props, State> {
         super(props);
         this.state = {
             ongoingGoalsCount: 0,
+            showAdd: false,
         }
         this.unsub = () => {}
         this.navigation = new ScreenNavigation(this.props);
@@ -115,6 +118,11 @@ export default class StarScreen extends React.Component<Props, State> {
                         outerMargin={20}
                    ></LineChart> 
                 </View>
+                <AddModal
+                    visible={this.state.showAdd}
+                    onRequestClose={() => this.setState({ showAdd: false })}
+                    navigation={this.navigation}
+                ></AddModal>
             </DocumentView>
         );
     }

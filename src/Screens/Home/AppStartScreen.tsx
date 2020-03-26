@@ -25,6 +25,7 @@ import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
 import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navigator";
 import { TaskParentTypes } from "src/Models/Task/Task";
+import AddModal from "./common/AddModal";
 
 interface Props {
     navigation: object;
@@ -180,72 +181,11 @@ export default class AppStartScreen extends React.Component<Props, State> {
 
                     <FootSpacer></FootSpacer>
                 </ScrollView>
-                <Modal
+                <AddModal
                     visible={this.state.showAdd}
-                    onRequestClose={() => this.setState({ showAdd: false})}
-                >
-                        <ModalRow
-                            text={"Goal"}
-                            accessibilityLabel={"add-goal"}
-                            iconType={"goal"}
-                            iconBackground={"white"}
-                            onPress={() => {
-                                this.navigation.navigate("AddGoal", {
-                                    id: "",
-                                    parent_id: ""
-                                })
-                                this.setState({
-                                    showAdd: false,
-                                })
-                            }}
-                        ></ModalRow>
-                        <ModalRow
-                            text={"Task"}
-                            accessibilityLabel={"add-task"}
-                            iconType={"task"}
-                            iconBackground={"white"}
-                            onPress={() => {
-                                this.navigation.navigate("AddTask", {
-                                    id: "",
-                                    parent_id: "",
-                                    parent_type: TaskParentTypes.NONE,
-                                })
-                                this.setState({
-                                    showAdd: false,
-                                })
-                            }}
-                        ></ModalRow>
-                        <ModalRow
-                            text={"Reward"}
-                            accessibilityLabel={"add-reward"}
-                            iconType={"reward"}
-                            iconBackground={"white"}
-                            onPress={() => {
-                                this.navigation.navigate("AddReward", {
-                                    id: "",
-                                    parent_id: "",
-                                })
-                                this.setState({
-                                    showAdd: false,
-                                })
-                            }}
-                        ></ModalRow>
-                        <ModalRow
-                            accessibilityLabel={"add-penalty"}
-                            text={"Penalty"}
-                            iconType={"penalty"}
-                            iconBackground={"white"}
-                            onPress={() => {
-                                this.navigation.navigate("AddPenalty", {
-                                    id: "",
-                                    parent_id: "",
-                                })
-                                this.setState({
-                                    showAdd: false,
-                                })
-                            }}
-                        ></ModalRow>
-                </Modal>
+                    onRequestClose={() => this.setState({ showAdd: false })}
+                    navigation={this.navigation}
+                ></AddModal>
             </DocumentView>
         );
     }

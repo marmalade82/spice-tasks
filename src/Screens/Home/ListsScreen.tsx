@@ -27,6 +27,7 @@ import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
 import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navigator";
 import { TaskParentTypes } from "src/Models/Task/Task";
+import AddModal from "./common/AddModal";
 
 interface Props {
     navigation: object;
@@ -162,76 +163,11 @@ export default class ListsScreen extends React.Component<Props, State> {
                     ></NavigationList>
                     <FootSpacer></FootSpacer>
                 </ScrollView>
-                <Modal
+                <AddModal
                     visible={this.state.showAdd}
-                    onRequestClose={() => {
-                        this.setState({
-                            showAdd: false,
-                        })
-                    }}
-                >
-                        <ModalRow
-                            accessibilityLabel={"add-goal"}
-                            text={"Goal"}
-                            iconType={"goal"}
-                            iconBackground={"white"}
-                            onPress={() => {
-                                this.navigation.navigate("AddGoal", {
-                                    id: "",
-                                    parent_id: "",
-                                })
-                                this.setState({
-                                    showAdd: false,
-                                })
-                            }}
-                        ></ModalRow>
-                        <ModalRow
-                            accessibilityLabel={"add-task"}
-                            text={"Task"}
-                            iconType={"task"}
-                            iconBackground={"white"}
-                            onPress={() => {
-                                this.navigation.navigate("AddTask", {
-                                    id: "",
-                                    parent_id: "",
-                                    parent_type: TaskParentTypes.NONE,
-                                })
-                                this.setState({
-                                    showAdd: false,
-                                })
-                            }}
-                        ></ModalRow>
-                        <ModalRow
-                            accessibilityLabel={"add-reward"}
-                            text={"Reward"}
-                            iconType={"reward"}
-                            iconBackground={"white"}
-                            onPress={() => {
-                                this.navigation.navigate("AddReward", {
-                                    id: "",
-                                    parent_id: "",
-                                })
-                                this.setState({
-                                    showAdd: false,
-                                })
-                            }}
-                        ></ModalRow>
-                        <ModalRow
-                            accessibilityLabel={"add-penalty"}
-                            text={"Penalty"}
-                            iconType={"penalty"}
-                            iconBackground={"white"}
-                            onPress={() => {
-                                this.navigation.navigate("AddPenalty", {
-                                    id: "",
-                                    parent_id: "",
-                                })
-                                this.setState({
-                                    showAdd: false,
-                                })
-                            }}
-                        ></ModalRow>
-                </Modal>
+                    onRequestClose={() => this.setState({ showAdd: false })}
+                    navigation={this.navigation}
+                ></AddModal>
             </DocumentView>
         )
     }
