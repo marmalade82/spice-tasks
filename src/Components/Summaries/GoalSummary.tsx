@@ -79,6 +79,7 @@ export default class GoalSummary extends React.Component<Props, State> {
                                         "AddGoal", {
                                             id: this.props.goal.id,
                                             parent_id: "", //We let the internal task determine the correct parent.
+                                            title: this.props.goal.type === "streak" ? "Habit" : "Goal"
                                         }
                                     );
                                 }}

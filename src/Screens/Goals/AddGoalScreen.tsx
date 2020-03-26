@@ -21,6 +21,7 @@ import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "src/Screens/common/screenUtils";
 import { FullNavigation, MainNavigator, ScreenNavigation } from "src/common/Navigator";
+import { GoalType } from "src/Models/Goal/GoalLogic";
 
 
 interface Props {
@@ -54,8 +55,9 @@ export default class AddGoalScreen extends React.Component<Props, State> {
         this.navigation = new ScreenNavigation(this.props);
     }
     static navigationOptions = ({navigation}) => {
+        let title = navigation.getParam('title', "Goal")
         return {
-            title: 'Goal',
+            title: "New " + title,
             right: [
                 () => {
                     return (
@@ -94,8 +96,16 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 data: data,
             })
         } else {
+            const type = this.navigation.getParam("title", "Goal");
+            const data = this.state.data;
+            if(type === "Goal") {
+                data.type = GoalType.NORMAL;
+            } else {
+                data.type = GoalType.STREAK;
+            }
             this.setState({
-                goal: undefined
+                goal: undefined,
+                data: data,
             })
         }
         dispatcher.addEventListener(getKey(this.navigation), this.onSave);

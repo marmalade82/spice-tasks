@@ -34,19 +34,6 @@ export class AddModal extends React.Component<Props, State> {
                     onRequestClose={this.props.onRequestClose}
                 >
                         <ModalRow
-                            text={"Goal"}
-                            accessibilityLabel={"add-goal"}
-                            iconType={"goal"}
-                            iconBackground={"white"}
-                            onPress={() => {
-                                this.props.navigation.navigate("AddGoal", {
-                                    id: "",
-                                    parent_id: ""
-                                })
-                                this.props.onRequestClose()
-                            }}
-                        ></ModalRow>
-                        <ModalRow
                             text={"Task"}
                             accessibilityLabel={"add-task"}
                             iconType={"task"}
@@ -56,6 +43,34 @@ export class AddModal extends React.Component<Props, State> {
                                     id: "",
                                     parent_id: "",
                                     parent_type: TaskParentTypes.NONE,
+                                })
+                                this.props.onRequestClose()
+                            }}
+                        ></ModalRow>
+                        <ModalRow
+                            text={"Goal"}
+                            accessibilityLabel={"add-goal"}
+                            iconType={"goal"}
+                            iconBackground={"white"}
+                            onPress={() => {
+                                this.props.navigation.navigate("AddGoal", {
+                                    id: "",
+                                    parent_id: "",
+                                    title: "Goal"
+                                })
+                                this.props.onRequestClose()
+                            }}
+                        ></ModalRow>
+                        <ModalRow
+                            text={"Habit"}
+                            accessibilityLabel={"add-habit"}
+                            iconType={"habit"}
+                            iconBackground={"white"}
+                            onPress={() => {
+                                this.props.navigation.navigate("AddGoal", {
+                                    id: "",
+                                    parent_id: "",
+                                    title: "Habit",
                                 })
                                 this.props.onRequestClose()
                             }}

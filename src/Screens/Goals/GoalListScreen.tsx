@@ -54,7 +54,8 @@ export default class GoalListScreen extends React.Component<Props> {
         const params = {
             id: "",
             parent_id: "",
-        };
+            title: "Goal"
+        } as const;
         this.navigation.navigate('AddGoal', params);
     }
 

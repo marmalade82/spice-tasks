@@ -150,7 +150,8 @@ export default class GoalScreen extends React.Component<Props, State> {
         const params = {
             id: this.navigation.getParam('id', ''),
             parent_id: "",
-        };
+            title: this.state.goal && this.state.goal.goalType === GoalType.STREAK ? "Habit" : "Goal"
+        } as const;
         this.navigation.navigate('AddGoal', params);
     }
 

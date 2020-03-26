@@ -29,19 +29,19 @@ describe("Streak goals", () => {
             params, intake,
         } = renderWithNavigation("AppStart", {});
         intake( render(component()));
+        await waitForAsyncLifecycleMethods()
 
         {   // Create a goal
-            const addGoal = getByLabelText("input-add-goal")
+            const addGoal = getByLabelText("input-add-habit")
             fireEvent.press(addGoal);
             intake( render(component()));
+            await waitForAsyncLifecycleMethods()
+
             expect(queryNavigation.currentRoute).toEqual("AddGoal")
             getByLabelText("add-goal-screen");
 
             const summaryInput = getByLabelText("input-goal-summary");
             fireEvent.changeText(summaryInput, "Summary");
-
-            const typeChoice = getByLabelText("input-" + "streak" + "-goal-type");
-            fireEvent.press(typeChoice);
 
             const cycleInput = getByLabelText("input-goal-number-cycles");
             fireEvent.changeText(cycleInput, "2");
@@ -78,15 +78,13 @@ describe("Streak goals", () => {
         intake( render(component()));
 
         {   // Create a goal
-            const addGoal = getByLabelText("input-add-goal")
+            const addGoal = getByLabelText("input-add-habit")
             fireEvent.press(addGoal);
             intake( render(component()));
+            await waitForAsyncLifecycleMethods()
 
             const summaryInput = getByLabelText("input-goal-summary");
             fireEvent.changeText(summaryInput, "Summary");
-
-            const typeChoice = getByLabelText("input-" + "streak" + "-goal-type");
-            fireEvent.press(typeChoice);
 
             const cycleInput = getByLabelText("input-goal-number-cycles");
             fireEvent.changeText(cycleInput, "2");
@@ -103,7 +101,6 @@ describe("Streak goals", () => {
             
             const addTaskButton = getByLabelText("input-add-goal-button");
             fireEvent.press(addTaskButton);
-            await waitForAsyncLifecycleMethods();
         }
 
         {   // We create a task
@@ -146,15 +143,13 @@ describe("Streak goals", () => {
         intake( render(component()));
 
         {   // Create a goal
-            const addGoal = getByLabelText("input-add-goal")
+            const addGoal = getByLabelText("input-add-habit")
             fireEvent.press(addGoal);
             intake( render(component()));
+            await waitForAsyncLifecycleMethods();
 
             const summaryInput = getByLabelText("input-goal-summary");
             fireEvent.changeText(summaryInput, "Summary");
-
-            const typeChoice = getByLabelText("input-" + "streak" + "-goal-type");
-            fireEvent.press(typeChoice);
 
             const cycleInput = getByLabelText("input-goal-number-cycles");
             fireEvent.changeText(cycleInput, "2");

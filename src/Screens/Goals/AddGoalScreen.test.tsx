@@ -16,8 +16,6 @@ test('User view all desired initial fields for a normal goal', async () => {
 
     const summaryInput = getByLabelText("input-goal-summary");
 
-    const typeInput = getByLabelText("input-goal-type");
-
     const dueDateInput = getByLabelText("value-input-goal-start-date");
 
     const startDateInput = getByLabelText("value-input-goal-due-date");
@@ -26,17 +24,6 @@ test('User view all desired initial fields for a normal goal', async () => {
 
     const penaltyInput = getByLabelText("input-goal-penalty");
 
-});
-
-test('User can set type of goal to streak if desired', async () => {
-    const { getByLabelText, queryByText, getByText } = render(<AddGoalScreen navigation={makeNavigation({})}></AddGoalScreen>)
-
-    expect(queryByText("Minimum")).toEqual(null);
-    const goalTypeInput = getByLabelText("input-goal-type");
-    fireEvent.press(goalTypeInput);
-    const goalChoice = getByLabelText("input-streak-goal-type");
-    fireEvent.press(goalChoice);
-    const streakTypeInput = getByLabelText("input-streak-type");
 });
 
 test("User can fill out all fields of a normal goal and have them saved to database after 'Complete'" +
@@ -56,11 +43,6 @@ test("User can fill out all fields of a normal goal and have them saved to datab
 
     const detailsInput = getByLabelText("input-goal-details");
     fireEvent.changeText(detailsInput, expected.details);
-
-    const typeInput = getByLabelText("input-goal-type");
-    fireEvent.press(typeInput);
-    const typeChoice = getByLabelText("input-" + expected.type + "-goal-type");
-    fireEvent.press(typeChoice);
 
     const dueDateInput = getByLabelText("value-input-goal-start-date");
 
@@ -96,9 +78,12 @@ test("User can fill out all fields of a normal goal and have them saved to datab
 
 test("User can fill out all fields of a streak goal and have them saved to database after 'Complete'" +
                     "is clicked", async () => {
-    const navigation = makeNavigation({}, "b")
+    const navigation = makeNavigation({
+        title: "Habit"
+    }, "b")
     const { getByLabelText, queryByLabelText, getByText, queryByText } = render(<AddGoalScreen navigation={navigation}></AddGoalScreen>)
 
+    await waitForAsyncLifecycleMethods();
     const expected = {
         summary: "test summary",
         rewardType: "none",
@@ -113,9 +98,6 @@ test("User can fill out all fields of a streak goal and have them saved to datab
 
     const detailsInput = getByLabelText("input-goal-details");
     fireEvent.changeText(detailsInput, expected.details);
-
-    const typeChoice = getByLabelText("input-" + expected.type + "-goal-type");
-    fireEvent.press(typeChoice);
 
     const rewardChoice = getByLabelText("input-" + expected.rewardType + "-goal-reward");
     fireEvent.press(rewardChoice);
@@ -147,7 +129,7 @@ test("User can fill out all fields of a streak goal and have them saved to datab
     })
 
     await destroyAllIn('goals');
-});
+}, 10000);
 
 describe("Validation", () => {
     test("No summary is provided", async () => {

@@ -15,7 +15,7 @@ interface Props {
         "reward" | "penalty" | "mandatory" | "attention" | "info" | "recur"| 
         "earned_reward" | "earned_penalty" | "right" | "left" | "first" | "last" | "none" | 
         "fail" | "add" | "arrow-left" | "save" |
-        "home" | "list";
+        "home" | "list" | "habit";
     accessibilityLabel?: string;
     backgroundColor?: string;
     color?: string;
@@ -306,6 +306,18 @@ export default class StyledIcon extends React.Component<Props, State>{
                         }}
                     ></Icon>
                 )
+            } break;
+            case "habit": {
+                return (
+                    <Icon
+                        name='book'
+                        type='feather'
+                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
+                        size={this.props.size ? this.props.size : 20}
+                    >
+
+                    </Icon>
+                );
             } break;
             default: {
                 return null

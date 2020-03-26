@@ -235,19 +235,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         this.dispatcher.fireEvent(DUE_DATE_CHANGE);
     }
 
-    private onChangeType = (type: string) => {
-        if(type === GoalType.NORMAL || type === GoalType.STREAK) {
-            this.setData({
-                type: type
-            });
-        } else {
-            this.setData({
-                type: GoalType.NORMAL
-            });
-        }
-    }
-
-
     private onChangeDetails = (dets: string) => {
         this.setData({
             details: dets
@@ -324,14 +311,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         multiline={true}
                     />
 
-
-                    <ChoiceInput
-                        title={"Goal Type"}
-                        selectedValue={this.data().type}
-                        choices={GoalChoices}
-                        onValueChange={this.onChangeType}
-                        accessibilityLabel={"goal-type"}
-                    />
                     { this.renderIfStreakGoal() }
 
                     { this.renderIfNormalGoal() }

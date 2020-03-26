@@ -61,7 +61,10 @@ const NavigatorParams = {
   , Goal: Single
   , Goals: None
   , Menu: None
-  , AddGoal: Child
+  , AddGoal: {
+      title: "Goal" as "Goal" | "Habit",
+      ...Child
+    }
   , Streak: None
   , AddTask: {
       parent_type: TaskParentTypes.TASK as TaskParentTypes,
