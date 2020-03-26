@@ -273,6 +273,47 @@ export class ChildTaskQuery extends ModelQuery<Task, ITask> {
         )
     }
 
+    queryActive = () => {
+        return new ActiveTaskQuery().queryHasParent(this.parent);
+    }
+
+    queryOverdue = () => {
+        return this.query(
+            Q.and(...Conditions.overdue())
+        )
+    }
+}
+
+export class ChildOfTaskQuery extends ModelQuery<Task, ITask> { 
+    parents: string[];
+    constructor(parents: string[]) {
+        super(TaskSchema.table);
+        this.parents = parents;
+    }
+
+    default = () => {
+        let def = new TaskQuery().default();
+        def.parent = {
+            id: "",
+            type: TaskParentTypes.NONE,
+        }
+        return def;
+    }
+
+    queries = () => {
+        let qs = this.parents.map((parentId: string) => {
+            return Q.where(TaskSchema.name.PARENT, parentId)
+        });
+        return new TaskQuery().queries().concat([
+            Q.or(...qs)
+        ]);
+    }
+
+    queryOverdue = () => {
+        return this.query(
+            Q.and(...Conditions.overdue())
+        )
+    }
 }
 
 export {

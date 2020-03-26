@@ -6,7 +6,7 @@ import Goal from "src/Models/Goal/Goal";
 import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
 import { DocumentView, ScreenHeader, ListPicker, Toast, BackgroundTitle, ModalIconButton, ModalRow, Modal } from "src/Components/Styled/Styled";
 import { ScrollView } from "react-native";
-import TaskQuery, { TaskLogic, ActiveTaskQuery, ChildTaskQuery } from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic, ActiveTaskQuery, ChildTaskQuery, ChildOfTaskQuery } from "src/Models/Task/TaskQuery";
 import FootSpacer from "src/Components/Basic/FootSpacer";
 import { TaskParentTypes } from "src/Models/Task/Task";
 import {  NavigationStackProp } from "react-navigation-stack";
@@ -16,10 +16,11 @@ import { getKey } from "../common/screenUtils";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 import { ConnectedStreakCycleList } from "src/ConnectedComponents/Lists/Group/StreakCycleList";
 import StreakCycleQuery, { ChildStreakCycleQuery } from "src/Models/Group/StreakCycleQuery";
-import { switchMap } from "rxjs/operators";
+import { switchMap, merge } from "rxjs/operators";
 
 import { ScreenNavigation, ScreenParams } from "src/common/Navigator";
 import MyDate from "src/common/Date";
+import { combineLatest, Observable } from "rxjs";
 
 
 interface Props {
@@ -35,6 +36,7 @@ interface State {
     previousCycleCount: number;
     toastVisible: boolean;
     toastMessage: string;
+    overdueCount: number;
     showAdd: boolean;
 }
 
@@ -70,6 +72,7 @@ export default class GoalScreen extends React.Component<Props, State> {
             inactiveCount: 0,
             currentCycleCount: 0,
             previousCycleCount: 0,
+            overdueCount: 0,
             toastVisible: false,
             toastMessage: "",
             showAdd: false,
@@ -121,11 +124,27 @@ export default class GoalScreen extends React.Component<Props, State> {
             })
 
 
+            const overdueSub = (function(){
+                let directChildCount: Observable<number> = new ChildTaskQuery(goal.id).queryOverdue().observeCount();
+                let streakChildCount: Observable<number> = new ChildStreakCycleQuery(goal.id).queryAll().observe().pipe(switchMap((cycles) => {
+                    const ids: string[] = cycles.map((cycle) => {
+                        return cycle.id;
+                    })
+                    return new ChildOfTaskQuery(ids).queryOverdue().observeCount()
+                }))
+                return combineLatest([directChildCount, streakChildCount], (dCount, sCount) => dCount + sCount)
+            })().subscribe((n) => {
+                this.setState({
+                    overdueCount: n
+                })
+            })
+
             this.unsubscribe = () => {
                 activeSub.unsubscribe();
                 inactiveSub.unsubscribe();
                 currentCycleSub.unsubscribe();
                 previousCycleSub.unsubscribe();
+                overdueSub.unsubscribe();
             }
         } else {
             this.setState({
@@ -286,80 +305,55 @@ export default class GoalScreen extends React.Component<Props, State> {
 
             switch(goal.goalType) {
                 case GoalType.STREAK: {
-                    if(MyDate.Now().toDate() < goal.startDate) {
-                        return (
-                            <View
+                    const habitIsOverdue = MyDate.Now().toDate() > goal.dueDate
+                    const habitHasNotStarted = MyDate.Now().toDate() < goal.startDate
+                    return (
+                        <View
+                            style={{
+                                flex: 0
+                            }}
+                        >
+                            <BackgroundTitle 
+                                title={ habitHasNotStarted ?
+                                    `First Tasks (${this.state.currentCycleCount})` : habitIsOverdue ?
+                                    `Overdue (${this.state.overdueCount})` :
+                                    `${getCurrentCycleType()} (${this.state.currentCycleCount})`
+                                }
                                 style={{
-                                    flex: 0
                                 }}
-                            >
-                                <BackgroundTitle title={`First Tasks (${this.state.currentCycleCount})`}
-                                    style={{
-                                    }}
-                                ></BackgroundTitle>
+                            ></BackgroundTitle>
 
-                                <ConnectedTaskList
-                                    navigation={this.navigation}
-                                    parentId={this.navigation.getParam('id', '')}
-                                    type={"current-cycle"}
-                                    paginate={4}
-                                    onSwipeRight={(id: string) => {
-                                        this.onTaskAction(id, "complete")
-                                    }}
-                                    emptyText={"No active tasks"}
-                                    onTaskAction={this.onTaskAction}
-                                ></ConnectedTaskList>
-                                <BackgroundTitle title={`First ${getCycleType()}`}
-                                    style={{
-                                    }}
-                                ></BackgroundTitle>
-
-                                <ConnectedStreakCycleList
-                                    navigation={this.navigation}
-                                    type={"future"}
-                                    goalId={this.navigation.getParam('id', '')}
-                                    paginate={4}
-                                ></ConnectedStreakCycleList>
-                            </View>
-                        )
-                    } else { 
-                        return (
-                            <View
+                            <ConnectedTaskList
+                                navigation={this.navigation}
+                                parentId={this.navigation.getParam('id', '')}
+                                type={ habitIsOverdue ?
+                                    "overdue-in-goal" :
+                                    "current-cycle"
+                                }
+                                paginate={4}
+                                onSwipeRight={(id: string) => {
+                                    this.onTaskAction(id, "complete")
+                                }}
+                                emptyText={"No active tasks"}
+                                onTaskAction={this.onTaskAction}
+                            ></ConnectedTaskList>
+                            <BackgroundTitle 
+                                title={ habitHasNotStarted ?
+                                    `First ${getCycleType()}` :
+                                    `Previous ${getCycleType()}s (${this.state.previousCycleCount})`
+                                }
                                 style={{
-                                    flex: 0,
                                 }}
-                            >
-                                <BackgroundTitle title={`${getCurrentCycleType()} (${this.state.currentCycleCount})`}
-                                    style={{
-                                    }}
-                                ></BackgroundTitle>
+                            ></BackgroundTitle>
 
-                                <ConnectedTaskList
-                                    navigation={this.navigation}
-                                    parentId={this.navigation.getParam('id', '')}
-                                    type={"today-as-cycle"}
-                                    paginate={4}
-                                    onSwipeRight={(id: string) => {
-                                        this.onTaskAction(id, "complete")
-                                    }}
-                                    emptyText={"No active tasks"}
-                                    onTaskAction={this.onTaskAction}
-                                ></ConnectedTaskList>
-
-                                <BackgroundTitle title={`Previous ${getCycleType()}s (${this.state.previousCycleCount})`}
-                                    style={{
-                                    }}
-                                ></BackgroundTitle>
-
-                                <ConnectedStreakCycleList
-                                    navigation={this.navigation}
-                                    type={"previous"}
-                                    goalId={this.navigation.getParam('id', '')}
-                                    paginate={4}
-                                ></ConnectedStreakCycleList>
-                            </View>
-                        )
-                    }
+                            <ConnectedStreakCycleList
+                                navigation={this.navigation}
+                                type={"previous"}
+                                goalId={this.navigation.getParam('id', '')}
+                                paginate={4}
+                            ></ConnectedStreakCycleList>
+                        </View>
+                    )
                 } break;
                 default: {
                     return (

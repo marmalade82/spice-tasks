@@ -9,7 +9,7 @@ import withObservables from "@nozbe/with-observables";
 import {
     Task
 } from "src/Models/Task/Task";
-import TaskQuery, { ActiveTaskQuery, ChildTaskQuery } from "src/Models/Task/TaskQuery";
+import TaskQuery, { ActiveTaskQuery, ChildTaskQuery, ChildOfTaskQuery } from "src/Models/Task/TaskQuery";
 import List from "src/Components/Lists/base/List";
 import { PagedList } from "src/Components/Styled/Styled";
 import { View } from "react-native";
@@ -24,7 +24,8 @@ import StreakCycleQuery, { ChildStreakCycleQuery } from "src/Models/Group/Streak
 import { switchMap } from "rxjs/operators";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 import GoalQuery from "src/Models/Goal/GoalQuery";
-import { Observable } from "rxjs";
+import { Observable} from "rxjs";
+import { merge } from "rxjs/operators";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 import MyDate from "src/common/Date";
 
@@ -108,7 +109,8 @@ interface InputProps extends Omit<Props, "tasks"> {
         "parent-all" | "active" | "active-due-soon-today" |
         "completed-today" | "in-progress-but-not-due-today" |
         "overdue" | "remaining-today" | "due-today" | "in-progress" | 
-        "single" | "current-cycle" | "today-as-cycle";
+        "single" | "current-cycle" | "today-as-cycle" | 
+        "overdue-in-goal";
     parentId: string  // shows all tasks that have this parent
     id?: string;
 }
@@ -163,6 +165,22 @@ const enhance = withObservables(['type'], (props: InputProps) => {
             return {
                 tasks: observableWithRefreshTimer( () => new ActiveTaskQuery().queryOverdue().observe())
             }
+        } break;
+        case "overdue-in-goal": {
+            let directChildTasks: Observable<Task[]> = new ChildTaskQuery(props.parentId).queryOverdue().observe();
+            let streakChildTasks: Observable<Task[]> = new ChildStreakCycleQuery(props.parentId).queryAll().observe().pipe(switchMap((cycles) => {
+                const ids: string[] = cycles.map((cycle) => {
+                    return cycle.id;
+                })
+                return new ChildOfTaskQuery(ids).queryOverdue().observe()
+            }))
+            return {
+                tasks: observableWithRefreshTimer( () => {
+                    return (
+                        directChildTasks.pipe(merge(streakChildTasks))
+                    )
+                })
+            };
         } break;
         case "remaining-today": {
             return {
