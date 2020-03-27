@@ -15,6 +15,7 @@ interface Props {
     task: Task
     navigation: Navigation<ScreenParams>
     onTaskAction: OnTaskAction;
+    iconIndicates?: "completion"
 }
 
 const AdaptedTaskListItem: React.FunctionComponent<Props> = function(props: Props) {
@@ -24,6 +25,7 @@ const AdaptedTaskListItem: React.FunctionComponent<Props> = function(props: Prop
         due_date: task.dueDate,
         start_date: task.startDate,
         title: task.title,
+        active: task.active,
     }
 
     return (
@@ -32,6 +34,7 @@ const AdaptedTaskListItem: React.FunctionComponent<Props> = function(props: Prop
             accessibilityLabel={"task-list-item"}
             navigation={props.navigation}
             onTaskAction={props.onTaskAction}
+            iconIndicates={props.iconIndicates}
         ></TaskListItem>
     );
 }

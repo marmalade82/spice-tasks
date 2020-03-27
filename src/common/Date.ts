@@ -43,6 +43,10 @@ export default class MyDate {
         return start <= actual && actual <= end
     }
 
+    static Before = (start: Date, actual: Date) => {
+        return actual < start;
+    }
+
     asStartDate = () => {
         this.prevMidnight();
         return this;

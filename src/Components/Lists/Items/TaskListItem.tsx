@@ -4,12 +4,14 @@ import Item from "src/Components/Lists/Items/base/Item";
 import { ListItem, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
 import { Navigation, ScreenParams } from "src/common/Navigator";
+import { SECONDARY_COLOR, PRIMARY_COLOR } from "src/Components/Styled/Styles";
 
 interface Props {
     item: Task
     accessibilityLabel: string
     navigation: Navigation<ScreenParams>
     onTaskAction: OnTaskAction
+    iconIndicates?: "completion"
 }
 
 export type OnTaskAction = (id: string, action: "complete" | "fail") => void;
@@ -23,6 +25,7 @@ interface Task {
     title: string;
     due_date: Date;
     start_date: Date;
+    active: boolean;
 }
 
 export default class TaskListItem extends Item<Props, State, Task> {
@@ -35,7 +38,7 @@ export default class TaskListItem extends Item<Props, State, Task> {
     }
     
     render = () => {
-        const { id, title, due_date, start_date } = this.props.item;
+        const { id, title, due_date, start_date, active } = this.props.item;
 
         return (
             <ListItem
@@ -47,7 +50,9 @@ export default class TaskListItem extends Item<Props, State, Task> {
                 number={0}
                 key={id}
                 accessibilityLabel={this.props.accessibilityLabel}
-                type={"task"}
+                type={this.type()}
+                color={this.color()}
+                size={this.size()}
                 footerIcons={[
                     () => {
                         return (
@@ -92,6 +97,44 @@ export default class TaskListItem extends Item<Props, State, Task> {
 
             </ListItem>
         )
+
+    }
+
+    private iconOpts = () => {
+        const { id, title, due_date, start_date, active } = this.props.item;
+        if(this.props.iconIndicates === "completion") {
+            if(active) {
+                return {
+                    type: "not-complete",
+                    color: PRIMARY_COLOR,
+                    size: 30,
+                }  as const;
+            } else {
+                return {
+                    type: "complete",
+                    color: SECONDARY_COLOR,
+                    size: 30,
+                } as const;
+            }
+        } else {
+            return {
+                type: "task",
+                color: SECONDARY_COLOR,
+            } as const;
+        }
+
+    }
+
+    private type = () => {
+        return this.iconOpts().type
+    }
+
+    private color = () => {
+        return this.iconOpts().color
+    }
+
+    private size = () => {
+        return this.iconOpts().size
     }
 }
 

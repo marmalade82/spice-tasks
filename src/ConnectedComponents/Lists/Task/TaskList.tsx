@@ -36,6 +36,7 @@ interface Props {
     onSwipeRight?: (id: string) => void;
     emptyText?: string;
     onTaskAction: OnTaskAction;
+    iconIndicates?: "completion"
 }
 
 const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
@@ -69,6 +70,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                                 props.onTaskAction(id, action);
                             }
                         }}
+                        iconIndicates={props.iconIndicates}
                     ></ConnectedTaskListItem>
             </SwipeRow>
         );
@@ -110,7 +112,7 @@ interface InputProps extends Omit<Props, "tasks"> {
         "completed-today" | "in-progress-but-not-due-today" |
         "overdue" | "remaining-today" | "due-today" | "in-progress" | 
         "single" | "current-cycle" | "today-as-cycle" | 
-        "overdue-in-goal";
+        "overdue-in-goal" | "parent";
     parentId: string  // shows all tasks that have this parent
     id?: string;
 }
@@ -121,6 +123,11 @@ interface InputProps extends Omit<Props, "tasks"> {
 
 const enhance = withObservables(['type'], (props: InputProps) => {
     switch(props.type) {
+        case "parent": {
+            return {
+                tasks: new ChildTaskQuery(props.parentId).queryAll().observe()
+            }
+        } break;
         case "active": {
             return {
                 tasks: new ActiveTaskQuery().queryAll().observe()

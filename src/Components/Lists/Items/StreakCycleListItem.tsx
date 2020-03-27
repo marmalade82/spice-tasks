@@ -71,13 +71,13 @@ export class StreakCycleListItem extends Item<Props, State, StreakCycle> {
         const {id, start, end} = this.props.item
         if(this.props.completed) {
             return {
-                subtext: "Completed",
+                subtext: "Complete",
                 type: "complete",
                 color: SECONDARY_COLOR,
                 size: 30,
             } as const;
         } else {
-            if(MyDate.WithinInclusive(start, end, MyDate.Now().toDate())) {
+            if(MyDate.WithinInclusive(start, end, MyDate.Now().toDate()) || MyDate.Before(start, MyDate.Now().toDate()) ) {
                 return {
                     subtext: "In progress",
                     type: "in-progress",
