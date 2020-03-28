@@ -102,18 +102,23 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             case TaskParentTypes.GOAL: {
                 const parent = await new GoalQuery().get(parentId);
                 if(parent) {
+                    let parentStart:Date = new Date();
                     if(parent.goalType === GoalType.NORMAL) {
                         this.setState({
                             dateRange: [ parent.startDate, parent.dueDate]
                         })
+                        parentStart = parent.startDate;
                     } else {
                         this.setState({
                             dateRange: [ parent.currentCycleStart(), parent.currentCycleEnd() ]
                         });
+                        parentStart = parent.currentCycleStart();
                     }
 
                     if(!task) {
-                        data.start_date = parent.startDate;
+                        // Default should start the new task where its parent is, whether that's a cycle or not.
+
+                        data.start_date = parentStart
                     }
                 }
             } break;
