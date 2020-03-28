@@ -17,6 +17,47 @@ import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Style
 import { OnEarnedRewardAction } from "src/Components/Lists/Items/EarnedRewardListItem";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 
+interface SwipeProps extends Props {
+    item: EarnedReward
+}
+
+const SwipeItem: React.FunctionComponent<SwipeProps> = (props: SwipeProps) => {
+    const swipeRef = useRef<SwipeRow>(null);
+    let { item } = props;
+    return (
+        <SwipeRow
+            ref={swipeRef}
+            renderSwipeRight={() => {
+                return (
+                    <View style={{
+                        backgroundColor: PRIMARY_COLOR,
+                        flex: 0,
+                        height: ROW_CONTAINER_HEIGHT,
+                        width: "100%",
+                    }}>
+                    </View>
+                )
+            }}
+            onSwipeRightOpen={() => { props.onSwipeRight ? props.onSwipeRight(item.id): null }}
+            key={item.id}
+        >
+            <ConnectedEarnedRewardListItem
+                earned={item}
+                navigation={props.navigation}
+                onAction={(id: string, action: "use") => {
+                    if(action === "use" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
+                        swipeRef.current.swipeRight();
+                    } else {
+                        props.onEarnedRewardAction(id, action);
+                    }
+                }}
+            >
+            </ConnectedEarnedRewardListItem>
+        </SwipeRow>
+    )
+}
+
+
 interface Props {
     earned: EarnedReward[];
     navigation: Navigation<ScreenParams>;
@@ -27,40 +68,26 @@ interface Props {
 }
 
 const AdaptedEarnedRewardList: React.FunctionComponent<Props> = (props: Props) => {
-    const swipeRef = useRef<SwipeRow>(null);
-    
     const renderEarnedReward = (item: EarnedReward) => {
-        return (
-            <SwipeRow
-                ref={swipeRef}
-                renderSwipeRight={() => {
-                    return (
-                        <View style={{
-                            backgroundColor: PRIMARY_COLOR,
-                            flex: 0,
-                            height: ROW_CONTAINER_HEIGHT,
-                            width: "100%",
-                        }}>
-                        </View>
-                    )
-                }}
-                onSwipeRightOpen={() => { props.onSwipeRight ? props.onSwipeRight(item.id): null }}
-                key={item.id}
-            >
+        if(item.active && props.onSwipeRight) {
+            return (
+                <SwipeItem
+                    item={item}
+                    {...props}
+                ></SwipeItem>
+            );
+        } else {
+            return (
                 <ConnectedEarnedRewardListItem
                     earned={item}
                     navigation={props.navigation}
                     onAction={(id: string, action: "use") => {
-                        if(action === "use" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
-                            swipeRef.current.swipeRight();
-                        } else {
-                            props.onEarnedRewardAction(id, action);
-                        }
+                        props.onEarnedRewardAction(id, action);
                     }}
                 >
                 </ConnectedEarnedRewardListItem>
-            </SwipeRow>
-        )
+            )
+        }
     }
 
     if(props.paginate) {

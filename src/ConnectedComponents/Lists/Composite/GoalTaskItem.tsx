@@ -35,6 +35,8 @@ const AdaptedGoalTaskItem: React.FunctionComponent<Props> = function(props: Prop
             title: task.title,
             due_date: task.dueDate,
             start_date: task.startDate,
+            active: task.active,
+            state: task.state,
         };
         return (
             <TaskListItem

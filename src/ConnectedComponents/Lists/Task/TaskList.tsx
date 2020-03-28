@@ -54,11 +54,9 @@ const SwipedItem: React.FunctionComponent<SwipedProps> = (props: SwipedProps) =>
             onSwipeRightOpen={() => { 
                 if(props.onSwipeRight) {
                     props.onSwipeRight(item.id);
-                    setTimeout(() => {
-                        if(props.iconIndicates === "completion" && swipeRef.current && swipeRef.current.notMocked()) {
-                            swipeRef.current.close();
-                        }
-                    })
+                    if(props.iconIndicates === "completion" && swipeRef.current && swipeRef.current.notMocked()) {
+                        swipeRef.current.close();
+                    }
                 }
             }}
             key={item.id}

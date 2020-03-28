@@ -15,6 +15,46 @@ import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Style
 import { OnEarnedPenaltyAction } from "src/Components/Lists/Items/EarnedPenaltyListItem";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 
+interface SwipeProps extends Props {
+    item: EarnedPenalty
+}
+
+const SwipeItem: React.FunctionComponent<SwipeProps> = (props: SwipeProps) => {
+    const swipeRef = useRef<SwipeRow>(null);
+    let { item } = props;
+    return (
+        <SwipeRow
+            ref={swipeRef}
+            renderSwipeRight={() => {
+                return (
+                    <View style={{
+                        backgroundColor: PRIMARY_COLOR,
+                        flex: 0,
+                        height: ROW_CONTAINER_HEIGHT,
+                        width: "100%",
+                    }}>
+                    </View>
+                )
+            }}
+            onSwipeRightOpen={() => { props.onSwipeRight ? props.onSwipeRight(item.id): null }}
+            key={item.id}
+        >
+            <ConnectedEarnedPenaltyListItem
+                earned={item}
+                navigation={props.navigation}
+                onEarnedPenaltyAction={(id: string, action: "use") => {
+                    if(action === "use" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
+                        swipeRef.current.swipeRight();
+                    } else {
+                        props.onEarnedPenaltyAction(id, action);
+                    }
+                }}
+            >
+            </ConnectedEarnedPenaltyListItem>
+        </SwipeRow>
+    )
+}
+
 interface Props {
     earned: EarnedPenalty[];
     navigation: Navigation<ScreenParams>;
@@ -26,39 +66,26 @@ interface Props {
 
 const AdaptedEarnedPenaltyList: React.FunctionComponent<Props> = (props: Props) => {
     
-    const swipeRef = useRef<SwipeRow>(null);
     const renderEarnedPenalty = (item: EarnedPenalty) => {
-        return (
-            <SwipeRow
-                ref={swipeRef}
-                renderSwipeRight={() => {
-                    return (
-                        <View style={{
-                            backgroundColor: PRIMARY_COLOR,
-                            flex: 0,
-                            height: ROW_CONTAINER_HEIGHT,
-                            width: "100%",
-                        }}>
-                        </View>
-                    )
-                }}
-                onSwipeRightOpen={() => { props.onSwipeRight ? props.onSwipeRight(item.id): null }}
-                key={item.id}
-            >
+        if(item.active && props.onSwipeRight) { 
+            return (
+                <SwipeItem
+                    item={item}
+                    {...props}
+                ></SwipeItem>
+            ) 
+        } else {
+            return (
                 <ConnectedEarnedPenaltyListItem
                     earned={item}
                     navigation={props.navigation}
                     onEarnedPenaltyAction={(id: string, action: "use") => {
-                        if(action === "use" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
-                            swipeRef.current.swipeRight();
-                        } else {
-                            props.onEarnedPenaltyAction(id, action);
-                        }
+                        props.onEarnedPenaltyAction(id, action);
                     }}
                 >
                 </ConnectedEarnedPenaltyListItem>
-            </SwipeRow>
-        )
+            )
+        }
     }
 
     if(props.paginate) {

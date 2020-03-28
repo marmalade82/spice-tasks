@@ -20,6 +20,46 @@ import { OnGoalAction } from "src/Components/Lists/Items/GoalListItem";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 import EmptyList from "src/Components/Lists/EmptyList";
 
+
+interface SwipeProps extends Props {
+    item: Goal
+}
+
+const SwipeItem: React.FunctionComponent<SwipeProps> = (props: SwipeProps) => {
+    let swipeRef = useRef<SwipeRow>(null);
+    let { item } = props;
+    return (
+        <SwipeRow
+            ref={swipeRef}
+            renderSwipeRight={() => {
+                return (
+                    <View style={{
+                        backgroundColor: PRIMARY_COLOR,
+                        flex: 0,
+                        height: ROW_CONTAINER_HEIGHT,
+                        width: "100%",
+                    }}>
+                    </View>
+                )
+            }}
+            onSwipeRightOpen={() => { props.onSwipeRight ? props.onSwipeRight(item.id): null }}
+            key={item.id}
+        >
+            <ConnectedGoalListItem
+                goal={item}
+                navigation={props.navigation}
+                onGoalAction={(id: string, action: "complete" | "fail") => {
+                    if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
+                        swipeRef.current.swipeRight();
+                    } else {
+                        props.onGoalAction(id, action);
+                    }
+                }}
+            ></ConnectedGoalListItem>
+        </SwipeRow>
+    )
+}
+
 interface Props {
     goals: Goal[];
     navigation: Navigation<ScreenParams>;
@@ -30,38 +70,13 @@ interface Props {
 }
 
 const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
-    let swipeRef = useRef<SwipeRow>(null);
     const renderGoal = (item: Goal) => {
-        if(props.onSwipeRight) {
+        if(item.active && props.onSwipeRight) {
             return (
-                <SwipeRow
-                    ref={swipeRef}
-                    renderSwipeRight={() => {
-                        return (
-                            <View style={{
-                                backgroundColor: PRIMARY_COLOR,
-                                flex: 0,
-                                height: ROW_CONTAINER_HEIGHT,
-                                width: "100%",
-                            }}>
-                            </View>
-                        )
-                    }}
-                    onSwipeRightOpen={() => { props.onSwipeRight ? props.onSwipeRight(item.id): null }}
-                    key={item.id}
-                >
-                    <ConnectedGoalListItem
-                        goal={item}
-                        navigation={props.navigation}
-                        onGoalAction={(id: string, action: "complete" | "fail") => {
-                            if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
-                                swipeRef.current.swipeRight();
-                            } else {
-                                props.onGoalAction(id, action);
-                            }
-                        }}
-                    ></ConnectedGoalListItem>
-                </SwipeRow>
+                <SwipeItem
+                    item={item}
+                    {...props}
+                ></SwipeItem>
             );
         } else {
             return (
@@ -69,11 +84,7 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
                         goal={item}
                         navigation={props.navigation}
                         onGoalAction={(id: string, action: "complete" | "fail") => {
-                            if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
-                                swipeRef.current.swipeRight();
-                            } else {
-                                props.onGoalAction(id, action);
-                            }
+                            props.onGoalAction(id, action);
                         }}
                     ></ConnectedGoalListItem>
             )
