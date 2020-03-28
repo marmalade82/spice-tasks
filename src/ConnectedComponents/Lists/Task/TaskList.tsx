@@ -29,6 +29,56 @@ import { merge } from "rxjs/operators";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 import MyDate from "src/common/Date";
 
+
+interface SwipedProps extends Props {
+    item: Task
+}
+
+const SwipedItem: React.FunctionComponent<SwipedProps> = (props: SwipedProps) => {
+    let swipeRef = useRef<SwipeRow>(null) 
+    let { item } = props;
+    return (
+        <SwipeRow
+            ref={swipeRef}
+            renderSwipeRight={() => {
+                return (
+                    <View style={{
+                        backgroundColor: PRIMARY_COLOR,
+                        flex: 0,
+                        height: ROW_CONTAINER_HEIGHT,
+                        width: "100%",
+                    }}>
+                    </View>
+                )
+            }}
+            onSwipeRightOpen={() => { 
+                if(props.onSwipeRight) {
+                    props.onSwipeRight(item.id);
+                    setTimeout(() => {
+                        if(props.iconIndicates === "completion" && swipeRef.current && swipeRef.current.notMocked()) {
+                            swipeRef.current.close();
+                        }
+                    })
+                }
+            }}
+            key={item.id}
+        >
+                <ConnectedTaskListItem
+                    task={item}
+                    navigation={props.navigation}
+                    onTaskAction={(id: string, action: "complete" | "fail") => {
+                        if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
+                            swipeRef.current.swipeRight();
+                        } else {
+                            props.onTaskAction(id, action);
+                        }
+                    }}
+                    iconIndicates={props.iconIndicates}
+                ></ConnectedTaskListItem>
+        </SwipeRow>
+    );
+}
+
 interface Props {
     tasks: Task[];
     navigation: Navigation<ScreenParams>;
@@ -40,40 +90,27 @@ interface Props {
 }
 
 const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
-    let swipeRef = useRef<SwipeRow>(null);
     
     const renderTask = (item: Task) => {
-        return (
-            <SwipeRow
-                ref={swipeRef}
-                renderSwipeRight={() => {
-                    return (
-                        <View style={{
-                            backgroundColor: PRIMARY_COLOR,
-                            flex: 0,
-                            height: ROW_CONTAINER_HEIGHT,
-                            width: "100%",
-                        }}>
-                        </View>
-                    )
-                }}
-                onSwipeRightOpen={() => { props.onSwipeRight ? props.onSwipeRight(item.id): null }}
-                key={item.id}
-            >
-                    <ConnectedTaskListItem
-                        task={item}
-                        navigation={props.navigation}
-                        onTaskAction={(id: string, action: "complete" | "fail") => {
-                            if(action === "complete" && props.onSwipeRight && swipeRef.current && swipeRef.current.notMocked()) {
-                                swipeRef.current.swipeRight();
-                            } else {
-                                props.onTaskAction(id, action);
-                            }
-                        }}
-                        iconIndicates={props.iconIndicates}
-                    ></ConnectedTaskListItem>
-            </SwipeRow>
-        );
+        if(item.active && props.onSwipeRight) {
+            return (
+                <SwipedItem
+                    item={item}
+                    {...props}
+                ></SwipedItem>
+            );
+        } else {
+            return (
+                <ConnectedTaskListItem
+                    task={item}
+                    navigation={props.navigation}
+                    onTaskAction={(id: string, action: "complete" | "fail") => {
+                        props.onTaskAction(id, action);
+                    }}
+                    iconIndicates={props.iconIndicates}
+                ></ConnectedTaskListItem>
+            ) 
+        }
         
     }
 

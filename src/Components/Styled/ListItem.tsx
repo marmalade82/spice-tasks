@@ -18,7 +18,7 @@ interface Props<T extends keyof ScreenParams> {
     key: string;
     accessibilityLabel?: string;
     type?: "goal" | "task" | "reward" | "penalty" | "recur" | "earned_reward" | "earned_penalty" |
-            "complete" | "not-complete" | "in-progress";
+            "complete" | "not-complete" | "in-progress" | "none";
     color?: string;
     size?: number;
     footerIcons? : (() => JSX.Element)[]

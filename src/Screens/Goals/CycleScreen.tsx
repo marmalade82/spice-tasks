@@ -93,6 +93,9 @@ export default class CycleScreen extends React.Component<Props, State> {
                 onTaskAction={this.onTaskAction}
                 type={"parent"}
                 iconIndicates={"completion"}
+                onSwipeRight={(id: string) => {
+                    this.onTaskAction(id, "complete");
+                }}
             ></ConnectedTaskList>
         )
     }

@@ -26,6 +26,7 @@ const AdaptedTaskListItem: React.FunctionComponent<Props> = function(props: Prop
         start_date: task.startDate,
         title: task.title,
         active: task.active,
+        state: task.state,
     }
 
     return (

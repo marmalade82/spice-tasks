@@ -12,7 +12,7 @@ interface Keyed {
 
 export interface Props<Item> {
     items: (Item)[],
-    renderItem: (item: Item) => JSX.Element,
+    renderItem: (item: Item, itemIndex?: number) => JSX.Element,
     renderEmptyItem: () => JSX.Element
     pageMax: number,
     style?: StyleProp<ViewStyle>
@@ -91,8 +91,8 @@ export default class PagedList<Item> extends React.Component<Props<Item>, State>
 
     renderItems = (items: Item[]) => {
         if(items.length > 0) {
-            let rendered = items.map((item) => {
-                return this.props.renderItem(item);
+            let rendered = items.map((item, index) => {
+                return this.props.renderItem(item, index);
             })
 
             while(rendered.length < this.props.pageMax && this.props.items.length > this.props.pageMax) {

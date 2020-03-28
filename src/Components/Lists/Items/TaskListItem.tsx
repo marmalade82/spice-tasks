@@ -26,6 +26,7 @@ interface Task {
     due_date: Date;
     start_date: Date;
     active: boolean;
+    state: "open" | "in_progress" | "complete" | "cancelled"
 }
 
 export default class TaskListItem extends Item<Props, State, Task> {
@@ -101,27 +102,36 @@ export default class TaskListItem extends Item<Props, State, Task> {
     }
 
     private iconOpts = () => {
-        const { id, title, due_date, start_date, active } = this.props.item;
+        const { id, title, due_date, start_date, active, state } = this.props.item;
         if(this.props.iconIndicates === "completion") {
             if(active) {
-                return {
-                    type: "not-complete",
-                    color: PRIMARY_COLOR,
-                    size: 30,
-                }  as const;
+                if(state === "open" || state === "in_progress") {
+                    return {
+                        type: "none",
+                        color: "transparent",
+                        size: 30,
+                    }  as const;
+                }
             } else {
-                return {
-                    type: "complete",
-                    color: SECONDARY_COLOR,
-                    size: 30,
-                } as const;
+                if(state === "complete") {
+                    return {
+                        type: "complete",
+                        color: SECONDARY_COLOR,
+                        size: 30,
+                    } as const;
+                } else if (state === "cancelled") {
+                    return {
+                        type: "not-complete",
+                        color: PRIMARY_COLOR,
+                        size: 30,
+                    } as const;
+                }
             }
-        } else {
-            return {
-                type: "task",
-                color: SECONDARY_COLOR,
-            } as const;
         }
+        return {
+            type: "task",
+            color: SECONDARY_COLOR,
+        } as const;
 
     }
 
