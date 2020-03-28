@@ -3,6 +3,7 @@ import { ScreenParams } from "./Navigator";
 import { ScreenDirectory } from "./NavigatorScreens";
 import React from "react";
 import { View } from "react-native";
+import { waitForAsyncLifecycleMethods } from "./test-utils";
 
 var chance = require("chance");
 var Chance = new chance();
@@ -140,6 +141,10 @@ export function renderWithNavigation<T extends keyof ScreenParams>(initialRoute:
         },
         intake: (renderResults: any) => {
             stack[stack.length - 1].renderFns = renderResults;
+        },
+        asyncIntake: async (renderResults: any) => {
+            stack[stack.length - 1].renderFns = renderResults;
+            await waitForAsyncLifecycleMethods()
         }
     }
 
