@@ -47,6 +47,10 @@ export default class MyDate {
         return actual < start;
     }
 
+    static After = (due: Date, actual: Date) => {
+        return actual > due;
+    }
+
     asStartDate = () => {
         this.prevMidnight();
         return this;

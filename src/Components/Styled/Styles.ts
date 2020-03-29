@@ -40,6 +40,10 @@ export const TAB_GREY = TEXT_GREY;
 
 export const PLACEHOLDER_GREY = "rgb(150, 150, 150)";
 
+export const BACKGROUND_GREY = "rgb(230, 230, 230)";
+
+export const BORDER_GREY = "rgb(200, 200, 200)";
+
 export const Styles = StyleSheet.create({
     CENTERED: {
         justifyContent: "center",

@@ -8,6 +8,7 @@ import DataComponent from "src/Components/base/DataComponent";
 interface Props {
     type: "add" | "edit" | "more"
     size?: number;
+    color?: string;
     overlaySize?: number
     accessibilityLabel?: string;
     data: State | false;
@@ -47,6 +48,7 @@ export default class ModalIconButton extends DataComponent<Props, State, State> 
                             showModal: true,
                         })
                     }}
+                    color={this.props.color}
                     size={this.props.size}
                     overlaySize={this.props.overlaySize}
                     accessibilityLabel={this.props.accessibilityLabel}

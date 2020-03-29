@@ -7,6 +7,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import FootSpacer from "src/Components/Basic/FootSpacer";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList"
 import { TaskLogic } from "src/Models/Task/TaskQuery";
+import { SidescrollPicker, LabelValue } from "src/Components/Styled/SidescrollPicker";
 
 
 interface Props {
@@ -14,14 +15,15 @@ interface Props {
 }
 
 interface State {
-    cycle?: StreakCycle
+    cycle?: StreakCycle;
+    current: string;
 }
 
 
 export default class CycleScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
-            title: "Habit Cycle"
+            title: "Habit Tasks"
         }
     }
 
@@ -32,7 +34,8 @@ export default class CycleScreen extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-
+            cycle: undefined,
+            current: "first"
         }
 
         this.unsubscribe = () => {}
@@ -96,8 +99,12 @@ export default class CycleScreen extends React.Component<Props, State> {
                 onSwipeRight={(id: string) => {
                     this.onTaskAction(id, "complete");
                 }}
+                withFilters={[
+                    "all", "ongoing", "complete", "failed", "not started", "overdue"
+                ]}
             ></ConnectedTaskList>
         )
     }
 
 }
+

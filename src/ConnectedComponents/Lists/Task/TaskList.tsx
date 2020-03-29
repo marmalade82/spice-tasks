@@ -1,5 +1,5 @@
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 import {
     ConnectedTaskListItem
@@ -28,6 +28,8 @@ import { Observable} from "rxjs";
 import { merge } from "rxjs/operators";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 import MyDate from "src/common/Date";
+import SidescrollPicker from "src/Components/Styled/SidescrollPicker";
+import * as v from "voca";
 
 
 interface SwipedProps extends Props {
@@ -85,9 +87,76 @@ interface Props {
     emptyText?: string;
     onTaskAction: OnTaskAction;
     iconIndicates?: "completion"
+    withFilters?: Filter[] 
 }
 
+type Filter = "all" | "ongoing" | "not started" | "overdue" | "failed" | "complete";
+
+
+
 const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
+    const [ filter, setFilter ] = useState<Filter>("all");
+
+    let items: Task[];
+    if(props.withFilters && props.withFilters.length > 0) {
+        items = props.tasks.filter((task) => {
+            switch(filter) {
+                case "all": {
+                    return true;
+                } break;
+                case "complete": {
+                    return !task.active && task.state === "complete"; 
+                } break;
+                case "failed": {
+                    return !task.active && task.state === "cancelled";
+                } break;
+                case "not started": {
+                    return MyDate.Before(task.startDate, MyDate.Now().toDate())
+                } break;
+                case "ongoing": {
+                    return task.active;
+                } break;
+                case "overdue": {
+                    return MyDate.After(task.dueDate, MyDate.Now().toDate())
+                }
+            }
+
+            return false;
+        });
+    } else {
+        items = props.tasks;
+    }
+
+    const renderFilter = (filter: Filter) => {
+        if(props.withFilters && props.withFilters.length > 0) {
+            return (
+                <SidescrollPicker
+                    onPick={(choice) => {
+                        setFilter(choice);
+                    }}
+                    choices={
+                        makeChoices(props.withFilters)
+                    }
+                    current={filter}
+                ></SidescrollPicker>
+            )
+        } else {
+            return null;
+        }
+
+        function makeChoices(filters: Filter[]) {
+            return filters.map((filter) => {
+                return {
+                    label: v.chain(filter)
+                            .words().thru((str) => {
+                                return str.map((s) => v.capitalize(s)).join(" ");
+                            }).value(),
+                    value: filter,
+                    key: filter,
+                }
+            })
+        }
+    }
     
     const renderTask = (item: Task) => {
         if(item.active && props.onSwipeRight) {
@@ -109,32 +178,45 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                 ></ConnectedTaskListItem>
             ) 
         }
-        
     }
 
     if(props.paginate) {
         return (
-            <PagedList
-                items={props.tasks}
-                pageMax={props.paginate}
-                renderItem={renderTask}
-                renderEmptyItem={() => {return <EmptyListItem></EmptyListItem>}}
-                renderEmptyList={() => { 
-                    return (
-                        <EmptyList
-                            text={props.emptyText ? props.emptyText : "No tasks here." }
-                        ></EmptyList>
-                    );
+            <View
+                style={{
+                    flex: 0,
                 }}
-            ></PagedList>
+            >
+                {renderFilter(filter)}
+                <PagedList
+                    items={items}
+                    pageMax={props.paginate}
+                    renderItem={renderTask}
+                    renderEmptyItem={() => {return <EmptyListItem></EmptyListItem>}}
+                    renderEmptyList={() => { 
+                        return (
+                            <EmptyList
+                                text={props.emptyText ? props.emptyText : "No tasks here." }
+                            ></EmptyList>
+                        );
+                    }}
+                ></PagedList>
+            </View>
         )
     } else {
         return (
-            <List
-                items={props.tasks} 
-                renderItem={renderTask}
+            <View
+                style={{
+                    flex: 1,
+                }}
             >
-            </List>
+                {renderFilter(filter)}
+                <List
+                    items={items} 
+                    renderItem={renderTask}
+                >
+                </List>
+            </View>
         )
     }
 }
