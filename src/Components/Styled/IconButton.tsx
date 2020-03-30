@@ -32,7 +32,6 @@ export default class IconButton extends React.Component<Props, State> {
     }
 
     render = () => {
-        const height = this.props.overlaySize ? this.props.overlaySize : ICON_CONTAINER_WIDTH;
         return (
             <TouchableView
                 style={{
@@ -46,234 +45,20 @@ export default class IconButton extends React.Component<Props, State> {
                 {this.renderI()}
             </TouchableView>
         );
-        /*
-        return (
-            <TouchableView
-                style={{
-                    flex:0
-                }}
-                onPress={this.props.onPress ? this.props.onPress : () => {}}
-                accessibilityLabel={
-                    this.props.accessibilityLabel 
-                }
-            >
-                <View 
-                    style={[{
-                        height: height,
-                        width: height,
-                        borderRadius: height/2,
-                        backgroundColor: this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR,
-                        marginLeft: RIGHT_SECOND_MARGIN/2,
-                    }, Styles.CENTERED]}
-                    accessibilityLabel={this.props.accessibilityLabel}
-                >
-                    {this.renderIcon()}
-                </View>
-            </TouchableView>
-        )*/
     }
 
     private renderI = () => {
-        switch(this.props.type) {
-            case "add": {
-                return  (
-                    <I
-                        type={"add"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                        backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR}
-                        accessibilityLabel={this.props.accessibilityLabel}
-                    >
-                    </I>
-                );
-            } break;
-            case "edit": {
-                return (
-                    <I
-                        type={"edit"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                        backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR}
-                        accessibilityLabel={this.props.accessibilityLabel}
-                    >
-                    </I>
-                );
-            } break;
-            case "more": {
-                return (
-                    <I
-                        type={"more"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                        backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR}
-                        accessibilityLabel={this.props.accessibilityLabel}
-                    >
-                    </I>
-                );
-            } break;
-            case "settings": {
-                return (
-                    <I
-                        type={"settings"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                        backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR}
-                        accessibilityLabel={this.props.accessibilityLabel}
-                    >
-                    </I>
-                );
-            } break;
-            case "enable": {
-                return (
-                    <I
-                        type={"enable"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                        backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR}
-                        accessibilityLabel={this.props.accessibilityLabel}
-                    >
-                    </I>
-                );
-            } break;
-            case "disable": {
-                return (
-                    <I
-                        type={"disable"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                        backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR}
-                        accessibilityLabel={this.props.accessibilityLabel}
-                    >
-                    </I>
-                );
-            } break;
-            case "complete": {
-            } break;
-            case "delete": {
-                return (
-                    <I
-                        type={"delete"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                        backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR}
-                        accessibilityLabel={this.props.accessibilityLabel}
-                    >
-                    </I>
-                );
-            } break;
-            case "save": {
-                return (
-                    <I
-                        type={"save"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                        backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR}
-                        accessibilityLabel={this.props.accessibilityLabel}
-                    >
-                    </I>
-                );
-            } break;
-            default: {
-                return null
-            }
-        }
-    }
+        let type = this.props.type;
 
-    private renderIcon = () => {
-        switch(this.props.type) {
-            case "add": {
-                return  (
-                    <Icon
-                        name={"plus"}
-                        type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                    >
-                    </Icon>
-                );
-            } break;
-            case "edit": {
-                return (
-                    <Icon
-                        name={"edit"}
-                        type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                    >
-                    </Icon>
-                );
-            } break;
-            case "more": {
-                return (
-                    <Icon
-                        name={"more-horizontal"}
-                        type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                    >
-                    </Icon>
-                );
-            } break;
-            case "settings": {
-                return (
-                    <Icon
-                        name={"settings"}
-                        type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                    >
-                    </Icon>
-                );
-            } break;
-            case "enable": {
-                return (
-                    <Icon
-                        name={"play"}
-                        type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                    >
-                    </Icon>
-                );
-            } break;
-            case "disable": {
-                return (
-                    <Icon
-                        name={"pause"}
-                        type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                    >
-                    </Icon>
-                );
-            } break;
-            case "complete": {
-            } break;
-            case "delete": {
-                return (
-                    <Icon
-                        name={"trash"}
-                        type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                    >
-                    </Icon>
-                );
-            } break;
-            case "save": {
-                return (
-                    <Icon
-                        name={"save"}
-                        type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
-                    >
-                    </Icon>
-                );
-            } break;
-            default: {
-                return undefined
-            }
-        }
+        return (
+            <I
+                type={type}
+                color={this.props.color ? this.props.color : "white"}
+                size={this.props.size ? this.props.size : 20}
+                backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR}
+                accessibilityLabel={this.props.accessibilityLabel}
+                backgroundHeight={this.props.overlaySize}
+            ></I>
+        );
     }
 }

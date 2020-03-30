@@ -15,11 +15,12 @@ interface Props {
         "reward" | "penalty" | "mandatory" | "attention" | "info" | "recur"| 
         "earned_reward" | "earned_penalty" | "right" | "left" | "first" | "last" | "none" | 
         "fail" | "add" | "arrow-left" | "save" |
-        "home" | "list" | "habit" | "sort";
+        "home" | "list" | "habit" | "sort" | "edit" | "more" | "settings" | "enable" | "disable";
     accessibilityLabel?: string;
     backgroundColor?: string;
     color?: string;
     size?: number;
+    backgroundHeight ? : number;
 }
 
 interface State {
@@ -33,12 +34,13 @@ export default class StyledIcon extends React.Component<Props, State>{
     }
 
     render = () => {
+        const height = this.props.backgroundHeight ? this.props.backgroundHeight : ICON_CONTAINER_WIDTH;
         return (
                 <View 
                     style={[{
-                        height: ICON_CONTAINER_WIDTH,
-                        width: ICON_CONTAINER_WIDTH,
-                        borderRadius: ICON_CONTAINER_WIDTH/2,
+                        height: height,
+                        width: height,
+                        borderRadius: height/2,
                         backgroundColor: this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR,
                     }, Styles.CENTERED]}
                     accessibilityLabel={this.props.accessibilityLabel}
@@ -350,6 +352,61 @@ export default class StyledIcon extends React.Component<Props, State>{
                         size={this.props.size ? this.props.size : 20}
                     >
 
+                    </Icon>
+                );
+            } break;
+            case "edit": {
+                return (
+                    <Icon
+                        name={"edit"}
+                        type={"feather"}
+                        color={this.props.color ? this.props.color : "white"}
+                        size={this.props.size ? this.props.size : 20}
+                    >
+                    </Icon>
+                );
+            } break;
+            case "more": {
+                return (
+                    <Icon
+                        name={"more-horizontal"}
+                        type={"feather"}
+                        color={this.props.color ? this.props.color : "white"}
+                        size={this.props.size ? this.props.size : 20}
+                    >
+                    </Icon>
+                );
+            } break;
+            case "settings": {
+                return (
+                    <Icon
+                        name={"settings"}
+                        type={"feather"}
+                        color={this.props.color ? this.props.color : "white"}
+                        size={this.props.size ? this.props.size : 20}
+                    >
+                    </Icon>
+                );
+            } break;
+            case "enable": {
+                return (
+                    <Icon
+                        name={"play"}
+                        type={"feather"}
+                        color={this.props.color ? this.props.color : "white"}
+                        size={this.props.size ? this.props.size : 20}
+                    >
+                    </Icon>
+                );
+            } break;
+            case "disable": {
+                return (
+                    <Icon
+                        name={"pause"}
+                        type={"feather"}
+                        color={this.props.color ? this.props.color : "white"}
+                        size={this.props.size ? this.props.size : 20}
+                    >
                     </Icon>
                 );
             } break;

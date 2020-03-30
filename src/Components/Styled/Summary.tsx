@@ -87,7 +87,16 @@ export default class Summary extends React.Component<Props, State> {
                         backgroundColor: "white",
                     }]}>
                         {this.props.footerElements.map((render) => {
-                            return render();
+                            return (
+                                <View
+                                    style={{
+                                        flex: 0,
+                                        marginLeft: RIGHT_SECOND_MARGIN / 2,
+                                    }}
+                                >
+                                    {render()}
+                                </View>
+                            );
                         })}
                     </RowView>
                     
