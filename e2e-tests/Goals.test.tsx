@@ -146,7 +146,7 @@ describe("habits", () => {
         } = renderWithNavigation("AppStart", {});
         intake( render(component()));
 
-        {   // Create a goal
+        {   // Create a habit
             const addGoal = getByLabelText("input-add-habit")
             fireEvent.press(addGoal);
             intake( render(component()));
@@ -240,7 +240,7 @@ describe("habits", () => {
         }
     }, 15000)
 
-    test.only("Addings tasks on both the first and second day", async () => {
+    test("Addings tasks on both the first and second day", async () => {
         const { getByLabelText, queryAllByLabelText, queryByLabelText, queryNavigation, navigation, component, params, asyncIntake,
         } = renderWithNavigation("AppStart", {});
         await asyncIntake( render(component()));
@@ -334,6 +334,48 @@ describe("habits", () => {
     }, 15000)
 })
 
+describe("goals", () => {
+    afterEach(async() => {
+        await destroyAll()
+    })
 
+    it("Simple goal creation", async () => {
+        const { 
+            getByLabelText, queryAllByLabelText, queryByLabelText, 
+            queryNavigation, navigation, component, 
+            params, asyncIntake,
+        } = renderWithNavigation("AppStart", {});
+        await asyncIntake( render(component()));
+
+        {   // Create a goal
+            const addGoal = getByLabelText("input-add-goal")
+            fireEvent.press(addGoal);
+            await asyncIntake( render(component()));
+
+            expect(queryNavigation.currentRoute).toEqual("AddGoal")
+            getByLabelText("add-goal-screen");
+
+            const summaryInput = getByLabelText("input-goal-summary");
+            fireEvent.changeText(summaryInput, "Summary");
+
+            const saveButton = getByLabelText("input-save-button");
+            fireEvent.press(saveButton);
+            await waitForAsyncLifecycleMethods();
+        }
+
+        {   // After creating a streak goal, we should arrive at the created goal to do further work.
+            await asyncIntake(render(component()));
+            expect(queryNavigation.currentRoute).toEqual("Goal");
+            getByLabelText("goal-screen");
+            await waitForAsyncLifecycleMethods();
+
+            // We should not see any tasks.
+            await wait(() => {
+                const tasks = queryAllByLabelText('task-list-item');
+                expect(tasks.length).toEqual(0);
+            })
+        }
+    }, 15000)
+})
 
 

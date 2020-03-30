@@ -279,7 +279,7 @@ export class ChildTaskQuery extends ModelQuery<Task, ITask> {
 
     queryOverdue = () => {
         return this.query(
-            Q.and(...Conditions.overdue())
+            ...Conditions.overdue()
         )
     }
 }
@@ -303,7 +303,7 @@ export class ChildOfTaskQuery extends ModelQuery<Task, ITask> {
     queries = () => {
         let qs = this.parents.map((parentId: string) => {
             return Q.where(TaskSchema.name.PARENT, parentId)
-        });
+        }).concat(Q.where(TaskSchema.name.PARENT, "")); // last line ensures that the query is not ever EMPTY.
         return new TaskQuery().queries().concat([
             Q.or(...qs)
         ]);

@@ -123,7 +123,6 @@ export default class GoalScreen extends React.Component<Props, State> {
                 })
             })
 
-
             const overdueSub = (function(){
                 let directChildCount: Observable<number> = new ChildTaskQuery(goal.id).queryOverdue().observeCount();
                 let streakChildCount: Observable<number> = new ChildStreakCycleQuery(goal.id).queryAll().observe().pipe(switchMap((cycles) => {
