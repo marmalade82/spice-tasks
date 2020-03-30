@@ -1,6 +1,6 @@
 import React from "react";
 import { FlatList, View } from "react-native";
-import { TAB_GREY, PLACEHOLDER_GREY, BACKGROUND_GREY, BORDER_GREY, LEFT_FIRST_MARGIN } from "./Styles";
+import { TAB_GREY, PLACEHOLDER_GREY, BACKGROUND_GREY, BORDER_GREY, LEFT_FIRST_MARGIN, RIGHT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, TEXT_HORIZONTAL_MARGIN } from "./Styles";
 import { BodyText, TouchableView } from "../Basic/Basic";
 import { Icon } from "./Icon";
 import { ModalIconButton } from "./Styled";
@@ -41,45 +41,56 @@ export class SidescrollPicker<Choices> extends React.Component<Props<Choices>, S
                 style={{
                     flex: 0,
                     flexDirection: "row",
-                    paddingVertical: 10,
+                    justifyContent: "flex-start",
                     backgroundColor: "white",
                     elevation: 7,
                 }}
             >
-                <ModalIconButton
-                    data={{
-                        showModal: this.state.showSorting,
-                    }}
-                    onDataChange={({ showModal }) => {
-                        this.setState({
-                            showSorting: showModal,
-                        })
-                    }}
-                    type={"add"}
-                    backgroundColor={"white"}
-                    color={TAB_GREY}
-                >
-
-                </ModalIconButton>
-                <FlatList
-                    horizontal={true}
-                    data={this.props.choices}
-                    renderItem={({item, index, separators}) => {
-                        return this.renderLabel(item);
-                    }}
+                <View
                     style={{
-                        flex: 0,
+                        paddingVertical: 10,
+                        //marginLeft: RIGHT_FIRST_MARGIN + ICON_CONTAINER_WIDTH,
                     }}
-                    showsHorizontalScrollIndicator={false}
-                    ListHeaderComponent={
-                        <View
-                            style={{
-                                flex: 0,
-                                width: spacer + 3,
-                            }}
-                        ></View>
-                    }
-                ></FlatList>
+                >
+                    <FlatList
+                        horizontal={true}
+                        data={this.props.choices}
+                        renderItem={({item, index, separators}) => {
+                            return this.renderLabel(item);
+                        }}
+                        style={{
+                            flex: 0,
+                        }}
+                        showsHorizontalScrollIndicator={false}
+                        ListHeaderComponent={
+                            <ModalIconButton
+                                data={{
+                                    showModal: this.state.showSorting,
+                                }}
+                                onDataChange={({ showModal }) => {
+                                    this.setState({
+                                        showSorting: showModal,
+                                    })
+                                }}
+                                type={"sort"}
+                                backgroundColor={"white"}
+                                color={TAB_GREY}
+                                style={{
+                                    marginLeft: LEFT_FIRST_MARGIN,
+                                    marginRight: TEXT_HORIZONTAL_MARGIN,
+                                    //marginRight: RIGHT_FIRST_MARGIN,
+                                    //paddingRight: RIGHT_FIRST_MARGIN,
+                                    borderColor: BORDER_GREY,
+                                    //borderLeftWidth: 1,
+                                    //borderRightWidth: 1,
+                                    backgroundColor: "white",
+                                }}
+                            >
+
+                            </ModalIconButton>
+                        }
+                    ></FlatList>
+                </View>
             </View>
         )
     }

@@ -12,7 +12,8 @@ import {
 import { TouchableView } from "../Basic/Basic";
 
 interface Props {
-    type: "add" | "edit" | "more" | "settings" | "enable" | "disable" | "complete" | "delete" | "save";
+    type: "add" | "edit" | "more" | "settings" | "enable" | "disable" | "complete" | "delete" | "save" | 
+            "sort";
     onPress?: () => void;
     accessibilityLabel?: string;
     backgroundColor?: string;

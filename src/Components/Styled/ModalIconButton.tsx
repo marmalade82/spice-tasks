@@ -1,12 +1,12 @@
 import React from "react";
 import IconButton from "src/Components/Styled/IconButton";
-import { View, TouchableWithoutFeedback } from "react-native";
+import { View, TouchableWithoutFeedback, StyleProp, ViewStyle } from "react-native";
 import { LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, RIGHT_SECOND_MARGIN, OVERLAY, Styles, MODAL_VERTICAL_PADDING } from "./Styles";
 import Modal from "src/Components/Styled/Modal";
 import DataComponent from "src/Components/base/DataComponent";
 
 interface Props {
-    type: "add" | "edit" | "more"
+    type: "add" | "edit" | "more" | "sort"
     size?: number;
     color?: string;
     overlaySize?: number
@@ -14,6 +14,7 @@ interface Props {
     data: State | false;
     onDataChange: (d: State) => void;
     backgroundColor?: string;
+    style?: StyleProp<ViewStyle>;
 }
 
 interface State {
@@ -37,9 +38,11 @@ export default class ModalIconButton extends DataComponent<Props, State, State> 
     render = () => {
         return (
             <View
-                style={{
-                    flex: 0
-                }} 
+                style={[{
+                    flex: 0,
+                    justifyContent: "center",
+                    alignItems: "center",
+                }, this.props.style]} 
             >
                 <IconButton
                     type={this.props.type}

@@ -117,7 +117,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                     return task.active;
                 } break;
                 case "overdue": {
-                    return MyDate.After(task.dueDate, MyDate.Now().toDate())
+                    return task.active && MyDate.After(task.dueDate, MyDate.Now().toDate())
                 }
             }
 

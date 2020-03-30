@@ -100,7 +100,7 @@ export default class CycleScreen extends React.Component<Props, State> {
                     this.onTaskAction(id, "complete");
                 }}
                 withFilters={[
-                    "all", "ongoing", "complete", "failed", "not started", "overdue"
+                    "all", "ongoing", "overdue", "complete", "failed"
                 ]}
             ></ConnectedTaskList>
         )
