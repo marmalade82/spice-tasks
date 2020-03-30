@@ -15,12 +15,14 @@ interface Props {
         "reward" | "penalty" | "mandatory" | "attention" | "info" | "recur"| 
         "earned_reward" | "earned_penalty" | "right" | "left" | "first" | "last" | "none" | 
         "fail" | "add" | "arrow-left" | "save" |
-        "home" | "list" | "habit" | "sort" | "edit" | "more" | "settings" | "enable" | "disable";
+        "home" | "list" | "habit" | "sort" | "edit" | "more" | "settings" | "enable" | "disable" |
+        "ascending" | "descending";
     accessibilityLabel?: string;
     backgroundColor?: string;
     color?: string;
     size?: number;
     backgroundHeight ? : number;
+    style?: StyleProp<ViewStyle>;
 }
 
 interface State {
@@ -42,7 +44,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                         width: height,
                         borderRadius: height/2,
                         backgroundColor: this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR,
-                    }, Styles.CENTERED]}
+                    }, Styles.CENTERED, this.props.style]}
                     accessibilityLabel={this.props.accessibilityLabel}
                 >
                     {this.renderIcon()}
@@ -52,6 +54,26 @@ export default class StyledIcon extends React.Component<Props, State>{
 
     renderIcon = () => {
         switch(this.props.type) {
+            case "ascending": {
+                return (
+                    <Icon
+                        name={"chevron-up"}
+                        type={"feather"}
+                        color={this.props.color ? this.props.color : "white"}
+                        size={this.props.size ? this.props.size : 20}
+                    ></Icon>
+                )
+            } break;
+            case "descending": {
+                return (
+                    <Icon
+                        name={"chevron-down"}
+                        type={"feather"}
+                        color={this.props.color ? this.props.color : "white"}
+                        size={this.props.size ? this.props.size : 20}
+                    ></Icon>
+                )
+            } break;
             case "complete": {
                 return (
                     <Icon

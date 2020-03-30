@@ -88,14 +88,18 @@ interface Props {
     onTaskAction: OnTaskAction;
     iconIndicates?: "completion"
     withFilters?: Filter[] 
+    accessibilityLabel? : string;
 }
 
 type Filter = "all" | "ongoing" | "not started" | "overdue" | "failed" | "complete";
 
+type Sorter = "start" | "due" | "title" | "age" | "description"
 
 
 const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
     const [ filter, setFilter ] = useState<Filter>("all");
+    const [ sorter, setSorter ] = useState<Sorter>("start");
+    const [ direction, setDirection] = useState<"up" | "down">("up");
 
     let items: Task[];
     if(props.withFilters && props.withFilters.length > 0) {
@@ -127,24 +131,36 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
         items = props.tasks;
     }
 
-    const renderFilter = (filter: Filter) => {
+    const renderFilter = (filter: Filter, sorter: Sorter, dir: "up" | "down") => {
         if(props.withFilters && props.withFilters.length > 0) {
             return (
                 <SidescrollPicker
-                    onPick={(choice) => {
+                    onPickFilter={(choice) => {
                         setFilter(choice);
                     }}
-                    choices={
-                        makeChoices(props.withFilters)
+                    filters={
+                        makeChoices<Filter>(props.withFilters)
                     }
-                    current={filter}
+                    currentFilter={filter}
+                    onPickSorter = { (sort) => {
+                        setSorter(sort);
+                    }}
+                    currentSorter = { sorter }
+                    sorters={
+                        makeChoices<Sorter>(["start", "due", "title", "age", "description"])
+                    }
+                    onPickDirection={(dir) => {
+                        setDirection(dir);
+                    }}
+                    currentDirection={dir}
+                    accessibilityLabel={props.accessibilityLabel ? props.accessibilityLabel : "tasks"}
                 ></SidescrollPicker>
             )
         } else {
             return null;
         }
 
-        function makeChoices(filters: Filter[]) {
+        function makeChoices<Choice>(filters: Choice[]) {
             return filters.map((filter) => {
                 return {
                     label: v.chain(filter)
@@ -187,7 +203,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                     flex: 0,
                 }}
             >
-                {renderFilter(filter)}
+                {renderFilter(filter, sorter, direction)}
                 <PagedList
                     items={items}
                     pageMax={props.paginate}
@@ -210,7 +226,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                     flex: 1,
                 }}
             >
-                {renderFilter(filter)}
+                {renderFilter(filter, sorter, direction)}
                 <List
                     items={items} 
                     renderItem={renderTask}
