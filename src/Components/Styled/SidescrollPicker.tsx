@@ -4,6 +4,7 @@ import { TAB_GREY, PLACEHOLDER_GREY, BACKGROUND_GREY, BORDER_GREY, LEFT_FIRST_MA
 import { BodyText, TouchableView, RowView, HeaderText } from "../Basic/Basic";
 import { Icon } from "./Icon";
 import { ModalIconButton } from "./Styled";
+import { DropdownInput } from "./DropdownInput";
 import ModalRow from "./ModalRow";
 
 
@@ -98,6 +99,22 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                                         marginLeft: LEFT_FIRST_MARGIN,
                                     }}
                                 >
+                                    <HeaderText
+                                        level={2}
+                                        style={{}}
+                                    >
+                                        Sort Criteria
+                                    </HeaderText>
+                                </RowView>
+                                <RowView
+                                    style={{
+                                        flex: 0,
+                                        height: MODAL_ROW_HEIGHT,
+                                        justifyContent: "flex-start",
+                                        alignItems: "center",
+                                        marginLeft: LEFT_FIRST_MARGIN,
+                                    }}
+                                >
                                     {this.renderArrows()}
                                 </RowView>
                                 <RowView
@@ -111,6 +128,50 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                                     }}
                                 >
                                 { this.renderSorters() }
+                                </RowView>
+                                <RowView
+                                    style={{
+                                        flex: 0,
+                                        height: MODAL_ROW_HEIGHT,
+                                        justifyContent: "flex-start",
+                                        alignItems: "center",
+                                        marginLeft: LEFT_FIRST_MARGIN,
+                                        zIndex: -50,
+                                    }}
+                                >
+                                    <HeaderText
+                                        level={2}
+                                        style={{}}
+                                    >
+                                        Date Range
+                                    </HeaderText>
+                                </RowView>
+                                <RowView
+                                    style={{
+                                        flex: 0,
+                                        justifyContent: "flex-start",
+                                        alignItems: "center",
+                                        marginLeft: LEFT_FIRST_MARGIN,
+                                        marginRight: RIGHT_FIRST_MARGIN,
+                                        flexWrap: "wrap",
+                                        zIndex: 1000,
+                                    }}
+                                >
+                                {/*
+                                    Here we need to include selectors to chooose last week, 
+                                    last month, last two months, last six months
+                                */}
+                                    <DropdownInput
+                                        onPick={() => {}}
+                                        pick={"week" as const}
+                                        choices={[
+                                            { label: "days", value: "day", key: "day"},
+                                            { label: "weeks", value: "week", key: "week"},
+                                            { label: "months", value: "month", key: "month"},
+                                        ]}
+                                        accessibilityLabel={"time-ago"}
+                                    >
+                                    </DropdownInput>
                                 </RowView>
                             </ModalIconButton>
                         }

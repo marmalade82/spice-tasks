@@ -88,6 +88,7 @@ interface Props {
     onTaskAction: OnTaskAction;
     iconIndicates?: "completion"
     withFilters?: Filter[] 
+    withSorters?: Sorter[]
     accessibilityLabel? : string;
 }
 
@@ -147,7 +148,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                     }}
                     currentSorter = { sorter }
                     sorters={
-                        makeChoices<Sorter>(["start", "due", "title", "age", "description"])
+                        makeChoices<Sorter>(props.withSorters ? props.withSorters : [])
                     }
                     onPickDirection={(dir) => {
                         setDirection(dir);

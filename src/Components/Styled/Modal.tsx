@@ -65,6 +65,7 @@ export default class Modal extends React.Component<Props, State> {
                                     width: "100%",
                                     paddingTop: MODAL_VERTICAL_PADDING,
                                     paddingBottom: MODAL_VERTICAL_PADDING,
+                                    overflow: "visible"
                                 }}
                                 accessibilityLabel={this.props.accessibilityLabel ? "modal-" + this.props.accessibilityLabel : undefined}
                             >

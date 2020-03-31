@@ -8,6 +8,7 @@ import FootSpacer from "src/Components/Basic/FootSpacer";
 import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList"
 import { TaskLogic } from "src/Models/Task/TaskQuery";
 import { SidescrollPicker, LabelValue } from "src/Components/Styled/SidescrollPicker";
+import { Button, View } from "react-native";
 
 
 interface Props {
@@ -101,6 +102,9 @@ export default class CycleScreen extends React.Component<Props, State> {
                 }}
                 withFilters={[
                     "all", "ongoing", "overdue", "complete", "failed"
+                ]}
+                withSorters={[
+                    "start", "title", "due",
                 ]}
             ></ConnectedTaskList>
         )
