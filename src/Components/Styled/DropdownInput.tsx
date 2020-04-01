@@ -2,7 +2,10 @@ import React from "react";
 import { View, ViewStyle, StyleProp, Button, Modal } from "react-native";
 import { BodyText, TouchableView } from "../Basic/Basic";
 import { TEXT_VERTICAL_MARGIN, TEXT_HORIZONTAL_MARGIN, BORDER_GREY, BACKGROUND_GREY, MODAL_ROW_HEIGHT } from "./Styles";
-import { TouchableWithoutFeedback } from "react-native";
+import { TouchableWithoutFeedback, findNodeHandle } from "react-native";
+import Dropdown from "src/Components/Styled/Dropdown";
+//import {DropdownInput as Dropdown} from "src/Components/Styled/DropDown";
+
 
 interface LabelValue<Choices> {
     label: string;
@@ -25,9 +28,11 @@ interface State {
 }
 
 const height = MODAL_ROW_HEIGHT - 8;
-const width = 90;
+const width = 120;
 
 export class DropdownInput<Choices> extends React.Component<Props<Choices>, State> {
+    viewRef: React.RefObject<View>
+    touchRef: React.RefObject<TouchableView>
     constructor(props: Props<Choices>) {
         super(props);
 
@@ -36,6 +41,21 @@ export class DropdownInput<Choices> extends React.Component<Props<Choices>, Stat
             backgroundColor: "green",
             visible: false,
         };
+
+        this.viewRef = React.createRef<View>()
+        this.touchRef = React.createRef()
+    }
+
+    componentDidMount = () => {
+        //let node = findNodeHandle(BodyText);
+        if(this.viewRef.current) {
+            //this.viewRef.current.measureLayout(node, onSuccess, () => {})
+        }
+
+        function onSuccess(left: number, top: number, width: number, height: number) {
+            let results = {left, top, width, height}
+            console.log("RESULTS: " + results);
+        }
     }
 
 
@@ -53,72 +73,7 @@ export class DropdownInput<Choices> extends React.Component<Props<Choices>, Stat
                 >
                     <BodyText style={{}}>3 </BodyText>
 
-                    <View
-                        style={{ 
-                            flex: 0,
-                            justifyContent: "flex-end",
-                            alignItems: "stretch",
-                            height: height,
-                            width: width,
-                            backgroundColor: "transparent",
-                        }}
-                        onLayout={({ nativeEvent }) => {
-                            let { x, y, width, height } = nativeEvent.layout
-                            let e = {
-                                x, y, width, height
-                            }
-                            console.log(e);
-                        }}
-                    >
-                        {this.renderAbsoluteChoices()}
-                        {/*this.renderChoices()*/}
-                        <TouchableView
-                            style={{
-                                flex: 0,
-                            }}
-                            onPress = {() => {
-                                this.setState((prevState) => {
-                                    if(prevState.display === "none") {
-                                        return {
-                                            display: "flex",
-                                            visible: true,
-                                        }
-                                    } else {
-                                        return {
-                                            display: "none",
-                                            visible: false,
-                                        }
-                                    }
-                                })
-                            }}
-                            accessibilityLabel={this.props.accessibilityLabel}
-                        >
-                            <View
-                                style={[{
-                                    flex: 0, 
-                                    paddingHorizontal: TEXT_HORIZONTAL_MARGIN,
-                                    backgroundColor: BACKGROUND_GREY,
-                                    borderColor: BORDER_GREY,
-                                    //borderWidth: 1,
-                                    //borderRadius: 5,
-                                    height: height,
-                                    width: width,
-                                    justifyContent: "center",
-                                    alignItems: "stretch",
-                                }, this.props.style]}
-                            >
-                                <BodyText
-                                    style={{}}
-                                >
-                                    {this.renderCurrent()}
-                                </BodyText>
-                            </View>
-                        </TouchableView>
-                    </View>
-                    <Button
-                        title={"test"}
-                        onPress={() => {}}
-                    ></Button>
+                    {this.renderAbsoluteChoices()}
 
                 </View>
         );
@@ -138,7 +93,20 @@ export class DropdownInput<Choices> extends React.Component<Props<Choices>, Stat
 
     private renderAbsoluteChoices = () => {
         return (
-            <TouchableView
+            <Dropdown
+                height={height}
+                width={width}
+                choices={["days", "weeks", "months"]}
+                current={"weeks"}
+                onChange={(val: any) => {
+
+                }}
+            >
+
+            </Dropdown>
+        )
+        return (
+            <View
                 style={{
                     flex: 0,
                     position: "absolute",
@@ -149,14 +117,9 @@ export class DropdownInput<Choices> extends React.Component<Props<Choices>, Stat
                     zIndex: 1000,
                     backgroundColor: BACKGROUND_GREY,
                 }}
-                onPress={() => {
-                    this.setState({
-                        backgroundColor: "purple",
-                    })
-                }}
             >
                 { this.renderChoices() }
-            </TouchableView>
+            </View>
         )
     }
 
@@ -185,6 +148,7 @@ export class DropdownInput<Choices> extends React.Component<Props<Choices>, Stat
                                 position: "relative",
                             }}
                             onPress={() => {}}
+                            ref={this.touchRef}
                         >
                             <View
                                 style={{

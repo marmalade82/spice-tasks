@@ -8,8 +8,10 @@ interface Props {
 }
 
 export default class TouchableView extends React.Component<Props> {
+    touchRef: React.RefObject<TouchableOpacity>
     constructor(props: Props) {
         super(props);
+        this.touchRef = React.createRef();
     }
 
     render = () => {
@@ -20,9 +22,25 @@ export default class TouchableView extends React.Component<Props> {
                 accessibilityLabel={
                     this.props.accessibilityLabel ? "input-" + this.props.accessibilityLabel : undefined
                 }
+                ref={this.touchRef}
             >
                 {this.props.children}
             </TouchableOpacity>
         );
+    }
+
+    touch = () => {
+        if(this.touchRef.current) {
+            this.touchRef.current.touchableHandlePress(null as any);
+            this.touchRef.current.setNativeProps({
+                opacity: 0.2
+            })
+            setTimeout(() => {
+                if(this.touchRef.current) {
+                    this.touchRef.current.setOpacityTo(1);
+                }
+            }, 300 )
+            console.log("HANDLING TOUCH");
+        }
     }
 }

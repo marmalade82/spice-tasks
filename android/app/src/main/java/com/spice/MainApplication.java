@@ -53,7 +53,8 @@ public class MainApplication extends Application implements ReactApplication {
           new RNScreensPackage(),
           new ModuleRegistryAdapter(mModuleRegistryProvider),
           new WatermelonDBPackage(),
-              new DBServicePackage()
+              new DBServicePackage(),
+              new DropdownInputPackage()
       );
       return l;
     }

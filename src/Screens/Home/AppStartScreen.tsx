@@ -27,6 +27,8 @@ import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navi
 import { TaskParentTypes } from "src/Models/Task/Task";
 import AddModal from "./common/AddModal";
 
+import Dropdown from "src/Components/Styled/Dropdown";
+
 interface Props {
     navigation: object;
 }
@@ -40,6 +42,7 @@ interface State {
     inProgressCount: number;
     overdueCount: number;
     ongoingGoalsCount: number;
+    current: string;
 }
 
 const dispatcher = new EventDispatcher();
@@ -71,6 +74,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
             inProgressCount: 0,
             overdueCount: 0,
             ongoingGoalsCount: 0,
+            current: 'bye',
         }
         this.unsub = () => {}
         this.navigation = new ScreenNavigation(this.props);
