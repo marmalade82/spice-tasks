@@ -28,7 +28,7 @@ import { Observable} from "rxjs";
 import { merge } from "rxjs/operators";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 import MyDate from "src/common/Date";
-import SidescrollPicker from "src/Components/Styled/SidescrollPicker";
+import SidescrollPicker, { Range } from "src/Components/Styled/SidescrollPicker";
 import * as v from "voca";
 
 
@@ -94,13 +94,14 @@ interface Props {
 
 type Filter = "all" | "ongoing" | "not started" | "overdue" | "failed" | "complete";
 
-type Sorter = "start" | "due" | "title" | "age" | "description"
+type Sorter = "start" | "due" | "title" | "description"
 
 
 const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
     const [ filter, setFilter ] = useState<Filter>("all");
     const [ sorter, setSorter ] = useState<Sorter>("start");
     const [ direction, setDirection] = useState<"up" | "down">("up");
+    const [ range, setRange ] = useState<Range>({ time: "day"})
 
     let items: Task[];
     if(props.withFilters && props.withFilters.length > 0) {
@@ -119,7 +120,8 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                     return MyDate.Before(task.startDate, MyDate.Now().toDate())
                 } break;
                 case "ongoing": {
-                    return task.active;
+                    const now = MyDate.Now().toDate();
+                    return task.active && !MyDate.After(task.dueDate, now) && !MyDate.Before(task.startDate, now);
                 } break;
                 case "overdue": {
                     return task.active && MyDate.After(task.dueDate, MyDate.Now().toDate())
@@ -127,7 +129,57 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
             }
 
             return false;
-        });
+        }).sort((a, b) => {
+            switch(sorter) {
+                case "start": {
+                    return sort(a.startDate, b.startDate, direction)
+                }
+                case "due": {
+                    return sort(a.dueDate, b.dueDate, direction)
+                }
+                case "title": {
+                    return sort(a.title, b.title, direction)
+                }
+                case "description": {
+                    return sort(a.instructions, b.instructions, direction);
+                }
+            }
+        })
+
+        function sort<T extends Date | string | number>(a: T, b: T, direction: "up" | "down") {
+            let multiplier: number = 1
+            switch(direction) {
+                case "up": {
+                    multiplier = 1;
+                } break;
+                case "down": {
+                    multiplier = -1;
+                }
+            }
+
+            if(a instanceof Date) {
+                return multiplier * ((a as Date).valueOf() - (b as Date).valueOf());
+            }
+
+            if(typeof a === "string") {
+                let diff = 0
+                if(a < b) {
+                    diff = -1
+                } else if (a > b) {
+                    diff = 1
+                } else {
+                    diff = 0;
+                }
+                return multiplier * diff;
+            }
+
+            if(typeof a === "number") {
+                return multiplier * ((a as number) - (b as number));
+            }
+
+            throw new Error("sort used on unsupported args")
+        }
+
     } else {
         items = props.tasks;
     }
@@ -154,6 +206,10 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                         setDirection(dir);
                     }}
                     currentDirection={dir}
+                    onPickRange={(r) => {
+                        setRange(r);
+                    }}
+                    range={range}
                     accessibilityLabel={props.accessibilityLabel ? props.accessibilityLabel : "tasks"}
                 ></SidescrollPicker>
             )

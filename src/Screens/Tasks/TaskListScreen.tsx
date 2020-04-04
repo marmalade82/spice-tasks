@@ -82,6 +82,8 @@ export default class TaskListScreen extends React.Component<Props, State> {
                     parentId={""}
                     type={"all"}
                     onTaskAction={this.onTaskAction}
+                    withFilters={["all", "ongoing", "not started", "overdue", "complete", "failed"]}
+                    withSorters={["start", "title"]}
                 ></ConnectedTaskList>
             </DocumentView>
         );

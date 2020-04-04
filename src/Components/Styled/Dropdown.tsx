@@ -8,7 +8,7 @@ interface DropdownProps {
     height: number;
     width: number;
     choices: string[];
-    onChange: (thing: any) => void;
+    onChange: (thing: string) => void;
 }
 
 
@@ -30,7 +30,7 @@ export class DropdownInput extends React.Component<Props> {
                 choices={this.props.choices}
                 current={this.current()}
                 onChange={(event) => {
-                    this.props.onChange(event.nativeEvent.message)
+                    this.props.onChange(event.nativeEvent.message.toString())
                 }}
             >
             </Dropdown>

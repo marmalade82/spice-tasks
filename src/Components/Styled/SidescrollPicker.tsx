@@ -14,7 +14,7 @@ export interface LabelValue<Choices> {
     key: string;
 }
 
-interface Props<Filters, Sorters> {
+export interface Props<Filters, Sorters> {
     filters: LabelValue<Filters>[]
     onPickFilter: (choice: Filters) => void;
     currentFilter: Filters;
@@ -24,10 +24,16 @@ interface Props<Filters, Sorters> {
     currentDirection: "up" | "down";
     onPickDirection: (d: "up" | "down") => void;
     accessibilityLabel: string;
+    onPickRange: (r: Range) => void
+    range: Range
 }
 
-interface State {
+export interface State {
     showSorting: boolean;
+}
+
+export type Range = {
+    time: "week" | "day" | "month"
 }
 
 const marginHorizontal = 13;
@@ -162,12 +168,16 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                                     last month, last two months, last six months
                                 */}
                                     <DropdownInput
-                                        onPick={() => {}}
-                                        pick={"week" as const}
+                                        onPick={(choice) => {
+                                            this.props.onPickRange({
+                                                time: choice
+                                            })
+                                        }}
+                                        pick={this.props.range.time}
                                         choices={[
-                                            { label: "days", value: "day", key: "day"},
-                                            { label: "weeks", value: "week", key: "week"},
-                                            { label: "months", value: "month", key: "month"},
+                                            { label: "days", value: "day", key: "day"} as const,
+                                            { label: "weeks", value: "week", key: "week"} as const,
+                                            { label: "months", value: "month", key: "month"} as const,
                                         ]}
                                         accessibilityLabel={"time-ago"}
                                     >

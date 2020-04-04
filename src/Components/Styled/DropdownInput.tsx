@@ -22,40 +22,21 @@ interface Props<Choices> {
 }
 
 interface State {
-    backgroundColor: string,
-    visible: boolean;
-    display: "none" | "flex",
 }
 
 const height = MODAL_ROW_HEIGHT - 8;
 const width = 120;
 
 export class DropdownInput<Choices> extends React.Component<Props<Choices>, State> {
-    viewRef: React.RefObject<View>
-    touchRef: React.RefObject<TouchableView>
     constructor(props: Props<Choices>) {
         super(props);
 
         this.state = {
-            display: "none",
-            backgroundColor: "green",
-            visible: false,
         };
 
-        this.viewRef = React.createRef<View>()
-        this.touchRef = React.createRef()
     }
 
     componentDidMount = () => {
-        //let node = findNodeHandle(BodyText);
-        if(this.viewRef.current) {
-            //this.viewRef.current.measureLayout(node, onSuccess, () => {})
-        }
-
-        function onSuccess(left: number, top: number, width: number, height: number) {
-            let results = {left, top, width, height}
-            console.log("RESULTS: " + results);
-        }
     }
 
 
@@ -79,16 +60,10 @@ export class DropdownInput<Choices> extends React.Component<Props<Choices>, Stat
         );
     }
 
-    private renderCurrent = () => {
-        let found = this.props.choices.find((choice) => {
-            return choice.value === this.props.pick;
+    private choiceLabels = () => {
+        return this.props.choices.map((choice) => {
+            return choice.label;
         })
-
-        if(found) {
-            return found.label;
-        } else {
-            return "";
-        }
     }
 
     private renderAbsoluteChoices = () => {
@@ -96,83 +71,22 @@ export class DropdownInput<Choices> extends React.Component<Props<Choices>, Stat
             <Dropdown
                 height={height}
                 width={width}
-                choices={["days", "weeks", "months"]}
-                current={"weeks"}
-                onChange={(val: any) => {
+                choices={this.choiceLabels()}
+                current={this.props.pick as unknown as string}
+                onChange={(val) => {
+                    let choice = this.props.choices.find((choice) => {
+                        return choice.label === val;
+                    })
 
+                    if(choice) {
+                        this.props.onPick(choice.value);
+                    } else {
+                        this.props.onPick(this.props.pick)
+                    }
                 }}
             >
 
             </Dropdown>
         )
-        return (
-            <View
-                style={{
-                    flex: 0,
-                    position: "absolute",
-                    //top: height,
-                    bottom: height,
-                    //display: this.state.display,
-                    width: width,
-                    zIndex: 1000,
-                    backgroundColor: BACKGROUND_GREY,
-                }}
-            >
-                { this.renderChoices() }
-            </View>
-        )
-    }
-
-    private renderChoices = () => {
-        return this.props.choices.map((choice, index) => {
-            return ( 
-                <View
-                    style={{
-                        flex: 0,
-                        position: "relative",
-                        height: height,
-                        width: width,
-                    }}
-                >
-                    <TouchableWithoutFeedback
-                        onPress={() => {
-                            this.setState({
-                                backgroundColor: "pink",
-                            })
-                        }}
-                    >
-                        <TouchableView
-                            style={{ 
-                                flex: 0,
-                                zIndex: 1000,
-                                position: "relative",
-                            }}
-                            onPress={() => {}}
-                            ref={this.touchRef}
-                        >
-                            <View
-                                style={{
-                                    flex: 0,
-                                    paddingHorizontal: TEXT_HORIZONTAL_MARGIN,
-                                    backgroundColor: this.state.backgroundColor, //BACKGROUND_GREY,
-                                    borderColor: BACKGROUND_GREY,
-                                    height: height,
-                                    justifyContent: "center",
-                                    alignItems: "stretch",
-                                    width: width,
-                                    zIndex: 1000,
-                                }}
-                            >
-                                <BodyText
-                                    style={{}}
-                                >
-                                {choice.label}
-                                </BodyText>
-                            </View>
-                        </TouchableView>
-                    </TouchableWithoutFeedback>
-                </View>
-            );
-        })
     }
 }
