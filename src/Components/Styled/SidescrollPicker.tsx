@@ -397,6 +397,12 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                         this.setState({
                             proposedRange: item.value,
                         })
+                        if(item.value === "all") {
+                            this.setState({
+                                start: MyDate.Now().toDate(),
+                                end: MyDate.Now().toDate(),
+                            })
+                        }
                     }}
                     accessibilityLabel={"date-" + item.value + "-" + this.props.accessibilityLabel}
                 >
