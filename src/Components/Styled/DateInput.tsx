@@ -41,7 +41,7 @@ export default class DateInput extends React.Component<Props, State> {
         };
     }
 
-    iconType = (): "mandatory" | "attention" => {
+    private iconType = (): "mandatory" | "attention" => {
         switch(this.props.icon) {
             case "mandatory": {
                 return "mandatory"
@@ -54,13 +54,13 @@ export default class DateInput extends React.Component<Props, State> {
         return "attention";
     }
 
-    onPress = async () => {
+    private onPress = async () => {
         if(Platform.OS === "android") {
             await this.onPressDateAndroid();
         }
     }
 
-    onPressDateAndroid = async() => {
+    private onPressDateAndroid = async() => {
         const dateOpts = await DatePickerAndroid.open({
             date: this.props.value,
             mode: 'default',

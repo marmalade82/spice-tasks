@@ -43,11 +43,11 @@ export default class MyDate {
         return start <= actual && actual <= end
     }
 
-    static Before = (start: Date, actual: Date) => {
+    static YBeforeX = (start: Date, actual: Date) => {
         return actual < start;
     }
 
-    static After = (due: Date, actual: Date) => {
+    static YAfterX = (due: Date, actual: Date) => {
         return actual > due;
     }
 

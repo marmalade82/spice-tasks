@@ -4,6 +4,7 @@ import { BodyText, TouchableView } from "../Basic/Basic";
 import { TEXT_VERTICAL_MARGIN, TEXT_HORIZONTAL_MARGIN, BORDER_GREY, BACKGROUND_GREY, MODAL_ROW_HEIGHT } from "./Styles";
 import { TouchableWithoutFeedback, findNodeHandle } from "react-native";
 import Dropdown from "src/Components/Styled/Dropdown";
+import { TextInput } from "react-native-gesture-handler";
 //import {DropdownInput as Dropdown} from "src/Components/Styled/DropDown";
 
 
@@ -43,19 +44,30 @@ export class DropdownInput<Choices> extends React.Component<Props<Choices>, Stat
     render = () => {
         return (
                 <View
-                    style={{
+                    style={[{
                         flex: 0,
                         flexDirection: "row",
                         justifyContent: "flex-start",
                         alignItems: "center",
                         backgroundColor: "transparent",
-                    }}
-                    accessibilityLabel={""}
+                    }, this.props.style]}
+                    accessibilityLabel={this.props.accessibilityLabel}
                 >
-                    <BodyText style={{}}>3 </BodyText>
-
                     {this.renderAbsoluteChoices()}
+                    <TextInput
+                        onChangeText={(val) => {
+                            let choice = this.props.choices.find((choice) => {
+                                return choice.label === val;
+                            })
 
+                            if(choice) {
+                                this.props.onPick(choice.value);
+                            } else {
+                                this.props.onPick(this.props.pick)
+                            }
+                        }}
+                        accessibilityLabel={"value-input-" + this.props.accessibilityLabel}
+                    ></TextInput>
                 </View>
         );
     }
@@ -85,7 +97,6 @@ export class DropdownInput<Choices> extends React.Component<Props<Choices>, Stat
                     }
                 }}
             >
-
             </Dropdown>
         )
     }

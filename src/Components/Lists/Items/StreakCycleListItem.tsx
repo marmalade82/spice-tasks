@@ -77,7 +77,7 @@ export class StreakCycleListItem extends Item<Props, State, StreakCycle> {
                 size: 30,
             } as const;
         } else {
-            if(MyDate.WithinInclusive(start, end, MyDate.Now().toDate()) || MyDate.Before(start, MyDate.Now().toDate()) ) {
+            if(MyDate.WithinInclusive(start, end, MyDate.Now().toDate()) || MyDate.YBeforeX(start, MyDate.Now().toDate()) ) {
                 return {
                     subtext: "In progress",
                     type: "in-progress",

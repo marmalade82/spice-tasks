@@ -28,7 +28,7 @@ import { Observable} from "rxjs";
 import { merge } from "rxjs/operators";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 import MyDate from "src/common/Date";
-import SidescrollPicker, { Range } from "src/Components/Styled/SidescrollPicker";
+import SidescrollPicker from "src/Components/Styled/SidescrollPicker";
 import * as v from "voca";
 
 
@@ -96,16 +96,35 @@ type Filter = "all" | "ongoing" | "not started" | "overdue" | "failed" | "comple
 
 type Sorter = "start" | "due" | "title" | "description"
 
+type Range = [Date, Date] | undefined
 
 const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
     const [ filter, setFilter ] = useState<Filter>("all");
     const [ sorter, setSorter ] = useState<Sorter>("start");
     const [ direction, setDirection] = useState<"up" | "down">("up");
-    const [ range, setRange ] = useState<Range>({ time: "day"})
+    const [ range, setRange ] = useState<Range>( undefined )
 
     let items: Task[];
+    const now = MyDate.Now().toDate();
     if(props.withFilters && props.withFilters.length > 0) {
         items = props.tasks.filter((task) => {
+            if(range === undefined) {
+                console.log("RERENDERING ALL")
+                return true;
+            } else {
+                let start = range[0]
+                let end = range[1];
+                if(end < start) {
+                    console.log("END BEFORE START");
+                    return false;
+                } else {
+                    const endBeforeDate = MyDate.YBeforeX(task.startDate, end) ;
+                    const startAfterDate = MyDate.YAfterX(task.startDate, start);
+                    console.log("CHECKING DATE " + endBeforeDate + " " + startAfterDate);
+                    return !endBeforeDate && !startAfterDate
+                }
+            }
+        }).filter((task) => {
             switch(filter) {
                 case "all": {
                     return true;
@@ -117,14 +136,13 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                     return !task.active && task.state === "cancelled";
                 } break;
                 case "not started": {
-                    return MyDate.Before(task.startDate, MyDate.Now().toDate())
+                    return MyDate.YBeforeX(task.startDate, MyDate.Now().toDate())
                 } break;
                 case "ongoing": {
-                    const now = MyDate.Now().toDate();
-                    return task.active && !MyDate.After(task.dueDate, now) && !MyDate.Before(task.startDate, now);
+                    return task.active && !MyDate.YAfterX(task.dueDate, now) && !MyDate.YBeforeX(task.startDate, now);
                 } break;
                 case "overdue": {
-                    return task.active && MyDate.After(task.dueDate, MyDate.Now().toDate())
+                    return task.active && MyDate.YAfterX(task.dueDate, MyDate.Now().toDate())
                 }
             }
 
@@ -188,28 +206,23 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
         if(props.withFilters && props.withFilters.length > 0) {
             return (
                 <SidescrollPicker
-                    onPickFilter={(choice) => {
-                        setFilter(choice);
-                    }}
+                    initialFilter={filter}
+                    initialSorter = { sorter }
+                    initialDirection={dir}
                     filters={
                         makeChoices<Filter>(props.withFilters)
                     }
-                    currentFilter={filter}
-                    onPickSorter = { (sort) => {
-                        setSorter(sort);
-                    }}
-                    currentSorter = { sorter }
                     sorters={
                         makeChoices<Sorter>(props.withSorters ? props.withSorters : [])
                     }
-                    onPickDirection={(dir) => {
-                        setDirection(dir);
+                    onSubmit={( results) => {
+                        console.log("receiving results " + JSON.stringify(results));
+                        const { filter, direction, sorter, range } = results
+                        setFilter(filter);
+                        setDirection(direction);
+                        setSorter(sorter);
+                        setRange(range);
                     }}
-                    currentDirection={dir}
-                    onPickRange={(r) => {
-                        setRange(r);
-                    }}
-                    range={range}
                     accessibilityLabel={props.accessibilityLabel ? props.accessibilityLabel : "tasks"}
                 ></SidescrollPicker>
             )
