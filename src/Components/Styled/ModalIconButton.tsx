@@ -15,6 +15,7 @@ interface Props {
     onDataChange: (d: State) => void;
     backgroundColor?: string;
     style?: StyleProp<ViewStyle>;
+    onModalClose?: () => void;
 }
 
 interface State {
@@ -67,7 +68,10 @@ export default class ModalIconButton extends DataComponent<Props, State, State> 
         return (
                 <Modal
                     visible={this.data().showModal}
-                    onRequestClose={ () => { this.hideModal() } }
+                    onRequestClose={ () => { 
+                        this.hideModal();
+                        this.props.onModalClose ? this.props.onModalClose() : null;
+                    } }
                 >
                     {this.props.children}
                 </Modal>

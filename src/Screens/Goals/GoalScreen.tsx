@@ -312,16 +312,6 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 flex: 0
                             }}
                         >
-                            <BackgroundTitle 
-                                title={ habitHasNotStarted ?
-                                    `First Tasks (${this.state.currentCycleCount})` : habitIsOverdue ?
-                                    `Overdue (${this.state.overdueCount})` :
-                                    `${getCurrentCycleType()} (${this.state.currentCycleCount})`
-                                }
-                                style={{
-                                }}
-                            ></BackgroundTitle>
-
                             <ConnectedTaskList
                                 navigation={this.navigation}
                                 parentId={this.navigation.getParam('id', '')}
@@ -335,6 +325,14 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 }}
                                 emptyText={"No active tasks"}
                                 onTaskAction={this.onTaskAction}
+                                showFilterBar={{
+                                    label: habitHasNotStarted ?
+                                        `First Tasks (${this.state.currentCycleCount})` : habitIsOverdue ?
+                                        `Overdue (${this.state.overdueCount})` :
+                                        `${getCurrentCycleType()} (${this.state.currentCycleCount})`,
+                                    withFilters: ["all", "complete", "failed", 'ongoing'],
+                                    withSorters: ["start", "due", "title"],
+                                }}
                             ></ConnectedTaskList>
                             <BackgroundTitle 
                                 title={ habitHasNotStarted ?
@@ -375,6 +373,11 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 }}
                                 emptyText={"No active subtasks"}
                                 onTaskAction={this.onTaskAction}
+                                showFilterBar={{
+                                    label: `Active (${this.state.activeCount})`,
+                                    withFilters: ["all"],
+                                    withSorters: ["start", "due", "title"],
+                                }}
                             ></ConnectedTaskList>
                             <BackgroundTitle title={`Inactive (${this.state.inactiveCount})`}
                                 style={{
@@ -387,6 +390,10 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 emptyText={"No inactive subtasks"}
                                 type={"parent-inactive"}
                                 onTaskAction={this.onTaskAction}
+                                showFilterBar={{
+                                    withFilters: ["all"],
+                                    withSorters: ["start", "due", "title"],
+                                }}
                             ></ConnectedTaskList>
                         </View>
                     ) 

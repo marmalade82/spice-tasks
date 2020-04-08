@@ -1,6 +1,6 @@
 import React from "react";
 import { FlatList, View, Button } from "react-native";
-import { TAB_GREY, PLACEHOLDER_GREY, BACKGROUND_GREY, BORDER_GREY, LEFT_FIRST_MARGIN, RIGHT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, TEXT_HORIZONTAL_MARGIN, MODAL_ROW_HEIGHT, TEXT_GREY, RIGHT_SECOND_MARGIN, TEXT_VERTICAL_MARGIN } from "./Styles";
+import { TAB_GREY, PLACEHOLDER_GREY, BACKGROUND_GREY, BORDER_GREY, LEFT_FIRST_MARGIN, RIGHT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, TEXT_HORIZONTAL_MARGIN, MODAL_ROW_HEIGHT, TEXT_GREY, RIGHT_SECOND_MARGIN, TEXT_VERTICAL_MARGIN, LEFT_SECOND_MARGIN } from "./Styles";
 import { BodyText, TouchableView, RowView, HeaderText } from "../Basic/Basic";
 import { Icon } from "./Icon";
 import { ModalIconButton, DateInput } from "./Styled";
@@ -17,17 +17,19 @@ export interface LabelValue<Choices> {
 }
 
 export interface Props<Filters, Sorters> {
+    label?: string;
     filters: LabelValue<Filters>[]
-    initialFilter: Filters;
+    filter: Filters;
+    onChangeFilter: (f: Filters) => void;
     sorters: LabelValue<Sorters>[]
     initialSorter: Sorters;
+    initialRange?: [Date, Date]
     initialDirection: "up" | "down";
     onSubmit: (r: Results<Filters, Sorters>) => void;
     accessibilityLabel: string;
 }
 
 type Results<Filters, Sorters> = {
-    filter: Filters,
     sorter: Sorters,
     range?: [Date, Date]
     direction: "up" | "down";
@@ -35,43 +37,39 @@ type Results<Filters, Sorters> = {
 
 export interface State<Filters, Sorters> {
     showSorting: boolean;
-    proposedRange: "all" | "range";
-    start: Date;
-    end: Date;
-    filter: Filters;
+    range?: [Date, Date]
     sorter: Sorters;
     direction: "up" | "down";
+    label?: string;
 }
 
 const marginHorizontal = 13;
 const spacer = 10;
 
 export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Filters, Sorters>, State<Filters, Sorters>> {
-    initial: State<Filters, Sorters>
     constructor(props: Props<Filters, Sorters>) {
         super(props);
         let state = {
             showSorting: false,
             proposedRange: "all",
-            start: MyDate.Now().toDate(),
-            end: MyDate.Now().toDate(),
-            filter: this.props.initialFilter,
+            range: this.props.initialRange,
             sorter: this.props.initialSorter,
             direction: this.props.initialDirection,
         } as const;
         this.state = Object.assign({}, state);
 
-        this.initial = Object.assign({}, state)
     }
 
-    componentDidMount = () => {
+    private resetState = () => {
         this.setState({
-            start: MyDate.Now().toDate(),
-            end: MyDate.Now().toDate(),
-            filter: this.props.initialFilter,
+            range: this.props.initialRange,
             sorter: this.props.initialSorter,
             direction: this.props.initialDirection,
         })
+    }
+
+    componentDidMount = () => {
+        this.resetState();
     }
 
 
@@ -82,7 +80,7 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                     flex: 0,
                     flexDirection: "row",
                     justifyContent: "flex-start",
-                    backgroundColor: "white",
+                    backgroundColor: this.backgroundColor(),
                     elevation: 7,
                 }}
             >
@@ -103,159 +101,200 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                         }}
                         showsHorizontalScrollIndicator={false}
                         ListHeaderComponent={
-                            <ModalIconButton
-                                data={{
-                                    showModal: this.state.showSorting,
-                                }}
-                                onDataChange={({ showModal }) => {
-                                    this.setState({
-                                        showSorting: showModal,
-                                    })
-                                }}
-                                type={"sort"}
-                                backgroundColor={"white"}
-                                color={TAB_GREY}
-                                style={{
-                                    marginLeft: LEFT_FIRST_MARGIN,
-                                    marginRight: TEXT_HORIZONTAL_MARGIN,
-                                    borderColor: BORDER_GREY,
-                                    backgroundColor: "white",
-                                }}
-                            >
-                                <RowView
-                                    style={{
-                                        flex: 0,
-                                        height: MODAL_ROW_HEIGHT,
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                        marginLeft: LEFT_FIRST_MARGIN,
-                                        marginRight: RIGHT_FIRST_MARGIN,
-                                    }}
-                                >
-                                    <HeaderText
-                                        level={2}
-                                        style={{}}
-                                    >
-                                        Sort Criteria
-                                    </HeaderText>
-                                    <RowView
-                                        style={{
-                                            flex: 0,                                            
-                                        }}
-                                    >
-                                        {this.renderArrows()}
-                                    </RowView>
-                                </RowView>
-                                <RowView
-                                    style={{
-                                        flex: 0,
-                                        height: MODAL_ROW_HEIGHT,
-                                        width: "100%",
-                                        justifyContent: "flex-start",
-                                        alignItems: "stretch",
-                                        marginLeft: LEFT_FIRST_MARGIN,
-                                        marginRight: RIGHT_FIRST_MARGIN,
-                                    }}
-                                >
-                                    <View
-                                        style={{
-                                            flex: 1,
-                                            flexDirection: "row",
-                                            width: "100%",
-                                            justifyContent: "flex-start",
-                                            alignItems: "center",
-                                            flexWrap: "wrap",
-                                        }}
-                                    >
-                                        { this.renderSorters() }
-                                    </View>
-                                </RowView>
-                                <RowView
-                                    style={{
-                                        flex: 0,
-                                        height: MODAL_ROW_HEIGHT,
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                        marginLeft: LEFT_FIRST_MARGIN,
-                                        marginRight: RIGHT_FIRST_MARGIN,
-                                    }}
-                                >
-                                    <HeaderText
-                                        level={2}
-                                        style={{}}
-                                    >
-                                        Date Range
-                                    </HeaderText>
-                                    <RowView
-                                        style={{
-                                            flex: 0,                                            
-                                        }}
-                                    >
-                                        {this.renderOpts()}
-                                    </RowView>
-                                </RowView>
-                                {this.renderRange()}
-                                <RowView
-                                    style={{
-                                        justifyContent: "flex-end",
-                                        marginRight: RIGHT_SECOND_MARGIN / 2,
-                                    }}
-                                >
-                                    <TouchableView
-                                        style={{
-                                            flex: 0,
-                                            marginLeft: spacer,
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                        }}
-                                        onPress={() => {
-                                            this.setState({
-                                                showSorting: false,
-                                                ...this.initial,
-                                            })
-                                        }}
-                                    >
-                                        <HeaderText style={{
-                                            fontSize: 14,
-                                            marginVertical: TEXT_VERTICAL_MARGIN,
-                                            marginHorizontal: TEXT_HORIZONTAL_MARGIN,
-                                        }} level={3}>CANCEL</HeaderText>
-                                    </TouchableView>
-                                    <TouchableView
-                                        style={{
-                                            flex: 0,
-                                            marginLeft: spacer,
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                        }}
-                                        onPress={() => {
-                                            console.log("start: " + new MyDate(this.state.start).format("MM/DD/YY"))
-                                            console.log("end: " + new MyDate(this.state.end).format("MM/DD/YY"))
-                                            let start = new MyDate(this.state.start).asStartDate().toDate();
-                                            let end = new MyDate(this.state.end).asDueDate().toDate();
-                                            this.props.onSubmit({
-                                                range: this.state.proposedRange === "range" ? [start, end] : undefined,
-                                                filter: this.state.filter,
-                                                sorter: this.state.sorter,
-                                                direction: this.state.direction,
-                                            })                                            
-                                            this.setState({
-                                                showSorting: false,
-                                            })
-                                        }}
-                                    >
-                                        <HeaderText style={{
-                                            fontSize: 14,
-                                            marginVertical: TEXT_VERTICAL_MARGIN,
-                                            marginHorizontal: TEXT_HORIZONTAL_MARGIN,
-                                        }} level={3}>OK</HeaderText>
-                                    </TouchableView>
-                                </RowView>
-                            </ModalIconButton>
+                            this.renderHeader()
                         }
                     ></FlatList>
                 </View>
             </View>
+        )
+    }
+
+    private renderHeader = () => {
+        let label: JSX.Element | null = null;
+        if(this.props.label) {
+            label = (
+                <HeaderText level={2} style={{
+                    color: TEXT_GREY,
+                }}>
+                    {this.props.label}
+                </HeaderText>
+            )
+        }
+
+        return (
+            <RowView
+                style={{
+                    flex: 0,
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    marginRight: TEXT_HORIZONTAL_MARGIN,
+                    backgroundColor: this.backgroundColor(),
+                    paddingLeft: LEFT_SECOND_MARGIN,
+                }}
+            >
+                {label}
+                {this.renderFilter()}
+            </RowView>
+        )
+    }
+
+    private backgroundColor = () => {
+        if(this.props.label) {
+            return "transparent";
+        } else {
+            return "white";
+        }
+    }
+
+    private renderFilter = () => {
+        return (
+            <ModalIconButton
+                data={{
+                    showModal: this.state.showSorting,
+                }}
+                onDataChange={({ showModal }) => {
+                    this.setState({
+                        showSorting: showModal,
+                    })
+                }}
+                type={"sort"}
+                backgroundColor={this.backgroundColor()}
+                color={TAB_GREY}
+                style={{
+                    marginLeft: LEFT_FIRST_MARGIN,
+                    marginRight: TEXT_HORIZONTAL_MARGIN,
+                    borderColor: BORDER_GREY,
+                    backgroundColor: this.backgroundColor(),
+                }}
+                onModalClose={() => {
+                    this.resetState();
+                }}
+            >
+                <RowView
+                    style={{
+                        flex: 0,
+                        height: MODAL_ROW_HEIGHT,
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginLeft: LEFT_FIRST_MARGIN,
+                        marginRight: RIGHT_FIRST_MARGIN,
+                    }}
+                >
+                    <HeaderText
+                        level={2}
+                        style={{}}
+                    >
+                        Sort Criteria
+                    </HeaderText>
+                    <RowView
+                        style={{
+                            flex: 0,                                            
+                        }}
+                    >
+                        {this.renderArrows()}
+                    </RowView>
+                </RowView>
+                <RowView
+                    style={{
+                        flex: 0,
+                        height: MODAL_ROW_HEIGHT,
+                        width: "100%",
+                        justifyContent: "flex-start",
+                        alignItems: "stretch",
+                        marginLeft: LEFT_FIRST_MARGIN,
+                        marginRight: RIGHT_FIRST_MARGIN,
+                    }}
+                >
+                    <View
+                        style={{
+                            flex: 1,
+                            flexDirection: "row",
+                            width: "100%",
+                            justifyContent: "flex-start",
+                            alignItems: "center",
+                            flexWrap: "wrap",
+                        }}
+                    >
+                        { this.renderSorters() }
+                    </View>
+                </RowView>
+                <RowView
+                    style={{
+                        flex: 0,
+                        height: MODAL_ROW_HEIGHT,
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginLeft: LEFT_FIRST_MARGIN,
+                        marginRight: RIGHT_FIRST_MARGIN,
+                    }}
+                >
+                    <HeaderText
+                        level={2}
+                        style={{}}
+                    >
+                        Date Range
+                    </HeaderText>
+                    <RowView
+                        style={{
+                            flex: 0,                                            
+                        }}
+                    >
+                        {this.renderOpts()}
+                    </RowView>
+                </RowView>
+                {this.renderRange()}
+                <RowView
+                    style={{
+                        justifyContent: "flex-end",
+                        marginRight: RIGHT_SECOND_MARGIN / 2,
+                    }}
+                >
+                    <TouchableView
+                        style={{
+                            flex: 0,
+                            marginLeft: spacer,
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                        onPress={() => {
+                            this.setState({
+                                showSorting: false,
+                            })
+                            this.resetState();
+                        }}
+                    >
+                        <HeaderText style={{
+                            fontSize: 14,
+                            marginVertical: TEXT_VERTICAL_MARGIN,
+                            marginHorizontal: TEXT_HORIZONTAL_MARGIN,
+                        }} level={3}>CANCEL</HeaderText>
+                    </TouchableView>
+                    <TouchableView
+                        style={{
+                            flex: 0,
+                            marginLeft: spacer,
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                        onPress={() => {
+                            this.props.onSubmit({
+                                range: this.state.range,
+                                sorter: this.state.sorter,
+                                direction: this.state.direction,
+                            })                                            
+                            this.setState({
+                                showSorting: false,
+                            })
+                        }}
+                    >
+                        <HeaderText style={{
+                            fontSize: 14,
+                            marginVertical: TEXT_VERTICAL_MARGIN,
+                            marginHorizontal: TEXT_HORIZONTAL_MARGIN,
+                        }} level={3}>OK</HeaderText>
+                    </TouchableView>
+                </RowView>
+            </ModalIconButton>
         )
     }
 
@@ -320,9 +359,7 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                     flex: 0,
                 }}
                 onPress={() => {
-                    this.setState({
-                        filter: item.value,
-                    })
+                    this.props.onChangeFilter(item.value)
                 }}
                 accessibilityLabel={"filter-" + item.value + "-" + this.props.accessibilityLabel}
             >
@@ -333,14 +370,14 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                         alignItems: "center",
                         paddingVertical: 7,
                         marginRight: spacer,
-                        ...colorStyles(this.state.filter, item.value),
+                        ...colorStyles(this.props.filter, item.value),
                     }}
                 >
                     <BodyText
                         style={{
                             marginHorizontal: marginHorizontal,
                             fontSize: 14,
-                            ...textStyles(this.state.filter, item.value),
+                            ...textStyles(this.props.filter, item.value),
                         }}
                     >
                         {item.label}
@@ -394,14 +431,20 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                         flex: 0,
                     }}
                     onPress = { () => {
-                        this.setState({
-                            proposedRange: item.value,
-                        })
                         if(item.value === "all") {
                             this.setState({
-                                start: MyDate.Now().toDate(),
-                                end: MyDate.Now().toDate(),
+                                range: undefined
                             })
+                        } else {
+                            if(this.props.initialRange === undefined) {
+                                this.setState({
+                                    range: [MyDate.Now().toDate(), MyDate.Now().toDate()]
+                                })
+                            } else {
+                                this.setState({
+                                    range: this.props.initialRange
+                                })
+                            }
                         }
                     }}
                     accessibilityLabel={"date-" + item.value + "-" + this.props.accessibilityLabel}
@@ -414,14 +457,14 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                             paddingVertical: 7,
                             //marginRight: spacer,
                             marginLeft: spacer,
-                            ...this.colorStyles(this.state.proposedRange, item.value),
+                            ...this.colorStyles(this.state.range ? "range" : "all", item.value),
                         }}
                     >
                         <BodyText
                             style={{
                                 marginHorizontal: marginHorizontal,
                                 fontSize: 14,
-                                ...this.textStyles(this.state.proposedRange, item.value),
+                                ...this.textStyles(this.state.range ? "range" : "all", item.value),
                             }}
                         >
                             {item.label}
@@ -504,7 +547,7 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
     }
 
     private renderRange = () => {
-        if(this.state.proposedRange === "all") {
+        if(this.state.range === undefined) {
             return (
                 <RowView
                     style={{
@@ -545,10 +588,12 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                                 From
                             </BodyText>
                             <InlineDateInput
-                                value={this.state.start}
+                                value={this.state.range[0]}
                                 onChangeDate={(date) => {
-                                    this.setState({
-                                        start: date,
+                                    this.setState((prevState) => {
+                                        return {
+                                            range: [date, prevState.range? prevState.range[1] : MyDate.Now().toDate()]
+                                        }
                                     })
                                 }}
                                 format={"01/31/20"}
@@ -563,10 +608,12 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                                 to
                             </BodyText>
                             <InlineDateInput
-                                value={this.state.end}
+                                value={this.state.range[1]}
                                 onChangeDate={(date) => {
-                                    this.setState({
-                                        end: date
+                                    this.setState((prevState) => {
+                                        return {
+                                            range: [prevState.range? prevState.range[0] : MyDate.Now().toDate(), date]
+                                        }
                                     })
                                 }}
                                 format={"01/31/20"}

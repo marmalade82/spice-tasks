@@ -30,6 +30,7 @@ import { GoalType } from "src/Models/Goal/GoalLogic";
 import MyDate from "src/common/Date";
 import SidescrollPicker from "src/Components/Styled/SidescrollPicker";
 import * as v from "voca";
+import { FilterBarProps } from "../common/types";
 
 
 interface SwipedProps extends Props {
@@ -79,7 +80,7 @@ const SwipedItem: React.FunctionComponent<SwipedProps> = (props: SwipedProps) =>
     );
 }
 
-interface Props {
+interface Props extends FilterBarProps<Filter, Sorter> {
     tasks: Task[];
     navigation: Navigation<ScreenParams>;
     paginate?: number;
@@ -87,8 +88,6 @@ interface Props {
     emptyText?: string;
     onTaskAction: OnTaskAction;
     iconIndicates?: "completion"
-    withFilters?: Filter[] 
-    withSorters?: Sorter[]
     accessibilityLabel? : string;
 }
 
@@ -106,7 +105,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
 
     let items: Task[];
     const now = MyDate.Now().toDate();
-    if(props.withFilters && props.withFilters.length > 0) {
+    if(props.showFilterBar) {
         items = props.tasks.filter((task) => {
             if(range === undefined) {
                 console.log("RERENDERING ALL")
@@ -203,22 +202,27 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
     }
 
     const renderFilter = (filter: Filter, sorter: Sorter, dir: "up" | "down") => {
-        if(props.withFilters && props.withFilters.length > 0) {
+        if(props.showFilterBar) {
+            const { withFilters: filters, withSorters: sorters, label } = props.showFilterBar;
             return (
                 <SidescrollPicker
-                    initialFilter={filter}
+                    label={label}
+                    filter={filter}
+                    onChangeFilter={(filter) => {
+                        setFilter(filter);
+                    }}
                     initialSorter = { sorter }
                     initialDirection={dir}
                     filters={
-                        makeChoices<Filter>(props.withFilters)
+                        makeChoices<Filter>(filters)
                     }
                     sorters={
-                        makeChoices<Sorter>(props.withSorters ? props.withSorters : [])
+                        makeChoices<Sorter>(sorters)
                     }
+                    initialRange={range}
                     onSubmit={( results) => {
                         console.log("receiving results " + JSON.stringify(results));
-                        const { filter, direction, sorter, range } = results
-                        setFilter(filter);
+                        const { direction, sorter, range } = results
                         setDirection(direction);
                         setSorter(sorter);
                         setRange(range);
