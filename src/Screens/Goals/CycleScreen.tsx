@@ -100,14 +100,6 @@ export default class CycleScreen extends React.Component<Props, State> {
                 onSwipeRight={(id: string) => {
                     this.onTaskAction(id, "complete");
                 }}
-                showFilterBar={{
-                    withFilters: [
-                        "all", "ongoing", "overdue", "complete", "failed"
-                    ],
-                    withSorters: [
-                        "start", "title", "due",
-                    ]
-                }}
             ></ConnectedTaskList>
         )
     }

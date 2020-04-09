@@ -1,5 +1,5 @@
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 import {
     ConnectedTaskListItem
@@ -31,6 +31,7 @@ import MyDate from "src/common/Date";
 import SidescrollPicker from "src/Components/Styled/SidescrollPicker";
 import * as v from "voca";
 import { FilterBarProps } from "../common/types";
+import { ILocalState } from "src/Screens/common/StateProvider";
 
 
 interface SwipedProps extends Props {
@@ -80,7 +81,14 @@ const SwipedItem: React.FunctionComponent<SwipedProps> = (props: SwipedProps) =>
     );
 }
 
-interface Props extends FilterBarProps<Filter, Sorter> {
+export interface LocalState {
+    filter: Filter,
+    sorter: Sorter,
+    direction: "up" | "down",
+    range: Range,
+}
+
+interface Props {
     tasks: Task[];
     navigation: Navigation<ScreenParams>;
     paginate?: number;
@@ -89,11 +97,12 @@ interface Props extends FilterBarProps<Filter, Sorter> {
     onTaskAction: OnTaskAction;
     iconIndicates?: "completion"
     accessibilityLabel? : string;
+    provider?: ILocalState<LocalState>;
 }
 
-type Filter = "all" | "ongoing" | "not started" | "overdue" | "failed" | "complete";
+export type Filter = "all" | "ongoing" | "not started" | "overdue" | "failed" | "complete";
 
-type Sorter = "start" | "due" | "title" | "description"
+export type Sorter = "start" | "due" | "title" | "description"
 
 type Range = [Date, Date] | undefined
 
@@ -103,151 +112,117 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
     const [ direction, setDirection] = useState<"up" | "down">("up");
     const [ range, setRange ] = useState<Range>( undefined )
 
+    useEffect(() => {
+        if(props.provider) {
+            props.provider.subscribe("filter", (val) => {
+                console.log("got filter: " + val)
+                setFilter(val);
+            })
+            props.provider.subscribe("sorter", setSorter)
+            props.provider.subscribe("range", setRange)
+            props.provider.subscribe("direction", setDirection)
+
+            return () => {
+                if(props.provider) {
+                    props.provider.unsubscribeAll();
+                }
+            }
+        }
+    }, [])
+
     let items: Task[];
     const now = MyDate.Now().toDate();
-    if(props.showFilterBar) {
-        items = props.tasks.filter((task) => {
-            if(range === undefined) {
-                console.log("RERENDERING ALL")
-                return true;
-            } else {
-                let start = range[0]
-                let end = range[1];
-                if(end < start) {
-                    console.log("END BEFORE START");
-                    return false;
-                } else {
-                    const endBeforeDate = MyDate.YBeforeX(task.startDate, end) ;
-                    const startAfterDate = MyDate.YAfterX(task.startDate, start);
-                    console.log("CHECKING DATE " + endBeforeDate + " " + startAfterDate);
-                    return !endBeforeDate && !startAfterDate
-                }
-            }
-        }).filter((task) => {
-            switch(filter) {
-                case "all": {
-                    return true;
-                } break;
-                case "complete": {
-                    return !task.active && task.state === "complete"; 
-                } break;
-                case "failed": {
-                    return !task.active && task.state === "cancelled";
-                } break;
-                case "not started": {
-                    return MyDate.YBeforeX(task.startDate, MyDate.Now().toDate())
-                } break;
-                case "ongoing": {
-                    return task.active && !MyDate.YAfterX(task.dueDate, now) && !MyDate.YBeforeX(task.startDate, now);
-                } break;
-                case "overdue": {
-                    return task.active && MyDate.YAfterX(task.dueDate, MyDate.Now().toDate())
-                }
-            }
-
-            return false;
-        }).sort((a, b) => {
-            switch(sorter) {
-                case "start": {
-                    return sort(a.startDate, b.startDate, direction)
-                }
-                case "due": {
-                    return sort(a.dueDate, b.dueDate, direction)
-                }
-                case "title": {
-                    return sort(a.title, b.title, direction)
-                }
-                case "description": {
-                    return sort(a.instructions, b.instructions, direction);
-                }
-            }
-        })
-
-        function sort<T extends Date | string | number>(a: T, b: T, direction: "up" | "down") {
-            let multiplier: number = 1
-            switch(direction) {
-                case "up": {
-                    multiplier = 1;
-                } break;
-                case "down": {
-                    multiplier = -1;
-                }
-            }
-
-            if(a instanceof Date) {
-                return multiplier * ((a as Date).valueOf() - (b as Date).valueOf());
-            }
-
-            if(typeof a === "string") {
-                let diff = 0
-                if(a < b) {
-                    diff = -1
-                } else if (a > b) {
-                    diff = 1
-                } else {
-                    diff = 0;
-                }
-                return multiplier * diff;
-            }
-
-            if(typeof a === "number") {
-                return multiplier * ((a as number) - (b as number));
-            }
-
-            throw new Error("sort used on unsupported args")
-        }
-
-    } else {
-        items = props.tasks;
-    }
-
-    const renderFilter = (filter: Filter, sorter: Sorter, dir: "up" | "down") => {
-        if(props.showFilterBar) {
-            const { withFilters: filters, withSorters: sorters, label } = props.showFilterBar;
-            return (
-                <SidescrollPicker
-                    label={label}
-                    filter={filter}
-                    onChangeFilter={(filter) => {
-                        setFilter(filter);
-                    }}
-                    initialSorter = { sorter }
-                    initialDirection={dir}
-                    filters={
-                        makeChoices<Filter>(filters)
-                    }
-                    sorters={
-                        makeChoices<Sorter>(sorters)
-                    }
-                    initialRange={range}
-                    onSubmit={( results) => {
-                        console.log("receiving results " + JSON.stringify(results));
-                        const { direction, sorter, range } = results
-                        setDirection(direction);
-                        setSorter(sorter);
-                        setRange(range);
-                    }}
-                    accessibilityLabel={props.accessibilityLabel ? props.accessibilityLabel : "tasks"}
-                ></SidescrollPicker>
-            )
+    items = props.tasks.filter((task) => {
+        if(range === undefined) {
+            console.log("RERENDERING ALL")
+            return true;
         } else {
-            return null;
+            let start = range[0]
+            let end = range[1];
+            if(end < start) {
+                console.log("END BEFORE START");
+                return false;
+            } else {
+                const endBeforeDate = MyDate.YBeforeX(task.startDate, end) ;
+                const startAfterDate = MyDate.YAfterX(task.startDate, start);
+                console.log("CHECKING DATE " + endBeforeDate + " " + startAfterDate);
+                return !endBeforeDate && !startAfterDate
+            }
+        }
+    }).filter((task) => {
+        switch(filter) {
+            case "all": {
+                return true;
+            } break;
+            case "complete": {
+                return !task.active && task.state === "complete"; 
+            } break;
+            case "failed": {
+                return !task.active && task.state === "cancelled";
+            } break;
+            case "not started": {
+                return MyDate.YBeforeX(task.startDate, MyDate.Now().toDate())
+            } break;
+            case "ongoing": {
+                return task.active && !MyDate.YAfterX(task.dueDate, now) && !MyDate.YBeforeX(task.startDate, now);
+            } break;
+            case "overdue": {
+                return task.active && MyDate.YAfterX(task.dueDate, MyDate.Now().toDate())
+            }
         }
 
-        function makeChoices<Choice>(filters: Choice[]) {
-            return filters.map((filter) => {
-                return {
-                    label: v.chain(filter)
-                            .words().thru((str) => {
-                                return str.map((s) => v.capitalize(s)).join(" ");
-                            }).value(),
-                    value: filter,
-                    key: filter,
-                }
-            })
+        return false;
+    }).sort((a, b) => {
+        switch(sorter) {
+            case "start": {
+                return compare(a.startDate, b.startDate, direction)
+            }
+            case "due": {
+                return compare(a.dueDate, b.dueDate, direction)
+            }
+            case "title": {
+                return compare(a.title, b.title, direction)
+            }
+            case "description": {
+                return compare(a.instructions, b.instructions, direction);
+            }
         }
+    })
+
+    function compare<T extends Date | string | number>(a: T, b: T, direction: "up" | "down") {
+        let multiplier: number = 1
+        switch(direction) {
+            case "up": {
+                multiplier = 1;
+            } break;
+            case "down": {
+                multiplier = -1;
+            }
+        }
+
+        if(a instanceof Date) {
+            return multiplier * ((a as Date).valueOf() - (b as Date).valueOf());
+        }
+
+        if(typeof a === "string") {
+            let diff = 0
+            if(a < b) {
+                diff = -1
+            } else if (a > b) {
+                diff = 1
+            } else {
+                diff = 0;
+            }
+            return multiplier * diff;
+        }
+
+        if(typeof a === "number") {
+            return multiplier * ((a as number) - (b as number));
+        }
+
+        throw new Error("sort used on unsupported args")
     }
-    
+
     const renderTask = (item: Task) => {
         if(item.active && props.onSwipeRight) {
             return (
@@ -277,7 +252,6 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                     flex: 0,
                 }}
             >
-                {renderFilter(filter, sorter, direction)}
                 <PagedList
                     items={items}
                     pageMax={props.paginate}
@@ -300,7 +274,6 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                     flex: 1,
                 }}
             >
-                {renderFilter(filter, sorter, direction)}
                 <List
                     items={items} 
                     renderItem={renderTask}

@@ -29,6 +29,10 @@ export class EventDispatcher implements IEventDispatcher {
         } else {
             this.handlers[s] = [handler]
         }
+
+        return () => {
+            this.removeEventListener(s, handler);
+        }
     }
 
     removeEventListener = (s: string, remove: Handler) => {

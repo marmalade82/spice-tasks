@@ -8,7 +8,21 @@ import { DropdownInput } from "./DropdownInput";
 import ModalRow from "./ModalRow";
 import InlineDateInput from "./InlineDateInput";
 import MyDate from "src/common/Date";
+import { ILocalState } from "src/Screens/common/StateProvider";
+import * as v from "voca";
 
+export function makeChoices<Choice>(filters: Choice[]) {
+    return filters.map((filter) => {
+        return {
+            label: v.chain(filter)
+                    .words().thru((str) => {
+                        return str.map((s) => v.capitalize(s)).join(" ");
+                    }).value(),
+            value: filter,
+            key: filter,
+        }
+    })
+}
 
 export interface LabelValue<Choices> {
     label: string;
@@ -16,23 +30,20 @@ export interface LabelValue<Choices> {
     key: string;
 }
 
+export type LocalState<Filters, Sorters> = {
+    filter: Filters;
+    sorter: Sorters;
+    range?: [Date, Date]
+    direction: "up" | "down"
+}
+
+
 export interface Props<Filters, Sorters> {
     label?: string;
     filters: LabelValue<Filters>[]
-    filter: Filters;
-    onChangeFilter: (f: Filters) => void;
     sorters: LabelValue<Sorters>[]
-    initialSorter: Sorters;
-    initialRange?: [Date, Date]
-    initialDirection: "up" | "down";
-    onSubmit: (r: Results<Filters, Sorters>) => void;
+    localState: ILocalState<LocalState<Filters, Sorters>>
     accessibilityLabel: string;
-}
-
-type Results<Filters, Sorters> = {
-    sorter: Sorters,
-    range?: [Date, Date]
-    direction: "up" | "down";
 }
 
 export interface State<Filters, Sorters> {
@@ -40,7 +51,7 @@ export interface State<Filters, Sorters> {
     range?: [Date, Date]
     sorter: Sorters;
     direction: "up" | "down";
-    label?: string;
+    filter: Filters
 }
 
 const marginHorizontal = 13;
@@ -49,12 +60,12 @@ const spacer = 10;
 export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Filters, Sorters>, State<Filters, Sorters>> {
     constructor(props: Props<Filters, Sorters>) {
         super(props);
-        let state = {
+        let state: State<Filters, Sorters> = {
             showSorting: false,
-            proposedRange: "all",
-            range: this.props.initialRange,
-            sorter: this.props.initialSorter,
-            direction: this.props.initialDirection,
+            range: this.props.localState.get("range"),
+            sorter: this.props.localState.get("sorter"),
+            direction: this.props.localState.get("direction"),
+            filter: this.props.localState.get("filter"),
         } as const;
         this.state = Object.assign({}, state);
 
@@ -62,13 +73,21 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
 
     private resetState = () => {
         this.setState({
-            range: this.props.initialRange,
-            sorter: this.props.initialSorter,
-            direction: this.props.initialDirection,
+            range: this.props.localState.get("range"),
+            sorter: this.props.localState.get("sorter"),
+            direction: this.props.localState.get("direction")
         })
     }
 
+
     componentDidMount = () => {
+        console.log("subscribing")
+        this.props.localState.subscribe("filter", (filter) => {
+            console.log("RECEIVED A FILTER")
+            this.setState({
+                filter: filter
+            });
+        })
         this.resetState();
     }
 
@@ -110,17 +129,6 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
     }
 
     private renderHeader = () => {
-        let label: JSX.Element | null = null;
-        if(this.props.label) {
-            label = (
-                <HeaderText level={2} style={{
-                    color: TEXT_GREY,
-                }}>
-                    {this.props.label}
-                </HeaderText>
-            )
-        }
-
         return (
             <RowView
                 style={{
@@ -129,21 +137,15 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                     alignItems: "center",
                     marginRight: TEXT_HORIZONTAL_MARGIN,
                     backgroundColor: this.backgroundColor(),
-                    paddingLeft: LEFT_SECOND_MARGIN,
                 }}
             >
-                {label}
                 {this.renderFilter()}
             </RowView>
         )
     }
 
     private backgroundColor = () => {
-        if(this.props.label) {
-            return "transparent";
-        } else {
-            return "white";
-        }
+        return "white";
     }
 
     private renderFilter = () => {
@@ -277,11 +279,11 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                             alignItems: "center",
                         }}
                         onPress={() => {
-                            this.props.onSubmit({
+                            this.props.localState.pushAll({
                                 range: this.state.range,
                                 sorter: this.state.sorter,
                                 direction: this.state.direction,
-                            })                                            
+                            });
                             this.setState({
                                 showSorting: false,
                             })
@@ -359,7 +361,8 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                     flex: 0,
                 }}
                 onPress={() => {
-                    this.props.onChangeFilter(item.value)
+                    console.log("pushing filter " + item.value)
+                    this.props.localState.push("filter", item.value)
                 }}
                 accessibilityLabel={"filter-" + item.value + "-" + this.props.accessibilityLabel}
             >
@@ -370,14 +373,14 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                         alignItems: "center",
                         paddingVertical: 7,
                         marginRight: spacer,
-                        ...colorStyles(this.props.filter, item.value),
+                        ...colorStyles(this.state.filter, item.value),
                     }}
                 >
                     <BodyText
                         style={{
                             marginHorizontal: marginHorizontal,
                             fontSize: 14,
-                            ...textStyles(this.props.filter, item.value),
+                            ...textStyles(this.state.filter, item.value),
                         }}
                     >
                         {item.label}
@@ -436,13 +439,13 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                                 range: undefined
                             })
                         } else {
-                            if(this.props.initialRange === undefined) {
+                            if(this.state.range === undefined) {
                                 this.setState({
                                     range: [MyDate.Now().toDate(), MyDate.Now().toDate()]
                                 })
                             } else {
                                 this.setState({
-                                    range: this.props.initialRange
+                                    range: this.state.range
                                 })
                             }
                         }
@@ -547,85 +550,115 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
     }
 
     private renderRange = () => {
-        if(this.state.range === undefined) {
-            return (
-                <RowView
-                    style={{
-                        flex: 0,
-                        width: "100%",
-                        height: MODAL_ROW_HEIGHT,
-                    }}
-
-                ></RowView>
-            )
-        } else {
-            return (
-                <RowView
-                    style={{
-                        height: MODAL_ROW_HEIGHT,
-                        flex: 0,
-                        justifyContent: "flex-start",
-                        alignItems: "stretch",
-                        marginLeft: LEFT_FIRST_MARGIN,
-                        marginRight: RIGHT_FIRST_MARGIN,
-                    }}
-                >
-                    <View
-                        style={{
-                            flex: 1,
-                            flexDirection: "row",
-                            width: "100%",
-                            justifyContent: "flex-start",
-                            alignItems: "center",
-                            flexWrap: "wrap",
-                        }}
-                    >
-                            <BodyText
-                                style={{
-                                    marginRight: 5,
-                                }}
-                            >
-                                From
-                            </BodyText>
-                            <InlineDateInput
-                                value={this.state.range[0]}
-                                onChangeDate={(date) => {
-                                    this.setState((prevState) => {
-                                        return {
-                                            range: [date, prevState.range? prevState.range[1] : MyDate.Now().toDate()]
-                                        }
-                                    })
-                                }}
-                                format={"01/31/20"}
-                                readonly={false}
-                            ></InlineDateInput>
-
-                            <BodyText
-                                style={{
-                                    marginRight: 5,
-                                }}
-                            >
-                                to
-                            </BodyText>
-                            <InlineDateInput
-                                value={this.state.range[1]}
-                                onChangeDate={(date) => {
-                                    this.setState((prevState) => {
-                                        return {
-                                            range: [prevState.range? prevState.range[0] : MyDate.Now().toDate(), date]
-                                        }
-                                    })
-                                }}
-                                format={"01/31/20"}
-                                readonly={false}
-                            ></InlineDateInput>
-                    </View>
-                </RowView>
-            )
-        }
+        boundRenderRange.bind(this)();
     }
 
 }
-
-
 export default SidescrollPicker;
+
+
+var boundRenderRange = (function() {
+    return renderRange(
+        this.state.range, 
+        (date) => {
+            this.setState((prevState) => {
+                return {
+                    range: [date, prevState.range? prevState.range[1] : MyDate.Now().toDate()]
+                }
+            })
+        },
+        (date) => {
+            this.setState((prevState) => {
+                return {
+                    range: [prevState.range? prevState.range[0] : MyDate.Now().toDate(), date]
+                }
+            })
+        }
+    )
+})
+
+function renderRange(range: undefined | [Date, Date], onStartChange: (d: Date) => void, onEndChange: (d: Date) => void) {
+    if(range === undefined) {
+        return (
+            <RowView
+                style={{
+                    flex: 0,
+                    width: "100%",
+                    height: MODAL_ROW_HEIGHT,
+                }}
+
+            ></RowView>
+        )
+    } else {
+        return (
+            <RowView
+                style={{
+                    height: MODAL_ROW_HEIGHT,
+                    flex: 0,
+                    justifyContent: "flex-start",
+                    alignItems: "stretch",
+                    marginLeft: LEFT_FIRST_MARGIN,
+                    marginRight: RIGHT_FIRST_MARGIN,
+                }}
+            >
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: "row",
+                        width: "100%",
+                        justifyContent: "flex-start",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                    }}
+                >
+                        <BodyText
+                            style={{
+                                marginRight: 5,
+                            }}
+                        >
+                            From
+                        </BodyText>
+                        <InlineDateInput
+                            value={range[0]}
+                            onChangeDate={onStartChange }
+                            format={"01/31/20"}
+                            readonly={false}
+                        ></InlineDateInput>
+
+                        <BodyText
+                            style={{
+                                marginRight: 5,
+                            }}
+                        >
+                            to
+                        </BodyText>
+                        <InlineDateInput
+                            value={range[1]}
+                            onChangeDate={ onEndChange }
+                            format={"01/31/20"}
+                            readonly={false}
+                        ></InlineDateInput>
+                </View>
+            </RowView>
+        )
+    }
+}
+
+interface LabelProps<Filters, Sorters> {
+    label: string;
+    filters: LabelValue<Filters>[]
+    sorters: LabelValue<Sorters>[]
+    localState: ILocalState<LocalState<Filters, Sorters>>
+    accessibilityLabel: string;
+}
+
+interface LabelState<Filters, Sorters> {
+    showSorting: boolean;
+    range?: [Date, Date]
+    sorter: Sorters;
+    direction: "up" | "down";
+}
+
+export class LabelSidescrollPicker<Filters, Sorters> extends React.Component<LabelProps<Filters, Sorters>, LabelState<Filters, Sorters>> {
+
+}

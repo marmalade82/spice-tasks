@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Button, FlatList } from "react-native";
-import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList"
+import { ConnectedTaskList, Filter, Sorter, } from "src/ConnectedComponents/Lists/Task/TaskList"
 import { ConnectedGoalSummary } from "src/ConnectedComponents/Summaries/GoalSummary";
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
@@ -21,6 +21,8 @@ import { switchMap, merge } from "rxjs/operators";
 import { ScreenNavigation, ScreenParams } from "src/common/Navigator";
 import MyDate from "src/common/Date";
 import { combineLatest, Observable } from "rxjs";
+import SidescrollPicker, { makeChoices } from "src/Components/Styled/SidescrollPicker";
+import { LocalState } from "../common/StateProvider";
 
 
 interface Props {
@@ -61,6 +63,7 @@ export default class GoalScreen extends React.Component<Props, State> {
         }
     }
 
+    readonly filterState: LocalState<{ filter: Filter, range: undefined | [Date, Date], direction: "up" | "down", sorter: Sorter }>
     unsubscribe : () => void;
     navigation: ScreenNavigation<ScreenParams, "Goal">
     constructor(props: Props) {
@@ -77,6 +80,12 @@ export default class GoalScreen extends React.Component<Props, State> {
             toastMessage: "",
             showAdd: false,
         }
+        this.filterState = new LocalState({
+                filter: "all",
+                range: undefined,
+                direction: "up",
+                sorter: "start"
+            } as const);
         this.navigation = new ScreenNavigation(this.props);
         this.unsubscribe = () => {};
     }
@@ -306,12 +315,29 @@ export default class GoalScreen extends React.Component<Props, State> {
                 case GoalType.STREAK: {
                     const habitIsOverdue = MyDate.Now().toDate() > goal.dueDate
                     const habitHasNotStarted = MyDate.Now().toDate() < goal.startDate
+                    let filters: Filter[] = [
+                        "all", "complete", "failed", 'ongoing',
+                    ]
+                    let sorters: Sorter[] = [
+                        "start", "due", "title"
+                    ]
                     return (
                         <View
                             style={{
                                 flex: 0
                             }}
                         >
+                            <SidescrollPicker
+                                label={ habitHasNotStarted ?
+                                    `First Tasks (${this.state.currentCycleCount})` : habitIsOverdue ?
+                                    `Overdue (${this.state.overdueCount})` :
+                                    `${getCurrentCycleType()} (${this.state.currentCycleCount})`
+                                }
+                                filters={makeChoices(filters)}
+                                sorters={makeChoices(sorters)}
+                                localState={this.filterState} 
+                                accessibilityLabel={"picker"}
+                            ></SidescrollPicker>
                             <ConnectedTaskList
                                 navigation={this.navigation}
                                 parentId={this.navigation.getParam('id', '')}
@@ -325,14 +351,6 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 }}
                                 emptyText={"No active tasks"}
                                 onTaskAction={this.onTaskAction}
-                                showFilterBar={{
-                                    label: habitHasNotStarted ?
-                                        `First Tasks (${this.state.currentCycleCount})` : habitIsOverdue ?
-                                        `Overdue (${this.state.overdueCount})` :
-                                        `${getCurrentCycleType()} (${this.state.currentCycleCount})`,
-                                    withFilters: ["all", "complete", "failed", 'ongoing'],
-                                    withSorters: ["start", "due", "title"],
-                                }}
                             ></ConnectedTaskList>
                             <BackgroundTitle 
                                 title={ habitHasNotStarted ?
@@ -373,11 +391,6 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 }}
                                 emptyText={"No active subtasks"}
                                 onTaskAction={this.onTaskAction}
-                                showFilterBar={{
-                                    label: `Active (${this.state.activeCount})`,
-                                    withFilters: ["all"],
-                                    withSorters: ["start", "due", "title"],
-                                }}
                             ></ConnectedTaskList>
                             <BackgroundTitle title={`Inactive (${this.state.inactiveCount})`}
                                 style={{
@@ -390,10 +403,6 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 emptyText={"No inactive subtasks"}
                                 type={"parent-inactive"}
                                 onTaskAction={this.onTaskAction}
-                                showFilterBar={{
-                                    withFilters: ["all"],
-                                    withSorters: ["start", "due", "title"],
-                                }}
                             ></ConnectedTaskList>
                         </View>
                     ) 
