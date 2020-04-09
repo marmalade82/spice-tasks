@@ -31,7 +31,7 @@ import MyDate from "src/common/Date";
 import SidescrollPicker from "src/Components/Styled/SidescrollPicker";
 import * as v from "voca";
 import { FilterBarProps } from "../common/types";
-import { ILocalState } from "src/Screens/common/StateProvider";
+import { IReadLocalState } from "src/Screens/common/StateProvider";
 
 
 interface SwipedProps extends Props {
@@ -97,7 +97,7 @@ interface Props {
     onTaskAction: OnTaskAction;
     iconIndicates?: "completion"
     accessibilityLabel? : string;
-    provider?: ILocalState<LocalState>;
+    provider?: IReadLocalState<LocalState>;
 }
 
 export type Filter = "all" | "ongoing" | "not started" | "overdue" | "failed" | "complete";
@@ -115,7 +115,6 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
     useEffect(() => {
         if(props.provider) {
             props.provider.subscribe("filter", (val) => {
-                console.log("got filter: " + val)
                 setFilter(val);
             })
             props.provider.subscribe("sorter", setSorter)
@@ -134,18 +133,15 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
     const now = MyDate.Now().toDate();
     items = props.tasks.filter((task) => {
         if(range === undefined) {
-            console.log("RERENDERING ALL")
             return true;
         } else {
             let start = range[0]
             let end = range[1];
             if(end < start) {
-                console.log("END BEFORE START");
                 return false;
             } else {
                 const endBeforeDate = MyDate.YBeforeX(task.startDate, end) ;
                 const startAfterDate = MyDate.YAfterX(task.startDate, start);
-                console.log("CHECKING DATE " + endBeforeDate + " " + startAfterDate);
                 return !endBeforeDate && !startAfterDate
             }
         }

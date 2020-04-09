@@ -81,7 +81,6 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
 
 
     componentDidMount = () => {
-        console.log("subscribing")
         this.props.localState.subscribe("filter", (filter) => {
             console.log("RECEIVED A FILTER")
             this.setState({
@@ -93,13 +92,26 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
 
 
     render = () => {
+        if (this.props.label === undefined) {
+            return this.doRender();
+        } else {
+            let {label, ...rest } = this.props;
+            return (
+                <FilterModal
+                    {...rest}
+                ></FilterModal>
+            )
+        }
+    }
+
+    private doRender = () => {
         return (
             <View
                 style={{
                     flex: 0,
                     flexDirection: "row",
                     justifyContent: "flex-start",
-                    backgroundColor: this.backgroundColor(),
+                    backgroundColor: backgroundColor(),
                     elevation: 7,
                 }}
             >
@@ -128,6 +140,23 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
         )
     }
 
+    private renderLabel = (item: LabelValue<Filters>) => {
+        return (
+            <TouchableView
+                style={{
+                    flex: 0,
+                }}
+                onPress={() => {
+                    console.log("pushing filter " + item.value)
+                    this.props.localState.push("filter", item.value)
+                }}
+                accessibilityLabel={"filter-" + item.value + "-" + this.props.accessibilityLabel}
+            >
+                {renderLabelBase(this.state.filter, item)}
+            </TouchableView>
+        )
+    }
+
     private renderHeader = () => {
         return (
             <RowView
@@ -136,19 +165,122 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                     justifyContent: "flex-start",
                     alignItems: "center",
                     marginRight: TEXT_HORIZONTAL_MARGIN,
-                    backgroundColor: this.backgroundColor(),
+                    backgroundColor: backgroundColor(),
                 }}
             >
-                {this.renderFilter()}
+                <FilterModal
+                    filters={this.props.filters}
+                    sorters={this.props.sorters}
+                    localState={this.props.localState}
+                    accessibilityLabel={this.props.accessibilityLabel}
+                >
+                </FilterModal>
             </RowView>
         )
     }
 
-    private backgroundColor = () => {
-        return "white";
+}
+export default SidescrollPicker;
+
+function renderLabelBase<Thing>(current: Thing, item: LabelValue<Thing>) {
+    return (
+        <View
+            style={{
+                flex: 0,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingVertical: 7,
+                marginRight: spacer,
+                ...colorStyles(current, item.value),
+            }}
+        >
+            <BodyText
+                style={{
+                    marginHorizontal: marginHorizontal,
+                    fontSize: 14,
+                    ...textStyles(current, item.value),
+                }}
+            >
+                {item.label}
+            </BodyText> 
+        </View>
+    )
+
+    function colorStyles(current: Thing, actual: Thing) {
+        if(current === actual) {
+            return {
+                backgroundColor: TAB_GREY,
+                borderColor: TAB_GREY,
+                borderWidth: 1,
+                borderRadius: 20,
+            } as const
+        } else {
+            return {
+                backgroundColor: BACKGROUND_GREY,
+                borderColor: BORDER_GREY,
+                borderWidth: 1,
+                borderRadius: 20,
+            } as const;
+        }
+
     }
 
-    private renderFilter = () => {
+    function textStyles(current: Thing, actual: Thing) {
+        if(current === actual) {
+            return {
+                color: "white",
+            } as const;
+        } else {
+            return {
+                color: "black",
+            } as const;
+        }
+    }
+}
+
+interface ModalProps<Filters, Sorters> {
+    filters: LabelValue<Filters>[]
+    sorters: LabelValue<Sorters>[]
+    localState: ILocalState<LocalState<Filters, Sorters>>
+    accessibilityLabel: string;
+}
+
+interface ModalState<Filters, Sorters> {
+    showSorting: boolean;
+    range?: [Date, Date]
+    sorter: Sorters;
+    direction: "up" | "down";
+    filter: Filters;
+}
+
+class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, Sorters>, ModalState<Filters, Sorters>> {
+    constructor(props: ModalProps<Filters, Sorters>) {
+        super(props);
+        const localState = this.props.localState;
+        this.state = {
+            range: localState.get("range"),
+            sorter: localState.get("sorter"),
+            direction: localState.get("direction"),
+            filter: localState.get("filter"),
+            showSorting: false,
+        }
+    }
+
+    private resetState = () => {
+        this.setState({
+            range: this.props.localState.get("range"),
+            sorter: this.props.localState.get("sorter"),
+            direction: this.props.localState.get("direction"),
+            filter: this.props.localState.get("filter"),
+        })
+    }
+
+    componentDidMount = () => {
+        // We don't subscribe here, since everythign will live in the modal.
+        this.resetState();
+    }
+
+    render = () => {
         return (
             <ModalIconButton
                 data={{
@@ -160,66 +292,114 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                     })
                 }}
                 type={"sort"}
-                backgroundColor={this.backgroundColor()}
+                backgroundColor={backgroundColor()}
                 color={TAB_GREY}
                 style={{
                     marginLeft: LEFT_FIRST_MARGIN,
                     marginRight: TEXT_HORIZONTAL_MARGIN,
                     borderColor: BORDER_GREY,
-                    backgroundColor: this.backgroundColor(),
+                    backgroundColor: backgroundColor(),
                 }}
                 onModalClose={() => {
                     this.resetState();
                 }}
             >
-                <RowView
-                    style={{
-                        flex: 0,
-                        height: MODAL_ROW_HEIGHT,
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginLeft: LEFT_FIRST_MARGIN,
-                        marginRight: RIGHT_FIRST_MARGIN,
-                    }}
-                >
-                    <HeaderText
-                        level={2}
-                        style={{}}
-                    >
-                        Sort Criteria
-                    </HeaderText>
+                {this.renderFilterSection()}
+                {this.renderSorterSection()}
+                {this.renderRangeSection()}
+                {this.renderCloseButtons()}
+            </ModalIconButton>
+        )
+    }
+
+    private renderSorterSection = () => {
+        if(this.props.sorters.length > 0) {
+            return (
+                <React.Fragment>
                     <RowView
                         style={{
-                            flex: 0,                                            
+                            flex: 0,
+                            height: MODAL_ROW_HEIGHT,
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginLeft: LEFT_FIRST_MARGIN,
+                            marginRight: RIGHT_FIRST_MARGIN,
                         }}
                     >
-                        {this.renderArrows()}
+                        <HeaderText
+                            level={2}
+                            style={{}}
+                        >
+                            Sort Criteria
+                        </HeaderText>
+                        <RowView
+                            style={{
+                                flex: 0,                                            
+                            }}
+                        >
+                            {renderArrows(this.state.direction, "sort-direction", (dir) => {
+                                this.setState({
+                                    direction: dir
+                                })
+                            })}
+                        </RowView>
                     </RowView>
-                </RowView>
-                <RowView
-                    style={{
-                        flex: 0,
-                        height: MODAL_ROW_HEIGHT,
-                        width: "100%",
-                        justifyContent: "flex-start",
-                        alignItems: "stretch",
-                        marginLeft: LEFT_FIRST_MARGIN,
-                        marginRight: RIGHT_FIRST_MARGIN,
-                    }}
-                >
-                    <View
+                    <RowView
                         style={{
-                            flex: 1,
-                            flexDirection: "row",
+                            flex: 0,
+                            height: MODAL_ROW_HEIGHT,
                             width: "100%",
                             justifyContent: "flex-start",
-                            alignItems: "center",
-                            flexWrap: "wrap",
+                            alignItems: "stretch",
+                            marginLeft: LEFT_FIRST_MARGIN,
+                            marginRight: RIGHT_FIRST_MARGIN,
                         }}
                     >
-                        { this.renderSorters() }
-                    </View>
-                </RowView>
+                        <View
+                            style={{
+                                flex: 1,
+                                flexDirection: "row",
+                                width: "100%",
+                                justifyContent: "flex-start",
+                                alignItems: "center",
+                                flexWrap: "wrap",
+                            }}
+                        >
+                            { this.renderSorters() }
+                        </View>
+                    </RowView>
+                </React.Fragment>
+            )
+        }
+
+        return null;
+    }
+
+    private renderSorters = () => {
+        let choices = this.props.sorters;
+        return choices.map((item: LabelValue<Sorters>) => {
+            return (
+
+                <TouchableView
+                    style={{
+                        flex: 0,
+                    }}
+                    onPress={() => {
+                        this.setState({
+                            sorter: item.value
+                        })
+                    }}
+                    accessibilityLabel={"sort-" + item.value + "-" + this.props.accessibilityLabel}
+                >
+                    {renderLabelBase(this.state.sorter, item)}
+                </TouchableView>
+            )
+        })
+    }
+
+    private renderRangeSection = () => {
+        return (
+            <React.Fragment>
                 <RowView
                     style={{
                         flex: 0,
@@ -244,7 +424,68 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                         {this.renderOpts()}
                     </RowView>
                 </RowView>
-                {this.renderRange()}
+                    {   renderRange(
+                            this.state.range, 
+                            (date) => {
+                                this.setState((prevState) => {
+                                    return {
+                                        range: [date, prevState.range? prevState.range[1] : MyDate.Now().toDate()]
+                                    }
+                                })
+                            },
+                            (date) => {
+                                this.setState((prevState) => {
+                                    return {
+                                        range: [prevState.range? prevState.range[0] : MyDate.Now().toDate(), date]
+                                    }
+                                })
+                            }
+                        )
+                    }
+            </React.Fragment>
+        )
+    }
+
+    private renderOpts = () => {
+        let opts: LabelValue<"all" | "range">[] = [
+            { label: "All", value: "all", key: "all"} as const,
+            { label: "Range", value: "range", key: "range"} as const
+        ]
+
+        return opts.map((item: LabelValue<"all" | "range">) => {
+            return (
+                <TouchableView
+                    style={{
+                        flex: 0,
+                    }}
+                    onPress = { () => {
+                        if(item.value === "all") {
+                            this.setState({
+                                range: undefined
+                            })
+                        } else {
+                            if(this.state.range === undefined) {
+                                this.setState({
+                                    range: [MyDate.Now().toDate(), MyDate.Now().toDate()]
+                                })
+                            } else {
+                                this.setState({
+                                    range: this.state.range
+                                })
+                            }
+                        }
+                    }}
+                    accessibilityLabel={"date-" + item.value + "-" + this.props.accessibilityLabel}
+                >
+                    {renderLabelBase(this.state.range ? "range" : "all", item)}
+                </TouchableView>
+            )
+        })
+    }
+
+    private renderCloseButtons = () => {
+        return (
+            <React.Fragment>
                 <RowView
                     style={{
                         justifyContent: "flex-end",
@@ -296,228 +537,10 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                         }} level={3}>OK</HeaderText>
                     </TouchableView>
                 </RowView>
-            </ModalIconButton>
+            </React.Fragment>
         )
     }
 
-    private renderArrows = (): JSX.Element[] => {
-        return ["ascending" as const, "descending" as const].map((type) => {
-            return (
-                <TouchableView
-                    style={{
-                    }}
-                    onPress={() => {
-                        this.setState({
-                            direction: type === "ascending" ? "up" : "down",
-                        })
-                    }}
-                    accessibilityLabel={
-                        `dir-${type === "ascending" ? "up" : "down"}-` + this.props.accessibilityLabel
-                    }
-                >
-                    <Icon
-                        type={type}
-                        {...colorStyles(this.state.direction, type === "ascending" ? "up" : "down")}
-                    >
-                    </Icon>
-                </TouchableView>
-            )
-        })
-
-        function colorStyles(current: "up" | "down", actual: "up" | "down") {
-            const styles = {
-                //marginBottom: spacer,
-                //marginRight: spacer,
-                marginLeft: spacer,
-            }
-            if(current === actual) {
-                return {
-                    backgroundColor: TAB_GREY,
-                    color: "white",
-                    style: {
-                        borderColor: TAB_GREY,
-                        borderWidth: 1,
-                        ...styles
-                    }
-                }
-            } else {
-                return {
-                    backgroundColor: BACKGROUND_GREY,
-                    color: "black",
-                    style: {
-                        borderColor: BORDER_GREY,
-                        borderWidth: 1,
-                        ...styles
-                    }
-                }
-            }
-        }
-    }
-
-    private renderLabel = (item: LabelValue<Filters>) => {
-        return (
-            <TouchableView
-                style={{
-                    flex: 0,
-                }}
-                onPress={() => {
-                    console.log("pushing filter " + item.value)
-                    this.props.localState.push("filter", item.value)
-                }}
-                accessibilityLabel={"filter-" + item.value + "-" + this.props.accessibilityLabel}
-            >
-                <View
-                    style={{
-                        flex: 0,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        paddingVertical: 7,
-                        marginRight: spacer,
-                        ...colorStyles(this.state.filter, item.value),
-                    }}
-                >
-                    <BodyText
-                        style={{
-                            marginHorizontal: marginHorizontal,
-                            fontSize: 14,
-                            ...textStyles(this.state.filter, item.value),
-                        }}
-                    >
-                        {item.label}
-                    </BodyText> 
-                </View>
-            </TouchableView>
-        )
-
-        function colorStyles(current: Filters, actual: Filters) {
-            if(current === actual) {
-                return {
-                    backgroundColor: TAB_GREY,
-                    borderColor: TAB_GREY,
-                    borderWidth: 1,
-                    borderRadius: 20,
-                } as const
-            } else {
-                return {
-                    backgroundColor: BACKGROUND_GREY,
-                    borderColor: BORDER_GREY,
-                    borderWidth: 1,
-                    borderRadius: 20,
-                } as const;
-            }
-
-        }
-
-        function textStyles(current: Filters, actual: Filters) {
-            if(current === actual) {
-                return {
-                    color: "white",
-                } as const;
-            } else {
-                return {
-                    color: "black",
-                } as const;
-            }
-        }
-    }
-
-    private renderOpts = () => {
-        let opts: LabelValue<"all" | "range">[] = [
-            { label: "All", value: "all", key: "all"} as const,
-            { label: "Range", value: "range", key: "range"} as const
-        ]
-
-        return opts.map((item: LabelValue<"all" | "range">) => {
-            return (
-                <TouchableView
-                    style={{
-                        flex: 0,
-                    }}
-                    onPress = { () => {
-                        if(item.value === "all") {
-                            this.setState({
-                                range: undefined
-                            })
-                        } else {
-                            if(this.state.range === undefined) {
-                                this.setState({
-                                    range: [MyDate.Now().toDate(), MyDate.Now().toDate()]
-                                })
-                            } else {
-                                this.setState({
-                                    range: this.state.range
-                                })
-                            }
-                        }
-                    }}
-                    accessibilityLabel={"date-" + item.value + "-" + this.props.accessibilityLabel}
-                >
-                    <View
-                        style={{
-                            flex: 0,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            paddingVertical: 7,
-                            //marginRight: spacer,
-                            marginLeft: spacer,
-                            ...this.colorStyles(this.state.range ? "range" : "all", item.value),
-                        }}
-                    >
-                        <BodyText
-                            style={{
-                                marginHorizontal: marginHorizontal,
-                                fontSize: 14,
-                                ...this.textStyles(this.state.range ? "range" : "all", item.value),
-                            }}
-                        >
-                            {item.label}
-                        </BodyText> 
-                    </View>
-                </TouchableView>
-            )
-        })
-    }
-
-    private renderSorters = () => {
-        let choices = this.props.sorters;
-        return choices.map((item: LabelValue<Sorters>) => {
-            return (
-
-                <TouchableView
-                    style={{
-                        flex: 0,
-                    }}
-                    onPress={() => {
-                        this.setState({
-                            sorter: item.value
-                        })
-                    }}
-                    accessibilityLabel={"sort-" + item.value + "-" + this.props.accessibilityLabel}
-                >
-                    <View
-                        style={{
-                            flex: 0,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            paddingVertical: 7,
-                            marginRight: spacer,
-                            ...this.colorStyles(this.state.sorter, item.value),
-                        }}
-                    >
-                        <BodyText
-                            style={{
-                                marginHorizontal: marginHorizontal,
-                                fontSize: 14,
-                                ...this.textStyles(this.state.sorter, item.value),
-                            }}
-                        >
-                            {item.label}
-                        </BodyText> 
-                    </View>
-                </TouchableView>
-            )
-        })
-    }
     private colorStyles = <T extends unknown>(current: T, actual: T) => {
         if(current === actual) {
             return {
@@ -548,35 +571,7 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
             } as const;
         }
     }
-
-    private renderRange = () => {
-        boundRenderRange.bind(this)();
-    }
-
 }
-export default SidescrollPicker;
-
-
-var boundRenderRange = (function() {
-    return renderRange(
-        this.state.range, 
-        (date) => {
-            this.setState((prevState) => {
-                return {
-                    range: [date, prevState.range? prevState.range[1] : MyDate.Now().toDate()]
-                }
-            })
-        },
-        (date) => {
-            this.setState((prevState) => {
-                return {
-                    range: [prevState.range? prevState.range[0] : MyDate.Now().toDate(), date]
-                }
-            })
-        }
-    )
-})
-
 function renderRange(range: undefined | [Date, Date], onStartChange: (d: Date) => void, onEndChange: (d: Date) => void) {
     if(range === undefined) {
         return (
@@ -644,21 +639,58 @@ function renderRange(range: undefined | [Date, Date], onStartChange: (d: Date) =
     }
 }
 
-interface LabelProps<Filters, Sorters> {
-    label: string;
-    filters: LabelValue<Filters>[]
-    sorters: LabelValue<Sorters>[]
-    localState: ILocalState<LocalState<Filters, Sorters>>
-    accessibilityLabel: string;
+function backgroundColor() {
+    return "white";
 }
 
-interface LabelState<Filters, Sorters> {
-    showSorting: boolean;
-    range?: [Date, Date]
-    sorter: Sorters;
-    direction: "up" | "down";
-}
+function renderArrows(direction: "up" | "down", accessibilityLabel: string, onPress: (dir: "up" | "down") => void): JSX.Element[] {
+    return ["ascending" as const, "descending" as const].map((type) => {
+        return (
+            <TouchableView
+                style={{
+                }}
+                onPress={() => {
+                    onPress(type === "ascending" ? "up" : "down");
+                }}
+                accessibilityLabel={
+                    `dir-${type === "ascending" ? "up" : "down"}-` + accessibilityLabel
+                }
+            >
+                <Icon
+                    type={type}
+                    {...colorStyles(direction, type === "ascending" ? "up" : "down")}
+                >
+                </Icon>
+            </TouchableView>
+        )
+    })
 
-export class LabelSidescrollPicker<Filters, Sorters> extends React.Component<LabelProps<Filters, Sorters>, LabelState<Filters, Sorters>> {
-
+    function colorStyles(current: "up" | "down", actual: "up" | "down") {
+        const styles = {
+            //marginBottom: spacer,
+            //marginRight: spacer,
+            marginLeft: spacer,
+        }
+        if(current === actual) {
+            return {
+                backgroundColor: TAB_GREY,
+                color: "white",
+                style: {
+                    borderColor: TAB_GREY,
+                    borderWidth: 1,
+                    ...styles
+                }
+            }
+        } else {
+            return {
+                backgroundColor: BACKGROUND_GREY,
+                color: "black",
+                style: {
+                    borderColor: BORDER_GREY,
+                    borderWidth: 1,
+                    ...styles
+                }
+            }
+        }
+    }
 }
