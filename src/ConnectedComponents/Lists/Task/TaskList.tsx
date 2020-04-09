@@ -129,95 +129,7 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
         }
     }, [])
 
-    let items: Task[];
-    const now = MyDate.Now().toDate();
-    items = props.tasks.filter((task) => {
-        if(range === undefined) {
-            return true;
-        } else {
-            let start = range[0]
-            let end = range[1];
-            if(end < start) {
-                return false;
-            } else {
-                const endBeforeDate = MyDate.YBeforeX(task.startDate, end) ;
-                const startAfterDate = MyDate.YAfterX(task.startDate, start);
-                return !endBeforeDate && !startAfterDate
-            }
-        }
-    }).filter((task) => {
-        switch(filter) {
-            case "all": {
-                return true;
-            } break;
-            case "complete": {
-                return !task.active && task.state === "complete"; 
-            } break;
-            case "failed": {
-                return !task.active && task.state === "cancelled";
-            } break;
-            case "not started": {
-                return MyDate.YBeforeX(task.startDate, MyDate.Now().toDate())
-            } break;
-            case "ongoing": {
-                return task.active && !MyDate.YAfterX(task.dueDate, now) && !MyDate.YBeforeX(task.startDate, now);
-            } break;
-            case "overdue": {
-                return task.active && MyDate.YAfterX(task.dueDate, MyDate.Now().toDate())
-            }
-        }
-
-        return false;
-    }).sort((a, b) => {
-        switch(sorter) {
-            case "start": {
-                return compare(a.startDate, b.startDate, direction)
-            }
-            case "due": {
-                return compare(a.dueDate, b.dueDate, direction)
-            }
-            case "title": {
-                return compare(a.title, b.title, direction)
-            }
-            case "description": {
-                return compare(a.instructions, b.instructions, direction);
-            }
-        }
-    })
-
-    function compare<T extends Date | string | number>(a: T, b: T, direction: "up" | "down") {
-        let multiplier: number = 1
-        switch(direction) {
-            case "up": {
-                multiplier = 1;
-            } break;
-            case "down": {
-                multiplier = -1;
-            }
-        }
-
-        if(a instanceof Date) {
-            return multiplier * ((a as Date).valueOf() - (b as Date).valueOf());
-        }
-
-        if(typeof a === "string") {
-            let diff = 0
-            if(a < b) {
-                diff = -1
-            } else if (a > b) {
-                diff = 1
-            } else {
-                diff = 0;
-            }
-            return multiplier * diff;
-        }
-
-        if(typeof a === "number") {
-            return multiplier * ((a as number) - (b as number));
-        }
-
-        throw new Error("sort used on unsupported args")
-    }
+    let items: Task[] = filterAndSort(props.tasks, range, filter, sorter, direction);
 
     const renderTask = (item: Task) => {
         if(item.active && props.onSwipeRight) {
@@ -413,3 +325,97 @@ const enhance = withObservables(['type'], (props: InputProps) => {
 });
 
 export const ConnectedTaskList = enhance(AdaptedTaskList);
+
+
+function filterAndSort(items: Task[], range: [Date, Date] | undefined, filter: Filter, sorter: Sorter, direction: "up" | "down") {
+        const now = MyDate.Now().toDate();
+        return items.filter((task) => {
+            if(range === undefined) {
+                return true;
+            } else {
+                let start = range[0]
+                let end = range[1];
+                if(end < start) {
+                    return false;
+                } else {
+                    const endBeforeDate = MyDate.YBeforeX(task.startDate, end) ;
+                    const startAfterDate = MyDate.YAfterX(task.startDate, start);
+                    console.log("task: " + task.startDate + " start: " + start + " end: " + end)
+                    console.log(task.title + " " + endBeforeDate + " " + startAfterDate)
+                    return !endBeforeDate && !startAfterDate
+                }
+            }
+        }).filter((task) => {
+            switch(filter) {
+                case "all": {
+                    return true;
+                } break;
+                case "complete": {
+                    return !task.active && task.state === "complete"; 
+                } break;
+                case "failed": {
+                    return !task.active && task.state === "cancelled";
+                } break;
+                case "not started": {
+                    return MyDate.YBeforeX(task.startDate, MyDate.Now().toDate())
+                } break;
+                case "ongoing": {
+                    return task.active && !MyDate.YAfterX(task.dueDate, now) && !MyDate.YBeforeX(task.startDate, now);
+                } break;
+                case "overdue": {
+                    return task.active && MyDate.YAfterX(task.dueDate, MyDate.Now().toDate())
+                }
+            }
+
+            return false;
+        }).sort((a, b) => {
+            switch(sorter) {
+                case "start": {
+                    return compare(a.startDate, b.startDate, direction)
+                }
+                case "due": {
+                    return compare(a.dueDate, b.dueDate, direction)
+                }
+                case "title": {
+                    return compare(a.title, b.title, direction)
+                }
+                case "description": {
+                    return compare(a.instructions, b.instructions, direction);
+                }
+            }
+        })
+
+        function compare<T extends Date | string | number>(a: T, b: T, direction: "up" | "down") {
+            let multiplier: number = 1
+            switch(direction) {
+                case "up": {
+                    multiplier = 1;
+                } break;
+                case "down": {
+                    multiplier = -1;
+                }
+            }
+
+            if(a instanceof Date) {
+                return multiplier * ((a as Date).valueOf() - (b as Date).valueOf());
+            }
+
+            if(typeof a === "string") {
+                let diff = 0
+                if(a < b) {
+                    diff = -1
+                } else if (a > b) {
+                    diff = 1
+                } else {
+                    diff = 0;
+                }
+                return multiplier * diff;
+            }
+
+            if(typeof a === "number") {
+                return multiplier * ((a as number) - (b as number));
+            }
+
+            throw new Error("sort used on unsupported args")
+        }
+}

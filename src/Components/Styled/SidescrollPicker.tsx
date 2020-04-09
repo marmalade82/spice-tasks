@@ -1,6 +1,6 @@
 import React from "react";
-import { FlatList, View, Button } from "react-native";
-import { TAB_GREY, PLACEHOLDER_GREY, BACKGROUND_GREY, BORDER_GREY, LEFT_FIRST_MARGIN, RIGHT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, TEXT_HORIZONTAL_MARGIN, MODAL_ROW_HEIGHT, TEXT_GREY, RIGHT_SECOND_MARGIN, TEXT_VERTICAL_MARGIN, LEFT_SECOND_MARGIN } from "./Styles";
+import { FlatList, View, Button, StyleProp, ViewStyle } from "react-native";
+import { TAB_GREY, PLACEHOLDER_GREY, BACKGROUND_GREY, BORDER_GREY, LEFT_FIRST_MARGIN, RIGHT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, TEXT_HORIZONTAL_MARGIN, MODAL_ROW_HEIGHT, TEXT_GREY, RIGHT_SECOND_MARGIN, TEXT_VERTICAL_MARGIN, LEFT_SECOND_MARGIN, SECONDARY_COLOR, PRIMARY_COLOR_LIGHT } from "./Styles";
 import { BodyText, TouchableView, RowView, HeaderText } from "../Basic/Basic";
 import { Icon } from "./Icon";
 import { ModalIconButton, DateInput } from "./Styled";
@@ -93,18 +93,13 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
 
     render = () => {
         if (this.props.label === undefined) {
-            return this.doRender();
+            return this.renderAsSidescroll();
         } else {
-            let {label, ...rest } = this.props;
-            return (
-                <FilterModal
-                    {...rest}
-                ></FilterModal>
-            )
+            return this.renderAsLabel();
         }
     }
 
-    private doRender = () => {
+    private renderAsSidescroll = () => {
         return (
             <View
                 style={{
@@ -125,7 +120,7 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                         horizontal={true}
                         data={this.props.filters}
                         renderItem={({item, index, separators}) => {
-                            return this.renderLabel(item);
+                            return this.renderFilter(item);
                         }}
                         style={{
                             flex: 0,
@@ -140,7 +135,7 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
         )
     }
 
-    private renderLabel = (item: LabelValue<Filters>) => {
+    private renderFilter = (item: LabelValue<Filters>) => {
         return (
             <TouchableView
                 style={{
@@ -152,7 +147,7 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                 }}
                 accessibilityLabel={"filter-" + item.value + "-" + this.props.accessibilityLabel}
             >
-                {renderLabelBase(this.state.filter, item)}
+                {renderLabelBase(this.state.filter, item, "right")}
             </TouchableView>
         )
     }
@@ -169,20 +164,51 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                 }}
             >
                 <FilterModal
-                    filters={this.props.filters}
+                    filters={[] /* we pass no filters, since they will be rendered in the sidescroll*/} 
                     sorters={this.props.sorters}
                     localState={this.props.localState}
                     accessibilityLabel={this.props.accessibilityLabel}
+                    backgroundColor={backgroundColor()}
                 >
                 </FilterModal>
             </RowView>
         )
     }
 
+    private renderAsLabel = () => {
+        let {label, ...rest} = this.props;
+        if(label !== undefined) {
+            return (
+                <RowView style={{
+                        flex: 0,
+                        height: 50,
+                        justifyContent: "flex-start",
+                        alignItems: "center",
+                        backgroundColor: PRIMARY_COLOR_LIGHT,
+                        paddingLeft: LEFT_SECOND_MARGIN,
+                    }}
+                >
+                    <HeaderText style={{
+                        color: TEXT_GREY,
+                    }} level={2}>{label}</HeaderText>
+                    <FilterModal
+                        backgroundColor={PRIMARY_COLOR_LIGHT}
+                        {...rest}
+                        style={{
+                            position: "absolute",
+                            right: RIGHT_FIRST_MARGIN,
+                        }}
+                    ></FilterModal>
+                </RowView>
+            )
+        }
+        return null;
+    }
+
 }
 export default SidescrollPicker;
 
-function renderLabelBase<Thing>(current: Thing, item: LabelValue<Thing>) {
+function renderLabelBase<Thing>(current: Thing, item: LabelValue<Thing>, margin: "left" | "right") {
     return (
         <View
             style={{
@@ -190,7 +216,8 @@ function renderLabelBase<Thing>(current: Thing, item: LabelValue<Thing>) {
                 justifyContent: "center",
                 alignItems: "center",
                 paddingVertical: 7,
-                marginRight: spacer,
+                marginRight: margin === "right" ? spacer : 0,
+                marginLeft: margin === "left" ? spacer : 0,
                 ...colorStyles(current, item.value),
             }}
         >
@@ -242,6 +269,8 @@ interface ModalProps<Filters, Sorters> {
     filters: LabelValue<Filters>[]
     sorters: LabelValue<Sorters>[]
     localState: ILocalState<LocalState<Filters, Sorters>>
+    backgroundColor: string;
+    style?: StyleProp<ViewStyle>
     accessibilityLabel: string;
 }
 
@@ -292,14 +321,14 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                     })
                 }}
                 type={"sort"}
-                backgroundColor={backgroundColor()}
+                backgroundColor={this.props.backgroundColor}
                 color={TAB_GREY}
-                style={{
+                style={[{
                     marginLeft: LEFT_FIRST_MARGIN,
                     marginRight: TEXT_HORIZONTAL_MARGIN,
                     borderColor: BORDER_GREY,
-                    backgroundColor: backgroundColor(),
-                }}
+                    backgroundColor: this.props.backgroundColor,
+                }, this.props.style]}
                 onModalClose={() => {
                     this.resetState();
                 }}
@@ -309,6 +338,79 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                 {this.renderRangeSection()}
                 {this.renderCloseButtons()}
             </ModalIconButton>
+        )
+    }
+
+    private renderFilterSection = () => {
+        if(this.props.filters.length > 0) {
+            return (
+                <React.Fragment>
+                    <RowView
+                        style={{
+                            flex: 0,
+                            height: MODAL_ROW_HEIGHT,
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginLeft: LEFT_FIRST_MARGIN,
+                            marginRight: RIGHT_FIRST_MARGIN,
+                        }}>
+                        <HeaderText
+                            level={2}
+                            style={{}}
+                        >
+                            Filter By
+                        </HeaderText>
+                    </RowView>
+                    <View
+                        style={{
+                            flex: 0,
+                            flexDirection: "row",
+                            justifyContent: "flex-start",
+                            backgroundColor: backgroundColor(),
+                        }}
+                    >
+                        <View
+                            style={{
+                                paddingVertical: 10,
+                                //marginLeft: RIGHT_FIRST_MARGIN + ICON_CONTAINER_WIDTH,
+                            }}
+                        >
+                            <FlatList
+                                horizontal={true}
+                                data={this.props.filters}
+                                renderItem={({item, index, separators}) => {
+                                    return this.renderFilter(item, index);
+                                }}
+                                style={{
+                                    flex: 0,
+                                }}
+                                showsHorizontalScrollIndicator={false}
+                            ></FlatList>
+                        </View>
+                    </View>
+                </React.Fragment>
+            )
+        }
+        return null;
+    }
+
+    private renderFilter = (item: LabelValue<Filters>, index: number) => {
+        return (
+            <TouchableView
+                style={{
+                    flex: 0,
+                    paddingLeft: index === 0 ? LEFT_FIRST_MARGIN : 0,
+                }}
+                onPress={() => {
+                    this.setState({
+                        filter: item.value,
+                    })
+                }}
+                accessibilityLabel={"filter-" + item.value + "-" + this.props.accessibilityLabel}
+                key={item.value as unknown as string}
+            >
+                {renderLabelBase(this.state.filter, item, "right")}
+            </TouchableView>
         )
     }
 
@@ -330,7 +432,7 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                             level={2}
                             style={{}}
                         >
-                            Sort Criteria
+                            Sort By
                         </HeaderText>
                         <RowView
                             style={{
@@ -391,7 +493,7 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                     }}
                     accessibilityLabel={"sort-" + item.value + "-" + this.props.accessibilityLabel}
                 >
-                    {renderLabelBase(this.state.sorter, item)}
+                    {renderLabelBase(this.state.sorter, item, "right")}
                 </TouchableView>
             )
         })
@@ -477,7 +579,7 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                     }}
                     accessibilityLabel={"date-" + item.value + "-" + this.props.accessibilityLabel}
                 >
-                    {renderLabelBase(this.state.range ? "range" : "all", item)}
+                    {renderLabelBase(this.state.range ? "range" : "all", item, "left")}
                 </TouchableView>
             )
         })
@@ -520,10 +622,15 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                             alignItems: "center",
                         }}
                         onPress={() => {
+                            const corrected: [Date, Date] | undefined = this.state.range !== undefined ? [
+                                new MyDate(this.state.range[0]).asStartDate().toDate(),
+                                new MyDate(this.state.range[1]).asDueDate().toDate(),
+                            ] : this.state.range;
                             this.props.localState.pushAll({
-                                range: this.state.range,
+                                range: corrected,
                                 sorter: this.state.sorter,
                                 direction: this.state.direction,
+                                filter: this.state.filter,
                             });
                             this.setState({
                                 showSorting: false,
@@ -541,36 +648,6 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
         )
     }
 
-    private colorStyles = <T extends unknown>(current: T, actual: T) => {
-        if(current === actual) {
-            return {
-                backgroundColor: TAB_GREY,
-                borderColor: TAB_GREY,
-                borderWidth: 1,
-                borderRadius: 20,
-            } as const
-        } else {
-            return {
-                backgroundColor: BACKGROUND_GREY,
-                borderColor: BORDER_GREY,
-                borderWidth: 1,
-                borderRadius: 20,
-            } as const;
-        }
-
-    }
-
-    private textStyles = <T extends unknown>(current: T, actual: T) => {
-        if(current === actual) {
-            return {
-                color: "white",
-            } as const;
-        } else {
-            return {
-                color: "black",
-            } as const;
-        }
-    }
 }
 function renderRange(range: undefined | [Date, Date], onStartChange: (d: Date) => void, onEndChange: (d: Date) => void) {
     if(range === undefined) {
@@ -615,7 +692,9 @@ function renderRange(range: undefined | [Date, Date], onStartChange: (d: Date) =
                         </BodyText>
                         <InlineDateInput
                             value={range[0]}
-                            onChangeDate={onStartChange }
+                            onChangeDate={(date) => { 
+                                onStartChange(new MyDate(date).asStartDate().toDate())
+                            }}
                             format={"01/31/20"}
                             readonly={false}
                         ></InlineDateInput>
@@ -629,7 +708,9 @@ function renderRange(range: undefined | [Date, Date], onStartChange: (d: Date) =
                         </BodyText>
                         <InlineDateInput
                             value={range[1]}
-                            onChangeDate={ onEndChange }
+                            onChangeDate={ (date) => {
+                                onEndChange(new MyDate(date).asDueDate().toDate())
+                            }}
                             format={"01/31/20"}
                             readonly={false}
                         ></InlineDateInput>
