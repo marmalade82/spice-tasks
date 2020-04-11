@@ -1,5 +1,5 @@
 import React from "react";
-import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList"
+import { ConnectedTaskList, TaskFilter, TaskSorter, makeTaskLocalState } from "src/ConnectedComponents/Lists/Task/TaskList"
 import { ConnectedTaskSummary } from "src/ConnectedComponents/Summaries/TaskSummary";
 import Task, { TaskParentTypes } from "src/Models/Task/Task";
 import TaskQuery, { TaskLogic, ActiveTaskQuery, ChildTaskQuery } from "src/Models/Task/TaskQuery";
@@ -14,6 +14,7 @@ import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
 import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
+import SidescrollPicker, { makeChoices } from "src/Components/Styled/SidescrollPicker";
 
 
 interface Props {
@@ -47,6 +48,8 @@ export default class TaskScreen extends React.Component<Props, State> {
         }
     }
 
+    readonly activeTaskFilterState = makeTaskLocalState("all", "start", undefined, "up");
+    readonly inactiveTaskFilterState = makeTaskLocalState("all", "start", undefined, "up");
     unsubscribe: () => void;
     navigation: MainNavigator<"Task">
     constructor(props: Props) {
@@ -133,16 +136,31 @@ export default class TaskScreen extends React.Component<Props, State> {
     }
 
     render = () => {
+        const activeFilter: TaskFilter[] = [
+            "all", "ongoing", "not started", "overdue"
+        ]
+        const activeSorter: TaskSorter[] = [
+            "start", "title",
+        ]
+        const inactiveFilter: TaskFilter[] = [
+            "all", "complete", "failed",
+        ]
+        const inactiveSorter: TaskSorter[] = [
+            "start", "title",
+        ]
         return (
             <DocumentView accessibilityLabel={"task"}>
                 <ScrollView>
 
                     {this.renderSummary()}
 
-                    <BackgroundTitle title={`Active (${this.state.activeCount})`}
-                        style={{
-                        }}
-                    ></BackgroundTitle>
+                    <SidescrollPicker
+                        label={`Active (${this.state.activeCount})`}
+                        filters={makeChoices(activeFilter)}
+                        sorters={makeChoices(activeSorter)}
+                        localState={this.activeTaskFilterState} 
+                        accessibilityLabel={"overdue-picker"}
+                    ></SidescrollPicker>
                     <ConnectedTaskList
                         navigation={this.navigation}
                         parentId={this.navigation.getParam('id', '')}
@@ -153,11 +171,19 @@ export default class TaskScreen extends React.Component<Props, State> {
                         }}
                         emptyText={"No active subtasks"}
                         onTaskAction={this.onTaskAction}
+                        provider={this.activeTaskFilterState}
                     ></ConnectedTaskList>
                     <BackgroundTitle title={`Inactive (${this.state.inactiveCount})`}
                         style={{
                         }}
                     ></BackgroundTitle>
+                    <SidescrollPicker
+                        label={`Inactive (${this.state.inactiveCount})`}
+                        filters={makeChoices(inactiveFilter)}
+                        sorters={makeChoices(inactiveSorter)}
+                        localState={this.inactiveTaskFilterState} 
+                        accessibilityLabel={"overdue-picker"}
+                    ></SidescrollPicker>
                     <ConnectedTaskList
                         navigation={this.navigation}
                         parentId={this.navigation.getParam('id', '')}
@@ -165,6 +191,7 @@ export default class TaskScreen extends React.Component<Props, State> {
                         onTaskAction={this.onTaskAction}
                         paginate={4}
                         emptyText={"No inactive subtasks"}
+                        provider={this.inactiveTaskFilterState}
                     ></ConnectedTaskList>
                 </ScrollView>
                 <Modal

@@ -3,7 +3,7 @@ import React from "react";
 import { View, ScrollView, SafeAreaView, Button, Text } from "react-native";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
-import { ConnectedTaskList, Filter, Sorter } from "src/ConnectedComponents/Lists/Task/TaskList";
+import { ConnectedTaskList, TaskFilter, TaskSorter } from "src/ConnectedComponents/Lists/Task/TaskList";
 import { DocumentView } from "src/Components/Styled/Styled";
 import { TaskLogic } from "src/Models/Task/TaskQuery";
 import { EventDispatcher } from "src/common/EventDispatcher";
@@ -24,7 +24,7 @@ interface State {
 const dispatcher = new EventDispatcher();
 
 export default class TaskListScreen extends React.Component<Props, State> {
-    readonly filterState: LocalState<{ filter: Filter, range: undefined | [Date, Date], direction: "up" | "down", sorter: Sorter }>
+    readonly filterState: LocalState<{ filter: TaskFilter, range: undefined | [Date, Date], direction: "up" | "down", sorter: TaskSorter }>
     navigation: MainNavigator<"Tasks">
     constructor(props: Props) {
         super(props);
@@ -104,19 +104,19 @@ export default class TaskListScreen extends React.Component<Props, State> {
 
 
     private renderFilter = () => {
-        const filters: Filter[] = [
+        const filters: TaskFilter[] = [
             "all", "ongoing", "not started", "overdue", "complete", "failed"
         ]
-        const sorters: Sorter[] = [
+        const sorters: TaskSorter[] = [
             "start", "title"
         ]
         return (
             <SidescrollPicker
                 filters={
-                    makeChoices<Filter>(filters)
+                    makeChoices<TaskFilter>(filters)
                 }
                 sorters={
-                    makeChoices<Sorter>(sorters)
+                    makeChoices<TaskSorter>(sorters)
                 }
                 localState={this.filterState}
                 accessibilityLabel={"tasks-filter"}

@@ -31,7 +31,7 @@ import MyDate from "src/common/Date";
 import SidescrollPicker from "src/Components/Styled/SidescrollPicker";
 import * as v from "voca";
 import { FilterBarProps } from "../common/types";
-import { IReadLocalState } from "src/Screens/common/StateProvider";
+import { IReadLocalState, LocalState } from "src/Screens/common/StateProvider";
 
 
 interface SwipedProps extends Props {
@@ -82,8 +82,8 @@ const SwipedItem: React.FunctionComponent<SwipedProps> = (props: SwipedProps) =>
 }
 
 export interface LocalState {
-    filter: Filter,
-    sorter: Sorter,
+    filter: TaskFilter,
+    sorter: TaskSorter,
     direction: "up" | "down",
     range: Range,
 }
@@ -97,18 +97,29 @@ interface Props {
     onTaskAction: OnTaskAction;
     iconIndicates?: "completion"
     accessibilityLabel? : string;
-    provider?: IReadLocalState<LocalState>;
+    provider?: IReadLocalState<{filter: TaskFilter, sorter: TaskSorter, range: Range, direction: Direction}>;
 }
 
-export type Filter = "all" | "ongoing" | "not started" | "overdue" | "failed" | "complete";
+export type TaskFilter = "all" | "ongoing" | "not started" | "overdue" | "failed" | "complete";
 
-export type Sorter = "start" | "due" | "title" | "description"
+export type TaskSorter = "start" | "due" | "title" | "description"
 
-type Range = [Date, Date] | undefined
+export type Range = [Date, Date] | undefined
+
+export type Direction = "up" | "down";
+
+export function makeTaskLocalState(filter: TaskFilter, sorter: TaskSorter, range: Range, direction: "up" | "down") {
+    return new LocalState({
+        filter,
+        sorter,
+        range,
+        direction,
+    })
+}
 
 const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
-    const [ filter, setFilter ] = useState<Filter>("all");
-    const [ sorter, setSorter ] = useState<Sorter>("start");
+    const [ filter, setFilter ] = useState<TaskFilter>("all");
+    const [ sorter, setSorter ] = useState<TaskSorter>("start");
     const [ direction, setDirection] = useState<"up" | "down">("up");
     const [ range, setRange ] = useState<Range>( undefined )
 
@@ -327,7 +338,7 @@ const enhance = withObservables(['type'], (props: InputProps) => {
 export const ConnectedTaskList = enhance(AdaptedTaskList);
 
 
-function filterAndSort(items: Task[], range: [Date, Date] | undefined, filter: Filter, sorter: Sorter, direction: "up" | "down") {
+function filterAndSort(items: Task[], range: [Date, Date] | undefined, filter: TaskFilter, sorter: TaskSorter, direction: "up" | "down") {
         const now = MyDate.Now().toDate();
         return items.filter((task) => {
             if(range === undefined) {

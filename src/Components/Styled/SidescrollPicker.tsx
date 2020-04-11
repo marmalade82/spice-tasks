@@ -81,13 +81,15 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
 
 
     componentDidMount = () => {
-        this.props.localState.subscribe("filter", (filter) => {
-            console.log("RECEIVED A FILTER")
-            this.setState({
-                filter: filter
-            });
-        })
-        this.resetState();
+        if(this.props.label === undefined) {
+            this.props.localState.subscribe("filter", (filter) => {
+                console.log("RECEIVED A FILTER")
+                this.setState({
+                    filter: filter
+                });
+            })
+            this.resetState();
+        }
     }
 
 
@@ -275,6 +277,7 @@ interface ModalProps<Filters, Sorters> {
 }
 
 interface ModalState<Filters, Sorters> {
+    label?: string
     showSorting: boolean;
     range?: [Date, Date]
     sorter: Sorters;

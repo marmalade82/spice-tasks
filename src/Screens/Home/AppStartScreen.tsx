@@ -17,7 +17,7 @@ import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import GlobalQuery, { GlobalLogic, Global_Timer, observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
 import { Subscription } from "rxjs";
 import EarnedPenaltyQuery from "src/Models/Penalty/EarnedPenaltyQuery";
-import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList";
+import { ConnectedTaskList, TaskFilter, TaskSorter, makeTaskLocalState} from "src/ConnectedComponents/Lists/Task/TaskList";
 import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import FootSpacer from "src/Components/Basic/FootSpacer";
 import { EventDispatcher } from "src/common/EventDispatcher";
@@ -28,6 +28,7 @@ import { TaskParentTypes } from "src/Models/Task/Task";
 import AddModal from "./common/AddModal";
 
 import Dropdown from "src/Components/Styled/Dropdown";
+import SidescrollPicker, { makeChoices } from "src/Components/Styled/SidescrollPicker";
 
 interface Props {
     navigation: object;
@@ -62,6 +63,8 @@ export default class AppStartScreen extends React.Component<Props, State> {
         }
     }
 
+    readonly overdueTaskFilterState = makeTaskLocalState("all", "start", undefined, "up");
+    readonly todayTaskFilterState = makeTaskLocalState("all", "start", undefined, "up");
     unsub: () => void;
     navigation: MainNavigator<"AppStart">;
     constructor(props: Props) {
@@ -158,15 +161,23 @@ export default class AppStartScreen extends React.Component<Props, State> {
     }
 
     render = () => {
+        const todayFilters: TaskFilter[] = [
+            "all",
+        ]
+
+        const todaySorters: TaskSorter[] = [
+            "start", "title",
+        ]
         return (
             <DocumentView accessibilityLabel={"app-start"}>
                 <ScrollView>
-
-                    <BackgroundTitle title={`Due Today (${this.state.dueTodayCount})`}
-                        style={{
-                            marginTop: 0,
-                        }}
-                    ></BackgroundTitle>
+                    <SidescrollPicker
+                        label={`Due Today (${this.state.dueTodayCount})`}
+                        filters={makeChoices(todayFilters)}
+                        sorters={makeChoices(todaySorters)}
+                        localState={this.todayTaskFilterState} 
+                        accessibilityLabel={"overdue-picker"}
+                    ></SidescrollPicker>
                     <ConnectedTaskList
                         navigation={this.navigation}
                         type={"due-today"}
@@ -177,6 +188,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         }}
                         emptyText={"Congrats! You're done with your tasks for today."}
                         onTaskAction={this.onTaskAction}
+                        provider={this.todayTaskFilterState}
                     ></ConnectedTaskList>
 
                     {this.renderOverdue()}
@@ -194,12 +206,21 @@ export default class AppStartScreen extends React.Component<Props, State> {
 
     private renderOverdue = () => {
         if( this.state.overdueCount > 0) {
+            const overdueFilters: TaskFilter[] = [
+                "all" 
+            ]
+            const overdueSorters: TaskSorter[] = [
+                "start", "title",
+            ]
             return (
                 <View style={{flex: 0}}>
-                    <BackgroundTitle title={`Overdue (${this.state.overdueCount})`}
-                        style={{ 
-                        }}
-                    ></BackgroundTitle>
+                    <SidescrollPicker
+                        label={`Overdue (${this.state.overdueCount})`}
+                        filters={makeChoices(overdueFilters)}
+                        sorters={makeChoices(overdueSorters)}
+                        localState={this.overdueTaskFilterState} 
+                        accessibilityLabel={"overdue-picker"}
+                    ></SidescrollPicker>
                     <ConnectedTaskList
                         navigation={this.navigation}
                         type={"overdue"}
@@ -209,6 +230,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                             void new TaskLogic(id).complete()
                         }}
                         onTaskAction={this.onTaskAction}
+                        provider={this.overdueTaskFilterState}
                     ></ConnectedTaskList>
                 </View>
             );

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Button, FlatList } from "react-native";
-import { ConnectedTaskList, Filter, Sorter, } from "src/ConnectedComponents/Lists/Task/TaskList"
+import { ConnectedTaskList, TaskFilter, TaskSorter, makeTaskLocalState } from "src/ConnectedComponents/Lists/Task/TaskList"
 import { ConnectedGoalSummary } from "src/ConnectedComponents/Summaries/GoalSummary";
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
@@ -63,7 +63,9 @@ export default class GoalScreen extends React.Component<Props, State> {
         }
     }
 
-    readonly filterState: LocalState<{ filter: Filter, range: undefined | [Date, Date], direction: "up" | "down", sorter: Sorter }>
+    readonly taskFilterState: LocalState<{ filter: TaskFilter, range: undefined | [Date, Date], direction: "up" | "down", sorter: TaskSorter }>
+    readonly activeTaskFilterState = makeTaskLocalState("all", "start", undefined, "up");
+    readonly inactiveTaskFilterState = makeTaskLocalState("all", "start", undefined, "up")
     unsubscribe : () => void;
     navigation: ScreenNavigation<ScreenParams, "Goal">
     constructor(props: Props) {
@@ -80,7 +82,7 @@ export default class GoalScreen extends React.Component<Props, State> {
             toastMessage: "",
             showAdd: false,
         }
-        this.filterState = new LocalState({
+        this.taskFilterState = new LocalState({
                 filter: "all",
                 range: undefined,
                 direction: "up",
@@ -315,10 +317,10 @@ export default class GoalScreen extends React.Component<Props, State> {
                 case GoalType.STREAK: {
                     const habitIsOverdue = MyDate.Now().toDate() > goal.dueDate
                     const habitHasNotStarted = MyDate.Now().toDate() < goal.startDate
-                    let filters: Filter[] = [
+                    let filters: TaskFilter[] = [
                         "all", "complete", "failed", 'ongoing',
                     ]
-                    let sorters: Sorter[] = [
+                    let sorters: TaskSorter[] = [
                         "start", "due", "title"
                     ]
                     return (
@@ -335,7 +337,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 }
                                 filters={makeChoices(filters)}
                                 sorters={makeChoices(sorters)}
-                                localState={this.filterState} 
+                                localState={this.taskFilterState} 
                                 accessibilityLabel={"picker"}
                             ></SidescrollPicker>
                             <ConnectedTaskList
@@ -351,6 +353,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 }}
                                 emptyText={"No active tasks"}
                                 onTaskAction={this.onTaskAction}
+                                provider={this.taskFilterState}
                             ></ConnectedTaskList>
                             <BackgroundTitle 
                                 title={ habitHasNotStarted ?
@@ -371,16 +374,33 @@ export default class GoalScreen extends React.Component<Props, State> {
                     )
                 } break;
                 default: {
+                    let activeFilters: TaskFilter[] = [
+                        "all", 'ongoing', "not started", "overdue",
+                    ]
+                    let activeSorters: TaskSorter[] = [
+                        "start", "title"
+                    ]
+
+                    let inactiveFilters: TaskFilter[] = [
+                        "all", "complete", "failed",
+                    ]
+
+                    let inactiveSorters: TaskSorter[] = [
+                        "start", "title",
+                    ]
                     return (
                         <View
                             style={{
                                 flex: 0
                             }}
                         >
-                            <BackgroundTitle title={`Active (${this.state.activeCount})`}
-                                style={{
-                                }}
-                            ></BackgroundTitle>
+                            <SidescrollPicker
+                                label={ `Active (${this.state.activeCount})` }
+                                filters={makeChoices(activeFilters)}
+                                sorters={makeChoices(activeSorters)}
+                                localState={this.activeTaskFilterState} 
+                                accessibilityLabel={"active-picker"}
+                            ></SidescrollPicker>
                             <ConnectedTaskList
                                 navigation={this.navigation}
                                 parentId={this.navigation.getParam('id', '')}
@@ -391,11 +411,20 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 }}
                                 emptyText={"No active subtasks"}
                                 onTaskAction={this.onTaskAction}
+                                provider={this.activeTaskFilterState}
                             ></ConnectedTaskList>
+
                             <BackgroundTitle title={`Inactive (${this.state.inactiveCount})`}
                                 style={{
                                 }}
                             ></BackgroundTitle>
+                            <SidescrollPicker
+                                label={`Inactive (${this.state.inactiveCount})`}
+                                filters={makeChoices(inactiveFilters)}
+                                sorters={makeChoices(inactiveSorters)}
+                                localState={this.inactiveTaskFilterState} 
+                                accessibilityLabel={"inactive-picker"}
+                            ></SidescrollPicker>
                             <ConnectedTaskList
                                 navigation={this.navigation}
                                 parentId={this.navigation.getParam('id', '')}
@@ -403,6 +432,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 emptyText={"No inactive subtasks"}
                                 type={"parent-inactive"}
                                 onTaskAction={this.onTaskAction}
+                                provider={this.inactiveTaskFilterState}
                             ></ConnectedTaskList>
                         </View>
                     ) 

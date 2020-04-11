@@ -5,10 +5,11 @@ import StreakCycle from "src/Models/Group/StreakCycle";
 import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
 import { ScrollView } from "react-native-gesture-handler";
 import FootSpacer from "src/Components/Basic/FootSpacer";
-import { ConnectedTaskList } from "src/ConnectedComponents/Lists/Task/TaskList"
+import { ConnectedTaskList, TaskFilter, TaskSorter, makeTaskLocalState } from "src/ConnectedComponents/Lists/Task/TaskList"
 import { TaskLogic } from "src/Models/Task/TaskQuery";
-import { SidescrollPicker, LabelValue } from "src/Components/Styled/SidescrollPicker";
+import { SidescrollPicker, LabelValue, makeChoices } from "src/Components/Styled/SidescrollPicker";
 import { Button, View } from "react-native";
+import { LocalState } from "../common/StateProvider";
 
 
 interface Props {
@@ -28,7 +29,7 @@ export default class CycleScreen extends React.Component<Props, State> {
         }
     }
 
-    
+    readonly taskFilterState = makeTaskLocalState("all", "start", undefined, "up");
     unsubscribe : () => void;
     navigation: ScreenNavigation<ScreenParams, "StreakCycle">
     constructor(props: Props) {
@@ -78,6 +79,7 @@ export default class CycleScreen extends React.Component<Props, State> {
         return (
             <DocumentView accessibilityLabel={"cycle-screen"}>
                     {this.renderSummary()}
+                    {this.renderFilter()}
                     {this.renderLists()}
             </DocumentView>
         )
@@ -85,6 +87,24 @@ export default class CycleScreen extends React.Component<Props, State> {
 
     private renderSummary = () => {
         return null;
+    }
+
+    private renderFilter = () => {
+        const filters: TaskFilter[] = [
+            "all", "ongoing", "not started", "overdue", "complete", "failed",
+        ]
+        const sorters: TaskSorter[] = [
+            "start", "title",
+        ]
+
+        return (
+            <SidescrollPicker
+                filters={makeChoices(filters)}
+                sorters={makeChoices(sorters)}
+                accessibilityLabel={"task-filter"}
+                localState={this.taskFilterState}
+            ></SidescrollPicker>
+        )
     }
 
     private renderLists = () => {
@@ -100,6 +120,7 @@ export default class CycleScreen extends React.Component<Props, State> {
                 onSwipeRight={(id: string) => {
                     this.onTaskAction(id, "complete");
                 }}
+                provider={this.taskFilterState}
             ></ConnectedTaskList>
         )
     }

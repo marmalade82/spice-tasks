@@ -9,6 +9,7 @@ import { ObjectUnsubscribedError } from "rxjs";
 
 export interface IReadLocalState<State> {
     get: <T extends keyof State>(name: T) => State[T];
+    getAll: () => State;
     subscribe: <T extends keyof State>(name: T, callback: (value: State[T]) => void) => (() => void);
     unsubscribeAll: () => void;
 }
@@ -60,6 +61,11 @@ export class LocalState<State> implements ILocalState<State>{
         let val = this.state[name]
         return val;
     }
+
+    getAll = () => {
+        let obj = Object.assign({}, this.state)
+        return obj;
+    }
 }
 
 export function adapt<State, Target>(state: ILocalState<State>, mapping: Record<keyof Target, keyof State> ): ILocalState<Target> {
@@ -89,6 +95,15 @@ export function adapt<State, Target>(state: ILocalState<State>, mapping: Record<
             get: <T extends keyof Target, V>(name: T): Target[T] => {
                 let value = state.get(mapping[name])
                 return (value as unknown as Target[T])
+            },
+            getAll: (): Target => {
+                let oldState = state.getAll();
+                let obj = {};
+                Object.keys(mapping).forEach((newKey) => {
+                    obj[newKey] = oldState[mapping[newKey]];
+                })
+
+                return obj as Target;
             }
         };
         return obj;
