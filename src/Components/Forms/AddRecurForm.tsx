@@ -43,8 +43,8 @@ export default class AddRecurForm extends DataComponent<Props, State, State> {
             },this.props.style]}>
                 <ChoiceInput
                     title={"Repeats"}
-                    selectedValue={this.data().repeats.toString()}
-                    onValueChange={(itemValue, itemIndex) => {
+                    data={this.data().repeats.toString()}
+                    onDataChange={(itemValue, itemIndex) => {
                         this.setData({
                             repeats: itemValue as "daily" | "weekly" | "monthly"
                         })

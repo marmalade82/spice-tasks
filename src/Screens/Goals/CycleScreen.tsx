@@ -29,7 +29,7 @@ export default class CycleScreen extends React.Component<Props, State> {
         }
     }
 
-    readonly taskFilterState = makeTaskLocalState("all", "start", undefined, "up");
+    readonly taskFilterState = makeTaskLocalState<TaskFilter, TaskSorter>("all", "start", undefined, "up");
     unsubscribe : () => void;
     navigation: ScreenNavigation<ScreenParams, "StreakCycle">
     constructor(props: Props) {

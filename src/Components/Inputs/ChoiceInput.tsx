@@ -15,9 +15,9 @@ interface LabelValue {
 
 interface Props {
     title: string;
-    selectedValue: string;
+    data: string;
     choices: LabelValue[]
-    onValueChange: (itemValue: string, itemPosition: number) => void
+    onDataChange: (itemValue: string, itemPosition: number) => void
     accessibilityLabel: string;
     style?: StyleProp<ViewStyle>;
 }
@@ -44,9 +44,9 @@ export default class ChoiceInput extends Input<Props, State> {
                     text={this.props.title} 
                 ></Label>
                 <CInput
-                    value={this.props.selectedValue}
+                    value={this.props.data}
                     choices={this.props.choices}
-                    onValueChange={this.props.onValueChange}
+                    onValueChange={this.props.onDataChange}
                     accessibilityLabel={this.props.accessibilityLabel}
                 ></CInput>
             </ColumnView>

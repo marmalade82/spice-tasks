@@ -1,11 +1,12 @@
 import React from "react";
-import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
+import { ConnectedGoalList, makeGoalFilterState, GoalFilter, GoalSorter } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import { DocumentView, Icon } from "src/Components/Styled/Styled";
 import { GoalLogic } from "src/Models/Goal/GoalQuery";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
 import { FullNavigation, MainNavigator, ScreenNavigation } from "src/common/Navigator";
+import SidescrollPicker, { makeChoices } from "src/Components/Styled/SidescrollPicker";
 
 
 
@@ -32,6 +33,7 @@ export default class GoalListScreen extends React.Component<Props> {
         }
     }
 
+    readonly goalFilterState = makeGoalFilterState<GoalFilter, GoalSorter>("all", "start", undefined, "up");
     navigation: MainNavigator<"Goals">;
     constructor(props: Props) {
         super(props);
@@ -71,11 +73,20 @@ export default class GoalListScreen extends React.Component<Props> {
     }
 
     render = () => {
+        const filters: GoalFilter[] = ["all", "ongoing", "not started", "overdue", "complete", "failed"]
+        const sorters: GoalSorter[] = ["start", "due", "title"]
         return (
             <DocumentView accessibilityLabel={"goals"}>
+                <SidescrollPicker
+                    localState={this.goalFilterState}
+                    filters={makeChoices(filters)}
+                    sorters={makeChoices(sorters)}
+                    accessibilityLabel={"goal-filter"}
+                ></SidescrollPicker>
                 <ConnectedGoalList 
                     navigation={this.navigation}
                     onGoalAction = {this.onGoalAction}
+                    provider = {this.goalFilterState}
                 >
                 </ConnectedGoalList>
             </DocumentView>

@@ -61,9 +61,9 @@ export default class StreakForm extends DataComponent<Props, State, State> {
             >
                 <ChoiceInput
                     title={"Habit Type"}
-                    selectedValue={this.data().type} 
+                    data={this.data().type} 
                     choices={streak_choices}
-                    onValueChange={this.onChangeType}
+                    onDataChange={this.onChangeType}
                     accessibilityLabel={"streak-type"}
                 />
             </ColumnView>

@@ -30,7 +30,7 @@ import { GoalType } from "src/Models/Goal/GoalLogic";
 import MyDate from "src/common/Date";
 import SidescrollPicker from "src/Components/Styled/SidescrollPicker";
 import * as v from "voca";
-import { FilterBarProps } from "../common/types";
+import { FilterBarProps, getProviderData, Range, Direction, FilterData, makeFilterState, compare } from "../common/types";
 import { IReadLocalState, LocalState } from "src/Screens/common/StateProvider";
 
 
@@ -97,31 +97,22 @@ interface Props {
     onTaskAction: OnTaskAction;
     iconIndicates?: "completion"
     accessibilityLabel? : string;
-    provider?: IReadLocalState<{filter: TaskFilter, sorter: TaskSorter, range: Range, direction: Direction}>;
+    provider?: IReadLocalState<Data>;
 }
+
+type Data = FilterData<TaskFilter, TaskSorter>
 
 export type TaskFilter = "all" | "ongoing" | "not started" | "overdue" | "failed" | "complete";
 
 export type TaskSorter = "start" | "due" | "title" | "description"
 
-export type Range = [Date, Date] | undefined
-
-export type Direction = "up" | "down";
-
-export function makeTaskLocalState(filter: TaskFilter, sorter: TaskSorter, range: Range, direction: "up" | "down") {
-    return new LocalState({
-        filter,
-        sorter,
-        range,
-        direction,
-    })
-}
+export const makeTaskLocalState = makeFilterState;
 
 const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
-    const [ filter, setFilter ] = useState<TaskFilter>("all");
-    const [ sorter, setSorter ] = useState<TaskSorter>("start");
-    const [ direction, setDirection] = useState<"up" | "down">("up");
-    const [ range, setRange ] = useState<Range>( undefined )
+    const [ filter, setFilter ] = useState<TaskFilter>(getProviderData(props.provider, "filter", "all"));
+    const [ sorter, setSorter ] = useState<TaskSorter>(getProviderData(props.provider, "sorter", "start"));
+    const [ direction, setDirection] = useState<Direction>(getProviderData(props.provider, "direction", "up"));
+    const [ range, setRange ] = useState<Range>( getProviderData(props.provider, "range", undefined ));
 
     useEffect(() => {
         if(props.provider) {
@@ -368,7 +359,7 @@ function filterAndSort(items: Task[], range: [Date, Date] | undefined, filter: T
                     return !task.active && task.state === "cancelled";
                 } break;
                 case "not started": {
-                    return MyDate.YBeforeX(task.startDate, MyDate.Now().toDate())
+                    return task.active && MyDate.YBeforeX(task.startDate, MyDate.Now().toDate())
                 } break;
                 case "ongoing": {
                     return task.active && !MyDate.YAfterX(task.dueDate, now) && !MyDate.YBeforeX(task.startDate, now);
@@ -396,37 +387,4 @@ function filterAndSort(items: Task[], range: [Date, Date] | undefined, filter: T
             }
         })
 
-        function compare<T extends Date | string | number>(a: T, b: T, direction: "up" | "down") {
-            let multiplier: number = 1
-            switch(direction) {
-                case "up": {
-                    multiplier = 1;
-                } break;
-                case "down": {
-                    multiplier = -1;
-                }
-            }
-
-            if(a instanceof Date) {
-                return multiplier * ((a as Date).valueOf() - (b as Date).valueOf());
-            }
-
-            if(typeof a === "string") {
-                let diff = 0
-                if(a < b) {
-                    diff = -1
-                } else if (a > b) {
-                    diff = 1
-                } else {
-                    diff = 0;
-                }
-                return multiplier * diff;
-            }
-
-            if(typeof a === "number") {
-                return multiplier * ((a as number) - (b as number));
-            }
-
-            throw new Error("sort used on unsupported args")
-        }
 }

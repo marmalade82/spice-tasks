@@ -8,8 +8,9 @@ import {
     ViewPicker,
 } from "src/Components/Basic/Basic";
 import { DocumentView, ScreenHeader } from "src/Components/Styled/Styled";
-import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
+import { ConnectedGoalList, makeGoalFilterState, GoalFilter, GoalSorter } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
+import SidescrollPicker, { makeChoices } from "src/Components/Styled/SidescrollPicker";
 
 
 interface Props {
@@ -29,6 +30,7 @@ export default class RecurScreen extends React.Component<Props, State> {
         }
     }
 
+    readonly recurFilterState = makeGoalFilterState<GoalFilter, GoalSorter>("all", "start", undefined, "up");
     navigation: MainNavigator<"Recur">;
     constructor(props: Props) {
         super(props);
@@ -108,16 +110,27 @@ export default class RecurScreen extends React.Component<Props, State> {
     }
 
     renderRecurLists = () => {
+        const filters: GoalFilter[] = ["all", "ongoing", "not started", "overdue", "complete", "failed"]
+        const sorters: GoalSorter[] = ["start", "due", "title"]
         return [
             {   title: "Goals"
             ,   render: () => {
                     return (
-                        <ConnectedGoalList
-                            navigation={this.navigation}
-                            parentId={this.navigation.getParam('id', '')}
-                            type={"recurring"}
-                            onGoalAction={this.onGoalAction}
-                        ></ConnectedGoalList>
+                        <React.Fragment>
+                            <SidescrollPicker
+                                localState={this.recurFilterState}
+                                filters={makeChoices(filters)}
+                                sorters={makeChoices(sorters)}
+                                accessibilityLabel={"goal-filter"}
+                            ></SidescrollPicker>
+                            <ConnectedGoalList
+                                navigation={this.navigation}
+                                parentId={this.navigation.getParam('id', '')}
+                                type={"recurring"}
+                                onGoalAction={this.onGoalAction}
+                                provider={this.recurFilterState}
+                            ></ConnectedGoalList>
+                        </React.Fragment>
                     );
                 }
             },

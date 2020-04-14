@@ -13,13 +13,13 @@ import {
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navigator";
 
-import { BarChart, LineChart }from "src/Components/Charts/Charts";
 import AddModal from "./common/AddModal";
 import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
-import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
+import { ConnectedGoalList, makeGoalFilterState, GoalFilter, GoalSorter } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import { GoalLogic, ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
 import { observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
+import SidescrollPicker, { makeChoices } from "src/Components/Styled/SidescrollPicker";
 
 
 interface Props {
@@ -52,6 +52,8 @@ export default class StarScreen extends React.Component<Props, State> {
         }
     }
 
+    readonly futureGoalFilterState = makeGoalFilterState<GoalFilter, GoalSorter>("all", "start", undefined, "up");
+    readonly ongoingGoalFilterState = makeGoalFilterState<GoalFilter, GoalSorter>("all", "start", undefined, "up");
     unsub: () => void;
     navigation: MainNavigator<"AppStart">;
     constructor(props: Props) {
@@ -110,15 +112,20 @@ export default class StarScreen extends React.Component<Props, State> {
     }
 
     render = () => {
-
+        const futureFilters: GoalFilter[] = ["all"]
+        const futureSorters: GoalSorter[] = ["start", "due", "title"]
+        const ongoingFilters: GoalFilter[] = ["all"]
+        const ongoingSorters: GoalSorter[] = ["start", "due", "title"]
         return (
             <DocumentView accessibilityLabel={"star"}>
                 <ScrollView>
-                    <BackgroundTitle title={`Ongoing Goals (${this.state.ongoingGoalsCount})`}
-                        style={{
-                        }}
-                    ></BackgroundTitle>
-
+                    <SidescrollPicker
+                        label={`Ongoing Goals (${this.state.ongoingGoalsCount})`}
+                        filters={makeChoices(ongoingFilters)}
+                        sorters={makeChoices(ongoingSorters)}
+                        localState={this.ongoingGoalFilterState}
+                        accessibilityLabel={"ongoing-goal-filter"}
+                    ></SidescrollPicker>
                     <ConnectedGoalList
                         navigation={this.navigation}
                         type={"ongoing"}
@@ -127,19 +134,24 @@ export default class StarScreen extends React.Component<Props, State> {
                             this.onGoalAction(id, "complete")
                         }}
                         onGoalAction={this.onGoalAction}
+                        provider={this.ongoingGoalFilterState}
                     ></ConnectedGoalList>
 
 
-                    <BackgroundTitle title={`Future Goals (${this.state.futureGoalsCount})`}
-                        style={{
-                        }}
-                    ></BackgroundTitle>
+                    <SidescrollPicker
+                        label={`Future Goals (${this.state.futureGoalsCount})`}
+                        filters={makeChoices(futureFilters)}
+                        sorters={makeChoices(futureSorters)}
+                        localState={this.futureGoalFilterState}
+                        accessibilityLabel={"future-goal-filter"}
+                    ></SidescrollPicker>
                     <ConnectedGoalList
                         navigation={this.navigation}
                         type={"future"}
                         paginate={4}
                         onGoalAction={this.onGoalAction}
                         emptyText={"You don't have any goals planned"}
+                        provider={this.futureGoalFilterState}
                     ></ConnectedGoalList>
                 </ScrollView>
             

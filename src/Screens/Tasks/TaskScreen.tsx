@@ -48,8 +48,8 @@ export default class TaskScreen extends React.Component<Props, State> {
         }
     }
 
-    readonly activeTaskFilterState = makeTaskLocalState("all", "start", undefined, "up");
-    readonly inactiveTaskFilterState = makeTaskLocalState("all", "start", undefined, "up");
+    readonly activeTaskFilterState = makeTaskLocalState<TaskFilter, TaskSorter>("all", "start", undefined, "up");
+    readonly inactiveTaskFilterState = makeTaskLocalState<TaskFilter, TaskSorter>("all", "start", undefined, "up");
     unsubscribe: () => void;
     navigation: MainNavigator<"Task">
     constructor(props: Props) {

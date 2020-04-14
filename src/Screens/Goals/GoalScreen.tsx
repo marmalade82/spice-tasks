@@ -64,8 +64,8 @@ export default class GoalScreen extends React.Component<Props, State> {
     }
 
     readonly taskFilterState: LocalState<{ filter: TaskFilter, range: undefined | [Date, Date], direction: "up" | "down", sorter: TaskSorter }>
-    readonly activeTaskFilterState = makeTaskLocalState("all", "start", undefined, "up");
-    readonly inactiveTaskFilterState = makeTaskLocalState("all", "start", undefined, "up")
+    readonly activeTaskFilterState = makeTaskLocalState<TaskFilter, TaskSorter>("all", "start", undefined, "up");
+    readonly inactiveTaskFilterState = makeTaskLocalState<TaskFilter, TaskSorter>("all", "start", undefined, "up")
     unsubscribe : () => void;
     navigation: ScreenNavigation<ScreenParams, "Goal">
     constructor(props: Props) {

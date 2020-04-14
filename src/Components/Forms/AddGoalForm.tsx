@@ -328,8 +328,8 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
                     <ChoiceInput
                         title={"Reward"}
-                        selectedValue={this.data().reward.toString()}
-                        onValueChange={(itemValue, itemIndex) => {
+                        data={this.data().reward.toString()}
+                        onDataChange={(itemValue, itemIndex) => {
                             this.setData({reward: itemValue as RewardType})  
                         }}
                         choices={RewardChoices}
@@ -341,8 +341,8 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
                     <ChoiceInput
                         title={"Penalty"}
-                        selectedValue={this.data().penalty.toString()}
-                        onValueChange={(itemValue, itemIndex) => {
+                        data={this.data().penalty.toString()}
+                        onDataChange={(itemValue, itemIndex) => {
                             this.setData({penalty: itemValue as PenaltyTypes})  
                         }}
                         choices={PenaltyChoices}
@@ -489,8 +489,8 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
             return (
                     <ChoiceInput
                         title={"Goal Will Repeat"}
-                        selectedValue={this.data().repeats.toString()}
-                        onValueChange={(itemValue, itemIndex) => {
+                        data={this.data().repeats.toString()}
+                        onDataChange={(itemValue, itemIndex) => {
                             this.setData({
                                 repeats: itemValue as "never" | "daily" | "weekly" | "monthly"
                             })

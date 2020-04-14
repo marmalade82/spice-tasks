@@ -1,6 +1,9 @@
 import React from "react";
 import { View, ScrollView, SafeAreaView, Button } from "react-native";
-import { AddTaskForm, AddTaskData, AddTaskDefault, ValidateTaskForm } from "src/Components/Forms/AddTaskForm";
+import { AddTaskForm, AddTaskData, AddTaskDefault, 
+    ValidateTaskForm, Gen_AddTaskForm, makeFormState, newTaskValidators,
+    makeFormValidState, makeShowState,
+ } from "src/Components/Forms/AddTaskForm";
 import Style from "src/Style/Style";
 import { StyleSheet } from "react-native";
 import { TaskQuery, Task, TaskLogic } from "src/Models/Task/TaskQuery";
@@ -47,6 +50,9 @@ export default class AddTaskScreen extends React.Component<Props, State> {
         }
     }
 
+    readonly formState = makeFormState();
+    readonly validState = makeFormValidState();
+    readonly showState = makeShowState();
     navigation: MainNavigator<"AddTask">
     taskFormRef: React.RefObject<AddTaskForm>
     constructor(props: Props) {
@@ -207,6 +213,20 @@ export default class AddTaskScreen extends React.Component<Props, State> {
     }
 
     private renderTaskForm = () => {
+        return (
+            <Gen_AddTaskForm
+                data={this.formState as any}
+                validators={
+                    newTaskValidators
+                }
+                valid={
+                    this.validState as any
+                }
+                show={
+                    this.showState as any
+                }
+            ></Gen_AddTaskForm>
+        );
         return (
                 <AddTaskForm
                     data={this.state.data}

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 import {
     ConnectedGoalListItem
@@ -19,6 +19,9 @@ import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Style
 import { OnGoalAction } from "src/Components/Lists/Items/GoalListItem";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 import EmptyList from "src/Components/Lists/EmptyList";
+import { FilterData, makeFilterState, getProviderData, Direction, Range, compare } from "../common/types";
+import { IReadLocalState } from "src/Screens/common/StateProvider";
+import MyDate from "src/common/Date";
 
 
 interface SwipeProps extends Props {
@@ -60,16 +63,44 @@ const SwipeItem: React.FunctionComponent<SwipeProps> = (props: SwipeProps) => {
     )
 }
 
-interface Props {
+export interface Props {
     goals: Goal[];
     navigation: Navigation<ScreenParams>;
     paginate?: number;
     onSwipeRight?: (id: string) => void;
     onGoalAction: OnGoalAction;
     emptyText?: string;
+    provider?: IReadLocalState<Data>
 }
 
+export type Data = FilterData<GoalFilter, GoalSorter>
+export type GoalFilter = "all" | "ongoing" | "not started" | "overdue" | "failed" | "complete" | "recurring";
+export type GoalSorter = "start" | "due" | "title"
+export const makeGoalFilterState = makeFilterState;
+
 const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
+    const [ filter, setFilter ] = useState<GoalFilter>(getProviderData(props.provider, "filter", "all"));
+    const [ sorter, setSorter ] = useState<GoalSorter>(getProviderData(props.provider, "sorter", "start"));
+    const [ direction, setDirection] = useState<Direction>(getProviderData(props.provider, "direction", "up"));
+    const [ range, setRange ] = useState<Range>( getProviderData(props.provider, "range", undefined));
+
+    useEffect(() => {
+        if(props.provider) {
+            props.provider.subscribe("filter", setFilter)
+            props.provider.subscribe("sorter", setSorter)
+            props.provider.subscribe("range", setRange)
+            props.provider.subscribe("direction", setDirection)
+
+            return () => {
+                if(props.provider) {
+                    props.provider.unsubscribeAll();
+                }
+            }
+        }
+    }, [])
+
+    let items: Goal[] = filterAndSort(props.goals, range, filter, sorter, direction);
+
     const renderGoal = (item: Goal) => {
         if(item.active && props.onSwipeRight) {
             return (
@@ -94,7 +125,7 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
     if(props.paginate) {
         return (
             <PagedList
-                items={props.goals}
+                items={items}
                 pageMax={props.paginate}
                 renderItem={renderGoal}
                 renderEmptyItem={() => {return <EmptyListItem></EmptyListItem>}}
@@ -110,7 +141,7 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
     } else {
         return (
             <List
-                items={props.goals} 
+                items={items} 
                 renderItem={renderGoal}
             >
             </List>
@@ -164,3 +195,61 @@ const enhance = withObservables([], (props: InputProps) => {
 });
 
 export const ConnectedGoalList = enhance(AdaptedGoalList);
+
+
+function filterAndSort(items: Goal[], range: Range, filter: GoalFilter, sorter: GoalSorter, direction: Direction) {
+        const now = MyDate.Now().toDate();
+        return items.filter((goal) => {
+            if(range === undefined) {
+                return true;
+            } else {
+                let start = range[0]
+                let end = range[1];
+                if(end < start) {
+                    return false;
+                } else {
+                    const endBeforeDate = MyDate.YBeforeX(goal.startDate, end) ;
+                    const startAfterDate = MyDate.YAfterX(goal.startDate, start);
+                    console.log("goal: " + goal.startDate + " start: " + start + " end: " + end)
+                    console.log(goal.title + " " + endBeforeDate + " " + startAfterDate)
+                    return !endBeforeDate && !startAfterDate
+                }
+            }
+        }).filter((item) => {
+            switch(filter) {
+                case "all": {
+                    return true;
+                };
+                case "complete": {
+                    return !item.active && item.state === "complete";
+                }
+                case "failed": {
+                    return !item.active && item.state === "cancelled";
+                }
+                case "not started": {
+                    return item.active && MyDate.YBeforeX(item.startDate, now)
+                } break;
+                case "ongoing": {
+                    return item.active && !MyDate.YAfterX(item.dueDate, now) && !MyDate.YBeforeX(item.startDate, now);
+                } break;
+                case "overdue": {
+                    return item.active && MyDate.YAfterX(item.dueDate, now)
+                }
+                default: {
+                    throw new Error("Unhandled goal filter: " + filter);
+                }
+            }
+        }).sort((a, b) => {
+            switch(sorter){
+                case "start": {
+                    return compare(a.startDate, b.startDate, direction);
+                }
+                case "due": {
+                    return compare (a.dueDate, b.dueDate, direction);
+                }
+                case "title": {
+                    return compare (a.title, b.title, direction);
+                }
+            }
+        })
+}

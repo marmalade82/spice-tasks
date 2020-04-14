@@ -63,8 +63,8 @@ export default class AppStartScreen extends React.Component<Props, State> {
         }
     }
 
-    readonly overdueTaskFilterState = makeTaskLocalState("all", "start", undefined, "up");
-    readonly todayTaskFilterState = makeTaskLocalState("all", "start", undefined, "up");
+    readonly overdueTaskFilterState = makeTaskLocalState<TaskFilter, TaskSorter>("all", "start", undefined, "up");
+    readonly todayTaskFilterState = makeTaskLocalState<TaskFilter, TaskSorter>("all", "start", undefined, "up");
     unsub: () => void;
     navigation: MainNavigator<"AppStart">;
     constructor(props: Props) {
