@@ -8,7 +8,6 @@ import {
 import { Props as StringInputProps } from "src/Components/Inputs/StringInput";
 import { View, StyleSheet, StyleProp, ViewStyle, ScrollView } from "react-native";
 import DataComponent from "src/Components/base/DataComponent";
-import Style from "src/Style/Style"
 import { ColumnView } from "../Basic/Basic";
 import { Validate } from "src/Components/Inputs/Validate";
 import { Observable } from "rxjs";
@@ -19,7 +18,6 @@ import { Props as DateProps } from "src/Components/inputs/DateTimeInput";
 import { ROW_CONTAINER_HEIGHT } from "../Styled/Styles";
 import FootSpacer from "../Basic/FootSpacer";
 import { dueDate, startDate } from "./common/utils";
-import { makeForm } from "./Form";
 import { LocalState } from "src/Screens/common/StateProvider";
 
 interface Props {
@@ -205,36 +203,6 @@ export {
     State as AddTaskData,
     Default as AddTaskDefault,
 }
-
-export const Gen_AddTaskForm = makeForm("task", [
-    { name: "name",
-      label: "Name",
-      type: "text",
-      placeholder: "Name of this task",
-      emptyType: "",
-      onEmptyPress: "",
-      validateOnInput: ["required"] as string[],
-      validateOnBlur: [] as string[],
-    } as const,
-    { name: "description",
-      label: "Description",
-      type: "multi-text",
-      placeholder: "Description of this task",
-      emptyType: "",
-      onEmptyPress: "",
-      validateOnInput: [] as string[],
-      validateOnBlur: [] as string[],
-    } as const,
-    { name: "start-date",
-      label: "Start Date",
-      type: "date",
-      placeholder: "",
-      emptyType: "",
-      onEmptyPress: "",
-      validateOnInput: [] as string[],
-      validateOnBlur: [] as string[],
-    } as const,
-])
 
 export const makeFormState = () => {
     return new LocalState({
