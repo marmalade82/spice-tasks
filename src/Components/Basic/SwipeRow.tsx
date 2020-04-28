@@ -2,7 +2,7 @@ import React from "react";
 
 
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import {Animated} from "react-native";
+import { Dimensions } from "react-native";
 
 interface Props {
     onSwipeLeftOpen?: () => void;
@@ -40,8 +40,8 @@ export default class SwipeRow extends React.Component<Props> {
         return (
             <Swipeable
                 friction={1}
-                leftThreshold={60}
-                rightThreshold={60}
+                leftThreshold={Dimensions.get('window').width * 0.4}
+                rightThreshold={Dimensions.get('window').width * 0.4}
                 onSwipeableLeftOpen={this.props.onSwipeRightOpen}
                 onSwipeableRightOpen={this.props.onSwipeLeftOpen}
                 onSwipeableClose={this.props.onSwipeClose}
