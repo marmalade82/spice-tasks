@@ -2,7 +2,8 @@ import React from "react";
 
 
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import { Dimensions } from "react-native";
+import { Dimensions, View } from "react-native";
+import { PRIMARY_COLOR, CONTAINER_ELEVATION } from "src/Components/Styled/Styles";
 
 interface Props {
     onSwipeLeftOpen?: () => void;
@@ -62,4 +63,17 @@ export default class SwipeRow extends React.Component<Props> {
             </Swipeable>
         );
     }
+}
+
+export function SwipeRight() {
+    return (
+        <View style={{
+            backgroundColor: PRIMARY_COLOR,
+            flex: 0,
+            height: "100%",
+            width: "100%",
+            elevation: CONTAINER_ELEVATION,
+        }}>
+        </View>
+    )
 }

@@ -9,7 +9,7 @@ import { ConnectedEarnedPenaltyListItem } from "src/ConnectedComponents/Lists/Pe
 import { PagedList } from "src/Components/Styled/Styled";
 import EmptyListItem from "src/Components/Lists/Items/EmptyListItem";
 import EmptyList from "src/Components/Lists/EmptyList";
-import SwipeRow from "src/Components/Basic/SwipeRow";
+import SwipeRow, { SwipeRight } from "src/Components/Basic/SwipeRow";
 import { View } from "react-native";
 import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
 import { OnEarnedPenaltyAction } from "src/Components/Lists/Items/EarnedPenaltyListItem";
@@ -26,15 +26,7 @@ const SwipeItem: React.FunctionComponent<SwipeProps> = (props: SwipeProps) => {
         <SwipeRow
             ref={swipeRef}
             renderSwipeRight={() => {
-                return (
-                    <View style={{
-                        backgroundColor: PRIMARY_COLOR,
-                        flex: 0,
-                        height: ROW_CONTAINER_HEIGHT,
-                        width: "100%",
-                    }}>
-                    </View>
-                )
+                return <SwipeRight></SwipeRight>
             }}
             onSwipeRightOpen={() => { props.onSwipeRight ? props.onSwipeRight(item.id): null }}
             key={item.id}

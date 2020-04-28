@@ -15,8 +15,8 @@ import { PagedList } from "src/Components/Styled/Styled";
 import { View } from "react-native";
 import { observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
 import EmptyListItem from "src/Components/Lists/Items/EmptyListItem";
-import SwipeRow from "src/Components/Basic/SwipeRow";
-import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
+import SwipeRow, { SwipeRight } from "src/Components/Basic/SwipeRow";
+import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT, CONTAINER_ELEVATION } from "src/Components/Styled/Styles";
 import EmptyList from "src/Components/Lists/EmptyList";
 import { prependToMemberExpression } from "@babel/types";
 import { OnTaskAction } from "src/Components/Lists/Items/TaskListItem";
@@ -45,15 +45,7 @@ const SwipedItem: React.FunctionComponent<SwipedProps> = (props: SwipedProps) =>
         <SwipeRow
             ref={swipeRef}
             renderSwipeRight={() => {
-                return (
-                    <View style={{
-                        backgroundColor: PRIMARY_COLOR,
-                        flex: 0,
-                        height: ROW_CONTAINER_HEIGHT,
-                        width: "100%",
-                    }}>
-                    </View>
-                )
+                return <SwipeRight></SwipeRight>
             }}
             onSwipeRightOpen={() => { 
                 if(props.onSwipeRight) {

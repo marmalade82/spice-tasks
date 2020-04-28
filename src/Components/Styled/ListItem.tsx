@@ -51,12 +51,14 @@ export default class ListItem<T extends keyof ScreenParams> extends React.Compon
                         justifyContent: "flex-start",
                         paddingLeft: 15,
                         paddingRight: 15,
+                        backgroundColor: "white",
                         alignItems: "stretch",
                     }}>
                         <RowView style={{
                             flex: 1,
                             justifyContent: "flex-start",
                             alignItems: "center",
+                            backgroundColor: "white"
                         }}>
                             <Icon
                                 type={this.props.type ? this.props.type : "none"}
@@ -89,6 +91,7 @@ export default class ListItem<T extends keyof ScreenParams> extends React.Compon
                             flex: 0,
                             justifyContent: "flex-start",
                             minWidth: 60,
+                            backgroundColor: "white",
                             alignItems: "center",
                         }}>
                             {this.renderFooterIcons()}
