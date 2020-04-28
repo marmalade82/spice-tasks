@@ -7,7 +7,7 @@ import {
     ColumnView, RowView, Button as MyButton,
     ViewPicker,
 } from "src/Components/Basic/Basic";
-import { DocumentView, ScreenHeader, BackgroundTitle, Modal, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
+import { DocumentView, ScreenHeader, BackgroundTitle, Modal, ModalRow } from "src/Components/Styled/Styled";
 import { View, ScrollView } from "react-native";
 import ConnectedSingleList from "src/ConnectedComponents/Lists/SingleList";
 import { EventDispatcher } from "src/common/EventDispatcher";

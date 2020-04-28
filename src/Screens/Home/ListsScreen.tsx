@@ -7,7 +7,6 @@ import { ScrollView } from "react-native";
 import { 
     NavigationRow, ScreenHeader, DocumentView, 
     NavigationGroup, BackgroundTitle, Summary ,
-    IconButton, ModalRow, ModalIconButton, Icon, Modal,
 } from "src/Components/Styled/Styled";
 
 import { 

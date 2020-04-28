@@ -91,6 +91,7 @@ export default class SpecificTaskScreen extends React.Component<Props, State> {
                                                 showMore: showModal
                                             })
                                         }}
+                                        backgroundColor={"white"}
 
                                     >
                                         <ModalRow

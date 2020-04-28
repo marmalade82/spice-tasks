@@ -4,7 +4,7 @@ import { ConnectedTaskList, TaskFilter, TaskSorter, makeTaskLocalState } from "s
 import { ConnectedGoalSummary } from "src/ConnectedComponents/Summaries/GoalSummary";
 import Goal from "src/Models/Goal/Goal";
 import GoalQuery, { GoalLogic } from "src/Models/Goal/GoalQuery";
-import { DocumentView, ScreenHeader, ListPicker, Toast, BackgroundTitle, ModalIconButton, ModalRow, Modal } from "src/Components/Styled/Styled";
+import { DocumentView, ScreenHeader, ListPicker, Toast, BackgroundTitle, ModalRow, Modal } from "src/Components/Styled/Styled";
 import { ScrollView } from "react-native";
 import TaskQuery, { TaskLogic, ActiveTaskQuery, ChildTaskQuery, ChildOfTaskQuery } from "src/Models/Task/TaskQuery";
 import FootSpacer from "src/Components/Basic/FootSpacer";

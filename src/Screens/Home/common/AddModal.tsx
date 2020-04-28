@@ -1,9 +1,7 @@
 import React from "react";
 
 import { 
-    NavigationRow, ScreenHeader, DocumentView, 
-    NavigationGroup, BackgroundTitle, Summary ,
-    IconButton, ModalRow, ModalIconButton, Icon, Modal,
+    ModalRow, Modal,
 } from "src/Components/Styled/Styled";
 import { FullNavigation } from "src/common/Navigator";
 import { TaskParentTypes } from "src/Models/Task/Task";

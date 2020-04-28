@@ -54,9 +54,9 @@ export default class IconButton extends React.Component<Props, State> {
         return (
             <I
                 type={type}
-                color={this.props.color ? this.props.color : "white"}
-                size={this.props.size ? this.props.size : 20}
-                backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR}
+                color={this.props.color ? this.props.color : PRIMARY_COLOR}
+                size={this.props.size ? this.props.size : 29}
+                backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : "white"}
                 accessibilityLabel={this.props.accessibilityLabel}
                 backgroundHeight={this.props.overlaySize}
             ></I>

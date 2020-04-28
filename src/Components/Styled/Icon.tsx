@@ -391,9 +391,9 @@ export default class StyledIcon extends React.Component<Props, State>{
             case "more": {
                 return (
                     <Icon
-                        name={"more-horizontal"}
+                        name={"more-vertical"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
+                        color={this.props.color ? this.props.color : PRIMARY_COLOR}
                         size={this.props.size ? this.props.size : 20}
                     >
                     </Icon>
