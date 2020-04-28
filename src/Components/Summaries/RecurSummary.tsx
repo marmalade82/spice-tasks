@@ -41,6 +41,39 @@ export default class RecurSummary extends React.Component<Props, State> {
         }
     }
 
+    renderToggler = () => {
+        if(this.props.recur.active) {
+            return (
+                <ModalRow
+                    text={"Disable"}
+                    iconType={"disable"}
+                    onPress={() => {
+                        this.props.onModalChoice("disable");
+                        this.setState({
+                            showMore: false,
+                        })
+                    }}
+                    accessibilityLabel={"disable-recur-button"}
+                    key={"disable"}
+                ></ModalRow>
+            );
+        } else {
+            return (
+                <ModalRow
+                    text={"Enable"}
+                    iconType={"enable"}
+                    onPress={() => {
+                        this.props.onModalChoice("enable");
+                        this.setState({
+                            showMore: false,
+                        })
+                    }}
+                    accessibilityLabel={"enable-recur-button"}
+                    key={"enable"}
+                ></ModalRow>
+            );
+        }
+    }
 
     render = () => {
         const { id, title, active, details, type } = this.props.recur;
@@ -78,29 +111,6 @@ export default class RecurSummary extends React.Component<Props, State> {
                             </IconButton>
                         );
                     },
-                    () => { 
-                        if(this.props.recur.active) {
-                            return (
-                                <IconButton type={"disable"}
-                                    onPress={() => {
-                                        this.props.onModalChoice("disable");
-                                    }}
-                                    accessibilityLabel={"disable-recur-button"}
-                                    key={"disable"}
-                                ></IconButton>
-                            );
-                        } else {
-                            return (
-                                <IconButton type={"enable"}
-                                    onPress={() => {
-                                        this.props.onModalChoice("enable");
-                                    }}
-                                    accessibilityLabel={"enable-recur-button"}
-                                    key={"enable"}
-                                ></IconButton>
-                            );
-                        }
-                    },
                     () => { return (
                                     <ModalIconButton type={"more"}
                                         data={{
@@ -114,6 +124,24 @@ export default class RecurSummary extends React.Component<Props, State> {
                                         accessibilityLabel={"recur-more-button"}
                                         key={"more"}
                                     >
+                                        {this.renderToggler()}
+                                        <ModalRow
+                                            text={"Edit"}
+                                            iconType={"edit"}
+                                            onPress={() => {
+                                                this.props.navigation.push(
+                                                    "AddRecur", {
+                                                        id: id,
+                                                        parent_id: "",
+                                                    }
+                                                );
+                                                this.setState({
+                                                    showMore: false,
+                                                })
+                                            }}
+                                            accessibilityLabel={"edit-recur-button"}
+                                            key={"edit"}
+                                        ></ModalRow>
                                         <ModalRow
                                             text={"Delete"}
                                             iconType={"delete"}

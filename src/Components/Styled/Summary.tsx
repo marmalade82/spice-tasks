@@ -31,6 +31,7 @@ export default class Summary extends React.Component<Props, State> {
                 <ColumnView style={[{
                     backgroundColor: "white",
                     justifyContent: "flex-start",
+                    paddingBottom: 30,
                     marginBottom: CONTAINER_VERTICAL_MARGIN,
                     flex: 0,
                     overflow: "hidden",
@@ -40,19 +41,15 @@ export default class Summary extends React.Component<Props, State> {
                     }}>
                         <RowView style={[{
                             flex: 0,
-                            paddingLeft: LEFT_FIRST_MARGIN,
+                            paddingLeft: LEFT_SECOND_MARGIN,
                             paddingRight: RIGHT_SECOND_MARGIN,
                         }, Styles.CENTERED_SECONDARY]}>
                             <RowView style={[{
                                 flex: 1,
                             }, Styles.CENTERED_SECONDARY]}>
-                                <Icon
-                                    type={this.props.iconType ? this.props.iconType : "none"}
-                                    backgroundColor={"transparent"}
-                                ></Icon>
                                 <Text style={{
-                                        margin: TEXT_VERTICAL_MARGIN,
-                                        marginLeft: TEXT_HORIZONTAL_MARGIN,
+                                        marginTop: TEXT_VERTICAL_MARGIN,
+                                        marginBottom: TEXT_VERTICAL_MARGIN,
                                     }}
                                 >
                                     <HeaderText 
@@ -65,6 +62,27 @@ export default class Summary extends React.Component<Props, State> {
                                     </HeaderText>
                                 </Text>
                             </RowView>
+                            <RowView style={[{
+                                flex: 0,
+                                justifyContent: "flex-end",
+                                alignItems: "center",
+                                height: ROW_HEIGHT,
+                                marginTop: 5,
+                                backgroundColor: "white",
+                            }]}>
+                                {this.props.footerElements.map((render) => {
+                                    return (
+                                        <View
+                                            style={{
+                                                flex: 0,
+                                                marginLeft: RIGHT_SECOND_MARGIN / 2,
+                                            }}
+                                        >
+                                            {render()}
+                                        </View>
+                                    );
+                                })}
+                            </RowView>
                         </RowView>
                         <RowView style={{
                             flex: 0,
@@ -76,29 +94,6 @@ export default class Summary extends React.Component<Props, State> {
                             {this.props.bodyText()}
                         </RowView>
                     </ScrollView>
-                    <RowView style={[{
-                        flex: 0,
-                        justifyContent: "flex-end",
-                        alignItems: "center",
-                        height: ROW_HEIGHT,
-                        paddingLeft: LEFT_SECOND_MARGIN,
-                        paddingRight: RIGHT_SECOND_MARGIN,
-                        marginTop: 5,
-                        backgroundColor: "white",
-                    }]}>
-                        {this.props.footerElements.map((render) => {
-                            return (
-                                <View
-                                    style={{
-                                        flex: 0,
-                                        marginLeft: RIGHT_SECOND_MARGIN / 2,
-                                    }}
-                                >
-                                    {render()}
-                                </View>
-                            );
-                        })}
-                    </RowView>
                     
                 </ColumnView>
         )

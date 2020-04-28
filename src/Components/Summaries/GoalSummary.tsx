@@ -71,25 +71,6 @@ export default class GoalSummary extends React.Component<Props, State> {
                     );
                 }}
                 footerElements={[
-                    () => { 
-                        return (
-                            <IconButton type={"edit"}
-                                onPress={() => {
-                                    this.props.navigation.push(
-                                        "AddGoal", {
-                                            id: this.props.goal.id,
-                                            parent_id: "", //We let the internal task determine the correct parent.
-                                            title: this.props.goal.type === "streak" ? "Habit" : "Goal"
-                                        }
-                                    );
-                                }}
-                                accessibilityLabel={"edit-goal-button"}
-                                key={"edit"}
-                            >
-
-                            </IconButton>
-                        );
-                    },
                     () => { return (
                                     <ModalIconButton type={"more"}
                                         data={{
@@ -115,17 +96,6 @@ export default class GoalSummary extends React.Component<Props, State> {
                                             accessibilityLabel={"goal-complete-button"}
                                         ></ModalRow>
                                         <ModalRow
-                                            text={"Delete"}
-                                            iconType={"delete"}
-                                            onPress={() => {
-                                                this.props.onModalChoice("delete");
-                                                this.setState({
-                                                    showMore: false,
-                                                })
-                                            }}
-                                            accessibilityLabel={"goal-delete-button"}
-                                        ></ModalRow>
-                                        <ModalRow
                                             text={"Mark Incomplete"}
                                             iconType={"goal"}
                                             onPress={() => {
@@ -135,6 +105,35 @@ export default class GoalSummary extends React.Component<Props, State> {
                                                 })
                                             }}
                                             accessibilityLabel={"goal-incomplete-button"}
+                                        ></ModalRow>
+                                        <ModalRow
+                                            text={"Edit"}
+                                            iconType={"edit"}
+                                            onPress={() => {
+                                                this.props.navigation.push(
+                                                    "AddGoal", {
+                                                        id: this.props.goal.id,
+                                                        parent_id: "", //We let the internal task determine the correct parent.
+                                                        title: this.props.goal.type === "streak" ? "Habit" : "Goal"
+                                                    }
+                                                );
+                                                this.setState({
+                                                    showMore: false,
+                                                })
+                                            }}
+                                            accessibilityLabel={"edit-goal-button"}
+                                            key={"edit"}
+                                        ></ModalRow>
+                                        <ModalRow
+                                            text={"Delete"}
+                                            iconType={"delete"}
+                                            onPress={() => {
+                                                this.props.onModalChoice("delete");
+                                                this.setState({
+                                                    showMore: false,
+                                                })
+                                            }}
+                                            accessibilityLabel={"goal-delete-button"}
                                         ></ModalRow>
                                     </ModalIconButton>
                             );

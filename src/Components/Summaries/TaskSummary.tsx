@@ -59,25 +59,6 @@ export default class TaskSummary extends React.Component<Props, State> {
                     );
                 }}
                 footerElements={[
-                    () => { 
-                        return (
-                            <IconButton type={"edit"}
-                                onPress={() => {
-                                    this.props.navigation.push(
-                                        "AddTask", {
-                                            id: id,
-                                            parent_id: "",
-                                            parent_type: TaskParentTypes.NONE,
-                                        }
-                                    );
-                                }}
-                                accessibilityLabel={"edit-task-button"}
-                                key={"edit"}
-                            >
-
-                            </IconButton>
-                        );
-                    },
                     () => { return (
                                     <ModalIconButton type={"more"}
                                         data={{
@@ -101,6 +82,23 @@ export default class TaskSummary extends React.Component<Props, State> {
                                                 })
                                             }}
                                             accessibilityLabel={"task-complete-button"}
+                                        ></ModalRow>
+                                        <ModalRow
+                                            text={"Edit"}
+                                            iconType={"edit"}
+                                            onPress={() => {
+                                                this.props.navigation.push(
+                                                    "AddTask", {
+                                                        id: id,
+                                                        parent_id: "",
+                                                        parent_type: TaskParentTypes.NONE,
+                                                    }
+                                                );
+                                                this.setState({
+                                                    showMore: false,
+                                                })
+                                            }}
+                                            accessibilityLabel={"task-edit-button"}
                                         ></ModalRow>
                                         <ModalRow
                                             text={"Delete"}
