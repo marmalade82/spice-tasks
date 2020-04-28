@@ -188,6 +188,7 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                         alignItems: "center",
                         backgroundColor: PRIMARY_COLOR_LIGHT,
                         paddingLeft: LEFT_SECOND_MARGIN,
+                        paddingRight: RIGHT_FIRST_MARGIN,
                     }}
                 >
                     <HeaderText style={{
@@ -323,12 +324,12 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                         showSorting: showModal,
                     })
                 }}
+                size={23}
                 type={"sort"}
                 backgroundColor={this.props.backgroundColor}
                 color={TAB_GREY}
                 style={[{
                     marginLeft: LEFT_FIRST_MARGIN,
-                    marginRight: TEXT_HORIZONTAL_MARGIN,
                     borderColor: BORDER_GREY,
                     backgroundColor: this.props.backgroundColor,
                 }, this.props.style]}

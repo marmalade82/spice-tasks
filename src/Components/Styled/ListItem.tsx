@@ -7,6 +7,7 @@ import { View, Text } from "react-native";
 import { Icon as NIcon } from "react-native-elements";
 import { Icon } from "src/Components/Styled/Styled";
 import { Navigation, ScreenParams } from "src/common/Navigator";
+import { RIGHT_FIRST_MARGIN } from "./Styles";
 
 interface Props<T extends keyof ScreenParams> {
     navigation: Navigation<ScreenParams>;
@@ -50,7 +51,7 @@ export default class ListItem<T extends keyof ScreenParams> extends React.Compon
                     <RowView style={{
                         justifyContent: "flex-start",
                         paddingLeft: 15,
-                        paddingRight: 15,
+                        paddingRight: RIGHT_FIRST_MARGIN,
                         backgroundColor: "white",
                         alignItems: "stretch",
                     }}>
