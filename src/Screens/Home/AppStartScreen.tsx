@@ -37,10 +37,6 @@ interface State {
     currentDate: Date,
     showMore: boolean;
     showAdd: boolean;
-    dueTodayCount: number;
-    inProgressCount: number;
-    overdueCount: number;
-    ongoingGoalsCount: number;
     current: string;
 }
 
@@ -71,10 +67,6 @@ export default class AppStartScreen extends React.Component<Props, State> {
             currentDate: MyDate.Now().toDate(),
             showMore: false,
             showAdd: false,
-            dueTodayCount: 0,
-            inProgressCount: 0,
-            overdueCount: 0,
-            ongoingGoalsCount: 0,
             current: 'bye',
         }
         this.unsub = () => {}
@@ -88,41 +80,10 @@ export default class AppStartScreen extends React.Component<Props, State> {
             })
         });
 
-        let dueTodaySub: Subscription = observableWithRefreshTimer(
-            () => new ActiveTaskQuery().queryDueToday().observeCount() ).subscribe((count) => {
-                this.setState({
-                    dueTodayCount: count,
-                })
-            })
-
-        let inProgressSub: Subscription = observableWithRefreshTimer(
-            () => new ActiveTaskQuery().queryStartedButNotDue().observeCount()).subscribe((count) => {
-                this.setState({
-                    inProgressCount: count
-                })
-            });
-
-        let overdueSub: Subscription = observableWithRefreshTimer(
-            () => new ActiveTaskQuery().queryOverdue().observeCount()).subscribe((count) => {
-                this.setState({
-                    overdueCount: count
-                })
-            });
-
-        let ongoingGoalsSub: Subscription = observableWithRefreshTimer(
-            () => new ActiveGoalQuery().queryStarted().observeCount()).subscribe((count) => {
-                this.setState({
-                    ongoingGoalsCount: count
-                })
-            }) ;
         dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd)
         this.unsub = () => {
             dispatcher.removeEventListener(getKey(this.navigation), this.onClickAdd)
             timeSub.unsubscribe();
-            dueTodaySub.unsubscribe();
-            inProgressSub.unsubscribe();
-            overdueSub.unsubscribe();
-            ongoingGoalsSub.unsubscribe();
         }
     }
 
@@ -170,7 +131,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
             <DocumentView accessibilityLabel={"app-start"}>
                 <ScrollView>
                     <SidescrollPicker
-                        label={`Due Today (${this.state.dueTodayCount})`}
+                        label={`Due Today`}
                         filters={makeChoices(todayFilters)}
                         sorters={makeChoices(todaySorters)}
                         localState={this.todayTaskFilterState} 
@@ -203,37 +164,34 @@ export default class AppStartScreen extends React.Component<Props, State> {
     }
 
     private renderOverdue = () => {
-        if( this.state.overdueCount > 0) {
-            const overdueFilters: TaskFilter[] = [
-                "all" 
-            ]
-            const overdueSorters: TaskSorter[] = [
-                "start", "title",
-            ]
-            return (
-                <View style={{flex: 0}}>
-                    <SidescrollPicker
-                        label={`Overdue (${this.state.overdueCount})`}
-                        filters={makeChoices(overdueFilters)}
-                        sorters={makeChoices(overdueSorters)}
-                        localState={this.overdueTaskFilterState} 
-                        accessibilityLabel={"overdue-picker"}
-                    ></SidescrollPicker>
-                    <ConnectedTaskList
-                        navigation={this.navigation}
-                        type={"overdue"}
-                        parentId={""}
-                        paginate={4}
-                        onSwipeRight={(id: string) => {
-                            void new TaskLogic(id).complete()
-                        }}
-                        onTaskAction={this.onTaskAction}
-                        provider={this.overdueTaskFilterState}
-                    ></ConnectedTaskList>
-                </View>
-            );
-        }
-        return null;
+        const overdueFilters: TaskFilter[] = [
+            "all" 
+        ]
+        const overdueSorters: TaskSorter[] = [
+            "start", "title",
+        ]
+        return (
+            <View style={{flex: 0}}>
+                <SidescrollPicker
+                    label={`Overdue`}
+                    filters={makeChoices(overdueFilters)}
+                    sorters={makeChoices(overdueSorters)}
+                    localState={this.overdueTaskFilterState} 
+                    accessibilityLabel={"overdue-picker"}
+                ></SidescrollPicker>
+                <ConnectedTaskList
+                    navigation={this.navigation}
+                    type={"overdue"}
+                    parentId={""}
+                    paginate={4}
+                    onSwipeRight={(id: string) => {
+                        void new TaskLogic(id).complete()
+                    }}
+                    onTaskAction={this.onTaskAction}
+                    provider={this.overdueTaskFilterState}
+                ></ConnectedTaskList>
+            </View>
+        );
     }
 
 }

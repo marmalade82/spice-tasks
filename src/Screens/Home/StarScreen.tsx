@@ -26,8 +26,6 @@ interface Props {
 
 
 interface State {
-    ongoingGoalsCount: number;
-    futureGoalsCount: number;
     showAdd: boolean
 }
 
@@ -57,8 +55,6 @@ export default class StarScreen extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            ongoingGoalsCount: 0,
-            futureGoalsCount: 0,
             showAdd: false,
         }
         this.unsub = () => {}
@@ -66,25 +62,9 @@ export default class StarScreen extends React.Component<Props, State> {
     }
 
     componentDidMount = () => {
-        let ongoingGoalsSub = observableWithRefreshTimer(
-            () => new ActiveGoalQuery().queryStarted().observeCount()).subscribe((count) => {
-                this.setState({
-                    ongoingGoalsCount: count
-                })
-            }) ;
-
-        let futureGoalsSub = observableWithRefreshTimer(
-            () => new ActiveGoalQuery().queryNotStarted().observeCount()).subscribe((count) => {
-                this.setState({
-                    futureGoalsCount: count
-                })
-            });
-
         dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd);
         this.unsub = () => {
             dispatcher.removeEventListener(getKey(this.navigation ), this.onClickAdd);
-            ongoingGoalsSub.unsubscribe();
-            futureGoalsSub.unsubscribe();
         }
     }
 
@@ -118,7 +98,7 @@ export default class StarScreen extends React.Component<Props, State> {
             <DocumentView accessibilityLabel={"star"}>
                 <ScrollView>
                     <SidescrollPicker
-                        label={`Ongoing Goals (${this.state.ongoingGoalsCount})`}
+                        label={`Ongoing Goals`}
                         filters={makeChoices(ongoingFilters)}
                         sorters={makeChoices(ongoingSorters)}
                         localState={this.ongoingGoalFilterState}
@@ -137,7 +117,7 @@ export default class StarScreen extends React.Component<Props, State> {
 
 
                     <SidescrollPicker
-                        label={`Future Goals (${this.state.futureGoalsCount})`}
+                        label={`Future Goals`}
                         filters={makeChoices(futureFilters)}
                         sorters={makeChoices(futureSorters)}
                         localState={this.futureGoalFilterState}

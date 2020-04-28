@@ -32,13 +32,8 @@ interface Props {
 interface State {
     goal?: Goal;
     currentList: number;
-    activeCount: number;
-    inactiveCount: number;
-    currentCycleCount: number;
-    previousCycleCount: number;
     toastVisible: boolean;
     toastMessage: string;
-    overdueCount: number;
     showAdd: boolean;
 }
 
@@ -73,11 +68,6 @@ export default class GoalScreen extends React.Component<Props, State> {
         this.state = {
             goal: undefined,
             currentList: 0,
-            activeCount: 0,
-            inactiveCount: 0,
-            currentCycleCount: 0,
-            previousCycleCount: 0,
-            overdueCount: 0,
             toastVisible: false,
             toastMessage: "",
             showAdd: false,
@@ -101,60 +91,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                 goal: goal
             })
 
-            const activeSub = new ActiveTaskQuery().queryHasParent(goal.id).observeCount().subscribe((num) => {
-                this.setState({
-                    activeCount: num,
-                })
-            });
-            const inactiveSub = new ChildTaskQuery(goal.id).queryInactive().observeCount().subscribe((num) => {
-                this.setState({
-                    inactiveCount: num,
-                })
-            });
-
-            const currentCycleSub = new ChildStreakCycleQuery(goal.id).queryAll().observe().pipe(switchMap(( cycles ) => {
-                    const sorted = cycles.sort((a, b) => {
-                        return b.startDate.valueOf() - a.startDate.valueOf()
-                    })
-
-                    const latest = sorted[0];
-                    return new TaskQuery().queryInSCycle(latest ? latest.id : "").observeCount()
-                })).subscribe((n) => {
-                    this.setState({
-                        currentCycleCount: n,
-                    })
-                })
-
-            const previousCycleSub = new ChildStreakCycleQuery(goal.id)
-                                                        .queryEndsOnBefore(goal.currentCycleEnd())
-                                                        .observeCount()
-                                                        .subscribe((n) => {
-                this.setState({
-                    previousCycleCount: n,
-                })
-            })
-
-            const overdueSub = (function(){
-                let directChildCount: Observable<number> = new ChildTaskQuery(goal.id).queryOverdue().observeCount();
-                let streakChildCount: Observable<number> = new ChildStreakCycleQuery(goal.id).queryAll().observe().pipe(switchMap((cycles) => {
-                    const ids: string[] = cycles.map((cycle) => {
-                        return cycle.id;
-                    })
-                    return new ChildOfTaskQuery(ids).queryActiveOverdue().observeCount()
-                }))
-                return combineLatest([directChildCount, streakChildCount], (dCount, sCount) => dCount + sCount)
-            })().subscribe((n) => {
-                this.setState({
-                    overdueCount: n
-                })
-            })
-
             this.unsubscribe = () => {
-                activeSub.unsubscribe();
-                inactiveSub.unsubscribe();
-                currentCycleSub.unsubscribe();
-                previousCycleSub.unsubscribe();
-                overdueSub.unsubscribe();
             }
         } else {
             this.setState({
@@ -331,9 +268,9 @@ export default class GoalScreen extends React.Component<Props, State> {
                         >
                             <SidescrollPicker
                                 label={ habitHasNotStarted ?
-                                    `First Tasks (${this.state.currentCycleCount})` : habitIsOverdue ?
-                                    `Overdue (${this.state.overdueCount})` :
-                                    `${getCurrentCycleType()} (${this.state.currentCycleCount})`
+                                    `First Tasks` : habitIsOverdue ?
+                                    `Overdue` :
+                                    `${getCurrentCycleType()}`
                                 }
                                 filters={makeChoices(filters)}
                                 sorters={makeChoices(sorters)}
@@ -358,7 +295,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                             <BackgroundTitle 
                                 title={ habitHasNotStarted ?
                                     `First ${getCycleType()}` :
-                                    `Previous ${getCycleType()}s (${this.state.previousCycleCount})`
+                                    `Previous ${getCycleType()}`
                                 }
                                 style={{
                                 }}
@@ -395,7 +332,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                             }}
                         >
                             <SidescrollPicker
-                                label={ `Active (${this.state.activeCount})` }
+                                label={ `Active` }
                                 filters={makeChoices(activeFilters)}
                                 sorters={makeChoices(activeSorters)}
                                 localState={this.activeTaskFilterState} 
@@ -414,12 +351,12 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 provider={this.activeTaskFilterState}
                             ></ConnectedTaskList>
 
-                            <BackgroundTitle title={`Inactive (${this.state.inactiveCount})`}
+                            <BackgroundTitle title={`Inactive`}
                                 style={{
                                 }}
                             ></BackgroundTitle>
                             <SidescrollPicker
-                                label={`Inactive (${this.state.inactiveCount})`}
+                                label={`Inactive`}
                                 filters={makeChoices(inactiveFilters)}
                                 sorters={makeChoices(inactiveSorters)}
                                 localState={this.inactiveTaskFilterState} 

@@ -34,8 +34,6 @@ interface Props {
 
 interface State {
     showAdd: boolean;
-    earnedRewardsCount: number;
-    earnedPenaltiesCount: number;
 }
 
 const dispatcher = new EventDispatcher();
@@ -62,8 +60,6 @@ export default class ListsScreen extends React.Component<Props, State> {
 
         this.state = {
             showAdd: false,
-            earnedRewardsCount: 0,
-            earnedPenaltiesCount: 0,
         }
 
         this.unsub = () => {};
@@ -71,24 +67,11 @@ export default class ListsScreen extends React.Component<Props, State> {
     }
 
     componentDidMount = () => {
-        const earnedRewardSub = new EarnedRewardQuery().queryUnused().observeCount().subscribe((count) => {
-            this.setState({
-                earnedRewardsCount: count,
-            })
-        })
-
-        const earnedPenaltiesSub = new EarnedPenaltyQuery().queryUnused().observeCount().subscribe((count) => {
-            this.setState({
-                earnedPenaltiesCount: count,
-            })
-        })
 
         dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd);
 
         this.unsub = () => {
             dispatcher.removeEventListener(getKey(this.navigation), this.onClickAdd);
-            earnedRewardSub.unsubscribe();
-            earnedPenaltiesSub.unsubscribe();
         }
     }
 
@@ -123,7 +106,7 @@ export default class ListsScreen extends React.Component<Props, State> {
             <DocumentView accessibilityLabel={"lists"}>
                 <ScrollView>
                     <BackgroundTitle
-                        title={`Unused Rewards (${this.state.earnedRewardsCount})`}
+                        title={`Unused Rewards`}
                         style={{
                             marginTop: 0,
                         }}
@@ -140,7 +123,7 @@ export default class ListsScreen extends React.Component<Props, State> {
                     ></ConnectedEarnedRewardList>
 
                     <BackgroundTitle
-                        title={`Pending Penalties (${this.state.earnedRewardsCount})`}
+                        title={`Pending Penalties`}
                     ></BackgroundTitle>
 
                     <ConnectedEarnedPenaltyList

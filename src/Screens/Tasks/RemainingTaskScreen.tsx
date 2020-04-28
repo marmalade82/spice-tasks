@@ -12,9 +12,6 @@ interface Props {
 
 interface State {
     currentList: number;
-    dueSoonTodayCount: number;
-    completedTodayCount: number;
-    inProgressCount: number;
 }
 
 export default class RemainingTaskScreen extends React.Component<Props, State> {
@@ -31,37 +28,13 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
 
         this.state = {
             currentList: 0,
-            dueSoonTodayCount: 0,
-            completedTodayCount: 0,
-            inProgressCount: 0,
         }
         this.unsubscribe = () => {};
         this.navigation = new ScreenNavigation(props);
     }
 
     componentDidMount = () => {
-        const dueSoonSub = new ActiveTaskQuery().queryDueSoonToday().observeCount().subscribe((num) => {
-            this.setState({
-                dueSoonTodayCount: num
-            })
-        })
-
-        const completedTodaySub = new TaskQuery().queryCompletedToday().observeCount().subscribe((num) => {
-            this.setState({
-                completedTodayCount: num
-            })
-        })
-
-        const inProgressSub = new ActiveTaskQuery().queryStartedButNotDue().observeCount().subscribe((num) => {
-            this.setState({
-                inProgressCount: num
-            });
-        })
-
         this.unsubscribe = () => {
-            dueSoonSub.unsubscribe();
-            completedTodaySub.unsubscribe();
-            inProgressSub.unsubscribe();
         }
     }
 
@@ -104,7 +77,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
     renderLists = () => {
         return [
             { selector: {              
-                number: this.state.dueSoonTodayCount,
+                number: 0,
                 text: "Due Today",
               },
               list: () => {
@@ -119,7 +92,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
               }
             },
             { selector: {
-                number: this.state.inProgressCount,
+                number: 0,
                 text: "In Progress",
               },
               list: () => {
@@ -135,7 +108,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
               }
             },
             { selector: {
-                number: this.state.completedTodayCount,
+                number: 0,
                 text: "Completed",
               },
               list: () => {

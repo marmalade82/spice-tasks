@@ -14,7 +14,6 @@ interface Props {
 
 interface State {
     currentList: number;
-    inProgressGoalsCount: number;
 }
 
 export default class InProgressGoalListScreen extends React.Component<Props, State> {
@@ -32,7 +31,6 @@ export default class InProgressGoalListScreen extends React.Component<Props, Sta
 
         this.state = {
             currentList : 0,
-            inProgressGoalsCount: 0,
         }
 
         this.unsubscribe = () => {}
@@ -40,14 +38,8 @@ export default class InProgressGoalListScreen extends React.Component<Props, Sta
     }
 
     componentDidMount = () => {
-        const inProgressSub = new ActiveGoalQuery().queryStartedButNotDue().observeCount().subscribe((num) => {
-            this.setState({
-                inProgressGoalsCount: num
-            })
-        })
 
         this.unsubscribe = () => {
-            inProgressSub.unsubscribe();
         }
     }
 
@@ -87,10 +79,10 @@ export default class InProgressGoalListScreen extends React.Component<Props, Sta
         )
     }
 
-    renderLists = () => {
+    private renderLists = () => {
         return [
             { selector: {              
-                number: this.state.inProgressGoalsCount,
+                number: 0,
                 text: "Goals",
               },
               list: () => {

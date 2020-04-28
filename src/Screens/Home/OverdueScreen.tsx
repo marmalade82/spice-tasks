@@ -16,8 +16,6 @@ interface Props {
 
 interface State {
     currentList: number;
-    overdueTasksCount: number;
-    overdueGoalsCount: number;
 }
 
 /**
@@ -39,29 +37,14 @@ export default class OverdueScreen extends React.Component<Props, State> {
 
         this.state = {
             currentList: 0,
-            overdueTasksCount: 0,
-            overdueGoalsCount: 0,
         }
         this.unsubscribe = () => {};
         this.navigation = new ScreenNavigation(this.props);
     }
 
     componentDidMount = () => {
-        const taskSub = new ActiveTaskQuery().queryOverdue().observeCount().subscribe((num) => {
-            this.setState({
-                overdueTasksCount: num,
-            })
-        })
-
-        const goalSub = new ActiveGoalQuery().queryOverdue().observeCount().subscribe((num) => {
-            this.setState({
-                overdueGoalsCount: num
-            })
-        })
 
         this.unsubscribe = () => {
-            taskSub.unsubscribe();
-            goalSub.unsubscribe();
         }
     }
 
@@ -112,7 +95,7 @@ export default class OverdueScreen extends React.Component<Props, State> {
     renderLists = () => {
         return [
             { selector: {              
-                number: this.state.overdueTasksCount,
+                number: 0,
                 text: "Tasks",
               },
               list: () => {
@@ -127,7 +110,7 @@ export default class OverdueScreen extends React.Component<Props, State> {
               }
             },
             { selector: {              
-                number: this.state.overdueGoalsCount,
+                number: 0,
                 text: "Goals",
               },
               list: () => {

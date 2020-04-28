@@ -23,8 +23,6 @@ interface Props {
 
 interface State {
     task?: Task;
-    activeCount: number;
-    inactiveCount: number;
     showAdd: boolean;
 }
 
@@ -56,8 +54,6 @@ export default class TaskScreen extends React.Component<Props, State> {
         super(props);
         this.state = {
             task: undefined,
-            activeCount: 0,
-            inactiveCount: 0,
             showAdd: false,
         }
         this.unsubscribe = () => {};
@@ -72,19 +68,7 @@ export default class TaskScreen extends React.Component<Props, State> {
             this.setState({
                 task: task
             })
-            const activeSub = new ActiveTaskQuery().queryHasParent(task.id).observeCount().subscribe((num) => {
-                this.setState({
-                    activeCount: num,
-                })
-            });
-            const inactiveSub = new ChildTaskQuery(task.id).queryInactive().observeCount().subscribe((num) => {
-                this.setState({
-                    inactiveCount: num,
-                })
-            })
             this.unsubscribe = () => {
-                activeSub.unsubscribe();
-                inactiveSub.unsubscribe();
             }
 
         } else {
@@ -155,7 +139,7 @@ export default class TaskScreen extends React.Component<Props, State> {
                     {this.renderSummary()}
 
                     <SidescrollPicker
-                        label={`Active (${this.state.activeCount})`}
+                        label={`Active`}
                         filters={makeChoices(activeFilter)}
                         sorters={makeChoices(activeSorter)}
                         localState={this.activeTaskFilterState} 
@@ -173,12 +157,8 @@ export default class TaskScreen extends React.Component<Props, State> {
                         onTaskAction={this.onTaskAction}
                         provider={this.activeTaskFilterState}
                     ></ConnectedTaskList>
-                    <BackgroundTitle title={`Inactive (${this.state.inactiveCount})`}
-                        style={{
-                        }}
-                    ></BackgroundTitle>
                     <SidescrollPicker
-                        label={`Inactive (${this.state.inactiveCount})`}
+                        label={`Inactive`}
                         filters={makeChoices(inactiveFilter)}
                         sorters={makeChoices(inactiveSorter)}
                         localState={this.inactiveTaskFilterState} 
