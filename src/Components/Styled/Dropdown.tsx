@@ -40,10 +40,8 @@ export class DropdownInput extends React.Component<Props> {
     current = () => {
         let index = this.props.choices.findIndex((val) => val === this.props.current)
         if(index > -1) {
-            console.log("FOUND");
             return index;
         }
-        console.log("NOT FOUND");
 
         return 0;
     }

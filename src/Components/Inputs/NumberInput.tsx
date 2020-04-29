@@ -45,7 +45,6 @@ export default class NumberInput extends React.Component<Props, State> {
             n = 0;
         }
         this.props.onDataChange(n);
-        console.log("CHANGED N TO " + n)
 
     }
 

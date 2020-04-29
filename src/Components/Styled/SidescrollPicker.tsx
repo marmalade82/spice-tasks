@@ -83,7 +83,6 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
     componentDidMount = () => {
         if(this.props.label === undefined) {
             this.props.localState.subscribe("filter", (filter) => {
-                console.log("RECEIVED A FILTER")
                 this.setState({
                     filter: filter
                 });
@@ -144,7 +143,6 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                     flex: 0,
                 }}
                 onPress={() => {
-                    console.log("pushing filter " + item.value)
                     this.props.localState.push("filter", item.value)
                 }}
                 accessibilityLabel={"filter-" + item.value + "-" + this.props.accessibilityLabel}

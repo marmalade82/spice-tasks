@@ -184,7 +184,6 @@ export default class Goal extends Model implements IGoal {
                 }
 
                 let date = correctDate(dueDate(day.toDate()));
-                console.log("GENERATED NEXT CYCLE END: " + date);
                 return correctDate(dueDate(day.toDate()));
             } break;
             case "monthly": {

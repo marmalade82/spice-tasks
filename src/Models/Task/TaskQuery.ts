@@ -406,7 +406,6 @@ export class TaskLogic {
 
     static cloneRelativeTo = (oldDate: Date, newDate: Date, task: Task) => {
         const diff = new MyDate(task.startDate).diff(oldDate, "minutes");
-        console.log("difference is " + diff + " between " + task.startDate + " and " + oldDate);
         const newStart = new MyDate(newDate).add( new MyDate(task.startDate).diff(oldDate, "minutes"), "minutes") 
         const newTask : Omit<ITask, "createdAt" | "completedDate"> = {
             title: task.title,

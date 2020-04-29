@@ -154,14 +154,12 @@ export default class AddTaskScreen extends React.Component<Props, State> {
     }
 
     onSave = () => {
-        console.log("TRYING TO SAVE")
         let message: string | undefined = undefined;
         if(this.taskFormRef.current) {
             message = ValidateTaskForm(this.taskFormRef.current);
         }
 
         if(message !== undefined) {
-            console.log("SAVING FAILD WITH MESSAGE: " + message)
             this.setState({
                 showToast: true,
                 toast: message,

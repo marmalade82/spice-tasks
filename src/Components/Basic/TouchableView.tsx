@@ -40,7 +40,6 @@ export default class TouchableView extends React.Component<Props> {
                     this.touchRef.current.setOpacityTo(1);
                 }
             }, 300 )
-            console.log("HANDLING TOUCH");
         }
     }
 }

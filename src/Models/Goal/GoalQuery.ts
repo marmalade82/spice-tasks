@@ -268,7 +268,6 @@ export class GoalLogic {
 
     static processSomeStreaks = async (n?: number) => {
         const goals: Goal[] = await new ActiveGoalQuery().unprocessedStreaks();
-        console.log("processing at most " + goals.length + " streaks ")
         await GoalLogic.process(goals, n)
     }
 
@@ -338,7 +337,6 @@ export class GoalLogic {
                         await this._generateNextStreakTasks(latestCycleTasks, goal.id, latestCycleStartDate, unit, 
                                 afterCycles, goal.currentCycleStart());
 
-                console.log("LATEST CYCLE ID: " + latestCycleId)
                 tx.consume(newTx);
 
                 tx.addUpdate(new GoalQuery(), goal, {
@@ -372,11 +370,9 @@ export class GoalLogic {
         const tx = InactiveTransaction.new();
         let latestCycleId = "";
 
-        console.log("trying to generate next tasks");
 
         const openCycles = getOpenCycles(latestCycleStart, afterCycles, unit, currentCycleStart);
         openCycles.forEach((cycle) => {
-            console.log("generating stuff for a new cycle")
             const newCycle = tx.addCreate(new StreakCycleQuery(), {
                 parentGoalId: goalId,
                 startDate: cycle.start,
@@ -408,7 +404,6 @@ export class GoalLogic {
 
         function getOpenCycles(existingPastCycleStart: Date, afterCycles: StreakCycle[], unit: "days" | "weeks" | "months",
                                 currentCycleStart: Date) {
-            console.log(`getting open cycles: ${existingPastCycleStart.toString()}, ${afterCycles.length}, ${currentCycleStart.toString()}, ${unit}`);
             const sortedAscendingAfterCycles = afterCycles.sort((a, b) => {
                 return a.startDate.valueOf() - b.startDate.valueOf();
             })
@@ -455,7 +450,6 @@ export class GoalLogic {
                 nextCycleStart.addCycle(unit);
             }
 
-            console.log("got " + openCycles.length + "open cycles");
 
             return openCycles;
         }

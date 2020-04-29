@@ -127,7 +127,6 @@ export class ActiveTransaction {
      */
     private commit = async () => {
         let batch = this.batch
-        console.log("BATCH LENGTH IS " + batch.length)
         await DB.get().action(async () => {
             await DB.get().batch(
                 ...batch

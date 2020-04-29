@@ -59,8 +59,6 @@ export default class ScreenHeader extends React.Component<Props> {
             return (
                 <TouchableView style={{}}
                     onPress={() => {
-                        console.log("going back")
-                        console.log(JSON.stringify(this.props.navigation))
                         this.props.navigation.goBack(null);
                     }}
                 >

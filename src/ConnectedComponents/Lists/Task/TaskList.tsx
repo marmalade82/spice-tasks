@@ -344,8 +344,6 @@ function filterAndSort(items: Task[], range: [Date, Date] | undefined, filter: T
                 } else {
                     const endBeforeDate = MyDate.YBeforeX(task.startDate, end) ;
                     const startAfterDate = MyDate.YAfterX(task.startDate, start);
-                    console.log("task: " + task.startDate + " start: " + start + " end: " + end)
-                    console.log(task.title + " " + endBeforeDate + " " + startAfterDate)
                     return !endBeforeDate && !startAfterDate
                 }
             }

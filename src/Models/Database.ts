@@ -27,6 +27,7 @@ class DB {
                     StreakCycle
                 ],
                 actionsEnabled: true,
+                
             });
 
             return DB.database;

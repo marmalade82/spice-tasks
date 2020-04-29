@@ -211,8 +211,6 @@ function filterAndSort(items: Goal[], range: Range, filter: GoalFilter, sorter: 
                 } else {
                     const endBeforeDate = MyDate.YBeforeX(goal.startDate, end) ;
                     const startAfterDate = MyDate.YAfterX(goal.startDate, start);
-                    console.log("goal: " + goal.startDate + " start: " + start + " end: " + end)
-                    console.log(goal.title + " " + endBeforeDate + " " + startAfterDate)
                     return !endBeforeDate && !startAfterDate
                 }
             }

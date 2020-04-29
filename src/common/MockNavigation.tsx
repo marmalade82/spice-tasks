@@ -91,7 +91,6 @@ export function renderWithNavigation<T extends keyof ScreenParams>(initialRoute:
         },
         goBack: function (thing?: null) {
             if(stack.length > 1) {
-                console.log("GOING BACK FROM " + stack[stack.length - 1].route)
                 const popped = stack.pop();
                 popped ? popped.renderFns.unmount(): null;
             }

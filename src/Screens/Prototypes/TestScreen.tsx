@@ -24,7 +24,6 @@ export let countOfThings = (() => {
     let count = 0;
     return () => {
         count += 1;
-        console.log("count increased: " + count);
     }
 })();
 
@@ -135,7 +134,6 @@ export default class TestScreen extends React.Component<Props, State> {
                     <TInput
                         value={this.state.text}
                         onChangeText={() => {
-                            console.log("SOMEONE CHANGED MY TEXT")
                         }}
                     ></TInput>
                     
