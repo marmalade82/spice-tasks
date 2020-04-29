@@ -113,6 +113,7 @@ export default class StarScreen extends React.Component<Props, State> {
                         }}
                         onGoalAction={this.onGoalAction}
                         provider={this.ongoingGoalFilterState}
+                        parentId={undefined}
                     ></ConnectedGoalList>
 
 
@@ -130,6 +131,7 @@ export default class StarScreen extends React.Component<Props, State> {
                         onGoalAction={this.onGoalAction}
                         emptyText={"You don't have any goals planned"}
                         provider={this.futureGoalFilterState}
+                        parentId={undefined}
                     ></ConnectedGoalList>
                 </ScrollView>
             

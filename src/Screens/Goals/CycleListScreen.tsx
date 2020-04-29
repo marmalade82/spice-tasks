@@ -35,6 +35,8 @@ export class StreakCycleListScreen extends React.Component<Props, State> {
         return (
             <ConnectedStreakCycleList
                 navigation={this.navigation}
+                type={this.navigation.getParam("type", undefined) as any}
+                goalId={this.navigation.getParam("goalId", undefined)}
             ></ConnectedStreakCycleList>
         );
     }

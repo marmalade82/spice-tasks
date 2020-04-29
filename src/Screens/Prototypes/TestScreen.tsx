@@ -131,45 +131,6 @@ export default class TestScreen extends React.Component<Props, State> {
         })
         return (
             <DocumentView accessibilityLabel={"test"}>
-                    <PagedList
-                        items={things}
-                        renderItem={(thing) => {
-                            return (
-                                <Swipeable
-                                    friction={1}
-                                    leftThreshold={100}
-                                    renderLeftActions={(progress, dragX) => {
-                                        const trans = dragX.interpolate({
-                                            inputRange: [0, 50, 100, 101],
-                                            outputRange: [-20, 0, 0, 1],
-                                          });
-                                        return (
-                                            <Animated.View
-                                                style={[
-                                                    {
-                                                    transform: [{ translateX: trans }],
-                                                    },
-                                                ]}
-                                            >
-                                                <Text>{thing.first}</Text>
-                                            </Animated.View>
-                                        ) 
-                                    }}
-                                >
-                                    <View>
-                                        <Button title={thing.last} onPress={() => {}}></Button>
-                                    </View>
-                                </Swipeable>
-                            );
-                        }}
-                        renderEmptyItem = {() => {
-                            return (
-                                <View style={{flex: 0, height: 2 * 17, borderColor: "black", borderWidth: 1}}></View>
-                            );
-                        }}
-                        pageMax={5}
-                    ></PagedList>
-
                 <ScrollView>
                     <TInput
                         value={this.state.text}

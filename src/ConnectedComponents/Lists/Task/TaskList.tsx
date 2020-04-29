@@ -90,6 +90,16 @@ interface Props {
     iconIndicates?: "completion"
     accessibilityLabel? : string;
     provider?: IReadLocalState<Data>;
+
+    type: 
+        "all" | "parent-active" | "parent-inactive" | 
+        "parent-all" | "active" | "active-due-soon-today" |
+        "completed-today" | "in-progress-but-not-due-today" |
+        "overdue" | "remaining-today" | "due-today" | "in-progress" | 
+        "single" | "current-cycle" | "today-as-cycle" | 
+        "overdue-in-goal" | "parent";
+    parentId: string  // shows all tasks that have this parent
+    id: undefined | string;
 }
 
 type Data = FilterData<TaskFilter, TaskSorter>
@@ -166,6 +176,15 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
                             ></EmptyList>
                         );
                     }}
+                    navParams={{
+                        navigation: props.navigation,
+                        destination: "Tasks",
+                        params: {
+                            type: props.type,
+                            parentId: props.parentId,
+                            id: props.id,
+                        }
+                    }}
                 ></PagedList>
             </View>
         )
@@ -188,15 +207,6 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
 
 
 interface InputProps extends Omit<Props, "tasks"> {
-    type: 
-        "all" | "parent-active" | "parent-inactive" | 
-        "parent-all" | "active" | "active-due-soon-today" |
-        "completed-today" | "in-progress-but-not-due-today" |
-        "overdue" | "remaining-today" | "due-today" | "in-progress" | 
-        "single" | "current-cycle" | "today-as-cycle" | 
-        "overdue-in-goal" | "parent";
-    parentId: string  // shows all tasks that have this parent
-    id?: string;
 }
 
 /**

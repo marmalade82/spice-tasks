@@ -63,6 +63,9 @@ export interface Props {
     onGoalAction: OnGoalAction;
     emptyText?: string;
     provider?: IReadLocalState<Data>
+
+    type : "overdue" | "in-progress-not-due" | "recurring" | "ongoing" | "future" | undefined;
+    parentId: undefined | string;
 }
 
 export type Data = FilterData<GoalFilter, GoalSorter>
@@ -128,6 +131,14 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
                         ></EmptyList>
                     );
                 }}
+                navParams={{
+                    navigation: props.navigation,
+                    destination: "Goals",
+                    params: {
+                        type: props.type,
+                        parentId: props.parentId,
+                    }
+                }}
             ></PagedList>
         )
     } else {
@@ -142,8 +153,6 @@ const AdaptedGoalList: React.FunctionComponent<Props> = (props: Props) => {
 }
 
 interface InputProps extends Omit<Props, "goals"> {
-    type? : "overdue" | "in-progress-not-due" | "recurring" | "ongoing" | "future";
-    parentId?: string;
 }
 
 /**

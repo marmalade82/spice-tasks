@@ -291,6 +291,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 emptyText={"No active tasks"}
                                 onTaskAction={this.onTaskAction}
                                 provider={this.taskFilterState}
+                                id={undefined}
                             ></ConnectedTaskList>
                             <BackgroundTitle 
                                 title={ habitHasNotStarted ?
@@ -349,6 +350,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 emptyText={"No active subtasks"}
                                 onTaskAction={this.onTaskAction}
                                 provider={this.activeTaskFilterState}
+                                id={undefined}
                             ></ConnectedTaskList>
 
                             <BackgroundTitle title={`Inactive`}
@@ -370,6 +372,7 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 type={"parent-inactive"}
                                 onTaskAction={this.onTaskAction}
                                 provider={this.inactiveTaskFilterState}
+                                id={undefined}
                             ></ConnectedTaskList>
                         </View>
                     ) 

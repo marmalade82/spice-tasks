@@ -93,10 +93,11 @@ export default class TaskListScreen extends React.Component<Props, State> {
                 {this.renderFilter()}
                 <ConnectedTaskList
                     navigation={this.navigation}
-                    parentId={""}
-                    type={"all"}
+                    parentId={this.navigation.getParam("parentId", "") }
+                    type={this.navigation.getParam("type", "all") as any }
                     onTaskAction={this.onTaskAction}
                     provider={this.filterState}
+                    id={undefined}
                 ></ConnectedTaskList>
             </DocumentView>
         );

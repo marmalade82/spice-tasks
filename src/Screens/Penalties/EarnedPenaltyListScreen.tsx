@@ -45,6 +45,7 @@ export default class EarnedPenaltyListScreen extends React.Component<Props, Stat
                     onSwipeRight={(id: string) => {
                         this.onEarnedPenaltyAction(id, "use")
                     }}
+                    type={this.navigation.getParam("type", undefined) as any}
                 >
                 </ConnectedEarnedPenaltyList>
             </DocumentView>

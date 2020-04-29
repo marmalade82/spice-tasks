@@ -87,6 +87,8 @@ export default class GoalListScreen extends React.Component<Props> {
                     navigation={this.navigation}
                     onGoalAction = {this.onGoalAction}
                     provider = {this.goalFilterState}
+                    type={this.navigation.getParam("type", undefined) as any}
+                    parentId={this.navigation.getParam("parentId", undefined)}
                 >
                 </ConnectedGoalList>
             </DocumentView>

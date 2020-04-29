@@ -105,6 +105,7 @@ export default class OverdueScreen extends React.Component<Props, State> {
                         type={"overdue"}
                         parentId={""}
                         onTaskAction={this.onTaskAction}
+                        id={undefined}
                     ></ConnectedTaskList>
                   );
               }
@@ -119,6 +120,7 @@ export default class OverdueScreen extends React.Component<Props, State> {
                         navigation={this.navigation}
                         type={"overdue"}
                         onGoalAction={this.onGoalAction}
+                        parentId={undefined}
                       > </ConnectedGoalList>
                   )
               }

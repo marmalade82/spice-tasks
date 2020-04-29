@@ -87,6 +87,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
                         type={"active-due-soon-today"}
                         parentId={""}
                         onTaskAction={this.onTaskAction}
+                        id={undefined}
                     ></ConnectedTaskList>
                   );
               }
@@ -102,6 +103,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
                         type={"in-progress-but-not-due-today"}
                         parentId={""}
                         onTaskAction={this.onTaskAction}
+                        id={undefined}
                       >
                       </ConnectedTaskList>
                   )
@@ -118,6 +120,7 @@ export default class RemainingTaskScreen extends React.Component<Props, State> {
                         type={"completed-today"}
                         parentId={""}
                         onTaskAction={this.onTaskAction}
+                        id={undefined}
                     >
                     </ConnectedTaskList>
                   )

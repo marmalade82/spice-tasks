@@ -57,6 +57,8 @@ interface Props {
     emptyText?: string;
     onSwipeRight?: (id: string) => void;
     onEarnedRewardAction: OnEarnedRewardAction;
+
+    type: undefined | "active" | "unused",
 }
 
 const AdaptedEarnedRewardList: React.FunctionComponent<Props> = (props: Props) => {
@@ -96,6 +98,13 @@ const AdaptedEarnedRewardList: React.FunctionComponent<Props> = (props: Props) =
                         ></EmptyList>
                     );
                 }}
+                navParams={{
+                    navigation: props.navigation,
+                    destination: "EarnedRewards",
+                    params: {
+                        type: props.type as string,
+                    }
+                }}
             ></PagedList>
         )
     } else {
@@ -110,7 +119,6 @@ const AdaptedEarnedRewardList: React.FunctionComponent<Props> = (props: Props) =
 }
 
 interface InputProps extends Omit<Props, "earned"> {
-    type? : "active" | "unused",
 }
 
 /**

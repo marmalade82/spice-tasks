@@ -1,31 +1,33 @@
 import React from "react";
-import { ColumnView, RowView, TouchableView, BodyText } from "src/Components/Basic/Basic";
-import { ROW_CONTAINER_HEIGHT, CONTAINER_ELEVATION } from "src/Components/Styled/Styles";
+import { ColumnView, RowView, TouchableView, BodyText, HeaderText } from "src/Components/Basic/Basic";
+import { ROW_CONTAINER_HEIGHT, CONTAINER_ELEVATION, LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, PRIMARY_COLOR_LIGHT, PRIMARY_COLOR } from "src/Components/Styled/Styles";
 import { Button, StyleProp, ViewStyle } from "react-native";
-import { Icon } from "src/Components/Styled/Icon";
+import { Navigation, ScreenParams } from "src/common/Navigator";
 
 
-
-interface Keyed {
-    key: string;
-}
-
-export interface Props<Item> {
+export interface Props<Item, Screen extends keyof ScreenParams> {
     items: (Item)[],
     renderItem: (item: Item, itemIndex?: number) => JSX.Element,
     renderEmptyItem: () => JSX.Element
     pageMax: number,
     style?: StyleProp<ViewStyle>
     renderEmptyList?: () => JSX.Element
+    navParams: NavParams<Screen>
+}
+
+interface NavParams<K extends keyof ScreenParams> {
+    navigation: Navigation<ScreenParams>;
+    destination: K;
+    params: ScreenParams[K];
 }
 
 export interface State {
     currentPage: number;
 }
 
-export default class PagedList<Item> extends React.Component<Props<Item>, State> {
+export default class PagedList<Item, Screen extends keyof ScreenParams> extends React.Component<Props<Item, Screen>, State> {
 
-    constructor(props: Props<Item>) {
+    constructor(props: Props<Item, Screen>) {
         super(props);
 
         this.state = {
@@ -33,45 +35,10 @@ export default class PagedList<Item> extends React.Component<Props<Item>, State>
         }
     }
 
-    getItems = () => {
+    private getItems = () => {
         const start = this.state.currentPage * this.props.pageMax;
         const end = start + this.props.pageMax;
         return this.props.items.slice( start, end);
-    }
-
-    lastPage = () => {
-        const last = Math.ceil(this.props.items.length / this.props.pageMax) - 1;
-        this.setState({
-            currentPage: last,
-        })
-    }
-
-    nextPage = () => {
-        const newStart = (this.state.currentPage + 1) * this.props.pageMax;
-        if(newStart < this.props.items.length) {
-            this.setState((prevState) => {
-                return {
-                    currentPage: prevState.currentPage + 1,
-                };
-            });
-        }
-    }
-
-    prevPage = () => {
-        const newStart = (this.state.currentPage - 1) * this.props.pageMax;
-        if(newStart >= 0) {
-            this.setState((prevState) => {
-                return {
-                    currentPage: prevState.currentPage - 1,
-                };
-            });
-        }
-    }
-
-    firstPage = () => {
-        this.setState({
-            currentPage: 0,
-        })
     }
 
     render = () => {
@@ -89,7 +56,7 @@ export default class PagedList<Item> extends React.Component<Props<Item>, State>
         );
     }
 
-    renderItems = (items: Item[]) => {
+    private renderItems = (items: Item[]) => {
         if(items.length > 0) {
             let rendered = items.map((item, index) => {
                 return this.props.renderItem(item, index);
@@ -107,51 +74,26 @@ export default class PagedList<Item> extends React.Component<Props<Item>, State>
         return null;
     }
 
-    renderFooter = () => {
+    private renderFooter = () => {
         if(this.props.items.length > this.props.pageMax) {
             return (
                 <ColumnView style={{flex: 0, height: ROW_CONTAINER_HEIGHT, justifyContent: "center"}}>
-                    <RowView style={{
-                        flex: 0,
-                    }}
-                        
+                    <TouchableView
+                        style={{
+                            marginLeft: LEFT_SECOND_MARGIN,
+                        }}
+                        onPress={() => {
+                            const { navigation, destination, params } = this.props.navParams;
+                            navigation.push(destination, params);
+                        }}
                     >
-                        <TouchableView style={{}}
-                            onPress={() => this.firstPage()}
-                        >
-                            <Icon
-                                type={"last"}
-                                backgroundColor={"transparent"}
-                            ></Icon>
-                        </TouchableView>
-                        <TouchableView style={{}}
-                            onPress={() => this.prevPage()}
-                        >
-                            <Icon
-                                type={"left"}
-                                backgroundColor={"transparent"}
-                            ></Icon>
-                        </TouchableView>
-
-                        {this.renderPageContainer()}
-
-                        <TouchableView style={{}}
-                            onPress={() => this.nextPage()}
-                        >
-                            <Icon
-                                type={"right"}
-                                backgroundColor={"transparent"}
-                            ></Icon>
-                        </TouchableView>
-                        <TouchableView style={{}}
-                            onPress={() => this.lastPage()}
-                        >
-                            <Icon
-                                type={"first"}
-                                backgroundColor={"transparent"}
-                            ></Icon>
-                        </TouchableView>
-                    </RowView>
+                        <HeaderText 
+                            style={{
+                                color: "black"
+                            }}
+                            level={3}
+                        >View all ({this.props.items.length})</HeaderText>
+                    </TouchableView>
                 </ColumnView>
             );
         }

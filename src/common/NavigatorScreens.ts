@@ -24,7 +24,6 @@ export const ScreenDirectory: Record<keyof Omit<ScreenParams, "None">, any> = {
   , Penalty: Screens.Penalty
   , Penalties: Screens.PenaltyList
   , AddPenalty: Screens.AddPenalty
-  , HomePage : Screens.HomePage
   , AppStart : Screens.AppStart
   , RemainingTasks : Screens.RemainingTasks
   , Overdue: Screens.Overdue

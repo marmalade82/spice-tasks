@@ -5,7 +5,7 @@ import {
     HeaderText, BodyText, TouchableView,
 } from "src/Components/Basic/Basic";
 import Icon from "src/Components/Styled/Icon";
-import { LEFT_FIRST_MARGIN, MODAL_ROW_HEIGHT, Styles, TEXT_HORIZONTAL_MARGIN } from "./Styles";
+import { LEFT_FIRST_MARGIN, MODAL_ROW_HEIGHT, Styles, TEXT_HORIZONTAL_MARGIN, PRIMARY_COLOR } from "./Styles";
 
 interface Props {
     text: string;
@@ -70,8 +70,10 @@ export default class ModalRow extends React.Component<Props, State> {
             return (
                 <Icon
                     type={this.props.iconType}
+                    color={PRIMARY_COLOR}
+                    size={25}
                     accessibilityLabel={this.props.accessibilityLabel}
-                    backgroundColor={this.props.iconBackground}
+                    backgroundColor={this.props.iconBackground ? this.props.iconBackground : "white"}
                 >
                 </Icon>
             )

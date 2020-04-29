@@ -148,6 +148,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                         emptyText={"Congrats! You're done with your tasks for today."}
                         onTaskAction={this.onTaskAction}
                         provider={this.todayTaskFilterState}
+                        id={undefined}
                     ></ConnectedTaskList>
 
                     {this.renderOverdue()}
@@ -189,6 +190,7 @@ export default class AppStartScreen extends React.Component<Props, State> {
                     }}
                     onTaskAction={this.onTaskAction}
                     provider={this.overdueTaskFilterState}
+                    id={undefined}
                 ></ConnectedTaskList>
             </View>
         );

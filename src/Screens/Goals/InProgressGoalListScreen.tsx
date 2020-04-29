@@ -91,6 +91,7 @@ export default class InProgressGoalListScreen extends React.Component<Props, Sta
                         navigation={this.navigation}
                         type={"in-progress-not-due"}
                         onGoalAction={this.onGoalAction}
+                        parentId={undefined}
                       ></ConnectedGoalList>
                   )
               }

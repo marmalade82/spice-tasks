@@ -156,6 +156,7 @@ export default class TaskScreen extends React.Component<Props, State> {
                         emptyText={"No active subtasks"}
                         onTaskAction={this.onTaskAction}
                         provider={this.activeTaskFilterState}
+                        id={undefined}
                     ></ConnectedTaskList>
                     <SidescrollPicker
                         label={`Inactive`}
@@ -172,6 +173,7 @@ export default class TaskScreen extends React.Component<Props, State> {
                         paginate={4}
                         emptyText={"No inactive subtasks"}
                         provider={this.inactiveTaskFilterState}
+                        id={undefined}
                     ></ConnectedTaskList>
                 </ScrollView>
                 <Modal

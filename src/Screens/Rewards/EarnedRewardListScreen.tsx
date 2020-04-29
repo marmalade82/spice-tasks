@@ -44,6 +44,7 @@ export default class EarnedRewardListScreen extends React.Component<Props, State
                     onSwipeRight={(id) => {
                         this.onEarnedRewardAction(id, "use")
                     }}
+                    type={this.navigation.getParam("type", undefined) as any}
                 >
                 </ConnectedEarnedRewardList>
             </DocumentView>

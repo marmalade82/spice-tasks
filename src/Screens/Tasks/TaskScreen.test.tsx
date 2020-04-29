@@ -79,6 +79,7 @@ test("User can mark a task (and its children) as Complete/Inactive in the databa
                 parentId={""}
                 type={"active"}
                 onTaskAction={() => {}}
+                id={undefined}
             ></ConnectedTaskList>
         );
 
@@ -122,6 +123,7 @@ test("User can mark a task (and its children) as Complete/Inactive in the databa
                 parentId={""}
                 type={"active"}
                 onTaskAction={() => {}}
+                id={undefined}
             ></ConnectedTaskList>
         );
 

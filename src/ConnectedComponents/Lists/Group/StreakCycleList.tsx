@@ -28,6 +28,9 @@ interface Props {
     paginate?: number;
     emptyText? : string;
     onSwipeRight?: (id: string) => void;
+
+    type: "previous" | "future" | undefined;
+    goalId: string | undefined;
 }
 
 const AdaptedStreakCycleList: React.FunctionComponent<Props> = (props: Props) => {
@@ -55,6 +58,14 @@ const AdaptedStreakCycleList: React.FunctionComponent<Props> = (props: Props) =>
                         ></EmptyList>
                     );
                 }}
+                navParams={{
+                    navigation: props.navigation,
+                    destination: "StreakCycles",
+                    params: {
+                        type: props.type,
+                        goalId: props.goalId,
+                    }
+                }}
             ></PagedList>
         )
     } else {
@@ -69,8 +80,6 @@ const AdaptedStreakCycleList: React.FunctionComponent<Props> = (props: Props) =>
 }
 
 interface InputProps extends Omit<Props, "cycles"> {
-    type?: "previous" | "future"
-    goalId?: string
 }
 
 const enhance = withObservables([], (props: InputProps) => {

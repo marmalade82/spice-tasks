@@ -112,15 +112,16 @@ export default class CycleScreen extends React.Component<Props, State> {
         let id = this.navigation.getParam("id", "");
         return (
             <ConnectedTaskList
-                parentId={id}
                 navigation={this.navigation}
                 onTaskAction={this.onTaskAction}
-                type={"parent"}
                 iconIndicates={"completion"}
                 onSwipeRight={(id: string) => {
                     this.onTaskAction(id, "complete");
                 }}
                 provider={this.taskFilterState}
+                parentId={id}
+                type={"parent"}
+                id={undefined}
             ></ConnectedTaskList>
         )
     }

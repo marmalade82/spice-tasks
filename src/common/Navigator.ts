@@ -62,7 +62,10 @@ const NavigatorParams = {
       title: "Goal" as "Goal" | "Habit",
       ...Single,
     }
-  , Goals: None
+  , Goals: {
+      type: "" as string | undefined,
+      parentId: "" as string | undefined,
+    }
   , Menu: None
   , AddGoal: {
       title: "Goal" as "Goal" | "Habit",
@@ -73,19 +76,24 @@ const NavigatorParams = {
       parent_type: TaskParentTypes.TASK as TaskParentTypes,
       ...Child
     }
-  , Tasks: None
+  , Tasks: {
+      type: "" as string,
+      parentId: "" as string,
+      id: "" as string | undefined,
+    }
   , Reward: Single
   , Rewards: None
   , AddReward: Child
   , Task: Single
   , RewardOptions: None
   , EarnedReward: Single
-  , EarnedRewards: None
+  , EarnedRewards: {
+      type: "" as string | undefined
+    }
   , UnusedEarnedRewards: None
   , Penalty: Single
   , Penalties: None
   , AddPenalty: Child
-  , HomePage : None
   , AppStart : None
   , RemainingTasks : None
   , Overdue: None
@@ -95,12 +103,17 @@ const NavigatorParams = {
   , Recurrings: None
   , Recur: Single
   , AddRecur: Child
-  , EarnedPenalties: None
+  , EarnedPenalties: {
+      type: "" as string | undefined
+    }
   , EarnedPenalty: Single
   , UnusedEarnedPenalties: None
   , Lists: None
   , StreakCycle: Single
-  , StreakCycles: None
+  , StreakCycles: {
+      type: "" as string | undefined,
+      goalId: "" as string | undefined,
+    }
   , Test: None
   , None: None
   , Star: None
