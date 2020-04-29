@@ -5,12 +5,12 @@ import DateTimePicker from "src/Components/Inputs/DateTimePicker";
 import ModalInput from "src/Components/Inputs/ModalInput";
 import Style from "src/Style/Style";
 import { ColumnView } from "src/Components/Basic/Basic";
-import { Label, DateInput } from "src/Components/Styled/Styled";
+import { Label, DateInput, TimeInput } from "src/Components/Styled/Styled";
 import { CONTAINER_VERTICAL_MARGIN } from "src/Components/Styled/Styles";
 
 export interface Props {
     title: string;
-    type: "date" | "time" | "both"
+    type: "date" | "time"
     data: Date
     onDataChange: (date: Date) => void;
     accessibilityLabel: string;
@@ -34,7 +34,7 @@ export default class DateTimeInput extends React.Component<Props,State> {
 
     }
 
-    icon = () => {
+    private icon = () => {
         if(this.props.failure !== undefined) {
             return "attention";
         }
@@ -49,6 +49,14 @@ export default class DateTimeInput extends React.Component<Props,State> {
                 }, this.props.style]}
             >
                 <Label text={this.props.title}></Label>
+                {this.renderInput()}
+            </ColumnView>
+        );
+    }
+
+    private renderInput = () => {
+        if(this.props.type === "date") {
+            return (
                 <DateInput
                     value={this.props.data}
                     onChangeDate={this.props.onDataChange}
@@ -58,7 +66,19 @@ export default class DateTimeInput extends React.Component<Props,State> {
                     icon={this.icon()}
                     readonly={this.props.readonly}
                 ></DateInput>
-            </ColumnView>
-        );
+            )
+        } else {
+            return (
+                <TimeInput
+                    value={this.props.data}
+                    onChangeTime={this.props.onDataChange}
+                    format={"12:00 AM"}
+                    accessibilityLabel={this.props.accessibilityLabel}
+                    onBlur={this.props.onBlur}
+                    icon={this.icon()}
+                    readonly={this.props.readonly}
+                ></TimeInput>
+            )
+        }
     }
 }

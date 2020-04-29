@@ -1,7 +1,7 @@
 
 import React from "react";
 import Item from "src/Components/Lists/Items/base/Item";
-import { ListItem, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
+import { ListItem, ModalIconButton, ModalRow, DateInput } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 import { SECONDARY_COLOR, PRIMARY_COLOR } from "src/Components/Styled/Styles";
@@ -26,6 +26,7 @@ interface Task {
     due_date: Date;
     start_date: Date;
     active: boolean;
+    time: Date;
     state: "open" | "in_progress" | "complete" | "cancelled"
 }
 
@@ -39,12 +40,13 @@ export default class TaskListItem extends Item<Props, State, Task> {
     }
     
     render = () => {
-        const { id, title, due_date, start_date, active } = this.props.item;
+        const { id, title, due_date, start_date, active, time } = this.props.item;
 
         return (
             <ListItem
                 text={title}
-                subtext={new MyDate(due_date).format("MMM Do")}
+                subtext_2={`${new MyDate(time).format("h:mm A")}`}
+                subtext={`${new MyDate(start_date).format("MMM Do")}`}
                 navigation={this.props.navigation}
                 destination={'Task'}
                 params={{id: id}}
@@ -98,7 +100,16 @@ export default class TaskListItem extends Item<Props, State, Task> {
 
             </ListItem>
         )
-
+        
+        function spacer() {
+            const format_time = new MyDate(time).format("h:mm A");
+            const length = 6;
+            if(format_time.length === 8) {
+                return " ".repeat(length);
+            } else {
+                return " ".repeat(length + 1);
+            }
+        }
     }
 
     private iconOpts = () => {

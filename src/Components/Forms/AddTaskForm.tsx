@@ -19,6 +19,7 @@ import { ROW_CONTAINER_HEIGHT } from "../Styled/Styles";
 import FootSpacer from "../Basic/FootSpacer";
 import { dueDate, startDate } from "./common/utils";
 import { LocalState } from "src/Screens/common/StateProvider";
+import { DateInput } from "../Styled/Styled";
 
 interface Props {
     data: State | false
@@ -30,7 +31,8 @@ interface Props {
 interface State {
     name: string
     description: string
-    start_date: Date
+    start_date: Date,
+    time: Date,
 }
 
 function Default(): State {
@@ -38,6 +40,7 @@ function Default(): State {
         name: "",
         description: "",
         start_date: startDate(MyDate.Now().toDate()),
+        time: MyDate.Zero().asStartDate().toDate(),
     };
 }
 
@@ -128,6 +131,12 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
         });
     }
 
+    private onChangeTime = (date: Date) => {
+        this.setData({
+            time: date,
+        })
+    }
+
     render = () => {
         const SummaryInput = this.SummaryInput;
         const StartDateInput = this.StartDateInput;
@@ -164,6 +173,14 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                         revalidate={this.startDateRefresh}
                         readonly={this.inherited()}
                     ></StartDateInput>
+
+                    <DateTimeInput
+                        title={"Time"}
+                        type={"time"}
+                        data={this.data().time}
+                        onDataChange={this.onChangeTime}
+                        accessibilityLabel={"task-start-time"}
+                    ></DateTimeInput>
 
                     <FootSpacer></FootSpacer>
                 </ScrollView>

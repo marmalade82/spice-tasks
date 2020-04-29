@@ -15,6 +15,7 @@ interface Props<T extends keyof ScreenParams> {
     params: ScreenParams[T];
     text: string;
     subtext: string;
+    subtext_2?: string;
     number: number;
     key: string;
     accessibilityLabel?: string;
@@ -31,7 +32,7 @@ export default class ListItem<T extends keyof ScreenParams> extends React.Compon
     }
 
     render = () => {
-        const {text, subtext, number} = this.props;
+        const {text, subtext, subtext_2, number} = this.props;
         return (
             <ColumnView
                 style={{
@@ -67,25 +68,67 @@ export default class ListItem<T extends keyof ScreenParams> extends React.Compon
                                 color={this.props.color}
                                 size={this.props.size}
                             ></Icon>
-                            <Text style={{
-                                    margin: 15,
-                                    marginLeft: 9,
+                            <ColumnView
+                                style={{
+                                    flex: 1,
+                                    justifyContent: "flex-start",
+                                    alignItems: "stretch",
+                                    backgroundColor: "white"
                                 }}
                             >
-                                <HeaderText 
-                                    level={3} 
-                                    style={{
-                                        
+                                <Text style={{
+                                        marginTop: 15,
+                                        marginLeft: 9,
+                                        backgroundColor: "white",
                                     }}
                                 >
-                                    {text + "\n"}
-                                </HeaderText>
-                                <HeaderText level={5} style={{
+                                    <HeaderText 
+                                        level={3} 
+                                        style={{
+                                            width: 5,       
+                                            backgroundColor: "white",
+                                        }}
+                                    >
+                                        {text}
+                                    </HeaderText>
+                                </Text>
+                                <RowView
+                                    style={{
+                                        flex: 1,
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        backgroundColor: "white",
                                     }}
-                                > 
-                                    {subtext} 
-                                </HeaderText>
-                            </Text>
+                                >
+                                    <Text style={{
+                                            flex: 1,
+                                            marginTop: 2,
+                                            marginLeft: 9,
+                                            marginBottom: 15,
+                                        }}
+                                    >
+                                        <HeaderText level={5} style={{
+                                            }}
+                                        > 
+                                            {subtext} 
+                                        </HeaderText>
+                                    </Text>
+                                    <Text style={{
+                                            flex: 0,
+                                            marginTop: 2,
+                                            marginLeft: 9,
+                                            marginBottom: 15,
+                                            backgroundColor: "white",
+                                        }}
+                                    >
+                                        <HeaderText level={5} style={{
+                                            }}
+                                        > 
+                                            {subtext_2 ? subtext_2 : ""} 
+                                        </HeaderText>
+                                    </Text>
+                                </RowView>
+                            </ColumnView>
                         </RowView>
 
                         <RowReverseView style={{

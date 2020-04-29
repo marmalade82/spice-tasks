@@ -8,6 +8,7 @@ import {
 const TaskName = {
     TITLE: 'title',
     STARTS_ON: 'starts_at',
+    START_TIME_ON: 'starttime_at',
     DUE_ON: 'due_at',
     INSTRUCTIONS: 'instructions',
     PARENT: 'parent_id',
@@ -21,6 +22,7 @@ const TaskName = {
 const TaskType = {
     TITLE: 'string',
     STARTS_ON: 'number',
+    START_TIME_ON: 'number',
     DUE_ON: 'number',
     INSTRUCTIONS: 'string',
     PARENT: 'string',

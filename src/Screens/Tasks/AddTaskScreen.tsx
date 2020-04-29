@@ -77,6 +77,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                 name: task.title,
                 start_date: task.startDate,
                 description: task.instructions,
+                time: task.startTime,
             }
         } 
 
@@ -175,6 +176,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             const taskData = {
                 title: data.name,
                 startDate: data.start_date,
+                startTime: data.time,
                 instructions: data.description,
                 parent: {
                     id: parentId,

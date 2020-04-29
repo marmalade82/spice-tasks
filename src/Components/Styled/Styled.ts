@@ -16,6 +16,7 @@ import TextInput from "src/Components/Styled/TextInput";
 import MultiLineInput from "src/Components/Styled/MultiLineInput";
 import ChoiceInput from "src/Components/Styled/ChoiceInput";
 import DateInput from "src/Components/Styled/DateInput";
+import TimeInput from "src/Components/Styled/TimeInput";
 import Modal from "src/Components/Styled/Modal";
 import Toast from "src/Components/Styled/Toast";
 import DynamicChoiceInput from "src/Components/Styled/DynamicChoiceInput";
@@ -45,4 +46,5 @@ export {
     Toast,
     DynamicChoiceInput,
     PagedList,
+    TimeInput,
 }

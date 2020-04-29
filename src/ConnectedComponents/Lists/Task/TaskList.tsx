@@ -375,7 +375,9 @@ function filterAndSort(items: Task[], range: [Date, Date] | undefined, filter: T
         }).sort((a, b) => {
             switch(sorter) {
                 case "start": {
-                    return compare(a.startDate, b.startDate, direction)
+                    let aStart = new MyDate(a.startDate).setTime(new MyDate(a.startTime)).toDate();
+                    let bStart = new MyDate(b.startDate).setTime(new MyDate(b.startTime)).toDate();
+                    return compare(aStart, bStart, direction)
                 }
                 case "due": {
                     return compare(a.dueDate, b.dueDate, direction)

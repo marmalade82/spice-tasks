@@ -28,6 +28,7 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
             title: "Default Task",
             instructions: "",
             startDate: MyDate.Now().toDate(),
+            startTime: MyDate.Zero().asStartDate().toDate(), // defaults to start of day
             dueDate: MyDate.Now().toDate(),
             active: true,
             state: 'open',
@@ -413,6 +414,7 @@ export class TaskLogic {
             active: true,
             state: 'open',
             startDate: newStart.toDate(),
+            startTime: task.startTime,
             dueDate: new MyDate(newDate).add( new MyDate(task.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
             parent: task.parent,
         }

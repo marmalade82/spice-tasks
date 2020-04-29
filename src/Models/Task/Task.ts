@@ -16,6 +16,7 @@ export enum TaskParentTypes {
 interface ITask {
     title: string;
     startDate: Date;
+    startTime: Date;
     dueDate: Date;
     instructions: string;
     active: boolean;
@@ -54,7 +55,8 @@ export default class Task extends Model implements ITask {
     @field(name.ACTIVE) active! : boolean
     @field(name.STATE) state! : 'open' | 'in_progress' | 'complete' | 'cancelled';
     @date(name.COMPLETED_ON) completedDate! : Date
-    @date(name.CREATED_ON) createdAt!: Date
+    @date(name.CREATED_ON) createdAt!: Date;
+    @date(name.START_TIME_ON) startTime!: Date;
 
     @field(name.PARENT) private parentId! : string
     @field(name.PARENT_TABLE) private parentType!: TaskParentTypes;
