@@ -36,6 +36,7 @@ import ListsScreen from "src/Screens/Home/ListsScreen"
 import StreakCycleListScreen from "src/Screens/Goals/CycleListScreen";
 import StreakCycleScreen from "src/Screens/Goals/CycleScreen";
 import StarScreen from "src/Screens/Home/StarScreen";
+import ReportsScreen from "src/Screens/Home/ReportsScreen";
 
 export {
     HomeScreen as Home,
@@ -71,6 +72,7 @@ export {
     PenaltyScreen as Penalty,
     TestScreen as Test,
     ListsScreen as Lists,
+    ReportsScreen as Reports,
     StreakCycleListScreen as StreakCycles,
     StarScreen as Star,
     StreakCycleScreen as StreakCycle

@@ -38,6 +38,7 @@ export const ScreenDirectory: Record<keyof Omit<ScreenParams, "None">, any> = {
   , UnusedEarnedPenalties: Screens.UnusedEarnedPenalties
   , Lists: Screens.Lists
   , Test: Screens.Test
+  , Reports: Screens.Reports
   , StreakCycle: Screens.StreakCycle
   , StreakCycles: Screens.StreakCycles
   , Star: Screens.Star,

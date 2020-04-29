@@ -117,6 +117,7 @@ const NavigatorParams = {
   , Test: None
   , None: None
   , Star: None
+  , Reports: None
 } as const;
 
 export type ScreenParams = typeof NavigatorParams;

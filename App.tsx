@@ -109,6 +109,30 @@ ListNavigator.navigationOptions = {
   }
 }
 
+const ReportNavigator = createStackNavigator(
+  ScreenDirectory,
+  { initialRouteName: 'Reports'
+  , defaultNavigationOptions: ({navigation}) => {
+      return {
+        header: header
+      }
+    }
+  }
+)
+ReportNavigator.navigationOptions = {
+  title: "Reports",
+  tabBarIcon: ( { focused, horizontal, tintColor }) => {
+    return (
+      <Icon
+        type={"reports"}
+        color={tintColor}
+        backgroundColor={"transparent"}
+      > 
+      </Icon>
+    )
+  }
+}
+
 //const backgroundTabColor = "#444444";
 const backgroundTabColor = TAB_GREY;
 
@@ -116,6 +140,7 @@ const AppNavigator = createBottomTabNavigator(
   {
     Dash: DashNavigator,
     Star: GoalNavigator,
+    Reports: ReportNavigator,
     Lists: ListNavigator
   },
   { tabBarOptions: {

@@ -16,7 +16,7 @@ interface Props {
         "earned_reward" | "earned_penalty" | "right" | "left" | "first" | "last" | "none" | 
         "fail" | "add" | "arrow-left" | "save" |
         "home" | "list" | "habit" | "sort" | "edit" | "more" | "settings" | "enable" | "disable" |
-        "ascending" | "descending";
+        "ascending" | "descending" | "reports";
     accessibilityLabel?: string;
     backgroundColor?: string;
     color?: string;
@@ -345,6 +345,18 @@ export default class StyledIcon extends React.Component<Props, State>{
                 return (
                     <Icon
                         name={"list"}
+                        type={"feather"}
+                        color={this.props.color ? this.props.color : TEXT_GREY}
+                        size={this.props.size ? this.props.size : 20}
+                        style={{
+                        }}
+                    ></Icon>
+                )
+            } break;
+            case "reports": {
+                return (
+                    <Icon
+                        name={"bar-chart"}
                         type={"feather"}
                         color={this.props.color ? this.props.color : TEXT_GREY}
                         size={this.props.size ? this.props.size : 20}
