@@ -143,14 +143,29 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     queryLastDays = (count: number) => {
-        let date = MyDate.Now().subtract(count, "days").toDate();
+        let date = MyDate.Now().subtract(count - 1, "days").toDate();
         return this.query(
             ...Conditions.dueOnOrAfter(date)
         );
     }
 
     queryLastDaysComplete = (count: number) => {
-        let date = MyDate.Now().subtract(count, "days").toDate();
+        let date = MyDate.Now().subtract(count - 1, "days").toDate();
+        return this.query(
+            ...Conditions.dueOnOrAfter(date),
+            ...Conditions.complete()
+        );
+    }
+
+    queryLastMonths = (count: number) => {
+        let date = MyDate.Now().subtract(count, "months").toDate();
+        return this.query(
+            ...Conditions.dueOnOrAfter(date)
+        );
+    }
+
+    queryLastMonthsComplete = (count: number) => {
+        let date = MyDate.Now().subtract(count, "months").toDate();
         return this.query(
             ...Conditions.dueOnOrAfter(date),
             ...Conditions.complete()

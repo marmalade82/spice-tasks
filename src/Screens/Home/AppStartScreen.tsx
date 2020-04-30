@@ -108,17 +108,6 @@ export default class AppStartScreen extends React.Component<Props, State> {
         }
     }
 
-    private onGoalAction = (id: string, action: "complete" | "fail") => {
-        switch(action) {
-            case "complete": {
-                void new GoalLogic(id).complete();
-            } break;
-            case "fail":{
-                void new GoalLogic(id).fail();
-            } break;
-        }
-    }
-
     render = () => {
         const todayFilters: TaskFilter[] = [
             "all",

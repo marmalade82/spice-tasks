@@ -132,6 +132,35 @@ export class GoalQuery extends ModelQuery<Goal, IGoal>{
         return await this.queryFailed().fetch() as Goal[];
     }
 
+    queryLastDays = (count: number) => {
+        let date = MyDate.Now().subtract(count - 1, "days").toDate();
+        return this.query(
+            ...Conditions.dueOnOrAfter(date)
+        );
+    }
+
+    queryLastDaysComplete = (count: number) => {
+        let date = MyDate.Now().subtract(count - 1, "days").toDate();
+        return this.query(
+            ...Conditions.dueOnOrAfter(date),
+            ...Conditions.complete()
+        );
+    }
+
+    queryLastMonths = (count: number) => {
+        let date = MyDate.Now().subtract(count, "months").toDate();
+        return this.query(
+            ...Conditions.dueOnOrAfter(date)
+        );
+    }
+
+    queryLastMonthsComplete = (count: number) => {
+        let date = MyDate.Now().subtract(count, "months").toDate();
+        return this.query(
+            ...Conditions.dueOnOrAfter(date),
+            ...Conditions.complete()
+        );
+    }
 }
 
 export default GoalQuery;
@@ -224,6 +253,7 @@ export class ActiveGoalQuery extends ModelQuery<Goal, IGoal>{
     unprocessedStreaks = async () => {
         return (await this.queryUnprocessedStreaks().fetch()) as Goal[];
     }
+
 }
 
 export class CompleteGoalQuery extends ModelQuery<Goal, IGoal>{ 

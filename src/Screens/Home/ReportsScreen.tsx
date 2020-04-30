@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, StyleProp, ViewStyle } from "react-native";
 import { ColumnView, RowView, BodyText, HeaderText, TouchableView, RowReverseView } from "src/Components/Basic/Basic";
 import MyDate from "src/common/Date";
 import { ScrollView } from "react-native";
@@ -10,13 +10,16 @@ import {
 import FootSpacer from "src/Components/Basic/FootSpacer";
 import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navigator";
 
-import { BarChart } from "react-native-svg-charts";
+import { BarChart, ProgressCircle } from "react-native-svg-charts";
 import TaskQuery, { Task } from "src/Models/Task/TaskQuery";
 import { map } from "rxjs/operators";
 import moment from "moment";
 import { randomNormal } from "d3";
 import * as R from "ramda";
 import { combineLatest } from "rxjs";
+import GoalQuery from "src/Models/Goal/GoalQuery";
+import { Text } from "react-native-svg";
+import { BACKGROUND_GREY, TAB_GREY } from "src/Components/Styled/Styles";
 
 interface Props {
     navigation: object;
@@ -24,14 +27,18 @@ interface Props {
 
 
 interface State {
-    lastSevenDays: number[];
+    taskLastWeek: number;
+    taskLastMonth: number;
+
+    goalLastWeek: number;
+    goalLastMonth: number;
 }
 
 
 export default class ReportsScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
-            title: 'Reports',
+            title: 'Productivity',
             right: [
             ],
         }
@@ -42,66 +49,67 @@ export default class ReportsScreen extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            lastSevenDays: [],
+            taskLastWeek: 0,
+            taskLastMonth: 0,
+
+            goalLastWeek: 0,
+            goalLastMonth: 0,
         }
         this.unsub = () => {}
         this.navigation = new ScreenNavigation(this.props);
     }
 
     componentDidMount = async () => {
-        const sdCompleteCount = new TaskQuery().queryLastDaysComplete(7).observeCount();
-        const sdAll = new TaskQuery().queryLastDays(7).observe();
-
         // We subscribe to the complete count also, so that when a task is completed, the chart rerenders.
-        let sevenDaysSub = combineLatest(sdCompleteCount, sdAll).pipe(map(([_count, tasks]) => {
-            // We map all the tasks to group them by date, calculate percentages, and then sort by date for the chart
-            const grouped = R.groupBy(sameDay, tasks)
-            const percents = R.mapObjIndexed(percentByDate, grouped)
-
-            let dateStrings = R.map((n) => {
-                return MyDate.Now().subtract(n, "days").format("YYYY-MM-DD");
-            },  R.range(0, 7))
-
-            let unsortedData = R.map((date) => {
-                if(percents[date] !== undefined) {
-                    return percents[date]
-                }
-
-                return {
-                    date: moment(date, "YYYY-MM-DD").toDate(),
-                    percentComplete: 100,
-                }
-            }, dateStrings)
-
-            let sortedData = R.sort((a, b) => {
-                return a.date.valueOf() - b.date.valueOf();
-            }, unsortedData);
-                    
-
-            return R.map((val) => val.percentComplete, sortedData);
-        })).subscribe((vals) => {
+        let sevenDaysSub = combineLatest(
+            new TaskQuery().queryLastDaysComplete(7).observeCount(),
+            new TaskQuery().queryLastDays(7).observeCount(),
+        ).pipe(map(([complete, total]) => {
+            return total === 0 ? 1 : complete / total
+        })).subscribe((val: number) => {
             this.setState({
-                lastSevenDays: vals
+                taskLastWeek: val
             })
         })
 
-        function sameDay(task: Task) {
-            return new MyDate(task.startDate).asStartDate().format("YYYY-MM-DD");
-        }
+        const lastMonthTaskSub = combineLatest(
+            new TaskQuery().queryLastMonthsComplete(1).observeCount(),
+            new TaskQuery().queryLastMonths(1).observeCount(),
+        ).pipe(map(([complete, total]) => {
+            return total === 0 ? 1 : complete / total;
+        })).subscribe((percentage: number) => {
+            this.setState({
+                taskLastMonth: percentage,
+            })
+        })
 
-        function percentByDate(tasks: Task[], key: string) {
-            const completed = R.filter((task: Task) => {
-                return task.state === "complete";
-            }, tasks)
+        const lastWeekGoalSub = combineLatest(
+            new GoalQuery().queryLastDaysComplete(7).observeCount(),
+            new GoalQuery().queryLastDays(7).observeCount()
+        ).pipe(map(([complete, total]) => {
+            return total === 0 ? 1 : complete / total;
+        })).subscribe((percent) => {
+            this.setState({
+                goalLastWeek: percent
+            })
+        })
 
-            return {
-                date: moment(key, "YYYY-MM-DD").toDate(),
-                percentComplete: 100 * completed.length / tasks.length,
-            }
-        }
+        const lastMonthGoalSub = combineLatest(
+            new GoalQuery().queryLastMonthsComplete(1).observeCount(),
+            new GoalQuery().queryLastMonths(1).observeCount(),
+        ).pipe(map(([complete, total]) => {
+            return total === 0 ? 1 : complete / total;
+        })).subscribe((percentage: number) => {
+            this.setState({
+                goalLastMonth: percentage,
+            })
+        })
 
         this.unsub = () => {
-            sevenDaysSub.unsubscribe()
+            sevenDaysSub.unsubscribe();
+            lastMonthTaskSub.unsubscribe();
+            lastWeekGoalSub.unsubscribe();
+            lastMonthGoalSub.unsubscribe();
         }
     }
 
@@ -110,22 +118,170 @@ export default class ReportsScreen extends React.Component<Props, State> {
     }
 
     render = () => {
-        const fill = 'rgb(134, 65, 244)'
+        /**
+         * Possibly have image in place of reports while data is loading.
+         */
         return (
             <DocumentView accessibilityLabel={"reports"}>
-                <Label text={"Previous 7 Days"}></Label>
-                <BarChart
-                    style={{height: 200}}
-                    svg={{ fill }}
-                    data={this.state.lastSevenDays}
-                    yMin={0}
-                    yMax={100}
-                ></BarChart>
                 <ScrollView>
-
+                    {this.renderCharts()}
                     <FootSpacer></FootSpacer>
                 </ScrollView>
             </DocumentView>
         );
+
+    }
+
+    private renderCharts = () => {
+        return (
+            <React.Fragment>
+                <Card
+                    style={{
+                        marginBottom: 20,
+                    }}
+                    title={"Task Completion"}
+                    pages = {[
+                        { label: "1w", render: () => {
+                           return this.renderProgress(this.state.taskLastWeek)
+                        }},
+                        { label: "1m", render: () => {
+                            return this.renderProgress(this.state.taskLastMonth, "green");
+                        }}
+                    ]}
+                ></Card>
+                <Card
+                    style={{
+                        marginBottom: 20,
+                    }}
+                    title={"Goal Completion"}
+                    pages = {[
+                        { label: "1w", render: () => {
+                           return this.renderProgress(this.state.goalLastWeek)
+                        }},
+                        { label: "1m", render: () => {
+                            return this.renderProgress(this.state.goalLastMonth, "green");
+                        }}
+                    ]}
+                ></Card>
+            </React.Fragment> 
+        )
+    }
+
+    private renderProgress = (n: number, color?: string) => {
+        const def = "darkblue";
+        return (
+            <ProgressCircle 
+                style={{ height: 120 }} 
+                progress={n} 
+                progressColor={color ? color : def} 
+                strokeWidth={15}
+                cornerRadius={45}
+            >
+                {this.renderPercent(n, color ? color : def)}
+            </ProgressCircle>
+        )
+    }
+
+    private renderPercent = (n: number, color: string) => {
+        const fontSize = 30
+        return (
+            <Text
+                fill={color}
+                stroke={color}
+                fontSize={fontSize}
+                fontWeight="normal"
+                x="0"
+                y={fontSize / 3}
+                textAnchor="middle"
+            >
+                {percent(n)}
+            </Text>
+        )
+        function percent(n: number) {
+            return Math.round(n * 100).toString();
+        }
+    }
+}
+
+interface CardProps {
+    style: StyleProp<ViewStyle>;
+    pages: ({ label: string, render: () => JSX.Element})[];
+    title: string;
+}
+
+function Card(props: CardProps) {
+    const [current, setCurrent] = React.useState(0);
+
+    return (
+        <View
+            style={[{
+                backgroundColor: "white",
+                margin: 15,
+                elevation: 10,
+                padding: 10,
+            }, props.style]}
+        >
+            <HeaderText style={{
+                marginBottom: 20
+            }} level={3}
+            >
+                {props.title}
+            </HeaderText>
+            {renderCurrent()}
+            <View
+                style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "stretch",
+                    height: 40,
+                    marginTop: 10,
+                }}
+            >
+                {renderLabels()}
+            </View>
+        </View>
+    )
+
+    function renderCurrent() {
+        if(props.pages[current]) {
+            return props.pages[current].render();
+        } else {
+            return null;
+        }
+    }
+
+    function renderLabels() { 
+        const active = TAB_GREY;
+        const inactive = "white";
+
+        return props.pages.map((page, index) => {
+            const { label } = page;
+            return (
+                <TouchableView key={label} 
+                    style={{
+                        padding: 3,
+                        paddingHorizontal: 10,
+                        borderRadius: 5,
+                        marginRight: 3,
+                        backgroundColor: current === index ? active : inactive,
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                    onPress={() => {
+                        setCurrent(index)
+                    }}
+                >
+                    <HeaderText
+                        style={{
+                            color: current === index ? inactive : active,
+                            fontSize: 15,
+                        }}
+                        level={3}
+                    >
+                        {label}
+                    </HeaderText>
+                </TouchableView>
+            )
+        })
     }
 }
