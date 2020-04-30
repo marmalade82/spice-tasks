@@ -4,28 +4,19 @@ import { ColumnView, RowView, BodyText, HeaderText, TouchableView, RowReverseVie
 import MyDate from "src/common/Date";
 import { ScrollView } from "react-native";
 import { 
-    NavigationRow, ScreenHeader, DocumentView, 
+    NavigationRow, ScreenHeader, DocumentView, Label, 
 } from "src/Components/Styled/Styled";
 
-import withObservables from "@nozbe/with-observables";
-import GoalQuery, { GoalLogic, ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
-import TaskQuery, { TaskLogic, ActiveTaskQuery } from "src/Models/Task/TaskQuery";
-import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
-import GlobalQuery, { GlobalLogic, Global_Timer, observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
-import { Subscription } from "rxjs";
-import EarnedPenaltyQuery from "src/Models/Penalty/EarnedPenaltyQuery";
-import { ConnectedTaskList, TaskFilter, TaskSorter, makeTaskLocalState} from "src/ConnectedComponents/Lists/Task/TaskList";
-import { ConnectedGoalList } from "src/ConnectedComponents/Lists/Goal/GoalList";
 import FootSpacer from "src/Components/Basic/FootSpacer";
-import { EventDispatcher } from "src/common/EventDispatcher";
-import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
-import { getKey } from "../common/screenUtils";
 import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navigator";
-import { TaskParentTypes } from "src/Models/Task/Task";
-import AddModal from "./common/AddModal";
 
-import Dropdown from "src/Components/Styled/Dropdown";
-import SidescrollPicker, { makeChoices } from "src/Components/Styled/SidescrollPicker";
+import { BarChart } from "react-native-svg-charts";
+import TaskQuery, { Task } from "src/Models/Task/TaskQuery";
+import { map } from "rxjs/operators";
+import moment from "moment";
+import { randomNormal } from "d3";
+import * as R from "ramda";
+import { combineLatest } from "rxjs";
 
 interface Props {
     navigation: object;
@@ -33,22 +24,15 @@ interface Props {
 
 
 interface State {
-    showAdd: boolean;
+    lastSevenDays: number[];
 }
 
-const dispatcher = new EventDispatcher();
 
 export default class ReportsScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
             title: 'Reports',
             right: [
-                () => { return (
-                    <HeaderAddButton
-                        dispatcher={dispatcher}
-                        eventName={getKey(navigation)}
-                    ></HeaderAddButton>
-                )}
             ],
         }
     }
@@ -58,17 +42,66 @@ export default class ReportsScreen extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            showAdd: false,
+            lastSevenDays: [],
         }
         this.unsub = () => {}
         this.navigation = new ScreenNavigation(this.props);
     }
 
     componentDidMount = async () => {
+        const sdCompleteCount = new TaskQuery().queryLastDaysComplete(7).observeCount();
+        const sdAll = new TaskQuery().queryLastDays(7).observe();
 
-        dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd)
+        // We subscribe to the complete count also, so that when a task is completed, the chart rerenders.
+        let sevenDaysSub = combineLatest(sdCompleteCount, sdAll).pipe(map(([_count, tasks]) => {
+            // We map all the tasks to group them by date, calculate percentages, and then sort by date for the chart
+            const grouped = R.groupBy(sameDay, tasks)
+            const percents = R.mapObjIndexed(percentByDate, grouped)
+
+            let dateStrings = R.map((n) => {
+                return MyDate.Now().subtract(n, "days").format("YYYY-MM-DD");
+            },  R.range(0, 7))
+
+            let unsortedData = R.map((date) => {
+                if(percents[date] !== undefined) {
+                    return percents[date]
+                }
+
+                return {
+                    date: moment(date, "YYYY-MM-DD").toDate(),
+                    percentComplete: 100,
+                }
+            }, dateStrings)
+
+            let sortedData = R.sort((a, b) => {
+                return a.date.valueOf() - b.date.valueOf();
+            }, unsortedData);
+                    
+
+            return R.map((val) => val.percentComplete, sortedData);
+        })).subscribe((vals) => {
+            this.setState({
+                lastSevenDays: vals
+            })
+        })
+
+        function sameDay(task: Task) {
+            return new MyDate(task.startDate).asStartDate().format("YYYY-MM-DD");
+        }
+
+        function percentByDate(tasks: Task[], key: string) {
+            const completed = R.filter((task: Task) => {
+                return task.state === "complete";
+            }, tasks)
+
+            return {
+                date: moment(key, "YYYY-MM-DD").toDate(),
+                percentComplete: 100 * completed.length / tasks.length,
+            }
+        }
+
         this.unsub = () => {
-            dispatcher.removeEventListener(getKey(this.navigation), this.onClickAdd)
+            sevenDaysSub.unsubscribe()
         }
     }
 
@@ -76,53 +109,22 @@ export default class ReportsScreen extends React.Component<Props, State> {
         this.unsub();
     }
 
-    private onClickAdd = () => {
-        this.setState({
-            showAdd: true,
-        })
-    }
-
-    private onTaskAction = (id: string, action: "complete" | "fail") => {
-        switch(action) {
-            case "complete": {
-                void new TaskLogic(id).complete();
-            } break; 
-            case "fail": {
-                void new TaskLogic(id).fail();
-            } break;
-        }
-    }
-
-    private onGoalAction = (id: string, action: "complete" | "fail") => {
-        switch(action) {
-            case "complete": {
-                void new GoalLogic(id).complete();
-            } break;
-            case "fail":{
-                void new GoalLogic(id).fail();
-            } break;
-        }
-    }
-
     render = () => {
-        const todayFilters: TaskFilter[] = [
-            "all",
-        ]
-
-        const todaySorters: TaskSorter[] = [
-            "start", "title",
-        ]
+        const fill = 'rgb(134, 65, 244)'
         return (
-            <DocumentView accessibilityLabel={"app-start"}>
+            <DocumentView accessibilityLabel={"reports"}>
+                <Label text={"Previous 7 Days"}></Label>
+                <BarChart
+                    style={{height: 200}}
+                    svg={{ fill }}
+                    data={this.state.lastSevenDays}
+                    yMin={0}
+                    yMax={100}
+                ></BarChart>
                 <ScrollView>
 
                     <FootSpacer></FootSpacer>
                 </ScrollView>
-                <AddModal
-                    visible={this.state.showAdd}
-                    onRequestClose={() => this.setState({ showAdd: false })}
-                    navigation={this.navigation}
-                ></AddModal>
             </DocumentView>
         );
     }

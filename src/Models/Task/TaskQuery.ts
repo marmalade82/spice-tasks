@@ -141,6 +141,21 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
     inStreakCycle = async (cycleId: string) => {
         return await this.queryInStreakCycle(cycleId).fetch() as Task[];
     }
+
+    queryLastDays = (count: number) => {
+        let date = MyDate.Now().subtract(count, "days").toDate();
+        return this.query(
+            ...Conditions.dueOnOrAfter(date)
+        );
+    }
+
+    queryLastDaysComplete = (count: number) => {
+        let date = MyDate.Now().subtract(count, "days").toDate();
+        return this.query(
+            ...Conditions.dueOnOrAfter(date),
+            ...Conditions.complete()
+        );
+    }
 }
 
 export default TaskQuery;
