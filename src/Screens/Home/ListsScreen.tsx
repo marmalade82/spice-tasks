@@ -9,10 +9,6 @@ import {
     NavigationGroup, BackgroundTitle, Summary ,
 } from "src/Components/Styled/Styled";
 
-import { 
-    CONTAINER_VERTICAL_MARGIN, ROW_CONTAINER_HEIGHT, Styles, 
-    LEFT_SECOND_MARGIN, PRIMARY_COLOR_LIGHT, LEFT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, RIGHT_SECOND_MARGIN, ROW_HEIGHT
-} from "src/Components/Styled/Styles";
 import { Subscription } from "rxjs";
 import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
 import EarnedPenaltyQuery from "src/Models/Penalty/EarnedPenaltyQuery";

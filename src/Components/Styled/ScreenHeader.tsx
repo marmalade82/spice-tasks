@@ -1,8 +1,9 @@
 import React from "react";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 import { ColumnView, RowView, BodyText, HeaderText, RowReverseView, TouchableView } from "src/Components/Basic/Basic";
 import { 
     PRIMARY_COLOR, ROW_CONTAINER_HEIGHT, CONTAINER_ELEVATION, 
-    Styles, TEXT_VERTICAL_MARGIN, LEFT_FIRST_MARGIN, 
+    TEXT_VERTICAL_MARGIN, LEFT_FIRST_MARGIN, 
     RIGHT_FIRST_MARGIN, LEFT_SECOND_MARGIN, RIGHT_SECOND_MARGIN, TEXT_HORIZONTAL_MARGIN 
 } from "./Styles";
 import { Icon } from "src/Components/Styled/Styled";
@@ -30,7 +31,7 @@ export default class ScreenHeader extends React.Component<Props> {
                 elevation: CONTAINER_ELEVATION,
                 paddingLeft: LEFT_FIRST_MARGIN,
                 paddingRight: RIGHT_SECOND_MARGIN,
-            }, Styles.CENTERED_SECONDARY, this.props.style]}>
+            }, Layout.CENTERED_SECONDARY, this.props.style]}>
                 {this.renderBack()}
                 <HeaderText level={1} style={{
                         marginTop: TEXT_VERTICAL_MARGIN,

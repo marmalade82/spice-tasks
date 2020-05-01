@@ -1,7 +1,7 @@
 
 import React from "react";
 import { StyleProp, ViewStyle, StyleSheet, View, TextStyle, Text } from "react-native";
-import { Styles } from "src/Components/Styled/Styles";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 
 
 interface Props {
@@ -29,23 +29,23 @@ export default class HeaderText extends React.Component<Props, State> {
     headerStyle = (): StyleProp<TextStyle> => {
         switch(this.props.level) { 
             case 1: {           // Main section title
-                return Styles.HEADER_1; 
+                return Type.HEADER_1; 
             }
                 break;
             case 2: {
-                return Styles.HEADER_2;
+                return Type.HEADER_2;
             }
                 break;
             case 3: {
-                return Styles.HEADER_3;
+                return Type.HEADER_3;
             }
                 break;
             case 4: {
-                return Styles.HEADER_4;
+                return Type.HEADER_4;
             }
                 break;
             case 5: {
-                return Styles.HEADER_5;
+                return Type.HEADER_5;
             }
                 break;
             case 6: {

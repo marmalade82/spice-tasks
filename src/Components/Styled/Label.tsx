@@ -1,11 +1,12 @@
 import React from "react";
 import { RowView, ColumnView, HeaderText } from "src/Components/Basic/Basic";
 import { 
-    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, Styles, 
+    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN,  
     TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
     PLACEHOLDER_GREY,
 } from "src/Components/Styled/Styles";
 import { StyleProp, ViewStyle } from "react-native";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 
 interface Props {
     text: string;
@@ -24,7 +25,7 @@ export default class Label extends React.Component<Props> {
                     alignItems: "center",
                     backgroundColor: "transparent",
                     height: 30,
-                }, Styles.CENTERED_SECONDARY, this.props.style]}
+                }, Layout.CENTERED_SECONDARY, this.props.style]}
             >
                 <HeaderText level={3} style={{
                     color: this.props.textColor ? this.props.textColor : TEXT_GREY,

@@ -1,7 +1,8 @@
 import React from "react";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 import { RowView, ColumnView, HeaderText, TouchableView } from "src/Components/Basic/Basic";
 import { 
-    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, Styles, 
+    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, 
     TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
     PLACEHOLDER_GREY, PRIMARY_COLOR, ICON_CONTAINER_WIDTH,
     CONTAINER_VERTICAL_MARGIN,
@@ -152,7 +153,7 @@ export default class TimeInput extends React.Component<Props, State> {
         if (this.props.value) {
             return (
                 <Text
-                    style={[Styles.HEADER_5, {
+                    style={[Type.HEADER_5, {
                             marginBottom: 3,
                             color: this.props.textColor ? this.props.textColor : TEXT_GREY,
                         }]
@@ -164,7 +165,7 @@ export default class TimeInput extends React.Component<Props, State> {
         } else if (this.props.placeholder) {
             return (
                 <Text
-                    style={[Styles.HEADER_5, {
+                    style={[Type.HEADER_5, {
                         marginBottom: 3,
                         color: this.props.placeholderColor ? this.props.placeholderColor : TEXT_GREY,
                     }]}

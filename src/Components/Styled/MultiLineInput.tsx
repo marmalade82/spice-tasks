@@ -1,11 +1,11 @@
 
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 import React from "react";
 import { RowView, ColumnView, HeaderText } from "src/Components/Basic/Basic";
 import { 
-    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, Styles, 
+    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, 
     TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
     PLACEHOLDER_GREY,
-    CONTAINER_VERTICAL_MARGIN,
 } from "src/Components/Styled/Styles";
 import { StyleProp, ViewStyle, TextInput as Input } from "react-native";
 
@@ -49,7 +49,7 @@ export default class MultiLineInput extends React.Component<Props> {
                         onChangeText={this.props.onChangeText}
                         placeholder={this.props.placeholder}
                         placeholderTextColor={this.props.placeholderColor ? this.props.placeholderColor : PLACEHOLDER_GREY}
-                        style={[ Styles.HEADER_5, {
+                        style={[ Type.HEADER_5, {
                             width: "100%",
                             padding: 0,
                             marginBottom: 3,

@@ -5,9 +5,6 @@ import { Icon as I } from "src/Components/Styled/Icon";
 
 import { 
     LEFT_SECOND_MARGIN, ICON_CONTAINER_WIDTH, PRIMARY_COLOR, 
-    RIGHT_SECOND_MARGIN, TEXT_HORIZONTAL_MARGIN, SECONDARY_COLOR, 
-    PRIMARY_COLOR_LIGHT, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION, 
-    LEFT_FIRST_MARGIN, Styles, TEXT_VERTICAL_MARGIN, ROW_HEIGHT
 } from "src/Components/Styled/Styles";
 import { TouchableView } from "../Basic/Basic";
 

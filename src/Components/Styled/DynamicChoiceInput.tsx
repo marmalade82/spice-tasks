@@ -2,9 +2,8 @@
 import React from "react";
 import { RowView, ColumnView, HeaderText, TouchableView } from "src/Components/Basic/Basic";
 import { 
-    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, Styles, 
+    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, 
     TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
-    PLACEHOLDER_GREY,
     CONTAINER_VERTICAL_MARGIN, PRIMARY_COLOR, ICON_CONTAINER_WIDTH, TEXT_HORIZONTAL_MARGIN,
 } from "src/Components/Styled/Styles";
 import Modal from "src/Components/Styled/Modal";
@@ -15,6 +14,7 @@ import { Observable } from "rxjs";
 import { View } from "react-native";
 import { Icon as StyledIcon } from "./Icon";
 import EmptyList, { PlusEmptyList } from "../Lists/EmptyList";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 
 interface Props {
     style?: StyleProp<ViewStyle>
@@ -158,7 +158,7 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
         if (this.props.value) {
             return (
                 <Text
-                    style={[Styles.HEADER_5, {
+                    style={[Type.HEADER_5, {
                             marginBottom: 3,
                             color: this.props.textColor ? this.props.textColor : TEXT_GREY,
                         }]
@@ -170,7 +170,7 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
         } else if (this.props.placeholder) {
             return (
                 <Text
-                    style={[Styles.HEADER_5, {
+                    style={[Type.HEADER_5, {
                         marginBottom: 3,
                         color: this.props.placeholderColor ? this.props.placeholderColor : TEXT_GREY,
                     }]}

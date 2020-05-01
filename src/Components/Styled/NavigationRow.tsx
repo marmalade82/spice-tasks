@@ -1,9 +1,10 @@
 import React from "react";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 
 import { View, StyleProp, ViewStyle, StyleSheet } from "react-native";
 import { ColumnView, RowView, BodyText, HeaderText } from "src/Components/Basic/Basic";
 import ClickNavigation from "src/Components/Navigation/ClickNavigation";
-import { ROW_CONTAINER_HEIGHT, ROW_HEIGHT, PRIMARY_COLOR, ICON_CONTAINER_WIDTH, Styles, TEXT_VERTICAL_MARGIN, TEXT_HORIZONTAL_MARGIN, LEFT_FIRST_MARGIN, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION, SECONDARY_COLOR } from "./Styles";
+import { ROW_CONTAINER_HEIGHT, ROW_HEIGHT, PRIMARY_COLOR, ICON_CONTAINER_WIDTH, TEXT_VERTICAL_MARGIN, TEXT_HORIZONTAL_MARGIN, LEFT_FIRST_MARGIN, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION, SECONDARY_COLOR } from "./Styles";
 import StyledIcon from "./Icon";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 
@@ -78,7 +79,7 @@ export default class NavigationRow<T extends keyof ScreenParams> extends React.C
                     flex: 0,
                     height: ROW_HEIGHT,
                     paddingLeft: LEFT_FIRST_MARGIN,
-                }, Styles.CENTERED_SECONDARY]}>
+                }, Layout.CENTERED_SECONDARY]}>
                     { this.renderThumbnail() }
                     <HeaderText level={3} style={{
                         margin: TEXT_VERTICAL_MARGIN,
@@ -99,7 +100,7 @@ export default class NavigationRow<T extends keyof ScreenParams> extends React.C
                     width: ICON_CONTAINER_WIDTH,
                     borderRadius: ICON_CONTAINER_WIDTH/2,
                     backgroundColor: PRIMARY_COLOR,
-                }, Styles.CENTERED]}>
+                }, Layout.CENTERED]}>
                     <HeaderText level={3} style={{
                         color: "white",
                     }}>

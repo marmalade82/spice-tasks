@@ -297,7 +297,8 @@ export default class ReportsScreen extends React.Component<Props, State> {
                 <LineChart
                     style={{ width: "100%", height: 200 }}
                     data={counts}
-                    min={0}
+                    yMin={0}
+                    yMax={max === 0 ? 1 : max}
                     numberOfTicks={20}
                     svg={{ 
                         stroke: color? color : def ,

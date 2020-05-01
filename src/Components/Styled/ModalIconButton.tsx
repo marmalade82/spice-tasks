@@ -1,7 +1,8 @@
 import React from "react";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 import IconButton from "src/Components/Styled/IconButton";
 import { View, TouchableWithoutFeedback, StyleProp, ViewStyle } from "react-native";
-import { LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, RIGHT_SECOND_MARGIN, OVERLAY, Styles, MODAL_VERTICAL_PADDING } from "./Styles";
+import { LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, RIGHT_SECOND_MARGIN, OVERLAY, MODAL_VERTICAL_PADDING } from "./Styles";
 import Modal from "src/Components/Styled/Modal";
 import DataComponent from "src/Components/base/DataComponent";
 

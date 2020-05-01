@@ -6,8 +6,9 @@ import {
     LEFT_SECOND_MARGIN, ICON_CONTAINER_WIDTH, PRIMARY_COLOR, 
     RIGHT_SECOND_MARGIN, TEXT_HORIZONTAL_MARGIN, SECONDARY_COLOR, 
     PRIMARY_COLOR_LIGHT, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION, 
-    LEFT_FIRST_MARGIN, Styles, TEXT_VERTICAL_MARGIN, ROW_HEIGHT, TEXT_GREY,
+    LEFT_FIRST_MARGIN, TEXT_VERTICAL_MARGIN, ROW_HEIGHT, TEXT_GREY,
 } from "src/Components/Styled/Styles";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 
 
 interface Props {
@@ -44,7 +45,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                         width: height,
                         borderRadius: height/2,
                         backgroundColor: this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR,
-                    }, Styles.CENTERED, this.props.style]}
+                    }, Layout.CENTERED, this.props.style]}
                     accessibilityLabel={this.props.accessibilityLabel}
                 >
                     {this.renderIcon()}

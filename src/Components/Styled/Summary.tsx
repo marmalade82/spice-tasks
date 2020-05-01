@@ -1,11 +1,13 @@
 import React from "react";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 
 import { ColumnView, RowView, RowReverseView, HeaderText, BodyText } from "src/Components/Basic/Basic";
 import { View, Text, StyleProp, ViewStyle, ScrollView, } from "react-native";
 import { Icon as ElIcon } from "react-native-elements";
 import { 
     LEFT_SECOND_MARGIN, ICON_CONTAINER_WIDTH, PRIMARY_COLOR, 
-    RIGHT_SECOND_MARGIN, TEXT_HORIZONTAL_MARGIN, SECONDARY_COLOR, PRIMARY_COLOR_LIGHT, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION, LEFT_FIRST_MARGIN, Styles, TEXT_VERTICAL_MARGIN, ROW_HEIGHT, RIGHT_FIRST_MARGIN
+    RIGHT_SECOND_MARGIN, TEXT_HORIZONTAL_MARGIN, SECONDARY_COLOR, 
+    PRIMARY_COLOR_LIGHT, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION, LEFT_FIRST_MARGIN, TEXT_VERTICAL_MARGIN, ROW_HEIGHT, RIGHT_FIRST_MARGIN
 } from "src/Components/Styled/Styles";
 import { Icon } from "./Icon";
 
@@ -43,10 +45,10 @@ export default class Summary extends React.Component<Props, State> {
                             flex: 0,
                             paddingLeft: LEFT_SECOND_MARGIN,
                             paddingRight: RIGHT_FIRST_MARGIN,
-                        }, Styles.CENTERED_SECONDARY]}>
+                        }, Layout.CENTERED_SECONDARY]}>
                             <RowView style={[{
                                 flex: 1,
-                            }, Styles.CENTERED_SECONDARY]}>
+                            }, Layout.CENTERED_SECONDARY]}>
                                 <Text style={{
                                         marginTop: TEXT_VERTICAL_MARGIN,
                                         marginBottom: TEXT_VERTICAL_MARGIN,

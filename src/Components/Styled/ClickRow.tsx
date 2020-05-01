@@ -13,8 +13,8 @@ import {
     PRIMARY_COLOR,
     TEXT_VERTICAL_MARGIN,
     TEXT_HORIZONTAL_MARGIN,
-    Styles,
 } from "src/Components/Styled/Styles";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 
 interface Props {
     number: number;
@@ -62,7 +62,7 @@ export default class ClickRow extends React.Component<Props> {
                             width: "100%",
                             backgroundColor: "white",
                             flexDirection: "row",
-                        }, Styles.CENTERED_PRIMARY]}
+                        }, Layout.CENTERED_PRIMARY]}
                         onPress={this.props.onPress}
                         accessibilityLabel={this.props.accessibilityLabel ? "input-" + this.props.accessibilityLabel : undefined }
                     >
@@ -84,16 +84,16 @@ export default class ClickRow extends React.Component<Props> {
                     width: "100%",
                     paddingLeft: LEFT_FIRST_MARGIN,
                     paddingRight: RIGHT_FIRST_MARGIN,
-                }, Styles.CENTERED_PRIMARY]}>
+                }, Layout.CENTERED_PRIMARY]}>
                     <RowView style={[{
                         backgroundColor: "white",
-                    }, Styles.CENTERED_SECONDARY]}>
+                    }, Layout.CENTERED_SECONDARY]}>
                         <View style={[{
                             height: ICON_CONTAINER_WIDTH,
                             width: ICON_CONTAINER_WIDTH,
                             borderRadius: ICON_CONTAINER_WIDTH/2,
                             backgroundColor: PRIMARY_COLOR,
-                        }, Styles.CENTERED]}>
+                        }, Layout.CENTERED]}>
                             <HeaderText level={3} style={{
                                 color: "white",
                             }}>
@@ -112,7 +112,7 @@ export default class ClickRow extends React.Component<Props> {
                     <RowReverseView style={[{
                         flex: 0, // this takes up as much as space as what it contains.
                         backgroundColor: "white",
-                    }, Styles.CENTERED_SECONDARY]}>
+                    }, Layout.CENTERED_SECONDARY]}>
                         { this.renderRightElements() }
                     </RowReverseView>
                 </RowView>

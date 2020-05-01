@@ -1,12 +1,9 @@
 
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 import React from "react";
 import { RowView, ColumnView, HeaderText, TouchableView, BodyText } from "src/Components/Basic/Basic";
 import { 
-    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, Styles, 
     TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
-    PLACEHOLDER_GREY, PRIMARY_COLOR, ICON_CONTAINER_WIDTH,
-    CONTAINER_VERTICAL_MARGIN,
-    TEXT_HORIZONTAL_MARGIN,
 } from "src/Components/Styled/Styles";
 import { StyleProp, Button, ViewStyle, TextInput as TInput, Text } from "react-native";
 import { 
@@ -129,20 +126,11 @@ export default class InlineDateInput extends React.Component<Props, State> {
                 <BodyText style={{}}>
                     {this.renderDate()}
                 </BodyText>
-                /*<Text
-                    style={[Styles.HEADER_5, {
-                            marginBottom: 3,
-                            color: this.props.textColor ? this.props.textColor : "black",
-                        }]
-                    }
-                >
-                    {this.renderDate()}
-                </Text>*/
             );
         } else if (this.props.placeholder) {
             return (
                 <Text
-                    style={[Styles.HEADER_5, {
+                    style={[Type.HEADER_5, {
                         marginBottom: 3,
                         color: this.props.placeholderColor ? this.props.placeholderColor : TEXT_GREY,
                     }]}

@@ -1,11 +1,12 @@
 import React from "react";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 
 import { 
     ColumnView, RowView, RowReverseView, 
     HeaderText, BodyText, TouchableView,
 } from "src/Components/Basic/Basic";
 import Icon from "src/Components/Styled/Icon";
-import { LEFT_FIRST_MARGIN, MODAL_ROW_HEIGHT, Styles, TEXT_HORIZONTAL_MARGIN, PRIMARY_COLOR } from "./Styles";
+import { LEFT_FIRST_MARGIN, MODAL_ROW_HEIGHT, TEXT_HORIZONTAL_MARGIN, PRIMARY_COLOR } from "./Styles";
 
 interface Props {
     text: string;
@@ -46,7 +47,7 @@ export default class ModalRow extends React.Component<Props, State> {
                             flex: 1,
                             width: "100%",
                             backgroundColor: "white",
-                        }, Styles.CENTERED_SECONDARY]}
+                        }, Layout.CENTERED_SECONDARY]}
                     >
                         {this.renderIcon()}
                         <HeaderText

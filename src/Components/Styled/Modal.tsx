@@ -1,7 +1,8 @@
 import React from "react";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 import IconButton from "src/Components/Styled/IconButton";
 import { ScrollView, View, Modal as ReactModal, TouchableWithoutFeedback } from "react-native";
-import { LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, RIGHT_SECOND_MARGIN, OVERLAY, Styles, MODAL_VERTICAL_PADDING } from "./Styles";
+import { LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, RIGHT_SECOND_MARGIN, OVERLAY, MODAL_VERTICAL_PADDING } from "./Styles";
 
 interface Props {
     visible: boolean;
@@ -44,7 +45,7 @@ export default class Modal extends React.Component<Props, State> {
                             backgroundColor: OVERLAY,
                             paddingLeft: RIGHT_SECOND_MARGIN,
                             paddingRight: RIGHT_SECOND_MARGIN,
-                        }, Styles.CENTERED]}
+                        }, Layout.CENTERED]}
                     >
                         <TouchableWithoutFeedback
                             style={{

@@ -6,11 +6,6 @@ import {
     PagedList,
 } from "src/Components/Styled/Styled";
 import { StringInput, ChoiceInput, DateTimeInput } from "src/Components/Inputs";
-import { 
-    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, Styles, 
-    TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
-    PLACEHOLDER_GREY,
-} from "src/Components/Styled/Styles";
 import { ScrollView, DeviceEventEmitter, Button, Text, TextInput as TInput, View, Animated} from "react-native";
 import SpiceDBService from "src/Services/DBService";
 import GlobalQuery from "src/Models/Global/GlobalQuery";

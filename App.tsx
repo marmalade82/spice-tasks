@@ -8,8 +8,7 @@ import { Button, AppState } from "react-native";
 import { Schedule } from "./Schedule";
 import SpiceDBService from 'src/Services/DBService';
 import { 
-  PRIMARY_COLOR_LIGHT, PRIMARY_COLOR, LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN,
-  Styles, ROW_CONTAINER_HEIGHT, TEXT_GREY, TAB_GREY,
+  TAB_GREY,
 } from 'src/Components/Styled/Styles';
 import { IconButton, Icon, ScreenHeader } from 'src/Components/Styled/Styled';
 import ActiveTransaction from 'src/Models/common/Transaction';
