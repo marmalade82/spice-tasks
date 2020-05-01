@@ -1,11 +1,6 @@
 
 import React from "react";
 import { RowView, ColumnView, HeaderText, TouchableView } from "src/Components/Basic/Basic";
-import { 
-    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, 
-    TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
-    CONTAINER_VERTICAL_MARGIN, PRIMARY_COLOR, ICON_CONTAINER_WIDTH, TEXT_HORIZONTAL_MARGIN,
-} from "src/Components/Styled/Styles";
 import Modal from "src/Components/Styled/Modal";
 import ModalRow from "src/Components/Styled/ModalRow";
 import { StyleProp, ViewStyle, TextInput as Input, Picker, Text } from "react-native";
@@ -14,7 +9,7 @@ import { Observable } from "rxjs";
 import { View } from "react-native";
 import { Icon as StyledIcon } from "./Icon";
 import EmptyList, { PlusEmptyList } from "../Lists/EmptyList";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
 
 interface Props {
     style?: StyleProp<ViewStyle>
@@ -98,25 +93,13 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <RowView style={[{
-                    flex: 0,
-                    backgroundColor: "transparent",
-                    paddingLeft: LEFT_FIRST_MARGIN,
-                    paddingRight: RIGHT_SECOND_MARGIN,
-                    justifyContent: "flex-start",
-                    alignItems: "flex-end",
-                    marginTop: 0,
-                }, this.props.style]}
+            <RowView style={[Class.DynamicChoiceInput_Container, this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}
             >
                 {this.renderLeftIcon()}
-                <ColumnView style={{
-                    flex: 1,
-                    backgroundColor: "transparent",
-                    borderColor: this.props.underlineColor ? this.props.underlineColor : TEXT_GREY,
-                    borderBottomWidth: 1,
-                    marginLeft: TEXT_HORIZONTAL_MARGIN,
-                }}>
+                <ColumnView style={[Class.DynamicChoiceInput_Decorator, {
+                    ...(this.props.underlineColor && { borderColor: this.props.underlineColor})
+                }]}>
 
                     <TouchableView style={{
                             flex: 1,
@@ -158,9 +141,8 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
         if (this.props.value) {
             return (
                 <Text
-                    style={[Type.HEADER_5, {
-                            marginBottom: 3,
-                            color: this.props.textColor ? this.props.textColor : TEXT_GREY,
+                    style={[Type.HEADER_5, Class.TextInputType, {
+                            ...(this.props.textColor && { color: this.props.textColor })
                         }]
                     }
                 >
@@ -170,9 +152,8 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
         } else if (this.props.placeholder) {
             return (
                 <Text
-                    style={[Type.HEADER_5, {
-                        marginBottom: 3,
-                        color: this.props.placeholderColor ? this.props.placeholderColor : TEXT_GREY,
+                    style={[Type.HEADER_5, Class.TextInputType, {
+                            ...(this.props.textColor && { color: this.props.textColor })
                     }]}
                 >
                     {this.props.placeholder}
@@ -202,8 +183,7 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
             <Icon
                 name={"chevron-right"}
                 type={"feather"}
-                color={TEXT_GREY}
-                size={20}
+                {...Custom.ChoiceInput_Icon}
                 style={{
                 }}
             ></Icon>
@@ -272,8 +252,7 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
             return(
                 <StyledIcon
                     type={this.iconType()}
-                    backgroundColor={"transparent"}
-                    color={PRIMARY_COLOR}
+                    {...Custom.AlertIcon}
                     accessibilityLabel={this.props.accessibilityLabel ? "mandatory-" + this.props.accessibilityLabel : "mandatory"}
                 ></StyledIcon>
             )    
@@ -281,9 +260,7 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
             return (
                 <View
                     style={{
-                        flex: 0,
-                        height: ICON_CONTAINER_WIDTH,
-                        width: ICON_CONTAINER_WIDTH,
+                        ...Class.StandardIconContainer,
                         backgroundColor:"transparent"
                     }}
                 ></View>

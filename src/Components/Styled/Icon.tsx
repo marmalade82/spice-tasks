@@ -2,13 +2,7 @@
 import React from "react";
 import { View, Text, StyleProp, ViewStyle, ScrollView } from "react-native";
 import { Icon  } from "react-native-elements";
-import { 
-    LEFT_SECOND_MARGIN, ICON_CONTAINER_WIDTH, PRIMARY_COLOR, 
-    RIGHT_SECOND_MARGIN, TEXT_HORIZONTAL_MARGIN, SECONDARY_COLOR, 
-    PRIMARY_COLOR_LIGHT, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION, 
-    LEFT_FIRST_MARGIN, TEXT_VERTICAL_MARGIN, ROW_HEIGHT, TEXT_GREY,
-} from "src/Components/Styled/Styles";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
 
 
 interface Props {
@@ -37,14 +31,10 @@ export default class StyledIcon extends React.Component<Props, State>{
     }
 
     render = () => {
-        const height = this.props.backgroundHeight ? this.props.backgroundHeight : ICON_CONTAINER_WIDTH;
         return (
                 <View 
-                    style={[{
-                        height: height,
-                        width: height,
-                        borderRadius: height/2,
-                        backgroundColor: this.props.backgroundColor ? this.props.backgroundColor : PRIMARY_COLOR,
+                    style={[Class.StandardIconContainer, {
+                        ...(this.props.backgroundColor && { backgroundColor: this.props.backgroundColor })
                     }, Layout.CENTERED, this.props.style]}
                     accessibilityLabel={this.props.accessibilityLabel}
                 >
@@ -54,14 +44,36 @@ export default class StyledIcon extends React.Component<Props, State>{
     }
 
     renderIcon = () => {
+        const transparent = {
+            ...Custom.Icon_Transparent,
+            ...(this.props.color && { color: this.props.color}),
+            ...(this.props.size && { size: this.props.size}),
+        }
+
+        const secondary = {
+            ...Custom.Icon_Secondary,
+            ...(this.props.color && { color: this.props.color}),
+            ...(this.props.size && { size: this.props.size}),
+        }
+
+        const grey = {
+            ...Custom.Icon_Grey,
+            ...(this.props.color && { color: this.props.color}),
+            ...(this.props.size && { size: this.props.size}),
+        } 
+
+        const primary = {
+            ...Custom.Icon_Primary,
+            ...(this.props.color && { color: this.props.color}),
+            ...(this.props.size && { size: this.props.size}),
+        }
         switch(this.props.type) {
             case "ascending": {
                 return (
                     <Icon
                         name={"chevron-up"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
+                        {...transparent}
                     ></Icon>
                 )
             } break;
@@ -70,8 +82,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"chevron-down"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
+                        {...transparent}
                     ></Icon>
                 )
             } break;
@@ -80,8 +91,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"check"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
+                        {...transparent}
                     >
                     </Icon>
                 );
@@ -91,8 +101,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"x"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
+                        {...transparent}
                     >
                     </Icon>
                 );
@@ -102,8 +111,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"sun"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
+                        {...transparent}
                     >
                     </Icon>
                 );
@@ -113,8 +121,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"trash"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : "white"}
-                        size={this.props.size ? this.props.size : 20}
+                        {...transparent}
                     >
                     </Icon>
                 );
@@ -125,8 +132,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name='target'
                         type='feather'
-                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
-                        size={this.props.size ? this.props.size : 20}
+                        {...secondary}
                     >
 
                     </Icon>
@@ -137,8 +143,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name='activity'
                         type='feather'
-                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
-                        size={this.props.size ? this.props.size : 20}
+                        {...secondary}
                     >
 
                     </Icon>
@@ -149,8 +154,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name='star'
                         type='feather'
-                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
-                        size={this.props.size ? this.props.size : 20}
+                        {...secondary}
                     >
 
                     </Icon>
@@ -161,8 +165,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name='zap'
                         type='feather'
-                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
-                        size={this.props.size ? this.props.size : 20}
+                        {...secondary}
                     >
 
                     </Icon>
@@ -173,8 +176,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name='heart'
                         type='feather'
-                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
-                        size={this.props.size ? this.props.size : 20}
+                        {...secondary}
                     >
 
                     </Icon>
@@ -185,8 +187,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name='alert-triangle'
                         type='feather'
-                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
-                        size={this.props.size ? this.props.size : 20}
+                        {...secondary}
                     >
 
                     </Icon>
@@ -197,8 +198,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name='info'
                         type='feather'
-                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
-                        size={this.props.size ? this.props.size : 20}
+                        {...secondary}
                     >
 
                     </Icon>
@@ -209,8 +209,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name="repeat"
                         type="feather"
-                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
-                        size={this.props.size ? this.props.size : 20}
+                        {...secondary}
                     ></Icon>
                 );
             } break;
@@ -219,8 +218,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name="award"
                         type="feather"
-                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
-                        size={this.props.size ? this.props.size : 20}
+                        {...secondary}
                     ></Icon>
                 );
             } break;
@@ -229,8 +227,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name="thumbs-up"
                         type="feather"
-                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
-                        size={this.props.size ? this.props.size : 20}
+                        {...secondary}
                     ></Icon>
                 );
             } break;
@@ -239,8 +236,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"chevron-right"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : TEXT_GREY}
-                        size={this.props.size ? this.props.size : 20}
+                        {...grey}
                         style={{
                         }}
                     ></Icon>
@@ -251,8 +247,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"chevron-left"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : TEXT_GREY}
-                        size={this.props.size ? this.props.size : 20}
+                        {...grey}
                         style={{
                         }}
                     ></Icon>
@@ -263,8 +258,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"chevrons-right"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : TEXT_GREY}
-                        size={this.props.size ? this.props.size : 20}
+                        {...grey}
                         style={{
                         }}
                     ></Icon>
@@ -275,8 +269,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"chevrons-left"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : TEXT_GREY}
-                        size={this.props.size ? this.props.size : 20}
+                        {...grey}
                         style={{
                         }}
                     ></Icon>
@@ -287,8 +280,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"x"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : TEXT_GREY}
-                        size={this.props.size ? this.props.size : 20}
+                        {...grey}
                         style={{
                         }}
                     ></Icon>
@@ -299,8 +291,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"plus"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : TEXT_GREY}
-                        size={this.props.size ? this.props.size : 20}
+                        {...grey}
                         style={{
                         }}
                     ></Icon>
@@ -311,8 +302,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"arrow-left"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : TEXT_GREY}
-                        size={this.props.size ? this.props.size : 20}
+                        {...grey}
                         style={{
                         }}
                     ></Icon>
@@ -323,8 +313,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"save"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : TEXT_GREY}
-                        size={this.props.size ? this.props.size : 20}
+                        {...grey}
                         style={{
                         }}
                     ></Icon>
@@ -335,8 +324,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"home"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : TEXT_GREY}
-                        size={this.props.size ? this.props.size : 20}
+                        {...grey}
                         style={{
                         }}
                     ></Icon>
@@ -347,8 +335,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"list"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : TEXT_GREY}
-                        size={this.props.size ? this.props.size : 20}
+                        {...grey}
                         style={{
                         }}
                     ></Icon>
@@ -359,8 +346,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"bar-chart"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : TEXT_GREY}
-                        size={this.props.size ? this.props.size : 20}
+                        {...grey}
                         style={{
                         }}
                     ></Icon>
@@ -371,8 +357,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name='book'
                         type='feather'
-                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
-                        size={this.props.size ? this.props.size : 20}
+                        {...secondary}
                     >
 
                     </Icon>
@@ -383,8 +368,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name='sliders'
                         type='feather'
-                        color={this.props.color ? this.props.color : SECONDARY_COLOR}
-                        size={this.props.size ? this.props.size : 20}
+                        {...secondary}
                     >
 
                     </Icon>
@@ -406,8 +390,7 @@ export default class StyledIcon extends React.Component<Props, State>{
                     <Icon
                         name={"more-vertical"}
                         type={"feather"}
-                        color={this.props.color ? this.props.color : PRIMARY_COLOR}
-                        size={this.props.size ? this.props.size : 20}
+                        {...primary}
                     >
                     </Icon>
                 );

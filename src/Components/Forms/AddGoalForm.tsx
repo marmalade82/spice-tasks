@@ -1,4 +1,5 @@
 import React from "react";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 import DataComponent from "src/Components/base/DataComponent";
 import { Choices as RecurTypeChoices } from "src/Models/Recurrence/RecurLogic";
 
@@ -28,7 +29,6 @@ import { Observable, merge } from "rxjs";
 import { mapTo } from "rxjs/operators";
 import { PenaltyTypes, PenaltyChoices } from "src/Models/Penalty/PenaltyLogic";
 import { EventDispatcher, IEventDispatcher, fromEvent } from "src/common/EventDispatcher";
-import { ROW_CONTAINER_HEIGHT, CONTAINER_VERTICAL_MARGIN } from "../Styled/Styles";
 import FootSpacer from "../Basic/FootSpacer";
 import { startDate, dueDate } from "./common/utils";
 import { FullNavigation } from "src/common/Navigator";
@@ -298,9 +298,7 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                 <ScrollView>
 
                     <SummaryInput
-                        style={{
-                            marginTop: CONTAINER_VERTICAL_MARGIN,
-                        }}
+                        style={Layout.ContainerMarginTop}
                         title={"Summary"}
                         data={this.data().title}
                         placeholder={"What do you want to achieve?"}

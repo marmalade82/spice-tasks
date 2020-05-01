@@ -5,8 +5,8 @@ import Style from "src/Style/Style";
 import Input from "src/Components/Inputs/base/Input";
 import { ColumnView } from "src/Components/Basic/Basic";
 import { Label, DynamicChoiceInput as CInput } from "src/Components/Styled/Styled";
-import { CONTAINER_VERTICAL_MARGIN } from "src/Components/Styled/Styles";
 import { Observable } from "rxjs";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 
 
 interface LabelValue {
@@ -47,11 +47,7 @@ export default class DynamicChoiceInput extends Input<Props, State> {
 
     render = () => {
         return (
-            <ColumnView style={[{
-                    flex: 0,
-                    backgroundColor: "transparent",
-                    marginBottom: 2 * CONTAINER_VERTICAL_MARGIN,
-                }, this.props.style]}
+            <ColumnView style={[Class.InputContainer, this.props.style]}
             >
                 <Label
                     text={this.props.title} 

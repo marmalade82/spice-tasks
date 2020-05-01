@@ -7,7 +7,7 @@ import { TextInput, Label } from "src/Components/Styled/Styled";
 import Style from "src/Style/Style";
 import StringInput from "./StringInput";
 import { ColumnView } from "../Basic/Basic";
-import { CONTAINER_VERTICAL_MARGIN } from "../Styled/Styles";
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 
 export interface Props {
     title: string
@@ -82,12 +82,7 @@ export default class NumberInput extends React.Component<Props, State> {
     render = () => {
 
         return (
-            <ColumnView style={[{
-                flex: 0,
-                justifyContent: "flex-start",
-                backgroundColor: "transparent",
-                marginBottom: 2 * CONTAINER_VERTICAL_MARGIN,
-            }, this.props.style]}>
+            <ColumnView style={[Class.InputContainer, this.props.style]}>
                 <Label text={this.props.title}></Label>
                 <TextInput
                     value={this.value()} 

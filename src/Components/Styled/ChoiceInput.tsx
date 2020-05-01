@@ -1,11 +1,7 @@
 
 import React from "react";
 import { RowView, ColumnView, HeaderText, TouchableView } from "src/Components/Basic/Basic";
-import { 
-    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, 
-    TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
-} from "src/Components/Styled/Styles";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
 import Modal from "src/Components/Styled/Modal";
 import ModalRow from "src/Components/Styled/ModalRow";
 import { StyleProp, ViewStyle, TextInput as Input, Picker, Text } from "react-native";
@@ -46,23 +42,13 @@ export default class ChoiceInput extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <RowView style={[{
-                    flex: 0,
-                    backgroundColor: "transparent",
-                    paddingLeft: LEFT_SECOND_MARGIN,
-                    paddingRight: RIGHT_SECOND_MARGIN,
-                    justifyContent: "flex-start",
-                    alignItems: "flex-end",
-                    marginTop: 0,
-                }, this.props.style]}
+            <RowView style={[Class.ChoiceInput_Container, this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}
             >
-                <ColumnView style={{
-                    flex: 1,
-                    backgroundColor: "transparent",
-                    borderColor: this.props.underlineColor ? this.props.underlineColor : TEXT_GREY,
-                    borderBottomWidth: 1,
-                }}>
+                <ColumnView style={[{
+                    ...Class.ChoiceInput_InputDecorator,
+                    ...(this.props.underlineColor && { borderColor: this.props.underlineColor })
+                }]}>
 
                     <TouchableView style={{
                             flex: 1,
@@ -75,10 +61,7 @@ export default class ChoiceInput extends React.Component<Props, State> {
                         accessibilityLabel={this.props.accessibilityLabel}
                     >
                         <RowView style={{
-                            flex: 1,
-                            justifyContent: "space-between",
-                            backgroundColor: "transparent",
-                            alignItems: "center",
+                                ...Class.ChoiceInput_InputContainer,
                             }}
                         >
                             {this.renderText()}
@@ -104,9 +87,8 @@ export default class ChoiceInput extends React.Component<Props, State> {
         if (this.props.value) {
             return (
                 <Text
-                    style={[Type.HEADER_5, {
-                            marginBottom: 3,
-                            color: this.props.textColor ? this.props.textColor : TEXT_GREY,
+                    style={[Type.HEADER_5, Class.TextInputType, {
+                        ...(this.props.placeholderColor && { color: this.props.placeholderColor })
                         }]
                     }
                 >
@@ -116,9 +98,8 @@ export default class ChoiceInput extends React.Component<Props, State> {
         } else if (this.props.placeholder) {
             return (
                 <Text
-                    style={[Type.HEADER_5, {
-                        marginBottom: 3,
-                        color: this.props.placeholderColor ? this.props.placeholderColor : TEXT_GREY,
+                    style={[Type.HEADER_5, Class.TextInputType, {
+                        ...(this.props.placeholderColor && { color: this.props.placeholderColor })
                     }]}
                 >
                     {this.props.placeholder}
@@ -131,7 +112,7 @@ export default class ChoiceInput extends React.Component<Props, State> {
         }
     }
 
-    renderChoice = () => {
+    private renderChoice = () => {
         const result = 
             this.props.choices.find((val) => {
                 return val.value === this.props.value;
@@ -143,13 +124,12 @@ export default class ChoiceInput extends React.Component<Props, State> {
         return "";
     }
 
-    renderIcon = () => {
+    private renderIcon = () => {
         return (
             <Icon
                 name={"chevron-right"}
                 type={"feather"}
-                color={TEXT_GREY}
-                size={20}
+                {...Custom.ChoiceInput_Icon}
                 style={{
                 }}
             ></Icon>

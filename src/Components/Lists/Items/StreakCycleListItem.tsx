@@ -5,7 +5,7 @@ import Item from "src/Components/Lists/Items/base/Item";
 import { ListItem, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
 import { Navigation, ScreenParams } from "src/common/Navigator";
-import { SECONDARY_COLOR, PRIMARY_COLOR } from "src/Components/Styled/Styles";
+import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
 
 export interface Props {
     item: StreakCycle,
@@ -73,23 +73,20 @@ export class StreakCycleListItem extends Item<Props, State, StreakCycle> {
             return {
                 subtext: "Complete",
                 type: "complete",
-                color: SECONDARY_COLOR,
-                size: 30,
+                ...Custom.ListItem_Icon2
             } as const;
         } else {
             if(MyDate.WithinInclusive(start, end, MyDate.Now().toDate()) || MyDate.YBeforeX(start, MyDate.Now().toDate()) ) {
                 return {
                     subtext: "In progress",
                     type: "in-progress",
-                    color: SECONDARY_COLOR,
-                    size: 30,
+                    ...Custom.ListItem_Icon2
                 } as const;
             } else {
                 return {
                     subtext: "Incomplete",
                     type: "not-complete",
-                    color: PRIMARY_COLOR,
-                    size: 30,
+                    ...Custom.ListItem_Icon,
                 } as const;
             }
         }

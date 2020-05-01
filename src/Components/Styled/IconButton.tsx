@@ -2,11 +2,8 @@ import React from "react";
 import { View, Text, StyleProp, ViewStyle, ScrollView } from "react-native";
 import { Icon } from "react-native-elements";
 import { Icon as I } from "src/Components/Styled/Icon";
-
-import { 
-    LEFT_SECOND_MARGIN, ICON_CONTAINER_WIDTH, PRIMARY_COLOR, 
-} from "src/Components/Styled/Styles";
 import { TouchableView } from "../Basic/Basic";
+import { Custom } from "./StyleSheets";
 
 interface Props {
     type: "add" | "edit" | "more" | "settings" | "enable" | "disable" | "complete" | "delete" | "save" | 
@@ -47,13 +44,17 @@ export default class IconButton extends React.Component<Props, State> {
 
     private renderI = () => {
         let type = this.props.type;
+        const props = {
+            ...Custom.IconButton_Icon,
+            ...(this.props.color && {color: this.props.color}),
+            ...(this.props.size && {size: this.props.size }),
+            ...(this.props.backgroundColor && {backgroundColor: this.props.backgroundColor})
+        }
 
         return (
             <I
                 type={type}
-                color={this.props.color ? this.props.color : PRIMARY_COLOR}
-                size={this.props.size ? this.props.size : 29}
-                backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : "white"}
+                {...props}
                 accessibilityLabel={this.props.accessibilityLabel}
                 backgroundHeight={this.props.overlaySize}
             ></I>

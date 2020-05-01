@@ -1,10 +1,10 @@
 
+import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 import React from "react";
 import { View, Text, TextInput as TInput, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { ColumnView } from "src/Components/Basic/Basic";
 import Input from "src/Components/Inputs/base/Input";
 import { Label, TextInput } from "src/Components/Styled/Styled";
-import { CONTAINER_VERTICAL_MARGIN } from "src/Components/Styled/Styles";
 
 export interface Props {
     title: string;
@@ -37,11 +37,7 @@ export default class StringInput extends Input<Props, State> {
 
     render = () => {
         return (
-            <ColumnView style={[{
-                flex: 0,
-                backgroundColor: "transparent",
-                marginBottom: 2 * CONTAINER_VERTICAL_MARGIN,
-            }, this.props.style]}>
+            <ColumnView style={[Class.InputContainer, this.props.style]}>
                 <Label
                     text={this.props.title}
                 ></Label>

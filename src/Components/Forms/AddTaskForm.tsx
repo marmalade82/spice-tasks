@@ -15,7 +15,6 @@ import { mapTo } from "rxjs/operators";
 import MyDate from "src/common/Date";
 import { EventDispatcher, IEventDispatcher, fromEvent } from "src/common/EventDispatcher";
 import { Props as DateProps } from "src/Components/inputs/DateTimeInput";
-import { ROW_CONTAINER_HEIGHT } from "../Styled/Styles";
 import FootSpacer from "../Basic/FootSpacer";
 import { dueDate, startDate } from "./common/utils";
 import { LocalState } from "src/Screens/common/StateProvider";

@@ -4,7 +4,7 @@ import Item from "src/Components/Lists/Items/base/Item";
 import { ListItem, ModalIconButton, ModalRow, DateInput } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
 import { Navigation, ScreenParams } from "src/common/Navigator";
-import { SECONDARY_COLOR, PRIMARY_COLOR } from "src/Components/Styled/Styles";
+import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
 
 interface Props {
     item: Task
@@ -127,21 +127,19 @@ export default class TaskListItem extends Item<Props, State, Task> {
                 if(state === "complete") {
                     return {
                         type: "complete",
-                        color: SECONDARY_COLOR,
-                        size: 30,
+                        ...Custom.ListItem_Icon2
                     } as const;
                 } else if (state === "cancelled") {
                     return {
                         type: "not-complete",
-                        color: PRIMARY_COLOR,
-                        size: 30,
+                        ...Custom.ListItem_Icon
                     } as const;
                 }
             }
         }
         return {
             type: "task",
-            color: SECONDARY_COLOR,
+            ...Custom.ListItem_Icon2
         } as const;
 
     }
