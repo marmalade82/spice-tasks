@@ -51,6 +51,11 @@ export default class MyDate {
         return actual > due;
     }
 
+    startOf = (unit: timeUnit) => {
+        this.m.startOf(unit);
+        return this;
+    }
+
     asStartDate = () => {
         this.prevMidnight();
         return this;

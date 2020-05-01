@@ -10,7 +10,7 @@ import {
 import FootSpacer from "src/Components/Basic/FootSpacer";
 import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navigator";
 
-import { BarChart, ProgressCircle } from "react-native-svg-charts";
+import { BarChart, ProgressCircle, LineChart, YAxis, Grid } from "react-native-svg-charts";
 import TaskQuery, { Task } from "src/Models/Task/TaskQuery";
 import { map } from "rxjs/operators";
 import moment from "moment";
@@ -18,7 +18,7 @@ import { randomNormal } from "d3";
 import * as R from "ramda";
 import { combineLatest } from "rxjs";
 import GoalQuery from "src/Models/Goal/GoalQuery";
-import { Text } from "react-native-svg";
+import { Text, G, Line } from "react-native-svg";
 import { BACKGROUND_GREY, TAB_GREY } from "src/Components/Styled/Styles";
 
 interface Props {
@@ -32,6 +32,9 @@ interface State {
 
     goalLastWeek: number;
     goalLastMonth: number;
+
+    taskUtilizationWeek: number[];
+    taskUtilizationMonth: number[];
 }
 
 
@@ -54,6 +57,9 @@ export default class ReportsScreen extends React.Component<Props, State> {
 
             goalLastWeek: 0,
             goalLastMonth: 0,
+
+            taskUtilizationWeek: [],
+            taskUtilizationMonth: [],
         }
         this.unsub = () => {}
         this.navigation = new ScreenNavigation(this.props);
@@ -105,11 +111,66 @@ export default class ReportsScreen extends React.Component<Props, State> {
             })
         })
 
+        const utilWeekTaskSub = combineLatest(
+            new TaskQuery().queryLastDays(14).observe()
+        ).pipe(map(([tasks]) => {
+            const groupedByDate = R.groupBy(sameDay, tasks)
+            const counted = R.mapObjIndexed((tasks) => {
+                return tasks.length;
+            }, groupedByDate)
+
+            const countsByDay = R.map((count) => {
+                let date = MyDate.Now().subtract(count, "days").asStartDate().format("YYYY-MM-DD");
+                if(counted[date] !== undefined) {
+                    return counted[date];
+                }
+
+                return 0;
+            }, R.reverse(R.range(0, 14)))
+
+            return countsByDay;
+
+            function sameDay(task: Task) {
+                return new MyDate(task.dueDate).asStartDate().format("YYYY-MM-DD");
+            }
+        })).subscribe((counts) => {
+            this.setState({
+                taskUtilizationWeek: counts,
+            })
+        })
+
+        const utilMonthTaskSub = combineLatest(
+            new TaskQuery().queryLastWeeks(7).observe()
+        ).pipe(map(([tasks]) => {
+            const groupedByWeek: Record<string, Task[]> = R.groupBy(sameWeek, tasks) 
+            const countsByWeek = R.map((count) => {
+                let date = MyDate.Now().subtract(count, "weeks").startOf("weeks").asStartDate().format("YYYY-MM-DD")
+                if(groupedByWeek[date] !== undefined) {
+                    return groupedByWeek[date].length;
+                }
+                return 0;
+
+            }, R.reverse(R.range(0, 7)))
+
+            return countsByWeek;
+
+            function sameWeek(task: Task) {
+                return new MyDate(task.dueDate).startOf("weeks").asStartDate().format("YYYY-MM-DD")
+            }
+        })).subscribe((counts) => {
+            this.setState({
+                taskUtilizationMonth: counts,
+            })
+        })
+
         this.unsub = () => {
             sevenDaysSub.unsubscribe();
             lastMonthTaskSub.unsubscribe();
             lastWeekGoalSub.unsubscribe();
             lastMonthGoalSub.unsubscribe();
+
+            utilWeekTaskSub.unsubscribe();
+            utilMonthTaskSub.unsubscribe();
         }
     }
 
@@ -163,6 +224,20 @@ export default class ReportsScreen extends React.Component<Props, State> {
                         }}
                     ]}
                 ></Card>
+                <Card
+                    style={{
+                        marginBottom: 20,
+                    }}
+                    title={"Tasks Over Time"}
+                    pages = {[
+                        { label: "14d", render: () => {
+                            return this.renderLine(this.state.taskUtilizationWeek)
+                        }},
+                        { label: "7w", render: () => {
+                            return this.renderLine(this.state.taskUtilizationMonth, "green")
+                        }}
+                    ]}
+                ></Card>
             </React.Fragment> 
         )
     }
@@ -200,6 +275,40 @@ export default class ReportsScreen extends React.Component<Props, State> {
         function percent(n: number) {
             return Math.round(n * 100).toString();
         }
+    }
+
+    private renderLine = (counts: number[], color?: string) => {
+        const def = "darkblue";
+        const contentInset ={ top: 0, bottom: 10, left: 0, right: 0 };
+
+        const max = R.sort((a, b) => b - a, counts)[0];
+        
+        return (
+            <View
+                style={{
+                    flexDirection: "row-reverse",
+                    justifyContent: "flex-start",
+                    alignItems: "stretch",
+                    backgroundColor: "transparent",
+                    flexWrap: "nowrap",
+                    zIndex: -1000,
+                }}
+            >
+                <LineChart
+                    style={{ width: "100%", height: 200 }}
+                    data={counts}
+                    min={0}
+                    numberOfTicks={20}
+                    svg={{ 
+                        stroke: color? color : def ,
+                        strokeWidth: 3,
+                    }}
+                    contentInset={contentInset}
+                >
+                </LineChart>
+            </View>
+        )
+
     }
 }
 
@@ -285,3 +394,21 @@ function Card(props: CardProps) {
         })
     }
 }
+
+const CustomGrid = ({ x, y, data, ticks }) => (
+    <G>
+        {
+            // Horizontal grid
+            ticks.map(tick => (
+                <Line
+                    key={ tick }
+                    x1={ '0%' }
+                    x2={ '100%' }
+                    y1={ y(tick) }
+                    y2={ y(tick) }
+                    stroke={ 'rgba(0,0,0,0.2)' }
+                />
+            ))
+        }
+    </G>
+)
