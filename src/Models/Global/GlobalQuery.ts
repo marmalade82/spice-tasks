@@ -66,7 +66,7 @@ export class GlobalLogic {
         await this.runDailyNotifications();
     }
 
-    private runRecordRefresh = async () => {
+    runRecordRefresh = async () => {
         const count = 5;
         // process @count of the recurring goals for the day.
         // Keep this logic short so it doesn't take up too much resources.

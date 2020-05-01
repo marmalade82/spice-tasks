@@ -16,18 +16,14 @@ import GlobalQuery, { GlobalLogic } from "src/Models/Global/GlobalQuery";
  * @param timeUntilNext 
  */
 function scheduleRefresh(mins: number, cancel: () => boolean, timeUntilNext?: number) {
-    const minutes = (1000 * 60) * mins;
+    const ms = (1000 * 60) * mins;
     async function run() {
         // The next refresh should only be scheduled once the current refresh is complete.
         if(!cancel()) {
-            const count = 5;
-            // process @count of the recurring goals for the day.
-            // Keep this logic short so it doesn't take up too much resources.
-            await RecurLogic.processSomeRecurrences(count);
-            await GoalLogic.processSomeStreaks(count);
+            await new GlobalLogic().runRecordRefresh();
         }
 
-        setTimeout(run, minutes);
+        setTimeout(run, ms);
     }
     run();
 }
