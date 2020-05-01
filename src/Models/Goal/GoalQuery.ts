@@ -22,6 +22,7 @@ import StreakCycleQuery, { ChildStreakCycleQuery } from "../Group/StreakCycleQue
 import StreakCycle from "../Group/StreakCycle";
 import { Condition } from "@nozbe/watermelondb/QueryDescription";
 import { assignAll } from "src/common/types";
+import * as R from "ramda";
 
 export class GoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
@@ -305,7 +306,8 @@ export class GoalLogic {
             
         let firstN = take(arr, n? n : arr.length);
         for(let i = 0; i < firstN.length; i++) {
-            // Since only one transaction may run at a time, we might as well do each transaction just 
+            // Since only one transaction may run at a time (we cannot call batch without the full batch), 
+            // we might as well do each transaction just 
             // one at a time.
             await new GoalLogic(firstN[i].id).generateNextStreakTasks();
         }
@@ -353,19 +355,22 @@ export class GoalLogic {
                 }
             }
 
+            /**
+             * In reality, we only need to generate at most this cycle's new streaks and YESTERDAY's 
+             * new streaks. This is because, if the phone has been off for 2 weeks, we assume the 
+             * user does not want to come back to an avalanche of streaks to process. Instead,
+             * we make allowance for the possibility that the user might lose the ability to charge
+             * their phone for one cycle, so we only refresh this cycle cycle and the previous cycle by 
+             * checking if they exist. If not, we create them.
+             */
             const tx = await ActiveTransaction.new();
             let initialLatestCycle = await new ChildStreakCycleQuery(goal.id).latest();
 
             if(initialLatestCycle) {
-                const afterCycles = await new ChildStreakCycleQuery(goal.id).endsAfter(initialLatestCycle.endDate)
-                const latestCycleTasks: Task[] = await new TaskQuery().inStreakCycle(initialLatestCycle.id);
-                const latestCycleEndDate: Date = initialLatestCycle.endDate;
-                const latestCycleStartDate: Date = initialLatestCycle.startDate;
-
-                //Generate all missing cycles.
+                //Generate at most this cycle and previous cycle.
                 const { latestCycleId, newTx } = 
-                        await this._generateNextStreakTasks(latestCycleTasks, goal.id, latestCycleStartDate, unit, 
-                                afterCycles, goal.currentCycleStart());
+                        await this._generateNextStreakTasks(initialLatestCycle, goal.id, unit, 
+                                goal.currentCycleStart());
 
                 tx.consume(newTx);
 
@@ -389,20 +394,20 @@ export class GoalLogic {
         }
     }
 
-    private _generateNextStreakTasks = async (latestTasks: Task[], goalId: string, 
-                                latestCycleStart: Date,
+    private _generateNextStreakTasks = async (latestCycle: StreakCycle, goalId: string, 
                                 unit: "days" | "weeks" | "months",
-                                afterCycles: StreakCycle[],
                                 currentCycleStart: Date): Promise<{ latestCycleId: string, newTx: InactiveTransaction }> => {
+        const latestTasks: Task[] = await new TaskQuery().inStreakCycle(latestCycle.id);
+        const latestCycleStart: Date = latestCycle.startDate;
         // If there was no cycle created after the latest known generated cycle, 
         // we keep generating cycles until we've also generated the current cycle.
-        let start = latestCycleStart;
         const tx = InactiveTransaction.new();
         let latestCycleId = "";
 
-
-        const openCycles = getOpenCycles(latestCycleStart, afterCycles, unit, currentCycleStart);
-        openCycles.forEach((cycle) => {
+        /*Returns latest open cycles in sorted order, ascending* */
+        const latestOpenCycles = await getLatestOpenCycles(currentCycleStart);
+        console.log("OPEN CYCLES: " + JSON.stringify(latestOpenCycles));
+        latestOpenCycles.forEach((cycle) => {
             const newCycle = tx.addCreate(new StreakCycleQuery(), {
                 parentGoalId: goalId,
                 startDate: cycle.start,
@@ -417,69 +422,30 @@ export class GoalLogic {
                 tx.addCreate(new TaskQuery(), clone);
             });
             latestCycleId = newCycle.id;
-            start = newCycle.startDate;
         })
-
-        // Determine whether the latest cycle is one of the already existing cycles, or one
-        // of the newly created cycles.
-        const sortedDescended = afterCycles.sort((a, b) => {
-            return b.startDate.valueOf() - a.startDate.valueOf();
-        })
-        latestCycleId = sortedDescended[0] && sortedDescended[0].startDate > start ? sortedDescended[0].id : latestCycleId;
 
         return {
             newTx: tx,
             latestCycleId: latestCycleId,
         }
 
-        function getOpenCycles(existingPastCycleStart: Date, afterCycles: StreakCycle[], unit: "days" | "weeks" | "months",
-                                currentCycleStart: Date) {
-            const sortedAscendingAfterCycles = afterCycles.sort((a, b) => {
-                return a.startDate.valueOf() - b.startDate.valueOf();
-            })
+        async function getLatestOpenCycles(currentCycleStart: Date) {
             const openCycles: { start: Date, end: Date }[] = [];
 
-            let nextCycleStart = new MyDate(existingPastCycleStart).addCycle(unit);
-
-            // First, generate all cycles between the latest past cycle and the first future cycle
-            const firstAfterCycle = sortedAscendingAfterCycles[0];
-            if(firstAfterCycle) {
-                while(nextCycleStart.toDate() < firstAfterCycle.startDate) {
-                    openCycles.push({
-                        start: nextCycleStart.toDate(),
-                        end: new MyDate(nextCycleStart.toDate()).addIncompleteCycle(unit).toDate()
-                    })
-                    nextCycleStart.addCycle(unit);
-                }
-            }
-
-            // Second, generate all cycles missing within the future cycles
-            nextCycleStart = new MyDate(sortedAscendingAfterCycles.reduce((accDate, current) => {
-                let nextCycleStart = new MyDate(accDate);
-                while( nextCycleStart.toDate() < current.startDate) {
-                    openCycles.push({
-                        start: nextCycleStart.toDate(),
-                        end: new MyDate(nextCycleStart.toDate()).addIncompleteCycle(unit).toDate()
-                    })
-                    nextCycleStart.addCycle(unit);
-                }
-
-                nextCycleStart.addCycle(unit);
-
-                return nextCycleStart.toDate();
-            }, nextCycleStart.toDate()));
-
-            // Finally, generate all cycles remaining, up to and including the current cycle.
-            // Observe that if the condition below holds true at all, then the current
-            // cycle cannot exist yet, since we processed all existing cycles above.
-            while(nextCycleStart.toDate() <= currentCycleStart) {
-                openCycles.push({
-                    start: nextCycleStart.toDate(),
-                    end: new MyDate(nextCycleStart.toDate()).addIncompleteCycle(unit).toDate()
+            const promises = R.map((n) => {
+                const cycleStart = new MyDate(currentCycleStart).subtract(n, unit).asStartDate().toDate();
+                return new StreakCycleQuery().exists(cycleStart, goalId, unit).then((cycles) => {
+                    if(cycles.length === 0) {
+                        openCycles.push({
+                            start: cycleStart,
+                            end: new MyDate(cycleStart).addIncompleteCycle(unit).toDate(),
+                        })
+                    }
                 })
-                nextCycleStart.addCycle(unit);
-            }
 
+            }, R.reverse(R.range(0, 2)))
+
+            await Promise.all(promises)
 
             return openCycles;
         }

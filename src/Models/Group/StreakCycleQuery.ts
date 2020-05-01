@@ -44,6 +44,17 @@ export class StreakCycleQuery extends ModelQuery<StreakCycle, IStreakCycle> {
         )
 
     }
+
+    exists = (cycleStart: Date, parentId: string, unit: "days" | "weeks" | "months") => {
+        const actualStart = new MyDate(cycleStart).asStartDate().toDate();
+        const actualEnd = new MyDate(cycleStart).add(1, unit).add(1, "days").asStartDate().toDate();
+
+        return this.query(
+            Q.where(GroupSchema.name.STARTS_ON, Q.gte(actualStart.valueOf())),
+            Q.where(GroupSchema.name.DUE_ON, Q.lt(actualEnd.valueOf())),
+            Q.where(GroupSchema.name.PARENT, parentId),
+        ).fetch();
+    }
 }
 
 export default StreakCycleQuery;

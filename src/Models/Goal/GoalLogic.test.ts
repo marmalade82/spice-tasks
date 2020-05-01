@@ -21,7 +21,7 @@ import { GoalParentTypes } from "./Goal";
 import { TaskParentTypes } from "../Task/Task";
 
 
-describe("streak tasks recur despite being very far in past" , () => {
+describe("streak tasks recur at most 2 cycles into the past" , () => {
     beforeEach(async() => {
         await destroyAll();
     });
@@ -43,9 +43,9 @@ describe("streak tasks recur despite being very far in past" , () => {
 
         await wait(async () => {
             const tasks = await new TaskQuery().all();
-            expect(tasks.length).toBe(4 + 2 * 4);
+            expect(tasks.length).toBe(4 + 2 * 2); // We only generate at most 2 cycles
             const cycles = await new StreakCycleQuery().all();
-            expect(cycles.length).toBe(1 + 4);
+            expect(cycles.length).toBe(1 + 2);
         });
 
         async function setup() {
@@ -123,9 +123,9 @@ describe("streak tasks recur despite being very far in past" , () => {
 
         await wait(async () => {
             const tasks = await new TaskQuery().all();
-            expect(tasks.length).toBe(4 + 2 * 4);
+            expect(tasks.length).toBe(4 + 2 * 2);
             const cycles = await new StreakCycleQuery().all();
-            expect(cycles.length).toBe(1 + 4);
+            expect(cycles.length).toBe(1 + 2);
         });
 
         async function setup() {
@@ -202,9 +202,9 @@ describe("streak tasks recur despite being very far in past" , () => {
 
         await wait(async () => {
             const tasks = await new TaskQuery().all();
-            expect(tasks.length).toBe(4 + 2 * 4);
+            expect(tasks.length).toBe(4 + 2 * 2);
             const cycles = await new StreakCycleQuery().all();
-            expect(cycles.length).toBe(1 + 4);
+            expect(cycles.length).toBe(1 + 2);
         });
 
         async function setup() {
@@ -772,7 +772,7 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
                     active: true,
                     goalType: GoalType.STREAK,
                     startDate: MyDate.Now().asStartDate().toDate(),
-                    dueDate: MyDate.Now().add(7, "weeks").asDueDate().toDate(),
+                    dueDate: MyDate.Now().add(7, "weeks").subtract(1, "days").asDueDate().toDate(),
                     streakType: "weekly",
                     lastRefreshed: MyDate.Now().toDate(),
                     latestCycleId: "",
@@ -785,10 +785,7 @@ describe("streak goals generate tasks correctly from one cycle to the next", asy
                     endDate: goal.currentCycleEnd(),
                 }, 1))[0];
 
-                const start = {
-
-                }
-                const tasks = (await createTasks({
+                (await createTasks({
                     active: true,
                     parent: {
                         id: cycle.id,

@@ -140,7 +140,7 @@ export default class ReportsScreen extends React.Component<Props, State> {
         })
 
         const utilMonthTaskSub = combineLatest(
-            new TaskQuery().queryLastWeeks(7).observe()
+            new TaskQuery().queryLastWeeks(8).observe()
         ).pipe(map(([tasks]) => {
             const groupedByWeek: Record<string, Task[]> = R.groupBy(sameWeek, tasks) 
             const countsByWeek = R.map((count) => {
@@ -150,7 +150,7 @@ export default class ReportsScreen extends React.Component<Props, State> {
                 }
                 return 0;
 
-            }, R.reverse(R.range(0, 7)))
+            }, R.reverse(R.range(0, 8)))
 
             return countsByWeek;
 
@@ -233,7 +233,7 @@ export default class ReportsScreen extends React.Component<Props, State> {
                         { label: "14d", render: () => {
                             return this.renderLine(this.state.taskUtilizationWeek)
                         }},
-                        { label: "7w", render: () => {
+                        { label: "8w", render: () => {
                             return this.renderLine(this.state.taskUtilizationMonth, "green")
                         }}
                     ]}
