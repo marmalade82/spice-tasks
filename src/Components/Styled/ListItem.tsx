@@ -7,7 +7,7 @@ import { View, Text } from "react-native";
 import { Icon as NIcon } from "react-native-elements";
 import { Icon } from "src/Components/Styled/Styled";
 import { Navigation, ScreenParams } from "src/common/Navigator";
-import { RIGHT_FIRST_MARGIN } from "./Styles";
+import { Class } from "./StyleSheets";
 
 interface Props<T extends keyof ScreenParams> {
     navigation: Navigation<ScreenParams>;
@@ -35,11 +35,7 @@ export default class ListItem<T extends keyof ScreenParams> extends React.Compon
         const {text, subtext, subtext_2, number} = this.props;
         return (
             <ColumnView
-                style={{
-                    borderBottomWidth: 1,
-                    borderBottomColor: "lightgrey",
-                    backgroundColor: "white",
-                }}
+                style={[Class.ListItem_Container]}
                 accessibilityLabel={this.props.accessibilityLabel}
             >
                 <TouchableOpacity style={{
@@ -49,19 +45,8 @@ export default class ListItem<T extends keyof ScreenParams> extends React.Compon
                         this.props.navigation.push(this.props.destination, this.props.params)
                     }}
                 >
-                    <RowView style={{
-                        justifyContent: "flex-start",
-                        paddingLeft: 15,
-                        paddingRight: RIGHT_FIRST_MARGIN,
-                        backgroundColor: "white",
-                        alignItems: "stretch",
-                    }}>
-                        <RowView style={{
-                            flex: 1,
-                            justifyContent: "flex-start",
-                            alignItems: "center",
-                            backgroundColor: "white"
-                        }}>
+                    <RowView style={Class.ListItem_DisplayContainer}>
+                        <RowView style={Class.ListItem_Main}>
                             <Icon
                                 type={this.props.type ? this.props.type : "none"}
                                 backgroundColor={"transparent"}
@@ -69,75 +54,36 @@ export default class ListItem<T extends keyof ScreenParams> extends React.Compon
                                 size={this.props.size}
                             ></Icon>
                             <ColumnView
-                                style={{
-                                    flex: 1,
-                                    justifyContent: "flex-start",
-                                    alignItems: "stretch",
-                                    backgroundColor: "white"
-                                }}
+                                style={Class.ListItem_TextContainer}
                             >
-                                <Text style={{
-                                        marginTop: 15,
-                                        marginLeft: 9,
-                                        backgroundColor: "white",
-                                    }}
+                                <HeaderText 
+                                    level={3} 
+                                    style={Class.ListItem_MainText }
                                 >
-                                    <HeaderText 
-                                        level={3} 
-                                        style={{
-                                            width: 5,       
-                                            backgroundColor: "white",
-                                        }}
-                                    >
-                                        {text}
-                                    </HeaderText>
-                                </Text>
+                                    {text}
+                                </HeaderText>
                                 <RowView
-                                    style={{
-                                        flex: 1,
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                        backgroundColor: "white",
-                                    }}
+                                    style={Class.ListItem_SubTextContainer }
                                 >
-                                    <Text style={{
+                                    <HeaderText level={5} style={{
                                             flex: 1,
-                                            marginTop: 2,
-                                            marginLeft: 9,
-                                            marginBottom: 15,
+                                            ...Class.ListItem_Subtext,
                                         }}
-                                    >
-                                        <HeaderText level={5} style={{
-                                            }}
-                                        > 
-                                            {subtext} 
-                                        </HeaderText>
-                                    </Text>
-                                    <Text style={{
+                                    > 
+                                        {subtext} 
+                                    </HeaderText>
+                                    <HeaderText level={5} style={{
                                             flex: 0,
-                                            marginTop: 2,
-                                            marginLeft: 9,
-                                            marginBottom: 15,
-                                            backgroundColor: "white",
+                                            ...Class.ListItem_Subtext,
                                         }}
-                                    >
-                                        <HeaderText level={5} style={{
-                                            }}
-                                        > 
-                                            {subtext_2 ? subtext_2 : ""} 
-                                        </HeaderText>
-                                    </Text>
+                                    > 
+                                        {subtext_2 ? subtext_2 : ""} 
+                                    </HeaderText>
                                 </RowView>
                             </ColumnView>
                         </RowView>
 
-                        <RowReverseView style={{
-                            flex: 0,
-                            justifyContent: "flex-start",
-                            minWidth: 60,
-                            backgroundColor: "white",
-                            alignItems: "center",
-                        }}>
+                        <RowReverseView style={Class.ListItem_IconContainer}>
                             {this.renderFooterIcons()}
                         </RowReverseView>
                     </RowView>

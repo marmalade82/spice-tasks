@@ -2,7 +2,6 @@ import React from "react";
 import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 import IconButton from "src/Components/Styled/IconButton";
 import { ScrollView, View, Modal as ReactModal, TouchableWithoutFeedback } from "react-native";
-import { LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, RIGHT_SECOND_MARGIN, OVERLAY, MODAL_VERTICAL_PADDING } from "./Styles";
 
 interface Props {
     visible: boolean;
@@ -40,12 +39,7 @@ export default class Modal extends React.Component<Props, State> {
                         this.props.onRequestClose();
                     }}
                 >
-                    <View style={[{
-                            flex: 1,
-                            backgroundColor: OVERLAY,
-                            paddingLeft: RIGHT_SECOND_MARGIN,
-                            paddingRight: RIGHT_SECOND_MARGIN,
-                        }, Layout.CENTERED]}
+                    <View style={[Class.Modal_Overlay, Layout.CENTERED]}
                     >
                         <TouchableWithoutFeedback
                             style={{
@@ -57,16 +51,8 @@ export default class Modal extends React.Component<Props, State> {
                             touchSoundDisabled={true}
                         >
                             <View style={{
-                                    flex: 0,
-                                    maxHeight: "80%",
+                                    ...Class.Modal_Content,
                                     height: this.props.height,
-                                    justifyContent: "flex-start",
-                                    alignItems: "stretch",
-                                    backgroundColor: "white",
-                                    width: "100%",
-                                    paddingTop: MODAL_VERTICAL_PADDING,
-                                    paddingBottom: MODAL_VERTICAL_PADDING,
-                                    overflow: "visible"
                                 }}
                                 accessibilityLabel={this.props.accessibilityLabel ? "modal-" + this.props.accessibilityLabel : undefined}
                             >

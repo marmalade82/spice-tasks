@@ -237,6 +237,134 @@ export const Class = StyleSheet.create({
     ScreenHeader_RightContainer: {
         justifyContent: "flex-start",
         backgroundColor: S.PRIMARY_COLOR,
+    },
+    InlineDateInput_Container: {
+        flex: 0,
+        backgroundColor: "transparent",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        marginTop: 0,
+    },
+    InlineDateInput_InputContainer: {
+        flex: 0,
+        justifyContent: "space-between",
+        backgroundColor: "transparent",
+        alignItems: "flex-end",
+        paddingLeft: 3,
+        paddingRight: 7,
+        borderColor: S.TEXT_GREY,
+        borderBottomWidth: 1,
+    },
+    Label_Container: {
+        flex: 0,
+        paddingLeft: S.LEFT_SECOND_MARGIN,
+        justifyContent: "flex-start",
+        alignItems: "center",
+        backgroundColor: "transparent",
+        height: 30,
+    },
+    ListItem_Container: {
+        borderBottomWidth: 1,
+        borderBottomColor: "lightgrey",
+        backgroundColor: "white",
+    },
+    ListItem_DisplayContainer: {
+        justifyContent: "flex-start",
+        paddingLeft: 15,
+        paddingRight: S.RIGHT_FIRST_MARGIN,
+        backgroundColor: "white",
+        alignItems: "stretch",
+    },
+    ListItem_Main: {
+        flex: 1,
+        justifyContent: "flex-start",
+        alignItems: "center",
+        backgroundColor: "white"
+    },
+    ListItem_IconContainer: {
+        flex: 0,
+        justifyContent: "flex-start",
+        minWidth: 60,
+        backgroundColor: "white",
+        alignItems: "center",
+    },
+    ListItem_TextContainer: {
+        flex: 1,
+        justifyContent: "flex-start",
+        alignItems: "stretch",
+        backgroundColor: "white"
+    },
+    ListItem_MainText: {
+        backgroundColor: "white",
+        marginTop: 15,
+        marginLeft: 9,
+    },
+    ListItem_SubTextContainer: {
+        flex: 1,
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: "white",
+    },
+    ListItem_Subtext: {
+        marginTop: 2,
+        marginLeft: 9,
+        marginBottom: 15,
+        backgroundColor: "white",
+    },
+    ListPicker_Container: {
+        justifyContent: "flex-start",
+        backgroundColor: "transparent",
+    },
+    ListPicker_TopSelectors: {
+        flex: 0,
+        justifyContent: "flex-start",
+        marginBottom: S.CONTAINER_VERTICAL_MARGIN,
+        backgroundColor: "white",
+        elevation: S.CONTAINER_ELEVATION,
+    },
+    ListPicker_TopLists: {
+        flex: 1,
+        justifyContent: "flex-start",
+        backgroundColor: "transparent",
+        marginBottom: S.CONTAINER_VERTICAL_MARGIN,
+    },
+    ListPicker_BottomSelectors: {
+        flex: 0,
+        justifyContent: "flex-start",
+        marginTop: S.CONTAINER_VERTICAL_MARGIN,
+        backgroundColor: "white",
+        elevation: S.CONTAINER_ELEVATION,
+    },
+    ListPicker_BottomLists: {
+        flex: 1,
+        justifyContent: "flex-start",
+        backgroundColor: "transparent",
+    },
+    ListPicker_Selector: {
+        borderColor: "lightgrey",
+    },
+    ListPicker_IconContainer: {
+        position: "relative",
+        backgroundColor: 'transparent',
+        flexDirection: "row-reverse",
+        justifyContent: "flex-start"
+    },
+    Modal_Overlay: {
+        flex: 1,
+        backgroundColor: S.OVERLAY,
+        paddingLeft: S.RIGHT_SECOND_MARGIN,
+        paddingRight: S.RIGHT_SECOND_MARGIN,
+    },
+    Modal_Content: {
+        flex: 0,
+        maxHeight: "80%",
+        justifyContent: "flex-start",
+        alignItems: "stretch",
+        backgroundColor: "white",
+        width: "100%",
+        paddingTop: S.MODAL_VERTICAL_PADDING,
+        paddingBottom: S.MODAL_VERTICAL_PADDING,
+        overflow: "visible"
     }
 })
 

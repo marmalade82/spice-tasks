@@ -4,7 +4,7 @@ import { ColumnView, RowView, RowReverseView, ColumnReverseView } from "src/Comp
 import { ClickRow } from "./Styled";
 import { Icon } from "react-native-elements";
 import { View, StyleProp, ViewStyle } from "react-native";
-import { CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION } from "./Styles";
+import { Class } from "./StyleSheets";
 
 interface Props {
     lists: List[]
@@ -48,26 +48,12 @@ export default class ListPicker extends DataComponent<Props, State, State> {
     render = () => {
         if(this.props.layout === "top") {
             return (
-                <ColumnView style={[{
-                        justifyContent: "flex-start",
-                        backgroundColor: "transparent",
-                    }, this.props.style]}
+                <ColumnView style={[Class.ListPicker_Container, this.props.style]}
                 >
-                    <ColumnView style={{
-                        flex: 0,
-                        justifyContent: "flex-start",
-                        marginBottom: CONTAINER_VERTICAL_MARGIN,
-                        backgroundColor: "white",
-                        elevation: CONTAINER_ELEVATION,
-                    }}>
+                    <ColumnView style={Class.ListPicker_TopSelectors}>
                         { this.renderSelectors() }
                     </ColumnView>
-                    <ColumnView style={{
-                        flex: 1,
-                        justifyContent: "flex-start",
-                        backgroundColor: "transparent",
-                        marginBottom: CONTAINER_VERTICAL_MARGIN,
-                    }}>
+                    <ColumnView style={Class.ListPicker_TopLists}>
                         { this.renderLists() }
                     </ColumnView>
 
@@ -75,24 +61,11 @@ export default class ListPicker extends DataComponent<Props, State, State> {
             );
         } else {
             return (
-                <ColumnReverseView style={{
-                    justifyContent: "flex-start",
-                    backgroundColor: "transparent",
-                }}>
-                    <ColumnView style={{
-                        flex: 0,
-                        justifyContent: "flex-start",
-                        marginTop: CONTAINER_VERTICAL_MARGIN,
-                        backgroundColor: "white",
-                        elevation: CONTAINER_ELEVATION,
-                    }}>
+                <ColumnReverseView style={[Class.ListPicker_Container, this.props.style]}>
+                    <ColumnView style={Class.ListPicker_BottomSelectors}>
                         { this.renderSelectors() }
                     </ColumnView>
-                    <ColumnView style={{
-                        flex: 1,
-                        justifyContent: "flex-start",
-                        backgroundColor: "transparent",
-                    }}>
+                    <ColumnView style={Class.ListPicker_BottomLists}>
                         { this.renderLists() }
                     </ColumnView>
 
@@ -102,7 +75,7 @@ export default class ListPicker extends DataComponent<Props, State, State> {
         }
     }
 
-    renderSelectors = () => {
+    private renderSelectors = () => {
         return this.props.lists.map((list, index) => {
             const {number, text} = list.selector;
             return (
@@ -121,7 +94,7 @@ export default class ListPicker extends DataComponent<Props, State, State> {
                     style={{
                         borderTopWidth: index === 0 ? 1 : 0,
                         borderBottomWidth: index === this.props.lists.length - 1 ? 0 : 1,
-                        borderColor: "lightgrey",
+                        ...Class.ListPicker_Selector
                     }}
                     accessibilityLabel={"view-" + (index + 1).toString() }
                 >
@@ -130,16 +103,12 @@ export default class ListPicker extends DataComponent<Props, State, State> {
         })
     }
 
-    renderIcon = (index: number) => {
+    private renderIcon = (index: number) => {
         if(this.data().current === index) {
             return () => {
+                ///Styles TODO : Fix this icon's styles?
                 return (
-                    <View style={{
-                        position: "relative",
-                        backgroundColor: 'transparent',
-                        flexDirection: "row-reverse",
-                        justifyContent: "flex-start"
-                    }}>
+                    <View style={Class.ListPicker_IconContainer}>
                         <Icon
                             name='check'
                             type='octicon'
@@ -169,7 +138,7 @@ export default class ListPicker extends DataComponent<Props, State, State> {
         }
     }
 
-    renderLists = () => {
+    private renderLists = () => {
         const current = this.props.lists[this.data().current]
         if(current) {
             return current.list();

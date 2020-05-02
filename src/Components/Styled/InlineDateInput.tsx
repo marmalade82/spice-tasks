@@ -2,9 +2,6 @@
 import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
 import React from "react";
 import { RowView, ColumnView, HeaderText, TouchableView, BodyText } from "src/Components/Basic/Basic";
-import { 
-    TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
-} from "src/Components/Styled/Styles";
 import { StyleProp, Button, ViewStyle, TextInput as TInput, Text } from "react-native";
 import { 
     View, Platform, DatePickerIOS, 
@@ -56,13 +53,7 @@ export default class InlineDateInput extends React.Component<Props, State> {
     render = () => {
         return (
 
-            <RowView style={[{
-                    flex: 0,
-                    backgroundColor: "transparent",
-                    justifyContent: "flex-start",
-                    alignItems: "center",
-                    marginTop: 0,
-                }, this.props.style]}
+            <RowView style={[Class.InlineDateInput_Container, this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}
             >
 
@@ -104,16 +95,9 @@ export default class InlineDateInput extends React.Component<Props, State> {
 
     private renderInput = () => {
         return (
-            <RowView style={{
-                    flex: 0,
-                    justifyContent: "space-between",
-                    backgroundColor: "transparent",
-                    alignItems: "flex-end",
-                    paddingLeft: 3,
-                    paddingRight: 7,
-                    borderColor: this.props.readonly ? "transparent" : (this.props.underlineColor ? this.props.underlineColor : TEXT_GREY),
-                    borderBottomWidth: 1,
-                }}
+            <RowView style={[Class.InlineDateInput_InputContainer, {
+                    ...(this.props.underlineColor && { borderColor: this.props.underlineColor })
+                }]}
             >
                 {this.renderText()}
             </RowView>
@@ -130,9 +114,8 @@ export default class InlineDateInput extends React.Component<Props, State> {
         } else if (this.props.placeholder) {
             return (
                 <Text
-                    style={[Type.HEADER_5, {
-                        marginBottom: 3,
-                        color: this.props.placeholderColor ? this.props.placeholderColor : TEXT_GREY,
+                    style={[Type.HEADER_5, Class.TextInputType, {
+                        ...(this.props.placeholderColor && { color: this.props.placeholderColor })
                     }]}
                 >
                     {this.props.placeholder}
