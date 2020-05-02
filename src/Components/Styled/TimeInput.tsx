@@ -1,13 +1,6 @@
 import React from "react";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
 import { RowView, ColumnView, HeaderText, TouchableView } from "src/Components/Basic/Basic";
-import { 
-    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, 
-    TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
-    PLACEHOLDER_GREY, PRIMARY_COLOR, ICON_CONTAINER_WIDTH,
-    CONTAINER_VERTICAL_MARGIN,
-    TEXT_HORIZONTAL_MARGIN,
-} from "src/Components/Styled/Styles";
 import { StyleProp, Button, ViewStyle, TextInput as TInput, Text } from "react-native";
 import { 
     View, Platform, DatePickerIOS, 
@@ -78,25 +71,13 @@ export default class TimeInput extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <RowView style={[{
-                    flex: 0,
-                    backgroundColor: "transparent",
-                    paddingLeft: LEFT_FIRST_MARGIN,
-                    paddingRight: RIGHT_SECOND_MARGIN,
-                    justifyContent: "flex-start",
-                    alignItems: "flex-end",
-                    marginTop: 0,
-                }, this.props.style]}
+            <RowView style={[Class.TimeInput_Container, this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}
             >
                 {this.renderLeftIcon()}
-                <ColumnView style={{
-                    flex: 1,
-                    backgroundColor: "transparent",
-                    borderColor: this.props.readonly ? "transparent" : (this.props.underlineColor ? this.props.underlineColor : TEXT_GREY),
-                    borderBottomWidth: 1,
-                    marginLeft: TEXT_HORIZONTAL_MARGIN,
-                }}>
+                <ColumnView style={[Class.TimeInput_Decorator, {
+                    ...( (this.props.readonly && { borderColor: "transparent"}) || (this.props.underlineColor && { borderColor: this.props.underlineColor}) )
+                }]}>
                     {this.renderTouchable()}
                     <View style={{
                         flex: 0,
@@ -153,9 +134,8 @@ export default class TimeInput extends React.Component<Props, State> {
         if (this.props.value) {
             return (
                 <Text
-                    style={[Type.HEADER_5, {
-                            marginBottom: 3,
-                            color: this.props.textColor ? this.props.textColor : TEXT_GREY,
+                    style={[Type.HEADER_5, Class.TextInputType, {
+                            ...(this.props.textColor && { color: this.props.textColor })
                         }]
                     }
                 >
@@ -165,9 +145,8 @@ export default class TimeInput extends React.Component<Props, State> {
         } else if (this.props.placeholder) {
             return (
                 <Text
-                    style={[Type.HEADER_5, {
-                        marginBottom: 3,
-                        color: this.props.placeholderColor ? this.props.placeholderColor : TEXT_GREY,
+                    style={[Type.HEADER_5, Class.TextInputType, {
+                        ...(this.props.textColor && { color: this.props.textColor })
                     }]}
                 >
                     {this.props.placeholder}
@@ -186,21 +165,16 @@ export default class TimeInput extends React.Component<Props, State> {
             return(
                 <Icon
                     type={type}
-                    backgroundColor={"transparent"}
-                    color={PRIMARY_COLOR}
+                    {...Custom.AlertIcon}
                     accessibilityLabel={this.props.accessibilityLabel ? type + this.props.accessibilityLabel : type}
                 ></Icon>
             )    
         } else {
             return (
-                <View
-                    style={{
-                        flex: 0,
-                        height: ICON_CONTAINER_WIDTH,
-                        width: ICON_CONTAINER_WIDTH,
-                        backgroundColor:"transparent"
-                    }}
-                ></View>
+                <Icon
+                    type={"none"}
+                    backgroundColor={"transparent"}
+                ></Icon>
             )
         }
     }

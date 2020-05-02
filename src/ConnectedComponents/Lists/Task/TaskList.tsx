@@ -16,9 +16,7 @@ import { View } from "react-native";
 import { observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
 import EmptyListItem from "src/Components/Lists/Items/EmptyListItem";
 import SwipeRow, { SwipeRight } from "src/Components/Basic/SwipeRow";
-import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT, CONTAINER_ELEVATION } from "src/Components/Styled/Styles";
 import EmptyList from "src/Components/Lists/EmptyList";
-import { prependToMemberExpression } from "@babel/types";
 import { OnTaskAction } from "src/Components/Lists/Items/TaskListItem";
 import StreakCycleQuery, { ChildStreakCycleQuery } from "src/Models/Group/StreakCycleQuery";
 import { switchMap } from "rxjs/operators";
@@ -28,8 +26,6 @@ import { Observable} from "rxjs";
 import { merge } from "rxjs/operators";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 import MyDate from "src/common/Date";
-import SidescrollPicker from "src/Components/Styled/SidescrollPicker";
-import * as v from "voca";
 import { FilterBarProps, getProviderData, Range, Direction, FilterData, makeFilterState, compare } from "../common/types";
 import { IReadLocalState, LocalState } from "src/Screens/common/StateProvider";
 

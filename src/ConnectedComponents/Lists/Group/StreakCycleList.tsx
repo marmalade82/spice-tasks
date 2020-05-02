@@ -5,14 +5,10 @@ import React, { useRef } from "react";
 import withObservables from "@nozbe/with-observables";
 
 import List from "src/Components/Lists/base/List";
-import ClickNavigation from "src/Components/Navigation/ClickNavigation";
 import { observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
 import { PagedList } from "src/Components/Styled/Styled";
 import EmptyListItem from "src/Components/Lists/Items/EmptyListItem";
 import EmptyList from "src/Components/Lists/EmptyList";
-import SwipeRow from "src/Components/Basic/SwipeRow";
-import { View } from "react-native"
-import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
 import StreakCycle from "src/Models/Group/StreakCycle";
 import StreakCycleQuery, { ChildStreakCycleQuery } from "src/Models/Group/StreakCycleQuery";
 import { ConnectedStreakCycleListItem } from "src/ConnectedComponents/Lists/Group/StreakCycleListItem";

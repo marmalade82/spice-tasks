@@ -9,13 +9,10 @@ import withObservables from "@nozbe/with-observables";
 
 import GoalQuery, { ActiveGoalQuery } from "src/Models/Goal/GoalQuery";
 import List from "src/Components/Lists/base/List";
-import ClickNavigation from "src/Components/Navigation/ClickNavigation";
 import { observableWithRefreshTimer } from "src/Models/Global/GlobalQuery";
 import { PagedList } from "src/Components/Styled/Styled";
 import EmptyListItem from "src/Components/Lists/Items/EmptyListItem";
 import SwipeRow, { SwipeRight } from "src/Components/Basic/SwipeRow";
-import { View } from "react-native"
-import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
 import { OnGoalAction } from "src/Components/Lists/Items/GoalListItem";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 import EmptyList from "src/Components/Lists/EmptyList";

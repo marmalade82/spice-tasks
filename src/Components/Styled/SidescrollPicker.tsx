@@ -1,6 +1,5 @@
 import React from "react";
 import { FlatList, View, Button, StyleProp, ViewStyle } from "react-native";
-import { TAB_GREY, PLACEHOLDER_GREY, BACKGROUND_GREY, BORDER_GREY, LEFT_FIRST_MARGIN, RIGHT_FIRST_MARGIN, ICON_CONTAINER_WIDTH, TEXT_HORIZONTAL_MARGIN, MODAL_ROW_HEIGHT, TEXT_GREY, RIGHT_SECOND_MARGIN, TEXT_VERTICAL_MARGIN, LEFT_SECOND_MARGIN, SECONDARY_COLOR, PRIMARY_COLOR_LIGHT } from "./Styles";
 import { BodyText, TouchableView, RowView, HeaderText } from "../Basic/Basic";
 import { Icon } from "./Icon";
 import { ModalIconButton, DateInput } from "./Styled";
@@ -10,6 +9,7 @@ import InlineDateInput from "./InlineDateInput";
 import MyDate from "src/common/Date";
 import { ILocalState } from "src/Screens/common/StateProvider";
 import * as v from "voca";
+import { Class, Custom, spacer } from "./StyleSheets";
 
 export function makeChoices<Choice>(filters: Choice[]) {
     return filters.map((filter) => {
@@ -55,7 +55,6 @@ export interface State<Filters, Sorters> {
 }
 
 const marginHorizontal = 13;
-const spacer = 10;
 
 export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Filters, Sorters>, State<Filters, Sorters>> {
     constructor(props: Props<Filters, Sorters>) {
@@ -156,10 +155,7 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
         return (
             <RowView
                 style={{
-                    flex: 0,
-                    justifyContent: "flex-start",
-                    alignItems: "center",
-                    marginRight: TEXT_HORIZONTAL_MARGIN,
+                    ...Class.SidescrollPicker_HeaderContainer,
                     backgroundColor: backgroundColor(),
                 }}
             >
@@ -179,26 +175,13 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
         let {label, ...rest} = this.props;
         if(label !== undefined) {
             return (
-                <RowView style={{
-                        flex: 0,
-                        height: 50,
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        backgroundColor: PRIMARY_COLOR_LIGHT,
-                        paddingLeft: LEFT_SECOND_MARGIN,
-                        paddingRight: RIGHT_FIRST_MARGIN,
-                    }}
+                <RowView style={Class.SidescrollPicker_LabelContainer }
                 >
-                    <HeaderText style={{
-                        color: TEXT_GREY,
-                    }} level={2}>{label}</HeaderText>
+                    <HeaderText style={Class.SidescrollPicker_LabelHeader} level={2}>{label}</HeaderText>
                     <FilterModal
-                        backgroundColor={PRIMARY_COLOR_LIGHT}
+                        {...Custom.SidescrollPicker_FilterModal}
                         {...rest}
-                        style={{
-                            position: "absolute",
-                            right: RIGHT_FIRST_MARGIN,
-                        }}
+                        style={Class.SidescrollPicker_FilterModal}
                     ></FilterModal>
                 </RowView>
             )
@@ -237,17 +220,11 @@ function renderLabelBase<Thing>(current: Thing, item: LabelValue<Thing>, margin:
     function colorStyles(current: Thing, actual: Thing) {
         if(current === actual) {
             return {
-                backgroundColor: TAB_GREY,
-                borderColor: TAB_GREY,
-                borderWidth: 1,
-                borderRadius: 20,
+                ...Class.ActiveContainer
             } as const
         } else {
             return {
-                backgroundColor: BACKGROUND_GREY,
-                borderColor: BORDER_GREY,
-                borderWidth: 1,
-                borderRadius: 20,
+                ...Class.InactiveContainer
             } as const;
         }
 
@@ -256,11 +233,11 @@ function renderLabelBase<Thing>(current: Thing, item: LabelValue<Thing>, margin:
     function textStyles(current: Thing, actual: Thing) {
         if(current === actual) {
             return {
-                color: "white",
+                ...Class.ActiveText
             } as const;
         } else {
             return {
-                color: "black",
+                ...Class.InactiveText
             } as const;
         }
     }
@@ -322,13 +299,10 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                         showSorting: showModal,
                     })
                 }}
-                size={23}
                 type={"sort"}
                 backgroundColor={this.props.backgroundColor}
-                color={TAB_GREY}
-                style={[{
-                    marginLeft: LEFT_FIRST_MARGIN,
-                    borderColor: BORDER_GREY,
+                {...Custom.FilterModal_Icon}
+                style={[Class.FilterModal_Icon, {
                     backgroundColor: this.props.backgroundColor,
                 }, this.props.style]}
                 onModalClose={() => {
@@ -348,14 +322,7 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
             return (
                 <React.Fragment>
                     <RowView
-                        style={{
-                            flex: 0,
-                            height: MODAL_ROW_HEIGHT,
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            marginLeft: LEFT_FIRST_MARGIN,
-                            marginRight: RIGHT_FIRST_MARGIN,
-                        }}>
+                        style={Class.FilterModal_FilterSection}>
                         <HeaderText
                             level={2}
                             style={{}}
@@ -365,16 +332,13 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                     </RowView>
                     <View
                         style={{
-                            flex: 0,
-                            flexDirection: "row",
-                            justifyContent: "flex-start",
+                            ...Class.FilterModal_FilterList,
                             backgroundColor: backgroundColor(),
                         }}
                     >
                         <View
                             style={{
                                 paddingVertical: 10,
-                                //marginLeft: RIGHT_FIRST_MARGIN + ICON_CONTAINER_WIDTH,
                             }}
                         >
                             <FlatList
@@ -400,8 +364,8 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
         return (
             <TouchableView
                 style={{
-                    flex: 0,
-                    paddingLeft: index === 0 ? LEFT_FIRST_MARGIN : 0,
+                    ...Class.FilterModal_Filter,
+                    ...(index !== 0 && { paddingLeft: 0 })
                 }}
                 onPress={() => {
                     this.setState({
@@ -421,14 +385,7 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
             return (
                 <React.Fragment>
                     <RowView
-                        style={{
-                            flex: 0,
-                            height: MODAL_ROW_HEIGHT,
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            marginLeft: LEFT_FIRST_MARGIN,
-                            marginRight: RIGHT_FIRST_MARGIN,
-                        }}
+                        style={Class.FilterModal_SorterSection}
                     >
                         <HeaderText
                             level={2}
@@ -449,25 +406,10 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                         </RowView>
                     </RowView>
                     <RowView
-                        style={{
-                            flex: 0,
-                            height: MODAL_ROW_HEIGHT,
-                            width: "100%",
-                            justifyContent: "flex-start",
-                            alignItems: "stretch",
-                            marginLeft: LEFT_FIRST_MARGIN,
-                            marginRight: RIGHT_FIRST_MARGIN,
-                        }}
+                        style={Class.FilterModal_SorterContainer}
                     >
                         <View
-                            style={{
-                                flex: 1,
-                                flexDirection: "row",
-                                width: "100%",
-                                justifyContent: "flex-start",
-                                alignItems: "center",
-                                flexWrap: "wrap",
-                            }}
+                            style={Class.FilterModal_SorterContent}
                         >
                             { this.renderSorters() }
                         </View>
@@ -505,14 +447,7 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
         return (
             <React.Fragment>
                 <RowView
-                    style={{
-                        flex: 0,
-                        height: MODAL_ROW_HEIGHT,
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginLeft: LEFT_FIRST_MARGIN,
-                        marginRight: RIGHT_FIRST_MARGIN,
-                    }}
+                    style={Class.FilterModal_RangeSection }
                 >
                     <HeaderText
                         level={2}
@@ -591,18 +526,10 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
         return (
             <React.Fragment>
                 <RowView
-                    style={{
-                        justifyContent: "flex-end",
-                        marginRight: RIGHT_SECOND_MARGIN / 2,
-                    }}
+                    style={Class.FilterModal_CloseContainer}
                 >
                     <TouchableView
-                        style={{
-                            flex: 0,
-                            marginLeft: spacer,
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
+                        style={Class.FilterModal_CloseCancelContainer}
                         onPress={() => {
                             this.setState({
                                 showSorting: false,
@@ -610,19 +537,10 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                             this.resetState();
                         }}
                     >
-                        <HeaderText style={{
-                            fontSize: 14,
-                            marginVertical: TEXT_VERTICAL_MARGIN,
-                            marginHorizontal: TEXT_HORIZONTAL_MARGIN,
-                        }} level={3}>CANCEL</HeaderText>
+                        <HeaderText style={Class.FilterModal_CloseCancel} level={3}>CANCEL</HeaderText>
                     </TouchableView>
                     <TouchableView
-                        style={{
-                            flex: 0,
-                            marginLeft: spacer,
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
+                        style={Class.FilterModal_CloseCancelContainer}
                         onPress={() => {
                             const corrected: [Date, Date] | undefined = this.state.range !== undefined ? [
                                 new MyDate(this.state.range[0]).asStartDate().toDate(),
@@ -639,11 +557,7 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                             })
                         }}
                     >
-                        <HeaderText style={{
-                            fontSize: 14,
-                            marginVertical: TEXT_VERTICAL_MARGIN,
-                            marginHorizontal: TEXT_HORIZONTAL_MARGIN,
-                        }} level={3}>OK</HeaderText>
+                        <HeaderText style={Class.FilterModal_CloseCancel}  level={3}>OK</HeaderText>
                     </TouchableView>
                 </RowView>
             </React.Fragment>
@@ -655,35 +569,17 @@ function renderRange(range: undefined | [Date, Date], onStartChange: (d: Date) =
     if(range === undefined) {
         return (
             <RowView
-                style={{
-                    flex: 0,
-                    width: "100%",
-                    height: MODAL_ROW_HEIGHT,
-                }}
+                style={Class.FilterModal_EmptyRangeContainer}
 
             ></RowView>
         )
     } else {
         return (
             <RowView
-                style={{
-                    height: MODAL_ROW_HEIGHT,
-                    flex: 0,
-                    justifyContent: "flex-start",
-                    alignItems: "stretch",
-                    marginLeft: LEFT_FIRST_MARGIN,
-                    marginRight: RIGHT_FIRST_MARGIN,
-                }}
+                style={Class.FilterModal_RangeContainer}
             >
                 <View
-                    style={{
-                        flex: 1,
-                        flexDirection: "row",
-                        width: "100%",
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        flexWrap: "wrap",
-                    }}
+                    style={Class.FilterModal_RangeContent }
                 >
                         <BodyText
                             style={{
@@ -750,27 +646,21 @@ function renderArrows(direction: "up" | "down", accessibilityLabel: string, onPr
 
     function colorStyles(current: "up" | "down", actual: "up" | "down") {
         const styles = {
-            //marginBottom: spacer,
-            //marginRight: spacer,
             marginLeft: spacer,
         }
         if(current === actual) {
             return {
-                backgroundColor: TAB_GREY,
-                color: "white",
+                ...Custom.FilterModal_ActiveArrow,
                 style: {
-                    borderColor: TAB_GREY,
-                    borderWidth: 1,
+                    ...Class.FilterModal_ActiveArrow,
                     ...styles
                 }
             }
         } else {
             return {
-                backgroundColor: BACKGROUND_GREY,
-                color: "black",
+                ...Custom.FilterModal_InactiveArrow,
                 style: {
-                    borderColor: BORDER_GREY,
-                    borderWidth: 1,
+                    ...Class.FilterModal_InactiveArrow,
                     ...styles
                 }
             }

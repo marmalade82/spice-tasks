@@ -1,8 +1,8 @@
 import React from "react";
 import { ColumnView, RowView, TouchableView, BodyText, HeaderText } from "src/Components/Basic/Basic";
-import { ROW_CONTAINER_HEIGHT, CONTAINER_ELEVATION, LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, PRIMARY_COLOR_LIGHT, PRIMARY_COLOR } from "src/Components/Styled/Styles";
 import { Button, StyleProp, ViewStyle } from "react-native";
 import { Navigation, ScreenParams } from "src/common/Navigator";
+import { Class, Layout } from "./StyleSheets";
 
 
 export interface Props<Item, Screen extends keyof ScreenParams> {
@@ -43,11 +43,7 @@ export default class PagedList<Item, Screen extends keyof ScreenParams> extends 
 
     render = () => {
         return (
-            <ColumnView style={[
-                {   elevation: CONTAINER_ELEVATION,
-                    flex: 0,
-                    backgroundColor: "white",
-                }, this.props.style]}
+            <ColumnView style={[Class.PagedList_Container, this.props.style]}
             >
                 {this.renderItems(this.getItems())}
                 {this.renderFooter()}
@@ -77,11 +73,9 @@ export default class PagedList<Item, Screen extends keyof ScreenParams> extends 
     private renderFooter = () => {
         if(this.props.items.length > this.props.pageMax) {
             return (
-                <ColumnView style={{flex: 0, height: ROW_CONTAINER_HEIGHT, justifyContent: "center"}}>
+                <ColumnView style={Class.PagedList_FooterContainer}>
                     <TouchableView
-                        style={{
-                            marginLeft: LEFT_SECOND_MARGIN,
-                        }}
+                        style={Layout.Left_Second_Margin }
                         onPress={() => {
                             const { navigation, destination, params } = this.props.navParams;
                             navigation.push(destination, params);
@@ -89,7 +83,6 @@ export default class PagedList<Item, Screen extends keyof ScreenParams> extends 
                     >
                         <HeaderText 
                             style={{
-                                color: "black"
                             }}
                             level={3}
                         >View all ({this.props.items.length})</HeaderText>
@@ -99,29 +92,5 @@ export default class PagedList<Item, Screen extends keyof ScreenParams> extends 
         }
 
         return null;
-    }
-
-    renderPageContainer = () => {
-        if(this.props.items.length > this.props.pageMax) {
-            return (
-                <ColumnView 
-                    style={{ 
-                        flex: 0,
-                        backgroundColor: "white",
-                    }}
-                >
-                    {this.renderPageLocation()}
-                </ColumnView>
-            );
-        } else {
-            return null;
-        }
-    }
-
-    renderPageLocation = () => {
-        const text = `${this.state.currentPage + 1} of ${ Math.ceil(this.props.items.length / this.props.pageMax) }`
-        return (
-            <BodyText style={{}}>{text}</BodyText>
-        );
     }
 }

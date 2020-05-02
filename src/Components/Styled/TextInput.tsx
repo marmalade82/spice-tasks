@@ -1,12 +1,6 @@
 import React from "react";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
 import { RowView, ColumnView, HeaderText } from "src/Components/Basic/Basic";
-import { 
-    LEFT_FIRST_MARGIN, LEFT_SECOND_MARGIN, 
-    TEXT_VERTICAL_MARGIN, RIGHT_SECOND_MARGIN, TEXT_GREY,
-    PLACEHOLDER_GREY, TEXT_HORIZONTAL_MARGIN,
-    CONTAINER_VERTICAL_MARGIN, ICON_CONTAINER_WIDTH, PRIMARY_COLOR,
-} from "src/Components/Styled/Styles";
 import { StyleProp, ViewStyle, TextInput as Input } from "react-native";
 import { View } from "react-native";
 import { Icon } from "./Icon";
@@ -44,35 +38,22 @@ export default class TextInput extends React.Component<Props> {
 
     render = () => {
         return (
-            <RowView style={[{
-                    flex: 0,
-                    backgroundColor: "transparent",
-                    paddingLeft: LEFT_FIRST_MARGIN,
-                    paddingRight: RIGHT_SECOND_MARGIN,
-                    justifyContent: "flex-start",
-                    alignItems: "flex-end",
-                    marginTop: 0,
-                }, this.props.style]}
+            <RowView style={[Class.TextInput_Container , this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}
             >
                 {this.renderIcon()}
-                <ColumnView style={{
-                    flex: 1,
-                    backgroundColor: "transparent",
-                    borderColor: this.props.underlineColor ? this.props.underlineColor : TEXT_GREY,
-                    borderBottomWidth: 1,
-                    marginLeft: TEXT_HORIZONTAL_MARGIN,
-                }}>
+                <ColumnView style={[Class.TextInput_Decorator, {
+                    ...(this.props.underlineColor && {borderColor: this.props.underlineColor})
+                }]}>
                     <Input
                         value={this.props.value}
                         onChangeText={this.props.onChangeText}
                         placeholder={this.props.placeholder}
-                        placeholderTextColor={this.props.placeholderColor ? this.props.placeholderColor : PLACEHOLDER_GREY}
+                        {...Custom.MultilineInput_TextInput}
+                        {...(this.props.placeholderColor && {placeholderTextColor: this.props.placeholderColor}) }
                         style={[ Type.HEADER_5, {
-                            width: "100%",
-                            padding: 0,
-                            marginBottom: 3,
-                            color: this.props.textColor ? this.props.textColor : TEXT_GREY,
+                            ...Class.MultilineInput_Text,
+                            ...(this.props.textColor && {color: this.props.textColor})
                         }]}
                         multiline={this.props.multiline ? true : false}
                         numberOfLines={this.props.multiline ? 1 : undefined}
@@ -91,21 +72,17 @@ export default class TextInput extends React.Component<Props> {
             return(
                 <Icon
                     type={this.iconType()}
-                    backgroundColor={"transparent"}
-                    color={PRIMARY_COLOR}
+                    {...Custom.AlertIcon}
                     accessibilityLabel={this.props.accessibilityLabel ? "mandatory-" + this.props.accessibilityLabel : "mandatory"}
                 ></Icon>
             )    
         } else {
             return (
-                <View
-                    style={{
-                        flex: 0,
-                        height: ICON_CONTAINER_WIDTH,
-                        width: ICON_CONTAINER_WIDTH,
-                        backgroundColor:"transparent"
-                    }}
-                ></View>
+                <Icon
+                    type={"none"}
+                    backgroundColor={"transparent"}
+                >
+                </Icon>
             )
         }
 

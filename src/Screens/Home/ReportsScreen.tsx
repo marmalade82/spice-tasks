@@ -13,13 +13,11 @@ import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navi
 import { BarChart, ProgressCircle, LineChart, YAxis, Grid } from "react-native-svg-charts";
 import TaskQuery, { Task } from "src/Models/Task/TaskQuery";
 import { map } from "rxjs/operators";
-import moment from "moment";
-import { randomNormal } from "d3";
 import * as R from "ramda";
 import { combineLatest } from "rxjs";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import { Text, G, Line } from "react-native-svg";
-import { BACKGROUND_GREY, TAB_GREY } from "src/Components/Styled/Styles";
+import { Class } from "src/Components/Styled/StyleSheets";
 
 interface Props {
     navigation: object;
@@ -324,12 +322,7 @@ function Card(props: CardProps) {
 
     return (
         <View
-            style={[{
-                backgroundColor: "white",
-                margin: 15,
-                elevation: 10,
-                padding: 10,
-            }, props.style]}
+            style={[Class.Card_Container, props.style]}
         >
             <HeaderText style={{
                 marginBottom: 20
@@ -339,13 +332,7 @@ function Card(props: CardProps) {
             </HeaderText>
             {renderCurrent()}
             <View
-                style={{
-                    flexDirection: "row",
-                    justifyContent: "flex-start",
-                    alignItems: "stretch",
-                    height: 40,
-                    marginTop: 10,
-                }}
+                style={Class.Card_LabelContainer}
             >
                 {renderLabels()}
             </View>
@@ -361,21 +348,13 @@ function Card(props: CardProps) {
     }
 
     function renderLabels() { 
-        const active = TAB_GREY;
-        const inactive = "white";
-
         return props.pages.map((page, index) => {
             const { label } = page;
             return (
                 <TouchableView key={label} 
                     style={{
-                        padding: 3,
-                        paddingHorizontal: 10,
-                        borderRadius: 5,
-                        marginRight: 3,
-                        backgroundColor: current === index ? active : inactive,
-                        justifyContent: "center",
-                        alignItems: "center",
+                        ...Class.Card_Label,
+                        ...( (current !== index && Class.Card_InactiveLabelContainer) || (Class.Card_ActiveLabelContainer) )
                     }}
                     onPress={() => {
                         setCurrent(index)
@@ -383,8 +362,8 @@ function Card(props: CardProps) {
                 >
                     <HeaderText
                         style={{
-                            color: current === index ? inactive : active,
-                            fontSize: 15,
+                            ...Class.Card_LabelText,
+                            ...( (current !== index && Class.Card_InactiveLabelText) || (Class.Card_ActiveLabelText) )
                         }}
                         level={3}
                     >
@@ -395,21 +374,3 @@ function Card(props: CardProps) {
         })
     }
 }
-
-const CustomGrid = ({ x, y, data, ticks }) => (
-    <G>
-        {
-            // Horizontal grid
-            ticks.map(tick => (
-                <Line
-                    key={ tick }
-                    x1={ '0%' }
-                    x2={ '100%' }
-                    y1={ y(tick) }
-                    y2={ y(tick) }
-                    stroke={ 'rgba(0,0,0,0.2)' }
-                />
-            ))
-        }
-    </G>
-)

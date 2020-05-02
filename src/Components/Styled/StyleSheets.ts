@@ -3,6 +3,8 @@ import { StyleSheet } from "react-native";
 
 import * as S from "./Styles";
 
+export const spacer = 10;
+
 export const Layout = StyleSheet.create({
     CENTERED: {
         justifyContent: "center",
@@ -33,6 +35,9 @@ export const Layout = StyleSheet.create({
     },
     Left_First_Margin: {
         marginLeft: S.LEFT_FIRST_MARGIN
+    },
+    Left_Second_Margin: {
+        marginLeft: S.LEFT_SECOND_MARGIN
     },
 })
 
@@ -439,6 +444,242 @@ export const Class = StyleSheet.create({
     },
     NavigationRow_IconText: {
         color: "white",
+    },
+    PagedList_Container: {
+        elevation: S.CONTAINER_ELEVATION,
+        flex: 0,
+        backgroundColor: "white",
+    },
+    PagedList_FooterContainer: {
+        flex: 0, 
+        height: S.ROW_CONTAINER_HEIGHT, 
+        justifyContent: "center"
+    },
+    SidescrollPicker_HeaderContainer: { 
+        flex: 0,
+        justifyContent: "flex-start",
+        alignItems: "center",
+        marginRight: S.TEXT_HORIZONTAL_MARGIN,
+    },
+    SidescrollPicker_LabelContainer: {
+        flex: 0,
+        height: 50,
+        justifyContent: "flex-start",
+        alignItems: "center",
+        backgroundColor: S.PRIMARY_COLOR_LIGHT,
+        paddingLeft: S.LEFT_SECOND_MARGIN,
+        paddingRight: S.RIGHT_FIRST_MARGIN,
+    },
+    SidescrollPicker_LabelHeader: {
+        color: S.TEXT_GREY,
+    },
+    SidescrollPicker_FilterModal: {
+        position: "absolute",
+        right: S.RIGHT_FIRST_MARGIN,
+    },
+    ActiveContainer: {
+        backgroundColor: S.TAB_GREY,
+        borderColor: S.TAB_GREY,
+        borderWidth: 1,
+        borderRadius: 20,
+    },
+    InactiveContainer: {
+        backgroundColor: S.BACKGROUND_GREY,
+        borderColor: S.BORDER_GREY,
+        borderWidth: 1,
+        borderRadius: 20,
+    },
+    ActiveText: {
+        color: "white"
+    },
+    InactiveText: {
+        color: "black"
+    },
+    FilterModal_Icon: {
+        marginLeft: S.LEFT_FIRST_MARGIN,
+        borderColor: S.BORDER_GREY,
+    },
+    FilterModal_FilterSection: {
+        flex: 0,
+        height: S.MODAL_ROW_HEIGHT,
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginLeft: S.LEFT_FIRST_MARGIN,
+        marginRight: S.RIGHT_FIRST_MARGIN,
+    },
+    FilterModal_FilterList: {
+        flex: 0,
+        flexDirection: "row",
+        justifyContent: "flex-start",
+    },
+    FilterModal_Filter: {
+        flex: 0,
+        paddingLeft: S.LEFT_FIRST_MARGIN,
+    },
+    FilterModal_SorterSection: {
+        flex: 0,
+        height: S.MODAL_ROW_HEIGHT,
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginLeft: S.LEFT_FIRST_MARGIN,
+        marginRight: S.RIGHT_FIRST_MARGIN,
+    },
+    FilterModal_SorterContainer: {
+        flex: 0,
+        height: S.MODAL_ROW_HEIGHT,
+        width: "100%",
+        justifyContent: "flex-start",
+        alignItems: "stretch",
+        marginLeft: S.LEFT_FIRST_MARGIN,
+        marginRight: S.RIGHT_FIRST_MARGIN,
+    },
+    FilterModal_SorterContent: {
+        flex: 1,
+        flexDirection: "row",
+        width: "100%",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        flexWrap: "wrap",
+    },
+    FilterModal_RangeSection: {
+        flex: 0,
+        height: S.MODAL_ROW_HEIGHT,
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginLeft: S.LEFT_FIRST_MARGIN,
+        marginRight: S.RIGHT_FIRST_MARGIN,
+    },
+    FilterModal_CloseContainer: {
+        justifyContent: "flex-end",
+        marginRight: S.RIGHT_SECOND_MARGIN / 2,
+    },
+    FilterModal_CloseCancelContainer: {
+        flex: 0,
+        marginLeft: spacer,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    FilterModal_CloseCancel: {
+        fontSize: 14,
+        marginVertical: S.TEXT_VERTICAL_MARGIN,
+        marginHorizontal: S.TEXT_HORIZONTAL_MARGIN,
+    },
+    FilterModal_EmptyRangeContainer: {
+        flex: 0,
+        width: "100%",
+        height: S.MODAL_ROW_HEIGHT,
+    },
+    FilterModal_RangeContainer: {
+        height: S.MODAL_ROW_HEIGHT,
+        flex: 0,
+        justifyContent: "flex-start",
+        alignItems: "stretch",
+        marginLeft: S.LEFT_FIRST_MARGIN,
+        marginRight: S.RIGHT_FIRST_MARGIN,
+    },
+    FilterModal_RangeContent: {
+        flex: 1,
+        flexDirection: "row",
+        width: "100%",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        flexWrap: "wrap",
+    },
+    FilterModal_ActiveArrow: {
+        borderColor: S.TAB_GREY,
+        borderWidth: 1,
+    },
+    FilterModal_InactiveArrow: {
+        borderColor: S.BORDER_GREY,
+        borderWidth: 1,
+    },
+    Summary_Container: {
+        backgroundColor: "white",
+        justifyContent: "flex-start",
+        paddingBottom: 30,
+        marginBottom: S.CONTAINER_VERTICAL_MARGIN,
+        flex: 0,
+        overflow: "hidden",
+        elevation: S.CONTAINER_ELEVATION,
+    },
+    Summary_HeaderContainer: {
+        flex: 0,
+        paddingLeft: S.LEFT_SECOND_MARGIN,
+        paddingRight: S.RIGHT_FIRST_MARGIN,
+    },
+    Summary_HeaderText: {
+        marginTop: S.TEXT_VERTICAL_MARGIN,
+        marginBottom: S.TEXT_VERTICAL_MARGIN,
+    },
+    Summary_HeaderIconContainer: {
+        flex: 0,
+        justifyContent: "flex-end",
+        alignItems: "center",
+        height: S.ROW_HEIGHT,
+        marginTop: 5,
+        backgroundColor: "white",
+    },
+    Summary_HeaderIcon: {
+        flex: 0,
+        marginLeft: S.RIGHT_SECOND_MARGIN / 2,
+    },
+    Summary_BodyContainer: {
+        flex: 0,
+        justifyContent: "flex-start",
+        paddingLeft: S.LEFT_SECOND_MARGIN,
+        paddingRight: S.RIGHT_SECOND_MARGIN,
+        alignItems: "stretch",
+    },
+    TextInput_Container: {
+        ...Common.InputContainer
+    },
+    TextInput_Decorator: {
+        ...Common.InputDecorator
+    },
+    TimeInput_Container: {
+        ...Common.InputContainer,
+    },
+    TimeInput_Decorator: {
+        ...Common.InputDecorator,
+    },
+    Card_Container: {
+        backgroundColor: "white",
+        margin: 15,
+        elevation: 10,
+        padding: 10,
+    },
+    Card_LabelContainer: {
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: "stretch",
+        height: 40,
+        marginTop: 10,
+    },
+    Card_Label: {
+        padding: 3,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+        marginRight: 3,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    Card_LabelText: {
+        fontSize: 15,
+    },
+    Card_ActiveLabelText: {
+        color: "white",
+    },
+    Card_InactiveLabelText: {
+        color: S.TAB_GREY,
+    },
+    Card_ActiveLabelContainer: {
+        backgroundColor: S.TAB_GREY
+    },
+    Card_InactiveLabelContainer: {
+        backgroundColor: "white"
+    },
+    FootSpacer_Container: {
+        flex: 0, marginBottom: S.ROW_CONTAINER_HEIGHT
     }
 })
 
@@ -500,5 +741,24 @@ export const Custom = {
     NavigationRow_Icon: {
         backgroundColor: "white",
         color: S.SECONDARY_COLOR, 
+    },
+    SidescrollPicker_FilterModal: {
+        backgroundColor: S.PRIMARY_COLOR_LIGHT
+    },
+    FilterModal_Icon: {
+        color: S.TAB_GREY,
+        size: 23,
+    },
+    FilterModal_ActiveArrow: {
+        backgroundColor: S.TAB_GREY,
+        color: "white",
+    },
+    FilterModal_InactiveArrow: {
+        backgroundColor: S.BACKGROUND_GREY,
+        color: "black",
+    },
+    ListPicker_Icon: {
+        color: 'green',
+        size: 37,
     }
 }

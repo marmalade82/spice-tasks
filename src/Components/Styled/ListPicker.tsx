@@ -4,7 +4,7 @@ import { ColumnView, RowView, RowReverseView, ColumnReverseView } from "src/Comp
 import { ClickRow } from "./Styled";
 import { Icon } from "react-native-elements";
 import { View, StyleProp, ViewStyle } from "react-native";
-import { Class } from "./StyleSheets";
+import { Class, Custom } from "./StyleSheets";
 
 interface Props {
     lists: List[]
@@ -106,14 +106,12 @@ export default class ListPicker extends DataComponent<Props, State, State> {
     private renderIcon = (index: number) => {
         if(this.data().current === index) {
             return () => {
-                ///Styles TODO : Fix this icon's styles?
                 return (
                     <View style={Class.ListPicker_IconContainer}>
                         <Icon
                             name='check'
                             type='octicon'
-                            color='green'
-                            size={37}
+                            {...Custom.ListPicker_Icon}
                             key={index}
                             containerStyle={{
                                 margin: 0,

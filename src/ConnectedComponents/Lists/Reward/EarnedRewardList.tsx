@@ -12,8 +12,6 @@ import { PagedList } from "src/Components/Styled/Styled";
 import EmptyListItem from "src/Components/Lists/Items/EmptyListItem";
 import EmptyList from "src/Components/Lists/EmptyList";
 import SwipeRow, { SwipeRight } from "src/Components/Basic/SwipeRow";
-import { View } from "react-native";
-import { PRIMARY_COLOR, ROW_CONTAINER_HEIGHT } from "src/Components/Styled/Styles";
 import { OnEarnedRewardAction } from "src/Components/Lists/Items/EarnedRewardListItem";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 
