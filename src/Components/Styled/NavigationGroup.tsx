@@ -1,10 +1,9 @@
 import React from "react";
 import { ColumnView, RowView, BodyText, HeaderText, TouchableView } from "src/Components/Basic/Basic";
-import MyDate from "src/common/Date";
 import { NavigationRow, ScreenHeader, DocumentView } from "src/Components/Styled/Styled";
-import { CONTAINER_VERTICAL_MARGIN, } from "./Styles";
 import { StyleProp, ViewStyle } from "react-native";
 import { Navigation, ScreenParams } from "src/common/Navigator";
+import { Class } from "./StyleSheets";
 
 interface Props<T extends keyof ScreenParams> {
     navigation: Navigation<ScreenParams>
@@ -34,12 +33,7 @@ export default class NavigationGroup<T extends keyof ScreenParams> extends React
     render = () => {
         return (
             <ColumnView
-                style={[{
-                    flex: 0,
-                    backgroundColor: "white",
-                    marginBottom: CONTAINER_VERTICAL_MARGIN,
-                    elevation: 5
-                }, this.props.style]}
+                style={[Class.NavigationGroup_Container, this.props.style]}
             >
                 {this.renderRows()}
             </ColumnView>
@@ -52,16 +46,9 @@ export default class NavigationGroup<T extends keyof ScreenParams> extends React
             this.props.rows.map((row, index) => {
                 let style;
                 if(index === this.props.rows.length - 1) {
-                    style = {
-                        marginBottom: 0,
-                    }
+                    style = Class.NavigationGroup_LastRow;
                 } else {
-                    style= {
-                        marginBottom: 0,
-                        elevation: 0,
-                        borderBottomWidth: 1,
-                        borderColor: "lightgrey",
-                    }
+                    style= Class.NavigationGroup_Row;
                 }
 
                 const { number, icon, text, navParams, 

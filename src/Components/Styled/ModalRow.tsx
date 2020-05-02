@@ -1,12 +1,11 @@
 import React from "react";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
 
 import { 
     ColumnView, RowView, RowReverseView, 
     HeaderText, BodyText, TouchableView,
 } from "src/Components/Basic/Basic";
 import Icon from "src/Components/Styled/Icon";
-import { LEFT_FIRST_MARGIN, MODAL_ROW_HEIGHT, TEXT_HORIZONTAL_MARGIN, PRIMARY_COLOR } from "./Styles";
 
 interface Props {
     text: string;
@@ -30,30 +29,18 @@ export default class ModalRow extends React.Component<Props, State> {
 
     render = () => {
         return (
-            <RowView style={{
-                flex: 0,
-                height: MODAL_ROW_HEIGHT,
-                justifyContent: "flex-start",
-                alignItems: "stretch",
-                paddingLeft: LEFT_FIRST_MARGIN,
-            }}>
+            <RowView style={Class.ModalRow_Container}>
                 <TouchableView
                     style={{flex: 1}} 
                     onPress={this.props.onPress}
                     accessibilityLabel={this.props.accessibilityLabel ? this.props.accessibilityLabel : undefined}
                 >
                     <RowView
-                        style={[{
-                            flex: 1,
-                            width: "100%",
-                            backgroundColor: "white",
-                        }, Layout.CENTERED_SECONDARY]}
+                        style={[Class.ModalRow_Content, Layout.CENTERED_SECONDARY]}
                     >
                         {this.renderIcon()}
                         <HeaderText
-                            style={{
-                                marginLeft: TEXT_HORIZONTAL_MARGIN,
-                            }}
+                            style={Layout.Left_First_Margin}
                             level={3}
                         >
                             {this.props.text}
@@ -71,10 +58,9 @@ export default class ModalRow extends React.Component<Props, State> {
             return (
                 <Icon
                     type={this.props.iconType}
-                    color={PRIMARY_COLOR}
-                    size={25}
                     accessibilityLabel={this.props.accessibilityLabel}
-                    backgroundColor={this.props.iconBackground ? this.props.iconBackground : "white"}
+                    {...Custom.ModalRow_Icon}
+                    {...(this.props.iconBackground && { backgroundColor: this.props.iconBackground })}
                 >
                 </Icon>
             )

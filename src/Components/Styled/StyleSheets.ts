@@ -30,8 +30,10 @@ export const Layout = StyleSheet.create({
     }, 
     Invisible: {
         display: "none"
-    }
-
+    },
+    Left_First_Margin: {
+        marginLeft: S.LEFT_FIRST_MARGIN
+    },
 })
 
 export const Type = StyleSheet.create({
@@ -101,7 +103,14 @@ export const Common = StyleSheet.create({
         borderColor: S.TEXT_GREY, 
         borderBottomWidth: 1,
         marginLeft: S.TEXT_HORIZONTAL_MARGIN,
-    }
+    },
+    StandardIconContainer: {
+        flex: 0,
+        height: S.ICON_CONTAINER_WIDTH,
+        width: S.ICON_CONTAINER_WIDTH,
+        borderRadius: S.ICON_CONTAINER_WIDTH/2,
+        backgroundColor: "transparent",
+    },
 })
 
 
@@ -365,6 +374,71 @@ export const Class = StyleSheet.create({
         paddingTop: S.MODAL_VERTICAL_PADDING,
         paddingBottom: S.MODAL_VERTICAL_PADDING,
         overflow: "visible"
+    },
+    ModalRow_Container: {
+        flex: 0,
+        height: S.MODAL_ROW_HEIGHT,
+        justifyContent: "flex-start",
+        alignItems: "stretch",
+        paddingLeft: S.LEFT_FIRST_MARGIN,
+    },
+    ModalRow_Content: {
+        flex: 1,
+        width: "100%",
+        backgroundColor: "white",
+    },
+    MultilineInput_Container: {
+        ...Common.InputContainer,
+    },
+    MultilineInput_Decorator: {
+        ...Common.InputDecorator
+    },
+    MultilineInput_Text: {
+        width: "100%",
+        padding: 0,
+        marginBottom: 3,
+        color: S.TEXT_GREY,
+    },
+    NavigationGroup_Container: { 
+        flex: 0,
+        backgroundColor: "white",
+        marginBottom: S.CONTAINER_VERTICAL_MARGIN,
+        elevation: 5
+    },
+    NavigationGroup_Row: {
+        marginBottom: 0,
+        elevation: 0,
+        borderBottomWidth: 1,
+        borderColor: "lightgrey",
+    },
+    NavigationGroup_LastRow: {
+        marginBottom: 0,
+    },
+    NavigationRow_Container: {
+        flex: 0,
+        justifyContent: "space-evenly",
+        width: "100%",
+        height: S.ROW_CONTAINER_HEIGHT,
+        marginBottom: S.CONTAINER_VERTICAL_MARGIN,
+        backgroundColor: "white",
+        elevation: S.CONTAINER_ELEVATION,
+    },
+    NavigationRow_RowContainer: {
+        flex: 0,
+        height: S.ROW_HEIGHT,
+        paddingLeft: S.LEFT_FIRST_MARGIN,
+    },
+    NavigationRow_RowText: {
+        margin: S.TEXT_VERTICAL_MARGIN,
+        marginLeft: S.TEXT_HORIZONTAL_MARGIN,
+        marginRight: S.TEXT_HORIZONTAL_MARGIN,
+    },
+    NavigationRow_IconContainer: {
+        ...Common.StandardIconContainer,
+        backgroundColor: S.PRIMARY_COLOR,
+    },
+    NavigationRow_IconText: {
+        color: "white",
     }
 })
 
@@ -414,5 +488,17 @@ export const Custom = {
         color: S.PRIMARY_COLOR,
         size: 29,
         backgroundColor: "white",
+    },
+    ModalRow_Icon: {
+        color: S.PRIMARY_COLOR,
+        size: 25,
+        backgroundColor: "white"
+    },
+    MultilineInput_TextInput: {
+        placeholderTextColor: S.PLACEHOLDER_GREY
+    },
+    NavigationRow_Icon: {
+        backgroundColor: "white",
+        color: S.SECONDARY_COLOR, 
     }
 }

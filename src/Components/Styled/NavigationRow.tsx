@@ -1,10 +1,9 @@
 import React from "react";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
 
 import { View, StyleProp, ViewStyle, StyleSheet } from "react-native";
 import { ColumnView, RowView, BodyText, HeaderText } from "src/Components/Basic/Basic";
 import ClickNavigation from "src/Components/Navigation/ClickNavigation";
-import { ROW_CONTAINER_HEIGHT, ROW_HEIGHT, PRIMARY_COLOR, ICON_CONTAINER_WIDTH, TEXT_VERTICAL_MARGIN, TEXT_HORIZONTAL_MARGIN, LEFT_FIRST_MARGIN, CONTAINER_VERTICAL_MARGIN, CONTAINER_ELEVATION, SECONDARY_COLOR } from "./Styles";
 import StyledIcon from "./Icon";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 
@@ -34,15 +33,7 @@ export default class NavigationRow<T extends keyof ScreenParams> extends React.C
     render = () => {
             return (
                 <View
-                    style={[{
-                        flex: 0,
-                        justifyContent: "space-evenly",
-                        width: "100%",
-                        height: ROW_CONTAINER_HEIGHT,
-                        marginBottom: CONTAINER_VERTICAL_MARGIN,
-                        backgroundColor: "white",
-                        elevation: CONTAINER_ELEVATION,
-                    }, this.props.style]}
+                    style={[Class.NavigationRow_Container, this.props.style]}
                 >
                     {this.renderContent()}
                 </View>
@@ -75,17 +66,9 @@ export default class NavigationRow<T extends keyof ScreenParams> extends React.C
     
     renderRow = () => {
         return (
-                <RowView style={[{
-                    flex: 0,
-                    height: ROW_HEIGHT,
-                    paddingLeft: LEFT_FIRST_MARGIN,
-                }, Layout.CENTERED_SECONDARY]}>
+                <RowView style={[Class.NavigationRow_RowContainer, Layout.CENTERED_SECONDARY]}>
                     { this.renderThumbnail() }
-                    <HeaderText level={3} style={{
-                        margin: TEXT_VERTICAL_MARGIN,
-                        marginLeft: TEXT_HORIZONTAL_MARGIN,
-                        marginRight: TEXT_HORIZONTAL_MARGIN,
-                    }}>
+                    <HeaderText level={3} style={Class.NavigationRow_RowText }>
                         {this.props.text}
                     </HeaderText>
                 </RowView>
@@ -95,15 +78,8 @@ export default class NavigationRow<T extends keyof ScreenParams> extends React.C
     renderThumbnail = () => {
         if(this.props.number !== undefined) {
             return (
-                <View style={[{
-                    height: ICON_CONTAINER_WIDTH,
-                    width: ICON_CONTAINER_WIDTH,
-                    borderRadius: ICON_CONTAINER_WIDTH/2,
-                    backgroundColor: PRIMARY_COLOR,
-                }, Layout.CENTERED]}>
-                    <HeaderText level={3} style={{
-                        color: "white",
-                    }}>
+                <View style={[Class.NavigationRow_IconContainer, Layout.CENTERED]}>
+                    <HeaderText level={3} style={Class.NavigationRow_IconText }>
                         { this.props.number }
                     </HeaderText>
                 </View>
@@ -112,8 +88,7 @@ export default class NavigationRow<T extends keyof ScreenParams> extends React.C
             return (
                 <StyledIcon
                     type={this.props.icon}
-                    backgroundColor={"white"}
-                    color={SECONDARY_COLOR}
+                    {...Custom.NavigationRow_Icon}
                 ></StyledIcon>
             );
         }
