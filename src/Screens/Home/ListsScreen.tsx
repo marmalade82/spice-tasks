@@ -1,27 +1,20 @@
 
 import React from "react";
-import { View, Text } from "react-native";
-import { ColumnView, RowView, BodyText, HeaderText, TouchableView, RowReverseView } from "src/Components/Basic/Basic";
-import MyDate from "src/common/Date";
 import { ScrollView } from "react-native";
 import { 
     NavigationRow, ScreenHeader, DocumentView, 
     NavigationGroup, BackgroundTitle, Summary ,
 } from "src/Components/Styled/Styled";
 
-import { Subscription } from "rxjs";
-import EarnedRewardQuery from "src/Models/Reward/EarnedRewardQuery";
-import EarnedPenaltyQuery from "src/Models/Penalty/EarnedPenaltyQuery";
 import { ConnectedEarnedRewardList } from "src/ConnectedComponents/Lists/Reward/EarnedRewardList";
 import { ConnectedEarnedPenaltyList } from "src/ConnectedComponents/Lists/Penalty/EarnedPenaltyList";
 import EarnedRewardLogic from "src/Models/Reward/EarnedRewardLogic";
 import EarnedPenaltyLogic from "src/Models/Penalty/EarnedPenaltyLogic";
 import FootSpacer from "src/Components/Basic/FootSpacer";
 import { EventDispatcher } from "src/common/EventDispatcher";
-import { HeaderAddButton } from "src/Components/Basic/HeaderButtons";
+import { HeaderAddButton, HeaderSettingsButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
 import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navigator";
-import { TaskParentTypes } from "src/Models/Task/Task";
 import AddModal from "./common/AddModal";
 
 interface Props {
@@ -29,7 +22,6 @@ interface Props {
 }
 
 interface State {
-    showAdd: boolean;
 }
 
 const dispatcher = new EventDispatcher();
@@ -40,10 +32,10 @@ export default class ListsScreen extends React.Component<Props, State> {
             title: 'Lists',
             right: [
                 () => { return (
-                    <HeaderAddButton
+                    <HeaderSettingsButton
                         dispatcher={dispatcher}
                         eventName={getKey(navigation)}
-                    ></HeaderAddButton>
+                    ></HeaderSettingsButton>
                 )}
             ],
         }
@@ -55,7 +47,6 @@ export default class ListsScreen extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            showAdd: false,
         }
 
         this.unsub = () => {};
@@ -64,10 +55,10 @@ export default class ListsScreen extends React.Component<Props, State> {
 
     componentDidMount = () => {
 
-        dispatcher.addEventListener(getKey(this.navigation), this.onClickAdd);
+        dispatcher.addEventListener(getKey(this.navigation), this.onClickSettings);
 
         this.unsub = () => {
-            dispatcher.removeEventListener(getKey(this.navigation), this.onClickAdd);
+            dispatcher.removeEventListener(getKey(this.navigation), this.onClickSettings);
         }
     }
 
@@ -91,10 +82,8 @@ export default class ListsScreen extends React.Component<Props, State> {
         }
     }
 
-    private onClickAdd = () => {
-        this.setState({
-            showAdd: true
-        })
+    private onClickSettings = () => {
+        this.navigation.navigate("Settings", {})
     }
 
     render = () => {
@@ -141,11 +130,6 @@ export default class ListsScreen extends React.Component<Props, State> {
                     ></NavigationList>
                     <FootSpacer></FootSpacer>
                 </ScrollView>
-                <AddModal
-                    visible={this.state.showAdd}
-                    onRequestClose={() => this.setState({ showAdd: false })}
-                    navigation={this.navigation}
-                ></AddModal>
             </DocumentView>
         )
     }

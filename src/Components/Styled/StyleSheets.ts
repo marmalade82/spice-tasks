@@ -388,6 +388,7 @@ export function makeClass (S) {
             width: "100%",
             paddingTop: S.MODAL_VERTICAL_PADDING,
             paddingBottom: S.MODAL_VERTICAL_PADDING,
+            borderRadius: 5,
             overflow: "visible"
         },
         ModalRow_Container: {

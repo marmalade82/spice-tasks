@@ -17,7 +17,7 @@ interface State {
 interface Row<T extends keyof ScreenParams> {
     text: string;
     number?: number;
-    icon?: "goal" | "task" | "reward" | "penalty" | "recur" | "earned_reward" | "earned_penalty";
+    icon?: "goal" | "task" | "reward" | "penalty" | "recur" | "earned_reward" | "earned_penalty" | "settings";
     navParams: ScreenParams[T];
     navDestination: T;
     navType?: "navigate" | "push";

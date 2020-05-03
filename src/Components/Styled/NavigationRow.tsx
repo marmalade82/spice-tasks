@@ -9,7 +9,7 @@ import { Navigation, ScreenParams } from "src/common/Navigator";
 
 interface Props<T extends keyof ScreenParams> {
     number?: number;
-    icon?: "goal" | "task" | "reward" | "penalty" | "recur" | "earned_reward" | "earned_penalty";
+    icon?: "goal" | "task" | "reward" | "penalty" | "recur" | "earned_reward" | "earned_penalty" | "settings";
     text: string;
     navOptions?: navOptions<T>
     style?: StyleProp<ViewStyle>

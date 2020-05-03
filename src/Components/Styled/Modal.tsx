@@ -1,13 +1,14 @@
 import React from "react";
 import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 import IconButton from "src/Components/Styled/IconButton";
-import { ScrollView, View, Modal as ReactModal, TouchableWithoutFeedback } from "react-native";
+import { ScrollView, View, Modal as ReactModal, TouchableWithoutFeedback, StyleProp, ViewStyle } from "react-native";
 
 interface Props {
     visible: boolean;
     onRequestClose: () => void;
     height? : number;
     accessibilityLabel? : string;
+    contentStyle?: StyleProp<ViewStyle>;
 }
 
 interface State {
@@ -53,10 +54,10 @@ export default class Modal extends React.Component<Props, State> {
                             }}
                             touchSoundDisabled={true}
                         >
-                            <View style={{
+                            <View style={[{
                                     ...Class.Modal_Content,
                                     height: this.props.height,
-                                }}
+                                }, this.props.contentStyle]}
                                 accessibilityLabel={this.props.accessibilityLabel ? "modal-" + this.props.accessibilityLabel : undefined}
                             >
                                 <ScrollView>

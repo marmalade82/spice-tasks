@@ -47,3 +47,23 @@ export class HeaderSaveButton extends React.Component<Props> {
         )
     }
 }
+
+export class HeaderSettingsButton extends React.Component<Props> {
+
+    render = () => {
+        const { dispatcher, eventName } = this.props;
+        return (
+            <TouchableView
+                style={{}}
+                onPress={() => {
+                    dispatcher.fireEvent(eventName);
+                }}
+                accessibilityLabel={"settings-button"}
+            >
+                <Icon type={"settings"} color="white" backgroundColor="transparent"
+                    size={20}
+                ></Icon> 
+            </TouchableView>
+        )
+    }
+}
