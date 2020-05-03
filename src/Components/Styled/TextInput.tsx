@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext} from "src/Components/Styled/StyleSheets";
 import { RowView, ColumnView, HeaderText } from "src/Components/Basic/Basic";
 import { StyleProp, ViewStyle, TextInput as Input } from "react-native";
 import { View } from "react-native";
@@ -22,6 +22,8 @@ interface Props {
 }
 
 export default class TextInput extends React.Component<Props> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
 
     iconType = () => {
         switch(this.props.icon) {
@@ -37,6 +39,7 @@ export default class TextInput extends React.Component<Props> {
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <RowView style={[Class.TextInput_Container , this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}
@@ -68,6 +71,7 @@ export default class TextInput extends React.Component<Props> {
     }
 
     renderIcon = () => {
+        const { Class, Common, Custom } = this.context;
         if(this.props.icon) {
             return(
                 <Icon

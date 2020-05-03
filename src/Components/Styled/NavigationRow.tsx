@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext} from "src/Components/Styled/StyleSheets";
 
 import { View, StyleProp, ViewStyle, StyleSheet } from "react-native";
 import { ColumnView, RowView, BodyText, HeaderText } from "src/Components/Basic/Basic";
@@ -25,19 +25,22 @@ interface navOptions<T extends keyof ScreenParams> {
 
 
 export default class NavigationRow<T extends keyof ScreenParams> extends React.Component<Props<T>> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
 
     constructor(props: Props<T> ) {
         super(props);
     }
 
     render = () => {
-            return (
-                <View
-                    style={[Class.NavigationRow_Container, this.props.style]}
-                >
-                    {this.renderContent()}
-                </View>
-            );
+        const { Class, Common, Custom } = this.context;
+        return (
+            <View
+                style={[Class.NavigationRow_Container, this.props.style]}
+            >
+                {this.renderContent()}
+            </View>
+        );
     }
 
     renderContent = () => {
@@ -65,6 +68,7 @@ export default class NavigationRow<T extends keyof ScreenParams> extends React.C
     }
     
     renderRow = () => {
+        const { Class, Common, Custom } = this.context;
         return (
                 <RowView style={[Class.NavigationRow_RowContainer, Layout.CENTERED_SECONDARY]}>
                     { this.renderThumbnail() }
@@ -76,6 +80,7 @@ export default class NavigationRow<T extends keyof ScreenParams> extends React.C
     }
 
     renderThumbnail = () => {
+        const { Class, Common, Custom } = this.context;
         if(this.props.number !== undefined) {
             return (
                 <View style={[Class.NavigationRow_IconContainer, Layout.CENTERED]}>

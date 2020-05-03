@@ -9,7 +9,7 @@ import InlineDateInput from "./InlineDateInput";
 import MyDate from "src/common/Date";
 import { ILocalState } from "src/Screens/common/StateProvider";
 import * as v from "voca";
-import { Class, Custom, spacer } from "./StyleSheets";
+import { StyleSheetContext, spacer } from "./StyleSheets";
 
 export function makeChoices<Choice>(filters: Choice[]) {
     return filters.map((filter) => {
@@ -57,6 +57,8 @@ export interface State<Filters, Sorters> {
 const marginHorizontal = 13;
 
 export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Filters, Sorters>, State<Filters, Sorters>> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props<Filters, Sorters>) {
         super(props);
         let state: State<Filters, Sorters> = {
@@ -146,12 +148,13 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
                 }}
                 accessibilityLabel={"filter-" + item.value + "-" + this.props.accessibilityLabel}
             >
-                {renderLabelBase(this.state.filter, item, "right")}
+                {renderLabelBase(this.state.filter, item, "right", this.context)}
             </TouchableView>
         )
     }
 
     private renderHeader = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <RowView
                 style={{
@@ -172,6 +175,7 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
     }
 
     private renderAsLabel = () => {
+        const { Class, Common, Custom } = this.context;
         let {label, ...rest} = this.props;
         if(label !== undefined) {
             return (
@@ -192,7 +196,8 @@ export class SidescrollPicker<Filters, Sorters> extends React.Component<Props<Fi
 }
 export default SidescrollPicker;
 
-function renderLabelBase<Thing>(current: Thing, item: LabelValue<Thing>, margin: "left" | "right") {
+function renderLabelBase<Thing>(current: Thing, item: LabelValue<Thing>, margin: "left" | "right", context: React.ContextType<typeof StyleSheetContext>) {
+    const { Class, Common, Custom } = context;
     return (
         <View
             style={{
@@ -262,6 +267,8 @@ interface ModalState<Filters, Sorters> {
 }
 
 class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, Sorters>, ModalState<Filters, Sorters>> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: ModalProps<Filters, Sorters>) {
         super(props);
         const localState = this.props.localState;
@@ -289,6 +296,7 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <ModalIconButton
                 data={{
@@ -318,6 +326,7 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
     }
 
     private renderFilterSection = () => {
+        const { Class, Common, Custom } = this.context;
         if(this.props.filters.length > 0) {
             return (
                 <React.Fragment>
@@ -361,6 +370,7 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
     }
 
     private renderFilter = (item: LabelValue<Filters>, index: number) => {
+        const { Class, Common, Custom } = this.context;
         return (
             <TouchableView
                 style={{
@@ -375,12 +385,13 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                 accessibilityLabel={"filter-" + item.value + "-" + this.props.accessibilityLabel}
                 key={item.value as unknown as string}
             >
-                {renderLabelBase(this.state.filter, item, "right")}
+                {renderLabelBase(this.state.filter, item, "right", this.context)}
             </TouchableView>
         )
     }
 
     private renderSorterSection = () => {
+        const { Class, Common, Custom } = this.context;
         if(this.props.sorters.length > 0) {
             return (
                 <React.Fragment>
@@ -402,7 +413,7 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                                 this.setState({
                                     direction: dir
                                 })
-                            })}
+                            }, this.context)}
                         </RowView>
                     </RowView>
                     <RowView
@@ -437,13 +448,14 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                     }}
                     accessibilityLabel={"sort-" + item.value + "-" + this.props.accessibilityLabel}
                 >
-                    {renderLabelBase(this.state.sorter, item, "right")}
+                    {renderLabelBase(this.state.sorter, item, "right", this.context)}
                 </TouchableView>
             )
         })
     }
 
     private renderRangeSection = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <React.Fragment>
                 <RowView
@@ -478,7 +490,7 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                                         range: [prevState.range? prevState.range[0] : MyDate.Now().toDate(), date]
                                     }
                                 })
-                            }
+                            }, this.context
                         )
                     }
             </React.Fragment>
@@ -486,6 +498,7 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
     }
 
     private renderOpts = () => {
+        const { Class, Common, Custom } = this.context;
         let opts: LabelValue<"all" | "range">[] = [
             { label: "All", value: "all", key: "all"} as const,
             { label: "Range", value: "range", key: "range"} as const
@@ -516,13 +529,14 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
                     }}
                     accessibilityLabel={"date-" + item.value + "-" + this.props.accessibilityLabel}
                 >
-                    {renderLabelBase(this.state.range ? "range" : "all", item, "left")}
+                    {renderLabelBase(this.state.range ? "range" : "all", item, "left", this.context)}
                 </TouchableView>
             )
         })
     }
 
     private renderCloseButtons = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <React.Fragment>
                 <RowView
@@ -565,7 +579,9 @@ class FilterModal<Filters, Sorters> extends React.Component<ModalProps<Filters, 
     }
 
 }
-function renderRange(range: undefined | [Date, Date], onStartChange: (d: Date) => void, onEndChange: (d: Date) => void) {
+function renderRange(range: undefined | [Date, Date], onStartChange: (d: Date) => void, onEndChange: (d: Date) => void,
+    context: React.ContextType<typeof StyleSheetContext>) {
+    const { Class, Common, Custom } = context;
     if(range === undefined) {
         return (
             <RowView
@@ -622,7 +638,9 @@ function backgroundColor() {
     return "white";
 }
 
-function renderArrows(direction: "up" | "down", accessibilityLabel: string, onPress: (dir: "up" | "down") => void): JSX.Element[] {
+function renderArrows(direction: "up" | "down", accessibilityLabel: string, onPress: (dir: "up" | "down") => void,
+    context: React.ContextType<typeof StyleSheetContext>): JSX.Element[] {
+    const { Class, Common, Custom } = context;
     return ["ascending" as const, "descending" as const].map((type) => {
         return (
             <TouchableView

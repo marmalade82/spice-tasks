@@ -1,7 +1,7 @@
 import React from "react";
 import { RowView, HeaderText, TouchableView } from "../Basic/Basic";
 import { Icon } from "../Styled/Icon";
-import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 
 export interface Props {
     text: string;
@@ -13,11 +13,14 @@ export interface State {
 }
 
 export default class EmptyList extends React.Component<Props, State> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <RowView
                 style={[Class.EmptyList_Container]}

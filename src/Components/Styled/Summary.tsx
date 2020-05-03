@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 
 import { ColumnView, RowView, RowReverseView, HeaderText, BodyText } from "src/Components/Basic/Basic";
 import { View, Text, StyleProp, ViewStyle, ScrollView, } from "react-native";
@@ -18,11 +18,14 @@ interface State {
 }
 
 export default class Summary extends React.Component<Props, State> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
                 <ColumnView style={[Class.Summary_Container, this.props.style]}>
                     <ScrollView style={{

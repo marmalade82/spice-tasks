@@ -1,5 +1,5 @@
 
-import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 import React from "react";
 import { RowView, ColumnView, HeaderText } from "src/Components/Basic/Basic";
 import { StyleProp, ViewStyle, TextInput as Input } from "react-native";
@@ -16,9 +16,12 @@ interface Props {
 }
 
 export default class MultiLineInput extends React.Component<Props> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
 
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <RowView style={[Class.MultilineInput_Container,  this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}

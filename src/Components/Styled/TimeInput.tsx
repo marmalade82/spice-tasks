@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext} from "src/Components/Styled/StyleSheets";
 import { RowView, ColumnView, HeaderText, TouchableView } from "src/Components/Basic/Basic";
 import { StyleProp, Button, ViewStyle, TextInput as TInput, Text } from "react-native";
 import { 
@@ -30,6 +30,8 @@ interface State {
 }
 
 export default class TimeInput extends React.Component<Props, State> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -70,6 +72,7 @@ export default class TimeInput extends React.Component<Props, State> {
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <RowView style={[Class.TimeInput_Container, this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}
@@ -131,6 +134,7 @@ export default class TimeInput extends React.Component<Props, State> {
     }
 
     private renderText = () => {
+        const { Class, Common, Custom } = this.context;
         if (this.props.value) {
             return (
                 <Text
@@ -160,6 +164,7 @@ export default class TimeInput extends React.Component<Props, State> {
     }
 
     private renderLeftIcon = () => {
+        const { Class, Common, Custom } = this.context;
         if(this.props.icon) {
             let type = this.iconType();
             return(

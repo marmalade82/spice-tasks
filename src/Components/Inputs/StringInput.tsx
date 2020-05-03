@@ -1,5 +1,5 @@
 
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 import React from "react";
 import { View, Text, TextInput as TInput, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { ColumnView } from "src/Components/Basic/Basic";
@@ -25,6 +25,8 @@ interface State {
 
 
 export default class StringInput extends Input<Props, State> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
     }
@@ -36,6 +38,7 @@ export default class StringInput extends Input<Props, State> {
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <ColumnView style={[Class.InputContainer, this.props.style]}>
                 <Label

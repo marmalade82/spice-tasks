@@ -9,6 +9,7 @@
     "resolveJsonModule": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
+    //"noImplicitAny": true,
     "baseUrl": ".",
     "target":"ES6",
     "experimentalDecorators": true,

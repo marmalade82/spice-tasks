@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type } from "src/Components/Styled/StyleSheets";
 import DataComponent from "src/Components/base/DataComponent";
 import { Choices as RecurTypeChoices } from "src/Models/Recurrence/RecurLogic";
 

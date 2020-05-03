@@ -3,7 +3,7 @@ import { ColumnView, RowView, BodyText, HeaderText, TouchableView } from "src/Co
 import { NavigationRow, ScreenHeader, DocumentView } from "src/Components/Styled/Styled";
 import { StyleProp, ViewStyle } from "react-native";
 import { Navigation, ScreenParams } from "src/common/Navigator";
-import { Class } from "./StyleSheets";
+import { StyleSheetContext } from "./StyleSheets";
 
 interface Props<T extends keyof ScreenParams> {
     navigation: Navigation<ScreenParams>
@@ -25,12 +25,15 @@ interface Row<T extends keyof ScreenParams> {
 }
 
 export default class NavigationGroup<T extends keyof ScreenParams> extends React.Component<Props<T>, State> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props<T>) {
         super(props);
     }
 
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <ColumnView
                 style={[Class.NavigationGroup_Container, this.props.style]}
@@ -42,6 +45,7 @@ export default class NavigationGroup<T extends keyof ScreenParams> extends React
 
 
     renderRows = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             this.props.rows.map((row, index) => {
                 let style;

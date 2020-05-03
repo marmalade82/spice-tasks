@@ -4,7 +4,7 @@ import Item from "src/Components/Lists/Items/base/Item";
 import { ListItem, ModalIconButton, ModalRow, DateInput } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
 import { Navigation, ScreenParams } from "src/common/Navigator";
-import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 
 interface Props {
     item: Task
@@ -31,6 +31,8 @@ interface Task {
 }
 
 export default class TaskListItem extends Item<Props, State, Task> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
 
@@ -113,6 +115,7 @@ export default class TaskListItem extends Item<Props, State, Task> {
     }
 
     private iconOpts = () => {
+        const { Class, Common, Custom } = this.context;
         const { id, title, due_date, start_date, active, state } = this.props.item;
         if(this.props.iconIndicates === "completion") {
             if(active) {

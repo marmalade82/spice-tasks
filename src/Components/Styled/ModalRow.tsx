@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext} from "src/Components/Styled/StyleSheets";
 
 import { 
     ColumnView, RowView, RowReverseView, 
@@ -23,11 +23,14 @@ interface State {
 }
 
 export default class ModalRow extends React.Component<Props, State> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <RowView style={Class.ModalRow_Container}>
                 <TouchableView
@@ -51,7 +54,8 @@ export default class ModalRow extends React.Component<Props, State> {
         );
     }
 
-    renderIcon = () => {
+    private renderIcon = () => {
+        const { Class, Common, Custom } = this.context;
         if(this.props.iconType === "none" ) {
             return null;
         } else {

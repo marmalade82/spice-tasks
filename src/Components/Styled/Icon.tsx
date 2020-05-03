@@ -2,7 +2,7 @@
 import React from "react";
 import { View, Text, StyleProp, ViewStyle, ScrollView } from "react-native";
 import { Icon  } from "react-native-elements";
-import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext} from "src/Components/Styled/StyleSheets";
 
 
 interface Props {
@@ -26,11 +26,14 @@ interface State {
 
 
 export default class StyledIcon extends React.Component<Props, State>{
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
                 <View 
                     style={[Class.StandardIconContainer, {
@@ -44,6 +47,7 @@ export default class StyledIcon extends React.Component<Props, State>{
     }
 
     renderIcon = () => {
+        const { Class, Common, Custom } = this.context;
         const transparent = {
             ...Custom.Icon_Transparent,
             ...(this.props.color && { color: this.props.color}),

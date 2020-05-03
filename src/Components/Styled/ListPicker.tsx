@@ -4,7 +4,7 @@ import { ColumnView, RowView, RowReverseView, ColumnReverseView } from "src/Comp
 import { ClickRow } from "./Styled";
 import { Icon } from "react-native-elements";
 import { View, StyleProp, ViewStyle } from "react-native";
-import { Class, Custom } from "./StyleSheets";
+import { StyleSheetContext} from "./StyleSheets";
 
 interface Props {
     lists: List[]
@@ -37,6 +37,8 @@ function Default(): Data {
 }
 
 export default class ListPicker extends DataComponent<Props, State, State> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props)
 
@@ -46,6 +48,7 @@ export default class ListPicker extends DataComponent<Props, State, State> {
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         if(this.props.layout === "top") {
             return (
                 <ColumnView style={[Class.ListPicker_Container, this.props.style]}
@@ -76,6 +79,7 @@ export default class ListPicker extends DataComponent<Props, State, State> {
     }
 
     private renderSelectors = () => {
+        const { Class, Common, Custom } = this.context;
         return this.props.lists.map((list, index) => {
             const {number, text} = list.selector;
             return (
@@ -104,6 +108,7 @@ export default class ListPicker extends DataComponent<Props, State, State> {
     }
 
     private renderIcon = (index: number) => {
+        const { Class, Common, Custom } = this.context;
         if(this.data().current === index) {
             return () => {
                 return (

@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 import { ColumnView, RowView, BodyText, HeaderText, RowReverseView, TouchableView } from "src/Components/Basic/Basic";
 import { Icon } from "src/Components/Styled/Styled";
 import { View, StyleProp, ViewStyle } from "react-native";
@@ -13,11 +13,14 @@ interface Props {
 }
 
 export default class ScreenHeader extends React.Component<Props> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <RowView style={[Class.ScreenHeader_Container, Layout.CENTERED_SECONDARY, this.props.style]}>
                 {this.renderBack()}

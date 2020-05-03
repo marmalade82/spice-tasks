@@ -7,7 +7,7 @@ import { View, Text } from "react-native";
 import { Icon as NIcon } from "react-native-elements";
 import { Icon } from "src/Components/Styled/Styled";
 import { Navigation, ScreenParams } from "src/common/Navigator";
-import { Class } from "./StyleSheets";
+import { StyleSheetContext } from "./StyleSheets";
 
 interface Props<T extends keyof ScreenParams> {
     navigation: Navigation<ScreenParams>;
@@ -27,11 +27,14 @@ interface Props<T extends keyof ScreenParams> {
 }
 
 export default class ListItem<T extends keyof ScreenParams> extends React.Component<Props<T>> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props<T>) {
         super(props)
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         const {text, subtext, subtext_2, number} = this.props;
         return (
             <ColumnView

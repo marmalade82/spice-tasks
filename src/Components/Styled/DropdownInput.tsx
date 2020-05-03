@@ -3,7 +3,7 @@ import { View, ViewStyle, StyleProp, Button, Modal } from "react-native";
 import { BodyText, TouchableView } from "../Basic/Basic";
 import Dropdown from "src/Components/Styled/Dropdown";
 import { TextInput } from "react-native-gesture-handler";
-import { Class, Custom } from "./StyleSheets";
+import { StyleSheetContext } from "./StyleSheets";
 //import {DropdownInput as Dropdown} from "src/Components/Styled/DropDown";
 
 
@@ -26,6 +26,8 @@ interface State {
 
 
 export class DropdownInput<Choices> extends React.Component<Props<Choices>, State> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props<Choices>) {
         super(props);
 
@@ -39,6 +41,7 @@ export class DropdownInput<Choices> extends React.Component<Props<Choices>, Stat
 
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
                 <View
                     style={[Class.DropdownInput_Container, this.props.style]}
@@ -70,6 +73,7 @@ export class DropdownInput<Choices> extends React.Component<Props<Choices>, Stat
     }
 
     private renderAbsoluteChoices = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <Dropdown
                 {...Custom.DropdownInput_Dropdown}

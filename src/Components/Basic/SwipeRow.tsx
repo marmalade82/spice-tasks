@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { Dimensions, View } from "react-native";
@@ -15,6 +15,8 @@ interface Props {
 
 export default class SwipeRow extends React.Component<Props> {
     swipeRef: React.RefObject<Swipeable>
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
         this.swipeRef = React.createRef();
@@ -64,9 +66,16 @@ export default class SwipeRow extends React.Component<Props> {
     }
 }
 
-export function SwipeRight() {
-    return (
-        <View style={Class.SwipeContainer}>
-        </View>
-    )
+export class SwipeRight extends React.Component {
+
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
+
+    render = () => {
+        const { Class, Common, Custom } = this.context;
+        return (
+            <View style={Class.SwipeContainer}>
+            </View>
+        )
+    }
 }

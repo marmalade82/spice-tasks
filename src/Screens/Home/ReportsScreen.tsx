@@ -17,7 +17,7 @@ import * as R from "ramda";
 import { combineLatest } from "rxjs";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import { Text, G, Line } from "react-native-svg";
-import { Class } from "src/Components/Styled/StyleSheets";
+import { StyleSheetContext } from "src/Components/Styled/StyleSheets";
 
 interface Props {
     navigation: object;
@@ -45,6 +45,8 @@ export default class ReportsScreen extends React.Component<Props, State> {
         }
     }
 
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     unsub: () => void;
     navigation: MainNavigator<"Reports">;
     constructor(props: Props) {
@@ -321,22 +323,26 @@ function Card(props: CardProps) {
     const [current, setCurrent] = React.useState(0);
 
     return (
-        <View
-            style={[Class.Card_Container, props.style]}
-        >
-            <HeaderText style={{
-                marginBottom: 20
-            }} level={3}
-            >
-                {props.title}
-            </HeaderText>
-            {renderCurrent()}
-            <View
-                style={Class.Card_LabelContainer}
-            >
-                {renderLabels()}
-            </View>
-        </View>
+        <StyleSheetContext.Consumer>
+            { ({Common, Class, Custom}) => (
+                <View
+                    style={[Class.Card_Container, props.style]}
+                >
+                    <HeaderText style={{
+                        marginBottom: 20
+                    }} level={3}
+                    >
+                        {props.title}
+                    </HeaderText>
+                    {renderCurrent()}
+                    <View
+                        style={Class.Card_LabelContainer}
+                    >
+                        {renderLabels()}
+                    </View>
+                </View>
+            )}
+        </StyleSheetContext.Consumer>
     )
 
     function renderCurrent() {
@@ -351,25 +357,29 @@ function Card(props: CardProps) {
         return props.pages.map((page, index) => {
             const { label } = page;
             return (
-                <TouchableView key={label} 
-                    style={{
-                        ...Class.Card_Label,
-                        ...( (current !== index && Class.Card_InactiveLabelContainer) || (Class.Card_ActiveLabelContainer) )
-                    }}
-                    onPress={() => {
-                        setCurrent(index)
-                    }}
-                >
-                    <HeaderText
-                        style={{
-                            ...Class.Card_LabelText,
-                            ...( (current !== index && Class.Card_InactiveLabelText) || (Class.Card_ActiveLabelText) )
-                        }}
-                        level={3}
-                    >
-                        {label}
-                    </HeaderText>
-                </TouchableView>
+                <StyleSheetContext.Consumer>
+                    {({Common, Custom, Class}) => (
+                        <TouchableView key={label} 
+                            style={{
+                                ...Class.Card_Label,
+                                ...( (current !== index && Class.Card_InactiveLabelContainer) || (Class.Card_ActiveLabelContainer) )
+                            }}
+                            onPress={() => {
+                                setCurrent(index)
+                            }}
+                        >
+                            <HeaderText
+                                style={{
+                                    ...Class.Card_LabelText,
+                                    ...( (current !== index && Class.Card_InactiveLabelText) || (Class.Card_ActiveLabelText) )
+                                }}
+                                level={3}
+                            >
+                                {label}
+                            </HeaderText>
+                        </TouchableView>
+                    )}
+                </StyleSheetContext.Consumer>
             )
         })
     }

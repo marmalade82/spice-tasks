@@ -9,7 +9,7 @@ import { Observable } from "rxjs";
 import { View } from "react-native";
 import { Icon as StyledIcon } from "./Icon";
 import EmptyList, { PlusEmptyList } from "../Lists/EmptyList";
-import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 
 interface Props {
     style?: StyleProp<ViewStyle>
@@ -40,6 +40,8 @@ interface State {
 
 export default class DynamicChoiceInput extends React.Component<Props, State> {
 
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     unsub: () => void;
     constructor(props: Props) {
         super(props);
@@ -92,6 +94,7 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <RowView style={[Class.DynamicChoiceInput_Container, this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}
@@ -137,7 +140,9 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
             </RowView>
         );
     }
+
     renderText = () => {
+        const { Class, Common, Custom } = this.context;
         if (this.props.value) {
             return (
                 <Text
@@ -179,6 +184,7 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
     }
 
     renderIcon = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <Icon
                 name={"chevron-right"}
@@ -248,6 +254,7 @@ export default class DynamicChoiceInput extends React.Component<Props, State> {
     }
 
     renderLeftIcon = () => {
+        const { Class, Common, Custom } = this.context;
         if(this.props.icon) {
             return(
                 <StyledIcon

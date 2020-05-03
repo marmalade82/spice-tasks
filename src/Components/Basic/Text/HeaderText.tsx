@@ -1,7 +1,7 @@
 
 import React from "react";
 import { StyleProp, ViewStyle, StyleSheet, View, TextStyle, Text } from "react-native";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 
 
 interface Props {

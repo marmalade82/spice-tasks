@@ -3,7 +3,7 @@ import { View, Text, StyleProp, ViewStyle, ScrollView } from "react-native";
 import { Icon } from "react-native-elements";
 import { Icon as I } from "src/Components/Styled/Icon";
 import { TouchableView } from "../Basic/Basic";
-import { Custom } from "./StyleSheets";
+import { StyleSheetContext } from "./StyleSheets";
 
 interface Props {
     type: "add" | "edit" | "more" | "settings" | "enable" | "disable" | "complete" | "delete" | "save" | 
@@ -22,6 +22,8 @@ interface State {
 
 
 export default class IconButton extends React.Component<Props, State> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
     }
@@ -43,6 +45,7 @@ export default class IconButton extends React.Component<Props, State> {
     }
 
     private renderI = () => {
+        const { Class, Common, Custom } = this.context;
         let type = this.props.type;
         const props = {
             ...Custom.IconButton_Icon,

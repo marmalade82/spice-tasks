@@ -7,12 +7,13 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import { Button, AppState } from "react-native";
 import { Schedule } from "./Schedule";
 import SpiceDBService from 'src/Services/DBService';
-import { 
-  TAB_GREY,
-} from 'src/Components/Styled/Styles';
+import Default from 'src/Components/Styled/Styles';
 import { IconButton, Icon, ScreenHeader } from 'src/Components/Styled/Styled';
 import ActiveTransaction from 'src/Models/common/Transaction';
 import { ScreenDirectory } from "src/common/NavigatorScreens";
+import { CommonType, CustomType, ClassType,
+    makeCommon, makeCustom, makeClass,
+ } from 'src/Components/Styled/StyleSheets';
 
 
 
@@ -132,8 +133,7 @@ ReportNavigator.navigationOptions = {
   }
 }
 
-//const backgroundTabColor = "#444444";
-const backgroundTabColor = TAB_GREY;
+const backgroundTabColor = Default.TAB_GREY;
 
 const AppNavigator = createBottomTabNavigator(
   {
@@ -155,7 +155,27 @@ const AppNavigator = createBottomTabNavigator(
 
 const AppContainer = createAppContainer(AppNavigator);
 
-export default class App extends React.Component {
+interface Props {}
+interface State {
+  StyleSheetContext: {
+    Common: CommonType,
+    Custom: CustomType,
+    Class: ClassType,
+  }
+}
+
+export default class App extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      StyleSheetContext: {
+        Common: makeCommon(Default),
+        Custom: makeCustom(Default),
+        Class: makeClass(Default),
+      }
+    }
+  }
 
   componentDidMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);

@@ -2,7 +2,7 @@ import React from "react";
 import { ColumnView, RowView, TouchableView, BodyText, HeaderText } from "src/Components/Basic/Basic";
 import { Button, StyleProp, ViewStyle } from "react-native";
 import { Navigation, ScreenParams } from "src/common/Navigator";
-import { Class, Layout } from "./StyleSheets";
+import { StyleSheetContext, Layout } from "./StyleSheets";
 
 
 export interface Props<Item, Screen extends keyof ScreenParams> {
@@ -27,6 +27,8 @@ export interface State {
 
 export default class PagedList<Item, Screen extends keyof ScreenParams> extends React.Component<Props<Item, Screen>, State> {
 
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props<Item, Screen>) {
         super(props);
 
@@ -42,6 +44,7 @@ export default class PagedList<Item, Screen extends keyof ScreenParams> extends 
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <ColumnView style={[Class.PagedList_Container, this.props.style]}
             >
@@ -71,6 +74,7 @@ export default class PagedList<Item, Screen extends keyof ScreenParams> extends 
     }
 
     private renderFooter = () => {
+        const { Class, Common, Custom } = this.context;
         if(this.props.items.length > this.props.pageMax) {
             return (
                 <ColumnView style={Class.PagedList_FooterContainer}>

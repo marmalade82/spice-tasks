@@ -1,7 +1,7 @@
 
 import React from "react";
 import { RowView, ColumnView, HeaderText, TouchableView } from "src/Components/Basic/Basic";
-import { Layout, Type, Class, Common, Custom } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 import { StyleProp, Button, ViewStyle, TextInput as TInput, Text } from "react-native";
 import { 
     View, Platform, DatePickerIOS, 
@@ -29,6 +29,8 @@ interface State {
 }
 
 export default class DateInput extends React.Component<Props, State> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -68,6 +70,7 @@ export default class DateInput extends React.Component<Props, State> {
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <RowView style={[Class.DateInput_Container, this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}
@@ -110,6 +113,7 @@ export default class DateInput extends React.Component<Props, State> {
     }
 
     private renderInput = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <RowView style={Class.DateInput_InputContainer}
             >
@@ -120,6 +124,7 @@ export default class DateInput extends React.Component<Props, State> {
     }
 
     private renderText = () => {
+        const { Class, Common, Custom } = this.context;
         if (this.props.value) {
             return (
                 <Text
@@ -149,6 +154,7 @@ export default class DateInput extends React.Component<Props, State> {
     }
 
     private renderLeftIcon = () => {
+        const { Class, Common, Custom } = this.context;
         if(this.props.icon) {
             let type = this.iconType();
             return(

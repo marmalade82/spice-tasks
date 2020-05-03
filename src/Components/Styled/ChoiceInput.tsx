@@ -1,7 +1,7 @@
 
 import React from "react";
 import { RowView, ColumnView, HeaderText, TouchableView } from "src/Components/Basic/Basic";
-import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 import Modal from "src/Components/Styled/Modal";
 import ModalRow from "src/Components/Styled/ModalRow";
 import { StyleProp, ViewStyle, TextInput as Input, Picker, Text } from "react-native";
@@ -32,6 +32,8 @@ interface State {
 
 
 export default class ChoiceInput extends React.Component<Props, State> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
 
@@ -41,6 +43,7 @@ export default class ChoiceInput extends React.Component<Props, State> {
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <RowView style={[Class.ChoiceInput_Container, this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}
@@ -84,6 +87,7 @@ export default class ChoiceInput extends React.Component<Props, State> {
         );
     }
     renderText = () => {
+        const { Class, Common, Custom } = this.context;
         if (this.props.value) {
             return (
                 <Text
@@ -125,6 +129,7 @@ export default class ChoiceInput extends React.Component<Props, State> {
     }
 
     private renderIcon = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <Icon
                 name={"chevron-right"}

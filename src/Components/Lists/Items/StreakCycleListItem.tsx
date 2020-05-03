@@ -5,7 +5,7 @@ import Item from "src/Components/Lists/Items/base/Item";
 import { ListItem, ModalIconButton, ModalRow } from "src/Components/Styled/Styled";
 import MyDate from "src/common/Date";
 import { Navigation, ScreenParams } from "src/common/Navigator";
-import { Layout, Type, Class, Custom } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 
 export interface Props {
     item: StreakCycle,
@@ -26,6 +26,8 @@ interface State {
 
 
 export class StreakCycleListItem extends Item<Props, State, StreakCycle> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
 
@@ -68,6 +70,7 @@ export class StreakCycleListItem extends Item<Props, State, StreakCycle> {
     }
 
     private iconOpts = () => {
+        const { Class, Common, Custom } = this.context;
         const {id, start, end} = this.props.item
         if(this.props.completed) {
             return {

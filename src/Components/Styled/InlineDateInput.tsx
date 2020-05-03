@@ -1,5 +1,5 @@
 
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 import React from "react";
 import { RowView, ColumnView, HeaderText, TouchableView, BodyText } from "src/Components/Basic/Basic";
 import { StyleProp, Button, ViewStyle, TextInput as TInput, Text } from "react-native";
@@ -27,6 +27,8 @@ interface State {
 }
 
 export default class InlineDateInput extends React.Component<Props, State> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
     }
@@ -51,6 +53,7 @@ export default class InlineDateInput extends React.Component<Props, State> {
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
 
             <RowView style={[Class.InlineDateInput_Container, this.props.style]}
@@ -94,6 +97,7 @@ export default class InlineDateInput extends React.Component<Props, State> {
     }
 
     private renderInput = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <RowView style={[Class.InlineDateInput_InputContainer, {
                     ...(this.props.underlineColor && { borderColor: this.props.underlineColor })
@@ -105,6 +109,7 @@ export default class InlineDateInput extends React.Component<Props, State> {
     }
 
     private renderText = () => {
+        const { Class, Common, Custom } = this.context;
         if (this.props.value) {
             return (
                 <BodyText style={{}}>

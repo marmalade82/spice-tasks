@@ -6,7 +6,7 @@ import ModalInput from "src/Components/Inputs/ModalInput";
 import Style from "src/Style/Style";
 import { ColumnView } from "src/Components/Basic/Basic";
 import { Label, DateInput, TimeInput } from "src/Components/Styled/Styled";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 
 export interface Props {
     title: string;
@@ -26,6 +26,8 @@ interface State {
 
 export default class DateTimeInput extends React.Component<Props,State> {
 
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
 
@@ -41,6 +43,7 @@ export default class DateTimeInput extends React.Component<Props,State> {
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <ColumnView style={[Class.InputContainer, this.props.style]}
             >

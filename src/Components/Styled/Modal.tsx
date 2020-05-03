@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 import IconButton from "src/Components/Styled/IconButton";
 import { ScrollView, View, Modal as ReactModal, TouchableWithoutFeedback } from "react-native";
 
@@ -15,6 +15,8 @@ interface State {
 }
 
 export default class Modal extends React.Component<Props, State> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -23,6 +25,7 @@ export default class Modal extends React.Component<Props, State> {
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <ReactModal
                 visible={this.props.visible}

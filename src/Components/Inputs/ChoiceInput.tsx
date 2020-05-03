@@ -4,7 +4,7 @@ import Style from "src/Style/Style";
 import Input from "src/Components/Inputs/base/Input";
 import { ColumnView } from "src/Components/Basic/Basic";
 import { Label, ChoiceInput as CInput } from "src/Components/Styled/Styled";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 
 
 interface LabelValue {
@@ -28,11 +28,14 @@ interface State {
 
 export default class ChoiceInput extends Input<Props, State> {
 
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props) {
         super(props);
     }
 
     render = () => {
+        const { Class, Common, Custom } = this.context;
         return (
             <ColumnView style={[Class.InputContainer
                 , this.props.style]}

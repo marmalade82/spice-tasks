@@ -4,7 +4,7 @@ import React from "react";
 import { View, StyleProp, ViewStyle } from "react-native";
 import { ColumnView, RowView, BodyText, HeaderText, RowReverseView } from "src/Components/Basic/Basic";
 import { TouchableOpacity } from "react-native";
-import { Layout, Type, Class, Common } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 
 interface Props {
     number: number;
@@ -18,23 +18,27 @@ interface Props {
 
 export default class ClickRow extends React.Component<Props> {
 
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: Props ) {
         super(props);
     }
 
     render = () => {
-            return (
-                <View
-                    style={[{
-                        ...Class.ClickRow_Container,
-                    }, this.props.style]}
-                >
-                    {this.renderContent()}
-                </View>
-            );
+        const { Class, Common, Custom } = this.context;
+        return (
+            <View
+                style={[{
+                    ...Class.ClickRow_Container,
+                }, this.props.style]}
+            >
+                {this.renderContent()}
+            </View>
+        );
     }
 
     renderContent = () => {
+        const { Class, Common, Custom } = this.context;
         if(this.props.onPress) {
             //return this.renderRow();
             
@@ -55,6 +59,7 @@ export default class ClickRow extends React.Component<Props> {
     }
     
     renderRow = () => {
+        const { Class, Common, Custom } = this.context;
         return (
                 <RowView style={[Class.ClickRow_Row, Layout.CENTERED_PRIMARY]}>
                     <RowView style={[Common.PageBackground, Layout.CENTERED_SECONDARY]}>

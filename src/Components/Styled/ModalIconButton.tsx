@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Type, Class } from "src/Components/Styled/StyleSheets";
+import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 import IconButton from "src/Components/Styled/IconButton";
 import { View, TouchableWithoutFeedback, StyleProp, ViewStyle } from "react-native";
 import Modal from "src/Components/Styled/Modal";
