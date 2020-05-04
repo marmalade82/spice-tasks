@@ -10,6 +10,7 @@ export interface IGlobal {
     primaryColor: string,
     secondaryColor: string,
     primaryLightColor: string,
+    remindMe: boolean;
 }
 
 const name = GlobalSchema.name;
@@ -23,6 +24,7 @@ export default class Global extends Model implements IGlobal {
     @field(name.PRIMARY_COLOR) primaryColor!: string;
     @field(name.PRIMARY_LIGHT_COLOR) primaryLightColor!: string;
     @field(name.SECONDARY_COLOR) secondaryColor!: string;
+    @field(name.REMIND) remindMe!: boolean;
 }
 
 export {

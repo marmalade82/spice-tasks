@@ -3,6 +3,7 @@ import React from "react";
 import {
     StringInput,
     DateTimeInput,
+    ChoiceInput,
 
 } from "src/Components/Inputs";
 import { Props as StringInputProps } from "src/Components/Inputs/StringInput";
@@ -32,6 +33,7 @@ interface State {
     description: string
     start_date: Date,
     time: Date,
+    remindMe: boolean,
 }
 
 function Default(): State {
@@ -40,6 +42,7 @@ function Default(): State {
         description: "",
         start_date: startDate(MyDate.Now().toDate()),
         time: MyDate.Zero().asStartDate().toDate(),
+        remindMe: false,
     };
 }
 
@@ -135,6 +138,12 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
         })
     }
 
+    private onChangeReminder = (data: string) => {
+        this.setData({
+            remindMe: data === "yes" ? true : false,
+        })
+    }
+
     render = () => {
         const SummaryInput = this.SummaryInput;
         const StartDateInput = this.StartDateInput;
@@ -179,6 +188,17 @@ export default class AddTaskForm extends DataComponent<Props, State, State> {
                         onDataChange={this.onChangeTime}
                         accessibilityLabel={"task-start-time"}
                     ></DateTimeInput>
+
+                    <ChoiceInput
+                        title={"Remind me?"}
+                        data={this.data().remindMe ? "yes" : "no"}
+                        choices={[
+                            {label: "No", value: "no", key: "no"},
+                            {label: "Yes", value: "yes", key: "yes"},
+                        ]}
+                        onDataChange={this.onChangeReminder}
+                        accessibilityLabel={"task-reminder"}
+                    ></ChoiceInput>
 
                     <FootSpacer></FootSpacer>
                 </ScrollView>

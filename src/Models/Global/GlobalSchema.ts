@@ -11,6 +11,7 @@ const GlobalName = {
     PRIMARY_COLOR: 'primary_color',
     PRIMARY_LIGHT_COLOR: 'primarylight_color',
     SECONDARY_COLOR: 'secondary_color',
+    REMIND: 'is_remind',
 } as const;
 
 const GlobalType = {
@@ -20,6 +21,7 @@ const GlobalType = {
     PRIMARY_COLOR: 'string',
     PRIMARY_LIGHT_COLOR: 'string',
     SECONDARY_COLOR: 'string',
+    REMIND: 'boolean',
 } as const;
 
 

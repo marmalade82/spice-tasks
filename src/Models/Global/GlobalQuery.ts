@@ -6,9 +6,6 @@ import {
     Global, IGlobal,
 } from "src/Models/Global/Global";
 import { GlobalSchema } from "src/Models/Global/GlobalSchema";
-import { Q, Database, Model } from "@nozbe/watermelondb";
-import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils"
-import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
 import { Observable, interval, timer } from "rxjs";
 import Notification from "src/Notification";
@@ -42,6 +39,7 @@ export default class GlobalQuery extends ModelQuery<Global, IGlobal> {
             primaryColor: Default.PRIMARY_COLOR,
             primaryLightColor: Default.PRIMARY_COLOR_LIGHT,
             secondaryColor: Default.SECONDARY_COLOR,
+            remindMe: false,
         }
     }
 

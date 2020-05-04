@@ -12,6 +12,8 @@ import GlobalQuery, { GlobalLogic } from "src/Models/Global/GlobalQuery";
 import Default from "src/Components/Styled/Styles";
 import Global from "src/Models/Global/Global";
 import { isBuffer } from "util";
+import { booleanLiteral } from "@babel/types";
+import { LabelValue } from "src/common/types";
 
 interface Props {
     navigation: object;
@@ -21,6 +23,7 @@ interface State {
     primaryColor: string;
     secondaryColor: string;
     primaryLightColor: string;
+    defaultReminder: string;
     global: Global | undefined;
 }
 
@@ -40,6 +43,7 @@ export default class SettingsScreen extends React.Component<Props, State> {
             primaryColor: "white",
             secondaryColor: "white",
             primaryLightColor: "white",
+            defaultReminder: "no",
             global: undefined,
         }
 
@@ -55,6 +59,7 @@ export default class SettingsScreen extends React.Component<Props, State> {
                 primaryColor: global.primaryColor ? global.primaryColor : Default.PRIMARY_COLOR,
                 secondaryColor: global.secondaryColor ? global.secondaryColor : Default.SECONDARY_COLOR,
                 primaryLightColor: global.primaryLightColor ? global.primaryLightColor : Default.PRIMARY_COLOR_LIGHT,
+                defaultReminder: global.remindMe ? "yes" : "no",
                 global: global,
             })
         })
@@ -93,6 +98,18 @@ export default class SettingsScreen extends React.Component<Props, State> {
                     primaryLightColor: query.default().primaryLightColor,
                 }
                 void query.update(this.state.global, update);
+            }
+        }, 100)
+    }
+
+    private saveNotifications = () => {
+        setTimeout(() => {
+            if(this.state.global !== undefined) {
+                const update = {
+                    remindMe: this.state.defaultReminder === "yes" ? true : false,
+                }
+
+                void new GlobalQuery().update(this.state.global, update);
             }
         }, 100)
     }
@@ -154,6 +171,33 @@ export default class SettingsScreen extends React.Component<Props, State> {
                         }}
                     ></ConfirmActionInput>
                 </View>
+                <View
+                    style={{
+                        marginHorizontal: 20,
+                        marginVertical: 10,
+                        borderRadius: 15,
+                        backgroundColor: "white",
+                    }}
+                >
+                    <HeaderText style={{
+                        marginVertical: 10,
+                        marginHorizontal: 10,
+                    }} level={3}>Notifications</HeaderText>
+                    <ChoiceInput
+                        label={"Default Task Reminder?"}
+                        value={this.state.defaultReminder}
+                        choices={[
+                            {label: "No", value: "no", key: "no"},
+                            {label: "Yes", value: "yes", key: "yes"},
+                        ]}
+                        onChange={(value) => {
+                            this.setState({
+                                defaultReminder: value
+                            })
+                            this.saveNotifications();
+                        }}
+                    ></ChoiceInput>
+                </View>
             </DocumentView>
         )
     }
@@ -202,6 +246,9 @@ class ColorInput extends React.Component<ColorProps, ColorState>{
                     this.setState({
                         showColor: true,
                     })
+                    this.setState({
+                        color: toHsv(this.props.color)
+                    })
                 }}
             >
                 <BodyText style={{}}>
@@ -211,6 +258,8 @@ class ColorInput extends React.Component<ColorProps, ColorState>{
                     style={{
                         height: 20,
                         width: 20,
+                        marginRight: 10,
+                        borderRadius: 50,
                         backgroundColor: this.props.color,
                         borderColor: "black",
                         
@@ -221,9 +270,6 @@ class ColorInput extends React.Component<ColorProps, ColorState>{
                 <Modal
                     visible={this.state.showColor}
                     onRequestOpen={() => {
-                        this.setState({
-                            color: toHsv(this.props.color)
-                        })
                     }}
                     onRequestClose={() => {
                         this.setState({
@@ -392,5 +438,139 @@ class ConfirmActionInput extends React.Component<ConfirmActionProps, ConfirmActi
                 </Modal>
             </TouchableView>
         )
+    }
+}
+
+interface ChoiceProps {
+    label: string;
+    value: string;
+    choices: LabelValue[];
+    onChange: (value: string) => void;
+    style?: StyleProp<ViewStyle>
+}
+
+interface ChoiceState {
+    showChoices: boolean;
+}
+
+class ChoiceInput extends React.Component<ChoiceProps, ChoiceState> {
+    constructor(props: ChoiceProps) {
+        super(props);
+        this.state = {
+            showChoices: false,
+        }
+    }
+
+    render = () => {
+        return (
+            <TouchableView style={[{
+                    backgroundColor: "transparent",
+                    height: 50,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingVertical: 3,
+                    marginHorizontal: 10,
+                    borderColor: "lightgrey",
+                    borderWidth: 0,
+                    borderTopWidth: 1,
+                    borderBottomWidth: 0,
+                }, this.props.style]}
+                onPress={() => {
+                    this.setState({
+                        showChoices: true,
+                    })
+                }}
+            >
+                <BodyText style={{}}>
+                    {this.props.label}
+                </BodyText>
+                <View
+                    style={{
+                        marginRight: 10,
+                        backgroundColor: "transparent",
+                    }}
+                >
+                    <BodyText style={{}}>
+                        {this.getCurrentLabel()}
+                    </BodyText>
+                </View>
+                <Modal
+                    visible={this.state.showChoices}
+                    onRequestOpen={() => {
+                    }}
+                    onRequestClose={() => {
+                        this.setState({
+                            showChoices: false,
+                        })
+                    }}
+                    contentStyle={{
+                        paddingHorizontal: 15,
+                    }}
+                >
+                    {this.renderChoices()}
+                </Modal>
+            </TouchableView>
+        )
+    }
+
+    private getCurrentLabel = () => {
+        const lv = this.props.choices.find((lv) => {
+            return lv.value === this.props.value;
+        })
+
+        if(lv !== undefined) {
+            return lv.label;
+        }
+
+        return "";
+    }
+
+    private renderChoices = () => {
+        return this.props.choices.map((lv, index) => {
+            return (
+                <View key={lv.key}
+                    style={{
+                        flex: 1,
+                        backgroundColor: "transparent",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        borderColor: "lightgrey",
+                        borderBottomWidth: index === this.props.choices.length - 1 ? 0 : 1
+                    }}
+                >
+                    <TouchableView style={{
+                        flex: 1,
+                        flexDirection: "row",
+                        alignItems: "center",
+                    }}
+                        onPress={() => {
+                            this.props.onChange(lv.value)
+                            this.setState({
+                                showChoices: false,
+                            })
+                        }}
+                    >
+                        <View
+                            style={{
+                                width: 10,
+                                height: 10,
+                                backgroundColor: lv.value === this.props.value ? "red" : "transparent",
+                                //borderColor: lv.value === this.props.value ? "red" : "grey",
+                                //borderWidth: 1,
+                                borderRadius: 100,
+                                marginLeft: 0,
+                            }}
+                        ></View>
+                        <BodyText style={{
+                            marginVertical: 10,
+                            marginLeft: 20,
+                        }}>
+                            {lv.label}
+                        </BodyText>
+                    </TouchableView>
+                </View>
+            )
+        })
     }
 }

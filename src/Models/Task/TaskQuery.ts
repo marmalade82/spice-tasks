@@ -34,6 +34,7 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
             state: 'open',
             completedDate: MyDate.Zero().toDate(),
             createdAt: MyDate.Now().toDate(),
+            remindMe: false,
             parent: {
                 id: "",
                 type: TaskParentTypes.NONE,
@@ -459,6 +460,7 @@ export class TaskLogic {
             state: 'open',
             startDate: newStart.toDate(),
             startTime: task.startTime,
+            remindMe: task.remindMe,
             dueDate: new MyDate(newDate).add( new MyDate(task.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
             parent: task.parent,
         }

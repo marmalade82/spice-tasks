@@ -20,6 +20,7 @@ import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 
 import Form from "@marmalade82/ts-react-forms";  
+import GlobalQuery from "src/Models/Global/GlobalQuery";
 
 interface Props {
     navigation: object;
@@ -78,8 +79,14 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                 start_date: task.startDate,
                 description: task.instructions,
                 time: task.startTime,
+                remindMe: task.remindMe,
             }
         } 
+
+        if(!task) {
+            const global = await new GlobalQuery().current();
+            data.remindMe = global.remindMe;
+        }
 
         const parentType = task && task.parent ? task.parent.type : this.navigation.getParam('parent_type', TaskParentTypes.NONE);
         const parentId = task && task.parent ? task.parent.id : this.navigation.getParam('parent_id', '');
@@ -179,7 +186,8 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                 parent: {
                     id: parentId,
                     type: parentType,
-                }
+                },
+                remindMe: data.remindMe,
             };
 
             if(this.state.task) {

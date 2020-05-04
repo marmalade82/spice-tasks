@@ -3,7 +3,6 @@ import { Model } from "@nozbe/watermelondb";
 import { field, date, relation, action, readonly} from "@nozbe/watermelondb/decorators";
 import TaskSchema from "src/Models/Task/TaskSchema";
 import GoalSchema from "src/Models/Goal/GoalSchema";
-import { GoalParentTypes } from "../Goal/Goal";
 import { assignAll } from "src/common/types";
 
 export enum TaskParentTypes {
@@ -24,6 +23,7 @@ interface ITask {
     completedDate: Date;
     createdAt: Date;
     parent: ParentInfo;
+    remindMe: boolean
 }
 
 // TODO FIX OBJECT ASSIGN ISSUE.
@@ -57,6 +57,7 @@ export default class Task extends Model implements ITask {
     @date(name.COMPLETED_ON) completedDate! : Date
     @date(name.CREATED_ON) createdAt!: Date;
     @date(name.START_TIME_ON) startTime!: Date;
+    @field(name.REMIND) remindMe!: boolean;
 
     @field(name.PARENT) private parentId! : string
     @field(name.PARENT_TABLE) private parentType!: TaskParentTypes;

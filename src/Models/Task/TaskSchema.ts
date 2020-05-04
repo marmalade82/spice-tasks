@@ -17,6 +17,7 @@ const TaskName = {
     STATE: 'state',
     COMPLETED_ON : 'completed_at',
     CREATED_ON : 'created_at',
+    REMIND: 'is_remind',
 } as const;
 
 const TaskType = {
@@ -31,6 +32,7 @@ const TaskType = {
     STATE: 'string',
     COMPLETED_ON: 'number',
     CREATED_ON: 'number',
+    REMIND: 'boolean',
 } as const
 
 export const TaskSchema: DueSchema & ChildSchema & StateSchema & ActiveSchema & Schema<typeof TaskName> = {
