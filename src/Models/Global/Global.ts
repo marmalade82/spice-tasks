@@ -7,6 +7,9 @@ export interface IGlobal {
     current: Date,
     count: number,
     lastNotifiedDate: Date,
+    primaryColor: string,
+    secondaryColor: string,
+    primaryLightColor: string,
 }
 
 const name = GlobalSchema.name;
@@ -17,6 +20,9 @@ export default class Global extends Model implements IGlobal {
     @date(name.CURRENT) current!: Date;
     @field(name.COUNT) count!: number;
     @date(name.LAST_NOTIFIED) lastNotifiedDate!: Date;
+    @field(name.PRIMARY_COLOR) primaryColor!: string;
+    @field(name.PRIMARY_LIGHT_COLOR) primaryLightColor!: string;
+    @field(name.SECONDARY_COLOR) secondaryColor!: string;
 }
 
 export {

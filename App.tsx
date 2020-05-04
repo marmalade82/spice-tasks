@@ -12,8 +12,10 @@ import { IconButton, Icon, ScreenHeader } from 'src/Components/Styled/Styled';
 import ActiveTransaction from 'src/Models/common/Transaction';
 import { ScreenDirectory } from "src/common/NavigatorScreens";
 import { CommonType, CustomType, ClassType,
-    makeCommon, makeCustom, makeClass,
+    makeCommon, makeCustom, makeClass, StyleSheetContext,
  } from 'src/Components/Styled/StyleSheets';
+import GlobalQuery from 'src/Models/Global/GlobalQuery';
+import Global from 'src/Models/Global/Global';
 
 
 
@@ -161,20 +163,27 @@ interface State {
     Common: CommonType,
     Custom: CustomType,
     Class: ClassType,
-  }
+  },
+  global: Global | undefined;
 }
 
 export default class App extends React.Component<Props, State> {
+  unsub: () => void;
+  theme: typeof Default;
   constructor(props: Props) {
     super(props);
 
+    this.theme = Object.assign({}, Default);
+
     this.state = {
       StyleSheetContext: {
-        Common: makeCommon(Default),
-        Custom: makeCustom(Default),
-        Class: makeClass(Default),
-      }
+        Common: makeCommon(this.theme),
+        Custom: makeCustom(this.theme),
+        Class: makeClass(this.theme),
+      },
+      global: undefined
     }
+    this.unsub = () => {}
   }
 
   componentDidMount = () => {
@@ -182,10 +191,36 @@ export default class App extends React.Component<Props, State> {
     
 
     void Schedule.refresh(1, () => false);
+
+    void new GlobalQuery().current().then((global) => {
+      this.setState({
+        global: global,
+      })
+
+      let themeSub = global.observe().subscribe((global) => {
+        this.theme.PRIMARY_COLOR = global.primaryColor;
+        this.theme.SECONDARY_COLOR = global.secondaryColor;
+        this.theme.PRIMARY_COLOR_LIGHT = global.primaryLightColor;
+        this.setState({
+          StyleSheetContext: {
+            Common: makeCommon(this.theme),
+            Custom: makeCustom(this.theme),
+            Class: makeClass(this.theme),
+          }
+        })
+      })
+      
+      const unsub = this.unsub;
+      this.unsub = () => {
+        themeSub.unsubscribe();
+        unsub();
+      }
+    })
   }
 
   componentWillUnmount = () => {
     AppState.removeEventListener('change', this.handleAppStateChange)
+    this.unsub();
   }
 
   handleAppStateChange = (nextState: "active" | "background" | "inactive" | null) => {
@@ -212,6 +247,10 @@ export default class App extends React.Component<Props, State> {
   }
 
   render = () => {
-    return <AppContainer></AppContainer>
+    return (
+      <StyleSheetContext.Provider value={this.state.StyleSheetContext}>
+        <AppContainer></AppContainer>
+      </StyleSheetContext.Provider>
+    )
   }
 }

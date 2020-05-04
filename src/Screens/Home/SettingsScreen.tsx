@@ -8,6 +8,10 @@ import { ColorPicker, TriangleColorPicker, HsvColor, toHsv, fromHsv } from "reac
 
 import { MainNavigator, ScreenNavigation, FullNavigation } from "src/common/Navigator";
 import { TouchableView, HeaderText, BodyText } from "src/Components/Basic/Basic";
+import GlobalQuery, { GlobalLogic } from "src/Models/Global/GlobalQuery";
+import Default from "src/Components/Styled/Styles";
+import Global from "src/Models/Global/Global";
+import { isBuffer } from "util";
 
 interface Props {
     navigation: object;
@@ -16,6 +20,8 @@ interface Props {
 interface State {
     primaryColor: string;
     secondaryColor: string;
+    primaryLightColor: string;
+    global: Global | undefined;
 }
 
 export default class SettingsScreen extends React.Component<Props, State> {
@@ -31,23 +37,64 @@ export default class SettingsScreen extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            primaryColor: "red",
-            secondaryColor: "red",
+            primaryColor: "white",
+            secondaryColor: "white",
+            primaryLightColor: "white",
+            global: undefined,
         }
 
         this.unsub = () => {};
         this.navigation = new ScreenNavigation(this.props);
     }
 
-    componentDidMount = () => {
-
+    componentDidMount = async () => {
+        // Subscribe to the themes
+        const globalRecord = await new GlobalQuery().current();
+        const globalSub = globalRecord.observe().subscribe((global) => {
+            this.setState({
+                primaryColor: global.primaryColor ? global.primaryColor : Default.PRIMARY_COLOR,
+                secondaryColor: global.secondaryColor ? global.secondaryColor : Default.SECONDARY_COLOR,
+                primaryLightColor: global.primaryLightColor ? global.primaryLightColor : Default.PRIMARY_COLOR_LIGHT,
+                global: global,
+            })
+        })
 
         this.unsub = () => {
+            globalSub.unsubscribe();
         }
     }
 
     componentWillUnmount = () => {
         this.unsub();
+    }
+
+    private saveTheme = () => {
+        setTimeout(() => {
+            if(this.state.global !== undefined) {
+                const update = {
+                    primaryColor: this.state.primaryColor,
+                    secondaryColor: this.state.secondaryColor,
+                    primaryLightColor: this.state.primaryLightColor,
+                }
+
+                void new GlobalQuery().update(this.state.global, update);
+            }
+        }, 100)
+
+    }
+
+    private restoreDefault = () => {
+        setTimeout(() => {
+            if(this.state.global !== undefined) {
+                const query = new GlobalQuery();
+                const update = {
+                    primaryColor: query.default().primaryColor,
+                    secondaryColor: query.default().secondaryColor,
+                    primaryLightColor: query.default().primaryLightColor,
+                }
+                void query.update(this.state.global, update);
+            }
+        }, 100)
     }
 
     render = () => {
@@ -71,8 +118,21 @@ export default class SettingsScreen extends React.Component<Props, State> {
                             this.setState({
                                 primaryColor: color
                             })
+                            this.saveTheme();
                         }}
                         label={"Primary"}
+                    ></ColorInput>
+                    <ColorInput
+                        color={this.state.primaryLightColor}
+                        onSelectColor={(color) => {
+                            this.setState({
+                                primaryLightColor: color
+                            })
+                            this.saveTheme();
+                        }}
+                        label={"Primary Light"}
+                        style={{
+                        }}
                     ></ColorInput>
                     <ColorInput
                         color={this.state.secondaryColor}
@@ -80,6 +140,7 @@ export default class SettingsScreen extends React.Component<Props, State> {
                             this.setState({
                                 secondaryColor: color
                             })
+                            this.saveTheme();
                         }}
                         label={"Secondary"}
                         style={{
@@ -88,7 +149,9 @@ export default class SettingsScreen extends React.Component<Props, State> {
                     <ConfirmActionInput
                         label={"Restore Defaults"}
                         warning={"You'll lose your current theme."}
-                        onConfirm={() => {}}
+                        onConfirm={() => {
+                            this.restoreDefault();
+                        }}
                     ></ConfirmActionInput>
                 </View>
             </DocumentView>
@@ -123,7 +186,7 @@ class ColorInput extends React.Component<ColorProps, ColorState>{
     render = () => {
         return (
             <TouchableView style={[{
-                    backgroundColor: "white",
+                    backgroundColor: "transparent",
                     height: 50,
                     flexDirection: "row",
                     justifyContent: "space-between",
@@ -157,6 +220,11 @@ class ColorInput extends React.Component<ColorProps, ColorState>{
                 ></View>
                 <Modal
                     visible={this.state.showColor}
+                    onRequestOpen={() => {
+                        this.setState({
+                            color: toHsv(this.props.color)
+                        })
+                    }}
                     onRequestClose={() => {
                         this.setState({
                             showColor: false,
@@ -224,7 +292,7 @@ class ConfirmActionInput extends React.Component<ConfirmActionProps, ConfirmActi
     render = () => {
         return (
             <TouchableView style={[{
-                    backgroundColor: "white",
+                    backgroundColor: "transparent",
                     height: 50,
                     flexDirection: "row",
                     justifyContent: "space-between",

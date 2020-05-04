@@ -16,6 +16,7 @@ import TaskQuery, { ActiveTaskQuery } from "../Task/TaskQuery";
 import GoalQuery, { Goal, GoalLogic, ActiveGoalQuery } from 'src/Models/Goal/GoalQuery';
 import RecurQuery, { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 import { assignAll } from "src/common/types";
+import Default from "src/Components/Styled/Styles";
 
 const name = GlobalSchema.name
 
@@ -38,6 +39,9 @@ export default class GlobalQuery extends ModelQuery<Global, IGlobal> {
             current: MyDate.Now().toDate(),
             count: 0,
             lastNotifiedDate: MyDate.Now().toDate(),
+            primaryColor: Default.PRIMARY_COLOR,
+            primaryLightColor: Default.PRIMARY_COLOR_LIGHT,
+            secondaryColor: Default.SECONDARY_COLOR,
         }
     }
 

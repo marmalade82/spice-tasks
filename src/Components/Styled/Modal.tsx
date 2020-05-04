@@ -6,6 +6,7 @@ import { ScrollView, View, Modal as ReactModal, TouchableWithoutFeedback, StyleP
 interface Props {
     visible: boolean;
     onRequestClose: () => void;
+    onRequestOpen?: () => void;
     height? : number;
     accessibilityLabel? : string;
     contentStyle?: StyleProp<ViewStyle>;
@@ -32,6 +33,7 @@ export default class Modal extends React.Component<Props, State> {
                 visible={this.props.visible}
                 transparent={true}
                 onRequestClose={ this.props.onRequestClose }
+                onShow={ () => this.props.onRequestOpen ? this.props.onRequestOpen() : null }
                 animationType={ "fade" }
             >
                 <TouchableWithoutFeedback
