@@ -28,6 +28,23 @@ function scheduleRefresh(mins: number, cancel: () => boolean, timeUntilNext?: nu
     run();
 }
 
+function scheduleReminders(mins: number, cancel: () => boolean) {
+    const ms = (1000 * 60) * mins;
+    let count = 0;
+    async function run() {
+        // Run the reminder refresh once about every 10 minutes
+        if(!cancel() && count === 0) {
+            await new GlobalLogic().runReminders();
+        }
+
+        count = (count + 1) % 10;
+
+        setTimeout(run, ms);
+    }
+    run();
+}
+
 export const Schedule = {
     refresh: scheduleRefresh,
+    reminders: scheduleReminders,
 }

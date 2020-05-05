@@ -11,9 +11,8 @@ import { TouchableView, HeaderText, BodyText } from "src/Components/Basic/Basic"
 import GlobalQuery, { GlobalLogic } from "src/Models/Global/GlobalQuery";
 import Default from "src/Components/Styled/Styles";
 import Global from "src/Models/Global/Global";
-import { isBuffer } from "util";
-import { booleanLiteral } from "@babel/types";
 import { LabelValue } from "src/common/types";
+import { StyleSheetContext } from "src/Components/Styled/StyleSheets";
 
 interface Props {
     navigation: object;
@@ -33,6 +32,9 @@ export default class SettingsScreen extends React.Component<Props, State> {
             title: 'Settings',
         }
     }
+
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     
     unsub: () => void;
     navigation: MainNavigator<"Settings">
@@ -117,18 +119,9 @@ export default class SettingsScreen extends React.Component<Props, State> {
     render = () => {
         return (
             <DocumentView accessibilityLabel={"lists"}>
-                <View
-                    style={{
-                        marginHorizontal: 20,
-                        marginVertical: 10,
-                        borderRadius: 15,
-                        backgroundColor: "white",
-                    }}
+                <Panel
+                    label={"Theme"}
                 >
-                    <HeaderText style={{
-                        marginVertical: 10,
-                        marginHorizontal: 10,
-                    }} level={3}>Theme</HeaderText>
                     <ColorInput
                         color={this.state.primaryColor}
                         onSelectColor={(color) => {
@@ -170,19 +163,10 @@ export default class SettingsScreen extends React.Component<Props, State> {
                             this.restoreDefault();
                         }}
                     ></ConfirmActionInput>
-                </View>
-                <View
-                    style={{
-                        marginHorizontal: 20,
-                        marginVertical: 10,
-                        borderRadius: 15,
-                        backgroundColor: "white",
-                    }}
+                </Panel>
+                <Panel
+                    label={"Notifications"}
                 >
-                    <HeaderText style={{
-                        marginVertical: 10,
-                        marginHorizontal: 10,
-                    }} level={3}>Notifications</HeaderText>
                     <ChoiceInput
                         label={"Default Task Reminder?"}
                         value={this.state.defaultReminder}
@@ -197,11 +181,36 @@ export default class SettingsScreen extends React.Component<Props, State> {
                             this.saveNotifications();
                         }}
                     ></ChoiceInput>
-                </View>
+                </Panel>
             </DocumentView>
         )
     }
+}
 
+
+interface PanelProps {
+    label: string;
+}
+interface PanelState {}
+
+class Panel extends React.Component<PanelProps, PanelState> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
+    constructor(props: PanelProps) {
+        super(props);
+    }
+
+    render = () => {
+        const { Custom, Class, Common } = this.context;
+        return (
+            <View
+                style={Class.Panel_Container}
+            >
+                <HeaderText style={Class.Panel_Header} level={3}>{this.props.label}</HeaderText>
+                {this.props.children}
+            </View>
+        )
+    }
 }
 
 interface ColorProps {
@@ -218,6 +227,8 @@ interface ColorState {
 
 class ColorInput extends React.Component<ColorProps, ColorState>{
 
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: ColorProps) {
         super(props);
 
@@ -228,20 +239,10 @@ class ColorInput extends React.Component<ColorProps, ColorState>{
     }
 
     render = () => {
+
+        const { Custom, Class, Common } = this.context;
         return (
-            <TouchableView style={[{
-                    backgroundColor: "transparent",
-                    height: 50,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    paddingVertical: 3,
-                    marginHorizontal: 10,
-                    borderColor: "lightgrey",
-                    borderWidth: 0,
-                    borderTopWidth: 1,
-                    borderBottomWidth: 0,
-                }, this.props.style]}
+            <TouchableView style={[Class.SettingsColorInput_Container, this.props.style]}
                 onPress={() => {
                     this.setState({
                         showColor: true,
@@ -255,17 +256,7 @@ class ColorInput extends React.Component<ColorProps, ColorState>{
                     {this.props.label}
                 </BodyText>
                 <View
-                    style={{
-                        height: 20,
-                        width: 20,
-                        marginRight: 10,
-                        borderRadius: 50,
-                        backgroundColor: this.props.color,
-                        borderColor: "black",
-                        
-                        borderBottomWidth: 1,
-                        borderRightWidth: 1,
-                    }}
+                    style={Class.SettingsColorInput_Color}
                 ></View>
                 <Modal
                     visible={this.state.showColor}
@@ -328,6 +319,8 @@ interface ConfirmActionState {
 }
 
 class ConfirmActionInput extends React.Component<ConfirmActionProps, ConfirmActionState> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: ConfirmActionProps) {
         super(props);
         this.state = {
@@ -336,20 +329,9 @@ class ConfirmActionInput extends React.Component<ConfirmActionProps, ConfirmActi
     }
 
     render = () => {
+        const { Custom, Class, Common } = this.context;
         return (
-            <TouchableView style={[{
-                    backgroundColor: "transparent",
-                    height: 50,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    paddingVertical: 3,
-                    marginHorizontal: 10,
-                    borderColor: "lightgrey",
-                    borderWidth: 0,
-                    borderTopWidth: 1,
-                    borderBottomWidth: 0,
-                }, this.props.style]}
+            <TouchableView style={[Class.ConfirmActionInput_Container, this.props.style]}
                 onPress={() => {
                     this.setState({
                         showConfirm: true,
@@ -454,6 +436,8 @@ interface ChoiceState {
 }
 
 class ChoiceInput extends React.Component<ChoiceProps, ChoiceState> {
+    static contextType = StyleSheetContext;
+    context!: React.ContextType<typeof StyleSheetContext>
     constructor(props: ChoiceProps) {
         super(props);
         this.state = {
@@ -462,20 +446,10 @@ class ChoiceInput extends React.Component<ChoiceProps, ChoiceState> {
     }
 
     render = () => {
+
+        const { Custom, Class, Common } = this.context;
         return (
-            <TouchableView style={[{
-                    backgroundColor: "transparent",
-                    height: 50,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    paddingVertical: 3,
-                    marginHorizontal: 10,
-                    borderColor: "lightgrey",
-                    borderWidth: 0,
-                    borderTopWidth: 1,
-                    borderBottomWidth: 0,
-                }, this.props.style]}
+            <TouchableView style={[Class.SettingsChoiceInput_Container, this.props.style]}
                 onPress={() => {
                     this.setState({
                         showChoices: true,
@@ -527,16 +501,13 @@ class ChoiceInput extends React.Component<ChoiceProps, ChoiceState> {
     }
 
     private renderChoices = () => {
+        const { Custom, Class, Common } = this.context;
         return this.props.choices.map((lv, index) => {
             return (
                 <View key={lv.key}
                     style={{
-                        flex: 1,
-                        backgroundColor: "transparent",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        borderColor: "lightgrey",
-                        borderBottomWidth: index === this.props.choices.length - 1 ? 0 : 1
+                        ...Class.SettingsChoiceInput_ChoiceContainer,
+                        borderBottomWidth: index === this.props.choices.length - 1 ? 0 : 1,
                     }}
                 >
                     <TouchableView style={{
@@ -553,13 +524,8 @@ class ChoiceInput extends React.Component<ChoiceProps, ChoiceState> {
                     >
                         <View
                             style={{
-                                width: 10,
-                                height: 10,
-                                backgroundColor: lv.value === this.props.value ? "red" : "transparent",
-                                //borderColor: lv.value === this.props.value ? "red" : "grey",
-                                //borderWidth: 1,
-                                borderRadius: 100,
-                                marginLeft: 0,
+                                ...Class.SettingsChoiceInput_ChoiceIndicator,
+                                ...(lv.value !== this.props.value && { backgroundColor: "transparent"})
                             }}
                         ></View>
                         <BodyText style={{

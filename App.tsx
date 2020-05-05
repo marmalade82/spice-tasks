@@ -190,6 +190,7 @@ export default class App extends React.Component<Props, State> {
     AppState.addEventListener('change', this.handleAppStateChange);
     
     void Schedule.refresh(1, () => false);
+    void Schedule.reminders(1, () => false);
 
     void new GlobalQuery().current().then((global) => {
       this.setState({

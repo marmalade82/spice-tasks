@@ -5,4 +5,5 @@ import { countOfThings } from "src/Screens/Prototypes/TestScreen";
 
 module.exports = async (taskData) => {
     new GlobalLogic().runRefresh(); 
+    new GlobalLogic().runReminders();
 }
