@@ -2,7 +2,7 @@
 import { StyleSheet } from "react-native";
 import React from "react";
 
-import S from "./Styles";
+import Default from "./Styles";
 
 export const spacer = 10;
 
@@ -23,10 +23,10 @@ export const Layout = StyleSheet.create({
         flex: 0,
     },
     ContainerMarginTop: {
-        marginTop: S.CONTAINER_VERTICAL_MARGIN,
+        marginTop: Default.CONTAINER_VERTICAL_MARGIN,
     },
     ContainerMarginBottom: {
-        marginBottom: 2 * S.CONTAINER_VERTICAL_MARGIN,
+        marginBottom: 2 * Default.CONTAINER_VERTICAL_MARGIN,
     },
     TextInputSpacing: {
         marginBottom: 3,
@@ -35,10 +35,10 @@ export const Layout = StyleSheet.create({
         display: "none"
     },
     Left_First_Margin: {
-        marginLeft: S.LEFT_FIRST_MARGIN
+        marginLeft: Default.LEFT_FIRST_MARGIN
     },
     Left_Second_Margin: {
-        marginLeft: S.LEFT_SECOND_MARGIN
+        marginLeft: Default.LEFT_SECOND_MARGIN
     },
 })
 
@@ -70,7 +70,7 @@ export const Type = StyleSheet.create({
     },
 })
 
-const Common = makeCommon(S);
+const Common = makeCommon(Default);
 export type CommonType = typeof Common;
 
 export function makeCommon(S) {
@@ -125,7 +125,7 @@ export function makeCommon(S) {
     return Common;
 }
 
-const Class = makeClass(S);
+const Class = makeClass(Default);
 export type ClassType = typeof Class;
 
 export function makeClass (S) {
@@ -720,7 +720,6 @@ export function makeClass (S) {
             width: 20,
             marginRight: 10,
             borderRadius: 50,
-            backgroundColor: this.props.color,
             borderColor: "black",
             
             borderBottomWidth: 1,
@@ -854,7 +853,7 @@ export function makeCustom(S) {
     return Custom;
 }
 
-const Custom = makeCustom(S);
+const Custom = makeCustom(Default);
 export type CustomType = typeof Custom;
 
 export const StyleSheetContext = React.createContext({

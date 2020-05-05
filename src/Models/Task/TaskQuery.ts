@@ -191,7 +191,7 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
 
     inMinutes = (minutes: number) => {
         const now = MyDate.Now();
-        const then = now.add(30, "minutes");
+        const then = now.clone().add(30, "minutes");
 
         const nowTime = MyDate.Zero().setTime(now);
         const thenTime = MyDate.Zero().setTime(then);
@@ -199,6 +199,8 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
         return this.query(
             Q.where(TaskSchema.name.START_TIME_ON, Q.lte(thenTime.toDate().valueOf())),
             Q.where(TaskSchema.name.START_TIME_ON, Q.gte(nowTime.toDate().valueOf())),
+            Q.where(TaskSchema.name.REMIND, true),
+            Q.where(TaskSchema.name.REMINDED, false),
             Q.or(
                 Q.and(
                     ...Conditions.startsOn(now.toDate())

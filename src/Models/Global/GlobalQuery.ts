@@ -18,6 +18,8 @@ import * as R from "ramda";
 
 const name = GlobalSchema.name
 
+
+
 export default class GlobalQuery extends ModelQuery<Global, IGlobal> {
 
     constructor() {
@@ -70,6 +72,7 @@ export class GlobalLogic {
     }
 
     runReminders = async () => {
+        console.log("running reminders")
         const tasks: Task[] = await new TaskQuery().inMinutes(30);
         const sortedAsc = R.sort((a, b) => {
             const first = new MyDate(a.startDate).setTime(new MyDate(a.startTime));
@@ -78,17 +81,21 @@ export class GlobalLogic {
         }, tasks)
 
         // Notify 5 minutes beforehand.
+        console.log("found some tasks that need reminding: " + sortedAsc.length);
         if(sortedAsc.length > 0) {
             const date = new MyDate(sortedAsc[0].startDate)
                             .setTime(new MyDate(sortedAsc[0].startTime))
-                            .subtract(5, "minutes")
+                            .subtract(2, "minutes")
                             .toDate()
             const others = `${ sortedAsc.length - 1 > 0 ? `, and ${sortedAsc.length - 1} others` : ""}`;
 
+            console.log("scheduling notification");
             Notification.localNotificationSchedule({
                 message: `Starting soon at ${new MyDate(sortedAsc[0].startTime).format("h:mm A")}: ${sortedAsc[0].title}${others}`,
+               // date: new Date(Date.now() + 60 * 1000)
                 date: date,
             })
+            console.log("doen scheduling");
         }
 
         sortedAsc.forEach((task) => {

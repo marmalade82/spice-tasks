@@ -256,7 +256,9 @@ class ColorInput extends React.Component<ColorProps, ColorState>{
                     {this.props.label}
                 </BodyText>
                 <View
-                    style={Class.SettingsColorInput_Color}
+                    style={[Class.SettingsColorInput_Color, {
+                        backgroundColor: this.props.color
+                    }]}
                 ></View>
                 <Modal
                     visible={this.state.showColor}
