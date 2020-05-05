@@ -180,6 +180,13 @@ function dueOnOrAfterConditions(d: Date) {
     ]
 }
 
+function startsOnConditions(d: Date) {
+    return [
+        ...startsOnOrAfterConditions(d),
+        ...startsOnOrBeforeConditions(d),
+    ]
+}
+
 export const Conditions = {
     active: activeConditions,
     activeChild: activeChildConditions,
@@ -207,6 +214,7 @@ export const Conditions = {
     dueOnOrBefore: dueOnOrBeforeConditions,
     dueAfter: dueAfterConditions,
     dueOnOrAfter: dueOnOrAfterConditions,
+    startsOn: startsOnConditions,
 }
 
 

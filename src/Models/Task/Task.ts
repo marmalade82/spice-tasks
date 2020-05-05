@@ -23,7 +23,8 @@ interface ITask {
     completedDate: Date;
     createdAt: Date;
     parent: ParentInfo;
-    remindMe: boolean
+    remindMe: boolean;
+    reminded: boolean;
 }
 
 // TODO FIX OBJECT ASSIGN ISSUE.
@@ -58,6 +59,7 @@ export default class Task extends Model implements ITask {
     @date(name.CREATED_ON) createdAt!: Date;
     @date(name.START_TIME_ON) startTime!: Date;
     @field(name.REMIND) remindMe!: boolean;
+    @field(name.REMINDED) reminded!: boolean;
 
     @field(name.PARENT) private parentId! : string
     @field(name.PARENT_TABLE) private parentType!: TaskParentTypes;

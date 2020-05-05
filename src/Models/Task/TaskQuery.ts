@@ -35,6 +35,7 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
             completedDate: MyDate.Zero().toDate(),
             createdAt: MyDate.Now().toDate(),
             remindMe: false,
+            reminded: false,
             parent: {
                 id: "",
                 type: TaskParentTypes.NONE,
@@ -186,6 +187,27 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
             ...Conditions.dueOnOrAfter(date),
             ...Conditions.complete()
         );
+    }
+
+    inMinutes = (minutes: number) => {
+        const now = MyDate.Now();
+        const then = now.add(30, "minutes");
+
+        const nowTime = MyDate.Zero().setTime(now);
+        const thenTime = MyDate.Zero().setTime(then);
+
+        return this.query(
+            Q.where(TaskSchema.name.START_TIME_ON, Q.lte(thenTime.toDate().valueOf())),
+            Q.where(TaskSchema.name.START_TIME_ON, Q.gte(nowTime.toDate().valueOf())),
+            Q.or(
+                Q.and(
+                    ...Conditions.startsOn(now.toDate())
+                ),
+                Q.and(
+                    ...Conditions.startsOn(then.toDate())
+                )
+            )
+        ).fetch();
     }
 }
 
@@ -463,8 +485,20 @@ export class TaskLogic {
             remindMe: task.remindMe,
             dueDate: new MyDate(newDate).add( new MyDate(task.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
             parent: task.parent,
+            reminded: false,
         }
         return newTask;
+    }
+
+    markReminded = async () => {
+        const task = await new TaskQuery().get(this.id);
+        if(task) {
+            const tx = await ActiveTransaction.new();
+            tx.addUpdate(new TaskQuery(), task, {
+                reminded: true
+            });
+            tx.commitAndReset();
+        }
     }
 
     complete = async () => {
@@ -474,6 +508,7 @@ export class TaskLogic {
     fail = async () => {
         await this.actionTaskAndDescendants("fail", this.id);
     }
+
 
     private actionTaskAndDescendants = async (action: "complete" | "fail", id: string) => {
         const tx = await ActiveTransaction.new();

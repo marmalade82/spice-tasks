@@ -189,7 +189,6 @@ export default class App extends React.Component<Props, State> {
   componentDidMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
     
-
     void Schedule.refresh(1, () => false);
 
     void new GlobalQuery().current().then((global) => {

@@ -9,11 +9,12 @@ import { GlobalSchema } from "src/Models/Global/GlobalSchema";
 import MyDate from "src/common/Date";
 import { Observable, interval, timer } from "rxjs";
 import Notification from "src/Notification";
-import TaskQuery, { ActiveTaskQuery } from "../Task/TaskQuery";
+import TaskQuery, { ActiveTaskQuery, Task, TaskLogic } from "../Task/TaskQuery";
 import GoalQuery, { Goal, GoalLogic, ActiveGoalQuery } from 'src/Models/Goal/GoalQuery';
 import RecurQuery, { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 import { assignAll } from "src/common/types";
 import Default from "src/Components/Styled/Styles";
+import * as R from "ramda";
 
 const name = GlobalSchema.name
 
@@ -66,6 +67,33 @@ export class GlobalLogic {
     runRefresh = async () => {
         await this.runRecordRefresh();
         await this.runDailyNotifications();
+    }
+
+    runReminders = async () => {
+        const tasks: Task[] = await new TaskQuery().inMinutes(30);
+        const sortedAsc = R.sort((a, b) => {
+            const first = new MyDate(a.startDate).setTime(new MyDate(a.startTime));
+            const second = new MyDate(b.startDate).setTime(new MyDate(b.startTime));
+            return first.toDate().valueOf() - second.toDate().valueOf();
+        }, tasks)
+
+        // Notify 5 minutes beforehand.
+        if(sortedAsc.length > 0) {
+            const date = new MyDate(sortedAsc[0].startDate)
+                            .setTime(new MyDate(sortedAsc[0].startTime))
+                            .subtract(5, "minutes")
+                            .toDate()
+            const others = `${ sortedAsc.length - 1 > 0 ? `, and ${sortedAsc.length - 1} others` : ""}`;
+
+            Notification.localNotificationSchedule({
+                message: `Starting soon at ${new MyDate(sortedAsc[0].startTime).format("h:mm A")}: ${sortedAsc[0].title}${others}`,
+                date: date,
+            })
+        }
+
+        sortedAsc.forEach((task) => {
+            void new TaskLogic(task.id).markReminded();
+        })
     }
 
     runRecordRefresh = async () => {
