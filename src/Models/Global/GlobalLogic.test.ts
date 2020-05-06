@@ -7,7 +7,7 @@ import Notification from "src/Notification";
 import { 
     makeNavigation, destroyAll,
     createGoals, createTasks,
-    createRecurrences, createGlobal,
+    createGlobal,
 } from "src/common/test-utils";
 import MyDate from "src/common/Date";
 import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cleanup } from '@testing-library/react-native';

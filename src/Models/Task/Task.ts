@@ -26,6 +26,9 @@ interface ITask {
     parent: ParentInfo;
     remindMe: boolean;
     reminded: boolean;
+    repeat: "daily" | "weekly" | "monthly" | "stop";
+    nextRepeatCalculated: boolean;
+    lastRefresh: Date;
 }
 
 // TODO FIX OBJECT ASSIGN ISSUE.
@@ -61,6 +64,9 @@ export default class Task extends Model implements ITask {
     @date(name.START_TIME_ON) startTime!: Date;
     @field(name.REMIND) remindMe!: boolean;
     @field(name.REMINDED) reminded!: boolean;
+    @field(name.REPEAT) repeat!: "daily" | "weekly" | "monthly" | "stop";
+    @field(name.NEXT_REPEAT) nextRepeatCalculated!: boolean;
+    @date(name.LAST_REFRESH) lastRefresh!: Date;
 
     @field(name.PARENT) private parentId! : string
     @field(name.PARENT_TABLE) private parentType!: TaskParentTypes;

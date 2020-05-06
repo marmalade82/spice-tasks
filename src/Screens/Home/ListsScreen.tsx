@@ -173,12 +173,6 @@ class NavigationList extends React.Component<NavListProps> {
                     , navDestination: "Penalties"
                     , accessibilityLabel: "dest-penalties"
                     },
-                    { text: "Recurring Goals"
-                    , icon: "recur"
-                    , navParams: {}
-                    , navDestination: "Recurrings"
-                    , accessibilityLabel: "dest-recurring-goals"
-                    },
                     { text: "Earned Rewards"
                     , icon: "earned_reward"
                     , navParams: {}
@@ -191,12 +185,6 @@ class NavigationList extends React.Component<NavListProps> {
                     , navDestination: "EarnedPenalties"
                     , accessibilityLabel: "dest-earned-penalties"
                     },
-                    { text: "Menu"
-                    , icon: "goal"
-                    , navParams: {}
-                    , navDestination: "Menu"
-                    , accessibilityLabel: "dest-menu"
-                    }
                 ]}
             >
             </NavigationGroup>

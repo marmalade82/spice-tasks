@@ -6,17 +6,11 @@ import { StyleSheet } from "react-native";
 import { GoalQuery, Goal, IGoal, GoalLogic } from "src/Models/Goal/GoalQuery";
 import { ColumnView, TouchableView } from "src/Components/Basic/Basic";
 import { DocumentView, ScreenHeader, Toast, IconButton, Icon } from "src/Components/Styled/Styled";
-import { RecurLogic } from "src/Models/Recurrence/RecurQuery";
-import Recur from "src/Models/Recurrence/Recur";
-import MyDate from "src/common/Date";
 import RewardQuery from "src/Models/Reward/RewardQuery";
 import Reward from "src/Models/Reward/Reward";
 import { Observable } from "rxjs";
 import { LabelValue } from "src/common/types";
 import PenaltyQuery, { Penalty } from "src/Models/Penalty/PenaltyQuery";
-import SaveButton from "src/Components/Basic/SaveButton";
-
-import { NavigationStackProp} from "react-navigation-stack";
 import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "src/Screens/common/screenUtils";

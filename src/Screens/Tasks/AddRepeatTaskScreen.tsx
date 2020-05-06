@@ -268,12 +268,13 @@ export default class AddRepeatTaskScreen extends React.Component<Props, State> {
                 ></DateTimeInput>
 
                 <ChoiceInput
-                    title={"Repeats"}
+                    title={"Repeat"}
                     data={this.state.repeats}
                     choices={[
                         {label: "Daily", value: "daily", key: "daily"},
                         {label: "Weekly", value: "weekly", key: "weekly"},
                         {label: "Monthly", value: "monthly", key: "monthly"},
+                        {label: "Don't Repeat", value: "stop", key: "stop"},
                     ]}
                     onDataChange={(val) => {
                         this.setState({

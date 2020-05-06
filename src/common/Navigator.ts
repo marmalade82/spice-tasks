@@ -101,9 +101,6 @@ const NavigatorParams = {
   , InProgressGoals: None
   , SpecificTask: None
   , SpecificTaskLists: None
-  , Recurrings: None
-  , Recur: Single
-  , AddRecur: Child
   , EarnedPenalties: {
       type: "" as string | undefined
     }

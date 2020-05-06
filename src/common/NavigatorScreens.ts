@@ -29,9 +29,6 @@ export const ScreenDirectory: Record<keyof Omit<ScreenParams, "None">, any> = {
   , InProgressGoals: Screens.InProgressGoalList
   , SpecificTask: Screens.SpecificTask
   , SpecificTaskLists: Screens.SpecificTaskList
-  , Recurrings: Screens.RecurringList
-  , Recur: Screens.Recur
-  , AddRecur: Screens.AddRecur
   , EarnedPenalties: Screens.EarnedPenaltyList
   , EarnedPenalty: Screens.EarnedPenalty
   , UnusedEarnedPenalties: Screens.UnusedEarnedPenalties

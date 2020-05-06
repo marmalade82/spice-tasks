@@ -93,7 +93,7 @@ interface Props {
         "completed-today" | "in-progress-but-not-due-today" |
         "overdue" | "remaining-today" | "due-today" | "in-progress" | 
         "single" | "current-cycle" | "today-as-cycle" | 
-        "overdue-in-goal" | "parent" | "recurring";
+        "overdue-in-goal" | "parent"
     parentId: string  // shows all tasks that have this parent
     id: undefined | string;
 }
@@ -314,11 +314,6 @@ const enhance = withObservables(['type'], (props: InputProps) => {
                     const latest = sorted[0];
                     return new ActiveTaskQuery().queryInSCycle(latest ? latest.id : "").observe()
                 }))
-            }
-        } break;
-        case "recurring": {
-            return {
-                tasks: new TaskQuery().inRecurrence(props.parentId ? props.parentId : "")
             }
         } break;
         default: {

@@ -7,7 +7,7 @@ import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cle
 import { 
     makeNavigation, destroyAll,
     createGoals, createTasks,
-    createRecurrences, createStreakCycles, asyncTestWithTag,
+    createStreakCycles, asyncTestWithTag,
 } from "src/common/test-utils";
 import MyDate from "src/common/Date";
 

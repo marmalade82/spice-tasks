@@ -1,109 +1,8 @@
 
-import ModelQuery from "src/Models/base/Query";
-import {
-    Recur, IRecur,
-} from "src/Models/Recurrence/Recur";
-import { RecurSchema } from "src/Models/Recurrence/RecurSchema";
-import { Q, Database, Model } from "@nozbe/watermelondb";
-import { Conditions, findAllChildrenIn } from "src/Models/common/queryUtils"
-import DB from "src/Models/Database";
 import MyDate from "src/common/Date";
-import GoalQuery, { GoalLogic, IGoal, Goal } from "../Goal/GoalQuery";
-import { tsAnyKeyword } from "@babel/types";
-import { DatePickerAndroid } from "react-native";
 import { take } from "src/Models/common/logicUtils";
-import { Condition } from "@nozbe/watermelondb/QueryDescription";
 import ActiveTransaction, { InactiveTransaction } from "../common/Transaction";
 import TaskQuery, { Task, TaskLogic, ITask } from "../Task/TaskQuery";
-
-
-function activeCondition() {
-    return Conditions.active();
-}
-
-export class RecurQuery extends ModelQuery<Recur, IRecur> {
-    constructor() {
-        super(RecurSchema.table);
-    }
-
-    queryActive = () => {
-        return this.store().query(
-            ...activeCondition()
-        );
-    }
-
-    active = async () => {
-        return (await this.queryActive().fetch()) as Recur[];
-    }
-
-    queryUnprocessed = () => {
-        return this.store().query(
-            ...[...Conditions.lastRefreshedOnOrBefore(MyDate.Now().subtract(1, "days").toDate()),
-                ...activeCondition(),
-            ]
-        );
-    }
-
-    unprocessed = async () => {
-        return (await this.queryUnprocessed().fetch()) as Recur[];
-    }
-
-    queryDailyUnprocessed = () => {
-        return this.store().query(
-            ...[...Conditions.lastRefreshedOnOrBefore(MyDate.Now().subtract(1, "days").toDate()),
-                ...activeCondition(),
-                Q.where(RecurSchema.name.TYPE, "daily"),
-            ]
-        );
-    }
-
-    dailyUnprocessed = async () => {
-        return (await this.queryDailyUnprocessed().fetch()) as Recur[];
-    }
-
-    queryWeeklyUnprocessed = () => {
-        return this.store().query(
-            ...[...Conditions.lastRefreshedOnOrBefore(MyDate.Now().subtract(1, "days").toDate()),
-                ...activeCondition(),
-                Q.where(RecurSchema.name.TYPE, "weekly"),
-                ]
-        );
-    }
-
-    weeklyUnprocessed = async () => {
-        return (await this.queryWeeklyUnprocessed().fetch()) as Recur[];
-    }
-
-    queryMonthlyUnprocessed = () => {
-        return this.store().query(
-            ...[...Conditions.lastRefreshedOnOrBefore(MyDate.Now().subtract(1, "days").toDate()),
-                ...activeCondition(),
-                Q.where(RecurSchema.name.TYPE, "monthly"),
-                ]
-        );
-    }
-
-    monthlyUnprocessed = async () => {
-        return (await this.queryMonthlyUnprocessed().fetch()) as Recur[];
-    }
-
-    queries = () => {
-        return [] as Condition[];
-    }
-
-    default = () => {
-        const def: IRecur = {
-            type: "daily",
-            // are these necessary? It would be simpler to just assume that they recur at the same time.
-            active: true,
-            lastRefreshed: MyDate.Now().toDate() // no need to calculate it if it was just created...
-        }
-
-        return def;
-    }
-
-}
-export default RecurQuery;
 
 
 export class RecurLogic {
@@ -145,42 +44,14 @@ export class RecurLogic {
     }
 
     static processSomeRecurrences = async (n?: number) => {
-        const recurs : Recur[] = await new RecurQuery().unprocessed();
-        await RecurLogic.process(recurs, n);
+        const tasks : Task[] = await new TaskQuery().unprocessed();
+        await RecurLogic.process(tasks, n);
     }
 
-    static processDailyRecurrences = async () => {
-        await RecurLogic.processSomeDailyRecurrences();
-    }
-
-    static processSomeDailyRecurrences = async (n?: number) => {
-        const recurs: Recur[] = await new RecurQuery().dailyUnprocessed();
-        await RecurLogic.process(recurs, n);
-    }
-
-    
-    private static process = async(arr: Recur[], n?: number) => {
-        take(arr, n? n : arr.length).forEach((recur) => {
-            void new RecurLogic(recur.id).generateNext();
+    private static process = async(arr: Task[], n?: number) => {
+        take(arr, n? n : arr.length).forEach((task) => {
+            void new RecurLogic(task.id).generateNext();
         })
-    }
-
-    static processWeeklyRecurrences = async () => {
-        await RecurLogic.processSomeWeeklyRecurrences();
-    }
-
-    static processSomeWeeklyRecurrences = async (n?: number) => {
-        const recurs: Recur[] = await new RecurQuery().weeklyUnprocessed();
-        await RecurLogic.process(recurs, n);
-    }
-
-    static processMonthlyRecurrences = async () => {
-        await RecurLogic.processSomeMonthlyRecurrences();
-    }
-
-    static processSomeMonthlyRecurrences = async (n?: number) => {
-        const recurs: Recur[] = await new RecurQuery().monthlyUnprocessed();
-        await RecurLogic.process(recurs, n);
     }
 
     /**
@@ -190,37 +61,36 @@ export class RecurLogic {
      * the returning user with past tasks)
      */
     generateNext = async (timeUntilNext?: number) => {
-        const recur = await new RecurQuery().get(this.id);
-        if(recur) {
+        const task = await new TaskQuery().get(this.id);
+        if(task) {
             const tx = await ActiveTransaction.new();
-            const oldTasks = await new TaskQuery().inRecurrence(this.id);
-            const latestTask = oldTasks.sort((a, b) => {
-                return b.startDate.valueOf() - a.startDate.valueOf();
-            })[0];
 
-            if(latestTask) {
-                switch(recur.type) {
-                    case "daily": {
-                        const consume = await this._generateNext(latestTask, "days");
-                        tx.consume(consume);
-                    } break;
-                    case "weekly": {
-                        const consume = await this._generateNext(latestTask, "weeks");
-                        tx.consume(consume);
-                    } break;
-                    case "monthly": {
-                        const consume = await this._generateNext(latestTask, "months");
-                        tx.consume(consume);
-                    } break;
-                    default: {
-                        //do nothing otherwise
-                    }
-                } 
-            }
+            let update = {
+                lastRefresh: MyDate.Now().toDate(),
+                nextRepeatCalculated: false,
+            };
+            switch(task.repeat) {
+                case "daily": {
+                    const {calculated, consume} = await this._generateNext(task, "days");
+                    tx.consume(consume);
+                    update.nextRepeatCalculated = calculated;
+                } break;
+                case "weekly": {
+                    const {calculated, consume} = await this._generateNext(task, "weeks");
+                    tx.consume(consume);
+                    update.nextRepeatCalculated = calculated;
+                } break;
+                case "monthly": {
+                    const {calculated, consume} = await this._generateNext(task, "months");
+                    tx.consume(consume);
+                    update.nextRepeatCalculated = calculated;
+                } break;
+                default: {
+                    //do nothing otherwise
+                }
+            } 
 
-            tx.addUpdate(new RecurQuery(), recur, {
-                lastRefreshed: MyDate.Now().toDate()
-            })
+            tx.addUpdate(new TaskQuery(), task, update)
 
             tx.commitAndReset();
         }
@@ -230,7 +100,7 @@ export class RecurLogic {
         const tx = new InactiveTransaction();
         let start = new MyDate(latestTask.startDate);
 
-        //All we need to do is generate for the current and previous cycles, and that's it.
+        // All we need to do is generate for the current and previous cycles, and that's it.
         // We calculate the current cycle from the date of the latest task.
         // We are not guaranteed that it is time to regenerate. We need to check first.
         let regenerate = false;
@@ -249,58 +119,17 @@ export class RecurLogic {
                     regenerate = true;
                 }
             } break;
+            default: {
+
+            }
         }
 
+        // Unlike habits, we'll only regenerate once. If your phone is dead the entire day, then we may as well
+        // say that you never had to do the task for that day.
         if(regenerate) {
-            GoalLogic.cloneRelativeTo
-            const tasksThisCycle = await new TaskQuery().inRecurrenceOn(this.id, MyDate.Now().toDate());
-            if( tasksThisCycle.length === 0) {
-                tx.addCreate(new TaskQuery(), TaskLogic.cloneWithStart(MyDate.Now().toDate(), latestTask));
-            }
-
-            const tasksLastCycle = await new TaskQuery().inRecurrenceOn(this.id, MyDate.Now().subtract(1, unit).toDate())
-            if(tasksLastCycle.length === 0 ) {
-                tx.addCreate(new TaskQuery(), TaskLogic.cloneWithStart(MyDate.Now().subtract(1, unit).toDate(), latestTask));
-            }
+            tx.consume(await TaskLogic.cloneWithStart(MyDate.Now().toDate(), latestTask));
         }
 
-        return tx;
+        return { calculated: regenerate, consume: tx};
     }
-
-    enable = async () => {
-        const recur = await new RecurQuery().get(this.id);
-        if(recur) {
-            const tx = await ActiveTransaction.new();
-            tx.addUpdate(new RecurQuery(), recur, {
-                active: true,
-            })
-            await tx.commitAndReset();
-        }
-    }
-
-    disable = async () => {
-        const recur = await new RecurQuery().get(this.id);
-        if(recur) {
-            const tx = await ActiveTransaction.new();
-            tx.addUpdate(new RecurQuery(), recur, {
-                active: false
-            })
-            await tx.commitAndReset();
-        }
-    }
-
-    delete = async () => {
-        // Luckily, deleting a recurrence doesn't really affect the underlying goals.
-        const recur = await new RecurQuery().get(this.id);
-        if(recur) {
-            const tx = await ActiveTransaction.new();
-            tx.addDelete(new RecurQuery(), recur)
-            await tx.commitAndReset();
-        }
-    }
-}
-
-export {
-    Recur,
-    IRecur,
 }

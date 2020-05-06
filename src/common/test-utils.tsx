@@ -11,8 +11,6 @@ import TaskSchema from "src/Models/Task/TaskSchema";
 import RewardSchema from "src/Models/Reward/RewardSchema";
 import Penalty, { IPenalty } from "src/Models/Penalty/Penalty";
 import { IReward, Reward } from "src/Models/Reward/Reward";
-import Recur, { IRecur } from "src/Models/Recurrence/Recur";
-import { RecurSchema } from "src/Models/Recurrence/RecurSchema";
 import { GlobalSchema } from "src/Models/Global/GlobalSchema";
 import Global, { IGlobal } from "src/Models/Global/Global";
 import GlobalQuery from "src/Models/Global/GlobalQuery";
@@ -89,9 +87,6 @@ async function createGoals(data: Partial<IGoal>, count: number) {
     return goals;
 }
 
-export async function createRecurrences(data: Partial<IRecur>, count: number) {
-    return (await _createModels(RecurSchema.table, data, count)) as Recur[];
-}
 
 export async function createStreakCycles(data: Partial<IStreakCycle>, count: number) {
     data.type = "streak_cycle";
@@ -134,7 +129,7 @@ async function destroyAll() {
     const tables: string[] = [
         GoalSchema.table, TaskSchema.table, RewardSchema.table,
         EarnedRewardSchema.table,
-        GlobalSchema.table, RecurSchema.table, GroupSchema.table,
+        GlobalSchema.table, GroupSchema.table,
     ];
     const destroys = tables.map((name: string) => {
         return destroyAllIn(name);

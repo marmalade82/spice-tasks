@@ -1,8 +1,4 @@
 
-import DB from "src/Models/Database";
-import GoalQuery, { Goal, GoalLogic } from 'src/Models/Goal/GoalQuery';
-import Recur from "src/Models/Recurrence/Recur";
-import RecurQuery, { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 import GlobalQuery, { GlobalLogic } from "src/Models/Global/GlobalQuery";
 
 

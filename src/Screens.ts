@@ -22,9 +22,6 @@ import SpecificTaskListScreen from "src/Screens/Prototypes/SpecificTaskListsScre
 import AppStartScreen from "src/Screens/Home/AppStartScreen";
 import OverdueScreen from "src/Screens/Home/OverdueScreen";
 import InProgressGoalListScreen from "src/Screens/Goals/InProgressGoalListScreen";
-import RecurringListScreen from "src/Screens/Recurring/RecurringListScreen";
-import RecurScreen from "src/Screens/Recurring/RecurScreen";
-import AddRecurScreen from "src/Screens/Recurring/AddRecurScreen";
 import TestScreen from "src/Screens/Prototypes/TestScreen";
 import EarnedPenaltyListScreen from "src/Screens/Penalties/EarnedPenaltyListScreen";
 import EarnedPenaltyScreen from "src/Screens/Penalties/EarnedPenaltyScreen";
@@ -63,9 +60,6 @@ export {
     AppStartScreen as AppStart,
     OverdueScreen as Overdue,
     InProgressGoalListScreen as InProgressGoalList,
-    RecurringListScreen as RecurringList,
-    RecurScreen as Recur,
-    AddRecurScreen as AddRecur,
     EarnedPenaltyListScreen as EarnedPenaltyList,
     EarnedPenaltyScreen as EarnedPenalty,
     UnusedEarnedRewardsScreen as UnusedEarnedRewards,

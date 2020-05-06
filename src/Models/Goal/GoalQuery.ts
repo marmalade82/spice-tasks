@@ -17,7 +17,6 @@ import { PenaltyTypes } from "../Penalty/PenaltyLogic";
 import EarnedPenaltyQuery from "../Penalty/EarnedPenaltyQuery";
 import EarnedPenaltyLogic from "../Penalty/EarnedPenaltyLogic";
 import ActiveTransaction, {InactiveTransaction} from "../common/Transaction";
-import RecurQuery, { RecurLogic, Recur } from "../Recurrence/RecurQuery";
 import StreakCycleQuery, { ChildStreakCycleQuery } from "../Group/StreakCycleQuery";
 import StreakCycle from "../Group/StreakCycle";
 import { Condition } from "@nozbe/watermelondb/QueryDescription";
@@ -370,23 +369,27 @@ export class GoalLogic {
 
         /*Returns latest open cycles in sorted order, ascending* */
         const latestOpenCycles = await getLatestOpenCycles(currentCycleStart);
-        console.log("OPEN CYCLES: " + JSON.stringify(latestOpenCycles));
-        latestOpenCycles.forEach((cycle) => {
+        const promises = latestOpenCycles.map(async (cycle, index) => {
             const newCycle = tx.addCreate(new StreakCycleQuery(), {
                 parentGoalId: goalId,
                 startDate: cycle.start,
                 endDate: cycle.end,
             })
-            latestTasks.forEach((latestTask) => {
-                const clone = TaskLogic.cloneRelativeTo(latestCycleStart, cycle.start, latestTask);
-                clone.parent = {
+            const promises = latestTasks.map(async (latestTask) => {
+                const cloneTx = await TaskLogic.cloneRelativeTo(latestCycleStart, cycle.start, latestTask, {
                     id: newCycle.id,
                     type: TaskParentTypes.CYCLE,
-                };
-                tx.addCreate(new TaskQuery(), clone);
+                });
+                tx.consume(cloneTx);
             });
-            latestCycleId = newCycle.id;
+
+            await Promise.all(promises);
+            if(index === latestOpenCycles.length - 1) {
+                latestCycleId = newCycle.id;
+            }
         })
+
+        await Promise.all(promises)
 
         return {
             newTx: tx,

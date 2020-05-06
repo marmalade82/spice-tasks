@@ -11,7 +11,7 @@ import { Observable, interval, timer } from "rxjs";
 import Notification from "src/Notification";
 import TaskQuery, { ActiveTaskQuery, Task, TaskLogic } from "../Task/TaskQuery";
 import GoalQuery, { Goal, GoalLogic, ActiveGoalQuery } from 'src/Models/Goal/GoalQuery';
-import RecurQuery, { RecurLogic } from "src/Models/Recurrence/RecurQuery";
+import { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 import { assignAll } from "src/common/types";
 import Default from "src/Components/Styled/Styles";
 import * as R from "ramda";
