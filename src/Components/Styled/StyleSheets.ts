@@ -95,7 +95,7 @@ export function makeCommon(S) {
         InputContainer: {
             flex: 0,
             backgroundColor: "transparent",
-            paddingLeft: S.LEFT_SECOND_MARGIN,
+            paddingLeft: S.LEFT_FIRST_MARGIN,
             paddingRight: S.RIGHT_SECOND_MARGIN,
             justifyContent: "flex-start",
             alignItems: "flex-end",

@@ -11,7 +11,7 @@ interface Props {
     text: string;
     iconType: "complete" | "delete" | "goal" | "task" | 
         "reward" | "penalty" | "fail" | "none" | 
-        "habit" | "edit" | "enable" | "disable";
+        "habit" | "edit" | "enable" | "disable" | "recur";
     iconBackground?: string;
     accessibilityLabel: string;
     onPress: () => void;

@@ -80,8 +80,7 @@ export class GlobalLogic {
             return first.toDate().valueOf() - second.toDate().valueOf();
         }, tasks)
 
-        // Notify 5 minutes beforehand.
-        console.log("found some tasks that need reminding: " + sortedAsc.length);
+        // Notify shortly beforehand.
         if(sortedAsc.length > 0) {
             const date = new MyDate(sortedAsc[0].startDate)
                             .setTime(new MyDate(sortedAsc[0].startTime))
@@ -95,7 +94,6 @@ export class GlobalLogic {
                // date: new Date(Date.now() + 60 * 1000)
                 date: date,
             })
-            console.log("doen scheduling");
         }
 
         sortedAsc.forEach((task) => {
@@ -118,12 +116,11 @@ export class GlobalLogic {
             // Notify count of all due tasks
             const countDue = await new ActiveTaskQuery().queryDueToday().fetchCount();
 
-            // Notify count of all overdue goals/tasks.
-            const countOverdueGoals = await new ActiveGoalQuery().queryOverdue().fetchCount();
+            // Notify count of all overdue tasks.
             const countOverdueTasks = await new ActiveTaskQuery().queryOverdue().fetchCount();
 
             Notification.localNotification({
-                message: `Due today:  ${countDue.toString()}\nOverdue: ${(countOverdueGoals + countOverdueTasks).toString()}`,
+                message: `Due today:  ${countDue.toString()}\nOverdue: ${(countOverdueTasks).toString()}`,
             })
 
             await this.refreshNotificationDates();

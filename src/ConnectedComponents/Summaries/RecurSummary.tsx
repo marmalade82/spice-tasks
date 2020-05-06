@@ -9,6 +9,7 @@ import {
 import RecurSummary, { ModalChoices } from "src/Components/Summaries/RecurSummary";
 import GoalQuery, { Goal } from "src/Models/Goal/GoalQuery";
 import { Navigation, ScreenParams } from "src/common/Navigator";
+import TaskQuery from "src/Models/Task/TaskQuery";
 
 interface Props {
     recur: Recur,
@@ -54,7 +55,7 @@ interface InputProps extends Omit<Props, "goals"> {
 const enhance = withObservables(['recur'], (props: InputProps) => {
     return {
         recur: props.recur.observe(),
-        goals: new GoalQuery().queryInRecurrence(props.recur.id).observe(),
+        goals: new TaskQuery().queryInRecurrence(props.recur.id).observe(),
     }
 });
 

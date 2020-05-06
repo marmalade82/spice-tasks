@@ -54,7 +54,6 @@ export class GoalQuery extends ModelQuery<Goal, IGoal>{
             rewardType: RewardTypes.NONE,
             penaltyType: PenaltyTypes.NONE,
             details: "",
-            recurId: "",
             latestCycleId: "",
             lastRefreshed: MyDate.Now().toDate(),
             rewardId: "",
@@ -67,41 +66,6 @@ export class GoalQuery extends ModelQuery<Goal, IGoal>{
         return Default;
     }
 
-    queryInRecurrence = (recurId: string) => {
-        return this.query(
-            Q.where(GoalSchema.name.RECUR_ID, recurId)
-        );
-    }
-
-    inRecurrence = async (recurId: string) => {
-        return (await this.queryInRecurrence(recurId).fetch()) as Goal[]
-    }
-
-
-    latestInRecurrence = async (recurId: string) => {
-        let goals = await this.inRecurrence(recurId);
-        goals.sort((a, b) => {
-            return b.startDate.valueOf() - a.startDate.valueOf();
-        })
-
-        if(goals[0]) {
-            return goals[0];
-        } else {
-            return null;
-        }
-    }
-
-    queryInRecentRecurrence = (recurId: string) => {
-        return this.query(
-            ...[ Q.where(GoalSchema.name.RECUR_ID, recurId),
-                ...Conditions.createdAfter( MyDate.Now().subtract(2, "months").toDate() )
-            ]
-        )
-    }
-
-    inRecentRecurrence = async (recurId: string) => {
-        return (await this.queryInRecentRecurrence(recurId).fetch()) as Goal[]
-    }
 
     queryOngoingStreakGoals = () => {
         return this.query(
@@ -464,7 +428,6 @@ export class GoalLogic {
             state: 'open',
             active: true,
             rewardType: goal.rewardType,
-            recurId: goal.recurId,
             streakMinimum: goal.streakMinimum,
             streakDailyStart: goal.streakDailyStart,
             streakMonthlyStart: goal.streakMonthlyStart,
@@ -525,11 +488,6 @@ export class GoalLogic {
     static create = async (goalData: Partial<IGoal>, repeats: "never" | "daily" | "weekly" | "monthly") => {
 
         const tx = await ActiveTransaction.new();
-        if(repeats !== "never") {
-            const recur = tx.addCreate(new RecurQuery(), RecurLogic.createDataForGoal(repeats) );
-            goalData.recurId = recur.id;
-        } 
-
         const goal = tx.addCreate(new GoalQuery(), goalData);
 
         if(goal.goalType === GoalType.STREAK) {

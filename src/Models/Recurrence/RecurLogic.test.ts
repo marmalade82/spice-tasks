@@ -6,16 +6,17 @@ import React from "react";
 import { fireEvent, render, wait, waitForElement, waitForElementToBeRemoved, cleanup } from '@testing-library/react-native';
 import { 
     makeNavigation, destroyAll,
-    createGoals, createTasks,
+    createTasks,
     createRecurrences,
 } from "src/common/test-utils";
 import MyDate from "src/common/Date";
 
 import RecurQuery, { RecurLogic } from "src/Models/Recurrence/RecurQuery";
-import GoalQuery from "../Goal/GoalQuery";
+import TaskQuery from "../Task/TaskQuery";
+import { TaskParentTypes } from "../Task/Task";
 
 
-describe("Recurring goal recurs despite being very far in past", () => {
+describe("Recurring task recurs despite being very far in past", () => {
     beforeEach(async () => {
         await destroyAll();
     })
@@ -28,15 +29,15 @@ describe("Recurring goal recurs despite being very far in past", () => {
         const {recurId} = await setup();
 
         await wait(async () => {
-            const goals = await new GoalQuery().inRecurrence(recurId);
-            expect(goals.length).toEqual(5);
+            const tasks = await new TaskQuery().inRecurrence(recurId);
+            expect(tasks.length).toEqual(5);
         })
 
         await new RecurLogic(recurId).generateNext();
 
         await wait(async () => {
-            const goals = await new GoalQuery().inRecurrence(recurId);
-            expect(goals.length).toEqual(5 + 2);
+            const tasks = await new TaskQuery().inRecurrence(recurId);
+            expect(tasks.length).toEqual(5 + 2);
         })
 
         async function setup() {
@@ -51,35 +52,43 @@ describe("Recurring goal recurs despite being very far in past", () => {
 
                 opts.recurId = recurs[0].id;
 
-                await createGoals({
+                await createTasks({
+                    parent: {
+                        id: opts.recurId,
+                        type: TaskParentTypes.RECUR,
+                    },
                     title: "Older",
                     active: true,
-                    recurId: opts.recurId,
                     startDate: MyDate.Now().subtract(3, "days").toDate(),
                     dueDate: MyDate.Now().subtract(3, "days").add(30, "minutes").toDate(),
                     
                 }, 2)
 
-                await createGoals({
+                await createTasks({
+                    parent: {
+                        id: opts.recurId,
+                        type: TaskParentTypes.RECUR,
+                    },
                     title: "Latest",
                     active: true,
-                    recurId: opts.recurId,
                     startDate: MyDate.Now().subtract(2, "days").toDate(),
                     dueDate: MyDate.Now().subtract(2, "days").add(30, "minutes").toDate(),
                 }, 1)
 
-                await createGoals({
+                await createTasks({
+                    parent: {
+                        id: opts.recurId,
+                        type: TaskParentTypes.RECUR,
+                    },
                     title: "Oldest",
                     active: true,
-                    recurId: opts.recurId,
                     startDate: MyDate.Now().subtract(5, "days").toDate(),
                     dueDate: MyDate.Now().subtract(5, "days").add(30, "minutes").toDate(),
                 }, 2)
 
-                await createGoals({
+                await createTasks({
                     title: "Unrelated",
                     active: true,
-                    recurId: "",
                     startDate: MyDate.Now().subtract(2, "days").toDate(),
                     dueDate: MyDate.Now().subtract(2, "days").add(30, "minutes").toDate(),
                 }, 1)
@@ -92,15 +101,15 @@ describe("Recurring goal recurs despite being very far in past", () => {
         const {recurId} = await setup();
 
         await wait(async () => {
-            const goals = await new GoalQuery().inRecurrence(recurId);
-            expect(goals.length).toEqual(5);
+            const tasks = await new TaskQuery().inRecurrence(recurId);
+            expect(tasks.length).toEqual(5);
         })
 
         await new RecurLogic(recurId).generateNext();
 
         await wait(async () => {
-            const goals = await new GoalQuery().inRecurrence(recurId);
-            expect(goals.length).toEqual(5 + 2);
+            const tasks = await new TaskQuery().inRecurrence(recurId);
+            expect(tasks.length).toEqual(5 + 2);
         })
 
         async function setup() {
@@ -115,35 +124,43 @@ describe("Recurring goal recurs despite being very far in past", () => {
 
                 opts.recurId = recurs[0].id;
 
-                await createGoals({
+                await createTasks({
+                    parent: {
+                        id: opts.recurId,
+                        type: TaskParentTypes.RECUR,
+                    },
                     title: "Older",
                     active: true,
-                    recurId: opts.recurId,
                     startDate: MyDate.Now().subtract(3, "weeks").toDate(),
                     dueDate: MyDate.Now().subtract(3, "weeks").add(30, "minutes").toDate(),
                     
                 }, 2)
 
-                await createGoals({
+                await createTasks({
+                    parent: {
+                        id: opts.recurId,
+                        type: TaskParentTypes.RECUR,
+                    },
                     title: "Latest",
                     active: true,
-                    recurId: opts.recurId,
                     startDate: MyDate.Now().subtract(2, "weeks").toDate(),
                     dueDate: MyDate.Now().subtract(2, "weeks").add(30, "minutes").toDate(),
                 }, 1)
 
-                await createGoals({
+                await createTasks({
+                    parent: {
+                        id: opts.recurId,
+                        type: TaskParentTypes.RECUR,
+                    },
                     title: "Oldest",
                     active: true,
-                    recurId: opts.recurId,
                     startDate: MyDate.Now().subtract(5, "weeks").toDate(),
                     dueDate: MyDate.Now().subtract(5, "weeks").add(30, "minutes").toDate(),
                 }, 2)
 
-                await createGoals({
+                await createTasks({
                     title: "Unrelated",
                     active: true,
-                    recurId: "",
                     startDate: MyDate.Now().subtract(2, "weeks").toDate(),
                     dueDate: MyDate.Now().subtract(2, "weeks").add(30, "minutes").toDate(),
                 }, 1)
@@ -157,15 +174,15 @@ describe("Recurring goal recurs despite being very far in past", () => {
         const {recurId} = await setup();
 
         await wait(async () => {
-            const goals = await new GoalQuery().inRecurrence(recurId);
-            expect(goals.length).toEqual(5);
+            const tasks = await new TaskQuery().inRecurrence(recurId);
+            expect(tasks.length).toEqual(5);
         })
 
         await new RecurLogic(recurId).generateNext();
 
         await wait(async () => {
-            const goals = await new GoalQuery().inRecurrence(recurId);
-            expect(goals.length).toEqual(5 + 2);
+            const tasks = await new TaskQuery().inRecurrence(recurId);
+            expect(tasks.length).toEqual(5 + 2);
         })
 
         async function setup() {
@@ -180,35 +197,43 @@ describe("Recurring goal recurs despite being very far in past", () => {
 
                 opts.recurId = recurs[0].id;
 
-                await createGoals({
+                await createTasks({
+                    parent: {
+                        id: opts.recurId,
+                        type: TaskParentTypes.RECUR,
+                    },
                     title: "Older",
                     active: true,
-                    recurId: opts.recurId,
                     startDate: MyDate.Now().subtract(3, "months").toDate(),
                     dueDate: MyDate.Now().subtract(3, "months").add(30, "minutes").toDate(),
                     
                 }, 2)
 
-                await createGoals({
+                await createTasks({
+                    parent: {
+                        id: opts.recurId,
+                        type: TaskParentTypes.RECUR,
+                    },
                     title: "Latest",
                     active: true,
-                    recurId: opts.recurId,
                     startDate: MyDate.Now().subtract(2, "months").toDate(),
                     dueDate: MyDate.Now().subtract(2, "months").add(30, "minutes").toDate(),
                 }, 1)
 
-                await createGoals({
+                await createTasks({
+                    parent: {
+                        id: opts.recurId,
+                        type: TaskParentTypes.RECUR,
+                    },
                     title: "Oldest",
                     active: true,
-                    recurId: opts.recurId,
                     startDate: MyDate.Now().subtract(5, "months").toDate(),
                     dueDate: MyDate.Now().subtract(5, "months").add(30, "minutes").toDate(),
                 }, 2)
 
-                await createGoals({
+                await createTasks({
                     title: "Unrelated",
                     active: true,
-                    recurId: "",
                     startDate: MyDate.Now().subtract(2, "months").toDate(),
                     dueDate: MyDate.Now().subtract(2, "months").add(30, "minutes").toDate(),
                 }, 1)

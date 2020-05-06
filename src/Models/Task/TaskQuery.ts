@@ -13,6 +13,7 @@ import GoalQuery from "../Goal/GoalQuery";
 import StreakCycle from "../Group/StreakCycle";
 import { Condition } from "@nozbe/watermelondb/QueryDescription";
 import { dueDate } from "src/Components/Forms/common/utils";
+import RecurQuery from "../Recurrence/RecurQuery";
 
 export class TaskQuery extends ModelQuery<Task, ITask> {
     constructor() {
@@ -211,6 +212,49 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
             )
         ).fetch();
     }
+
+    queryInRecurrence = (recurId: string) => {
+        return this.query(
+            Q.where(TaskSchema.name.PARENT, recurId)
+        );
+    }
+
+    inRecurrence = async (recurId: string) => {
+        return (await this.queryInRecurrence(recurId).fetch()) as Task[]
+    }
+
+
+    latestInRecurrence = async (recurId: string) => {
+        let tasks = await this.inRecurrence(recurId);
+        tasks.sort((a, b) => {
+            return b.startDate.valueOf() - a.startDate.valueOf();
+        })
+
+        if(tasks[0]) {
+            return tasks[0];
+        } else {
+            return null;
+        }
+    }
+
+    queryInRecentRecurrence = (recurId: string) => {
+        return this.query(
+            ...[ Q.where(TaskSchema.name.PARENT, recurId),
+                ...Conditions.createdAfter( MyDate.Now().subtract(2, "months").toDate() )
+            ]
+        )
+    }
+
+    inRecentRecurrence = async (recurId: string) => {
+        return (await this.queryInRecentRecurrence(recurId).fetch()) as Task[]
+    }
+
+    inRecurrenceOn = (recurId: string, date: Date) => {
+        return this.query(
+            Q.where(TaskSchema.name.PARENT, recurId),
+            ...Conditions.startsOn(date),
+        ).fetch();
+    }
 }
 
 export default TaskQuery;
@@ -392,6 +436,7 @@ export class ChildOfTaskQuery extends ModelQuery<Task, ITask> {
             Q.and(...Conditions.active()),
         )
     }
+
 }
 
 export {
@@ -475,17 +520,33 @@ export class TaskLogic {
     }
 
     static cloneRelativeTo = (oldDate: Date, newDate: Date, task: Task) => {
-        const diff = new MyDate(task.startDate).diff(oldDate, "minutes");
-        const newStart = new MyDate(newDate).add( new MyDate(task.startDate).diff(oldDate, "minutes"), "minutes") 
+        const newStart = new MyDate(newDate).add( new MyDate(task.startDate).diff(oldDate, "minutes"), "minutes")
         const newTask : Omit<ITask, "createdAt" | "completedDate"> = {
             title: task.title,
             instructions: task.instructions,
             active: true,
             state: 'open',
-            startDate: newStart.toDate(),
+            startDate: newStart.clone().asStartDate().toDate(),
             startTime: task.startTime,
             remindMe: task.remindMe,
-            dueDate: new MyDate(newDate).add( new MyDate(task.dueDate).diff(oldDate, "minutes"), "minutes").toDate(),
+            dueDate: newStart.clone().asDueDate().toDate(),
+            parent: task.parent,
+            reminded: false,
+        }
+        return newTask;
+    }
+
+    static cloneWithStart = (start: Date, task: Task) => {
+        const newStart = new MyDate(start);
+        const newTask : Omit<ITask, "createdAt" | "completedDate"> = {
+            title: task.title,
+            instructions: task.instructions,
+            active: true,
+            state: 'open',
+            startDate: newStart.clone().asStartDate().toDate(),
+            startTime: task.startTime,
+            remindMe: task.remindMe,
+            dueDate: newStart.clone().asDueDate().toDate(),
             parent: task.parent,
             reminded: false,
         }
@@ -553,5 +614,50 @@ export class TaskLogic {
                 }
             }
         }
+    }
+}
+
+type RepeatTaskData = {
+    name: string,
+    description: string,
+    starts: Date,
+    time: Date,
+    remindMe: boolean,
+    repeats: "daily" | "weekly" | "monthly",
+}
+
+export class RepeatTaskLogic {
+    id: string;
+    constructor(id: string) {
+        this.id = id;
+    }
+
+    // Creates initial repeat record and then runs refresh to create it if it's for today.
+    static create = async (data: RepeatTaskData) => {
+        // Create the repeat record.
+        const tx = await ActiveTransaction.new();
+        const recur = tx.addCreate(new RecurQuery(), {
+            type: data.repeats,
+            active: true,
+        })
+
+
+        // Create the task record and attach to the repeat record
+        tx.addCreate(new TaskQuery(), {
+            title: data.name,
+            instructions: data.description,
+            startDate: new MyDate(data.starts).asStartDate().toDate(),
+            startTime: data.time,
+            dueDate: new MyDate(data.starts).asDueDate().toDate(),
+            remindMe: data.remindMe,
+            reminded: false,
+            parent: {
+                id: recur.id,
+                type: TaskParentTypes.RECUR,
+            },
+        })
+
+
+        tx.commitAndReset();
     }
 }

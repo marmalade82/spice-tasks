@@ -13,7 +13,8 @@ import { tsAnyKeyword } from "@babel/types";
 import { DatePickerAndroid } from "react-native";
 import { take } from "src/Models/common/logicUtils";
 import { Condition } from "@nozbe/watermelondb/QueryDescription";
-import ActiveTransaction from "../common/Transaction";
+import ActiveTransaction, { InactiveTransaction } from "../common/Transaction";
+import TaskQuery, { Task, TaskLogic, ITask } from "../Task/TaskQuery";
 
 
 function activeCondition() {
@@ -93,17 +94,14 @@ export class RecurQuery extends ModelQuery<Recur, IRecur> {
     default = () => {
         const def: IRecur = {
             type: "daily",
-            date: MyDate.Now().toDate(), 
             // are these necessary? It would be simpler to just assume that they recur at the same time.
-            time: MyDate.Now().toDate(),
-            weekDay: "sunday",
-            monthDay: 1,
             active: true,
             lastRefreshed: MyDate.Now().toDate() // no need to calculate it if it was just created...
         }
 
         return def;
     }
+
 }
 export default RecurQuery;
 
@@ -116,7 +114,7 @@ export class RecurLogic {
         this.id = id;
     }
 
-    static createDataForGoal =  (repeats: "daily" | "weekly" | "monthly") => {
+    static createDataForTask =  (repeats: "daily" | "weekly" | "monthly") => {
         switch(repeats) {
             case "daily": {
                 return {
@@ -186,30 +184,33 @@ export class RecurLogic {
     }
 
     /**
-     * This function is responsible for generating the next goals in the sequence.
-     * Because mobile apps are and function on devices that may turn off, and this 
-     * app will not communicate with the server, this function must restore all missing 
-     * goals in the sequence, no matter how far behind the sequence has gotten due to,
-     * say, the phone being turned off for a month.
+     * This function is responsible for generating the next tasks in the sequence.
+     * Because mobile apps are and function on devices that may turn off, the function
+     * will just regenerate the most recent two tasks in the sequence (to avoid overloading 
+     * the returning user with past tasks)
      */
     generateNext = async (timeUntilNext?: number) => {
         const recur = await new RecurQuery().get(this.id);
         if(recur) {
-            const oldGoals = await new GoalQuery().inRecurrence(this.id);
-            const latestGoal = oldGoals.sort((a, b) => {
+            const tx = await ActiveTransaction.new();
+            const oldTasks = await new TaskQuery().inRecurrence(this.id);
+            const latestTask = oldTasks.sort((a, b) => {
                 return b.startDate.valueOf() - a.startDate.valueOf();
             })[0];
 
-            if(latestGoal) {
+            if(latestTask) {
                 switch(recur.type) {
                     case "daily": {
-                        void this._generateNext(latestGoal, latestGoal.startDate, "days");
+                        const consume = await this._generateNext(latestTask, "days");
+                        tx.consume(consume);
                     } break;
                     case "weekly": {
-                        void this._generateNext(latestGoal, latestGoal.startDate, "weeks");
+                        const consume = await this._generateNext(latestTask, "weeks");
+                        tx.consume(consume);
                     } break;
                     case "monthly": {
-                        void this._generateNext(latestGoal, latestGoal.startDate, "months");
+                        const consume = await this._generateNext(latestTask, "months");
+                        tx.consume(consume);
                     } break;
                     default: {
                         //do nothing otherwise
@@ -217,31 +218,53 @@ export class RecurLogic {
                 } 
             }
 
-            // now we need to mark this recurrence as having been refreshed today.
-            new RecurQuery().update(recur, {
+            tx.addUpdate(new RecurQuery(), recur, {
                 lastRefreshed: MyDate.Now().toDate()
             })
+
+            tx.commitAndReset();
         }
     }
 
-    _generateNext = async (goal: Goal, d: Date, unit: "days" | "weeks" | "months") => {
-        // We take the latest goal's start date. If we are in the day after the latest goal's start date/time,
-        // then we add the goal again. If we are AFTER the day after the latest goal's start date/time,
-        // then we add the goal until we have reached the current start date/time.
-        let start = d;
-        let goals: Promise<IGoal>[] = [];
-        while(MyDate.Now().isInOrAfterNextCycleAfterDate(start, unit)) {
-            const next = new MyDate(start).add(1, unit);
-            const clone = GoalLogic.cloneRelativeTo(d, next.toDate(), goal)
-            const promisify = new Promise<IGoal>((resolve) => {
-                resolve(clone);
-            })
-            goals.push(promisify);
-            start = next.toDate();
+    _generateNext = async (latestTask: Task, unit: "days" | "weeks" | "months") => {
+        const tx = new InactiveTransaction();
+        let start = new MyDate(latestTask.startDate);
+
+        //All we need to do is generate for the current and previous cycles, and that's it.
+        // We calculate the current cycle from the date of the latest task.
+        // We are not guaranteed that it is time to regenerate. We need to check first.
+        let regenerate = false;
+        switch (unit) {
+            case "days": {
+                // we don't need to do checks here, since it is a daily thing.
+                regenerate = true;
+            } break;
+            case "weeks": {
+                if(start.dayName() === MyDate.Now().dayName()) {
+                    regenerate = true;
+                }
+            } break;
+            case "months": {
+                if((MyDate.Now().setDayOfMonth(start.dayOfMonth()).dayOfMonth() === MyDate.Now().dayOfMonth())) {
+                    regenerate = true;
+                }
+            } break;
         }
 
-        let fullGoals = await Promise.all(goals)
-        void new GoalQuery().createMultiple(fullGoals);
+        if(regenerate) {
+            GoalLogic.cloneRelativeTo
+            const tasksThisCycle = await new TaskQuery().inRecurrenceOn(this.id, MyDate.Now().toDate());
+            if( tasksThisCycle.length === 0) {
+                tx.addCreate(new TaskQuery(), TaskLogic.cloneWithStart(MyDate.Now().toDate(), latestTask));
+            }
+
+            const tasksLastCycle = await new TaskQuery().inRecurrenceOn(this.id, MyDate.Now().subtract(1, unit).toDate())
+            if(tasksLastCycle.length === 0 ) {
+                tx.addCreate(new TaskQuery(), TaskLogic.cloneWithStart(MyDate.Now().subtract(1, unit).toDate(), latestTask));
+            }
+        }
+
+        return tx;
     }
 
     enable = async () => {

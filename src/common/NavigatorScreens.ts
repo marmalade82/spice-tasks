@@ -10,11 +10,12 @@ export const ScreenDirectory: Record<keyof Omit<ScreenParams, "None">, any> = {
   , AddGoal: Screens.AddGoal
   , Streak: Screens.Streak
   , AddTask: Screens.AddTask
+  , Task: Screens.Task
   , Tasks: Screens.TaskList
+  , AddRepeatTask: Screens.AddRepeatTask
   , Reward: Screens.Reward
   , Rewards: Screens.RewardList
   , AddReward: Screens.AddReward
-  , Task: Screens.Task
   , RewardOptions: Screens.RewardOptions
   , EarnedReward: Screens.EarnedReward
   , EarnedRewards: Screens.EarnedRewardList

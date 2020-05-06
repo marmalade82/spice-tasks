@@ -66,7 +66,7 @@ export interface Props {
 }
 
 export type Data = FilterData<GoalFilter, GoalSorter>
-export type GoalFilter = "all" | "ongoing" | "not started" | "overdue" | "failed" | "complete" | "recurring";
+export type GoalFilter = "all" | "ongoing" | "not started" | "overdue" | "failed" | "complete"
 export type GoalSorter = "start" | "due" | "title"
 export const makeGoalFilterState = makeFilterState;
 
@@ -167,11 +167,6 @@ const enhance = withObservables([], (props: InputProps) => {
         case "in-progress-not-due": {
             return {
                 goals: observableWithRefreshTimer(() => new ActiveGoalQuery().queryStartedButNotDue().observe())
-            }
-        } break;
-        case "recurring": {
-            return {
-                goals: new GoalQuery().inRecurrence(props.parentId ? props.parentId : "")
             }
         } break;
         case "ongoing": {

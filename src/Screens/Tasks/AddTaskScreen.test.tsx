@@ -1,5 +1,6 @@
 
 jest.mock("src/Models/Database");
+jest.mock("src/Notification");
 import DB from "src/Models/Database";
 import React from "react";
 import { fireEvent, render, wait, waitForElement } from '@testing-library/react-native';

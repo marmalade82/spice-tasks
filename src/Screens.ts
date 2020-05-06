@@ -38,6 +38,7 @@ import StreakCycleScreen from "src/Screens/Goals/CycleScreen";
 import StarScreen from "src/Screens/Home/StarScreen";
 import ReportsScreen from "src/Screens/Home/ReportsScreen";
 import SettingsScreen from "src/Screens/Home/SettingsScreen";
+import AddRepeatTaskScreen from "src/Screens/Tasks/AddRepeatTaskScreen";
 
 export {
     HomeScreen as Home,
@@ -77,5 +78,6 @@ export {
     StreakCycleListScreen as StreakCycles,
     StarScreen as Star,
     StreakCycleScreen as StreakCycle,
-    SettingsScreen as Settings
+    SettingsScreen as Settings,
+    AddRepeatTaskScreen as AddRepeatTask
 }

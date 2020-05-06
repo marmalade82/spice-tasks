@@ -4,8 +4,9 @@ import { RowView, ColumnView, HeaderText, TouchableView } from "src/Components/B
 import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
 import Modal from "src/Components/Styled/Modal";
 import ModalRow from "src/Components/Styled/ModalRow";
-import { StyleProp, ViewStyle, TextInput as Input, Picker, Text } from "react-native";
+import { StyleProp, ViewStyle, TextInput as Input, Picker, Text, View } from "react-native";
 import { Icon } from "react-native-elements";
+import { Icon as I } from "./Icon";
 
 
 interface Props {
@@ -17,6 +18,7 @@ interface Props {
     value: string;
     choices: LabelValue[]
     accessibilityLabel?: string;
+    icon?: "mandatory" | "attention";
     onValueChange: (itemValue: string, itemPosition: number) => void
 }
 
@@ -48,6 +50,7 @@ export default class ChoiceInput extends React.Component<Props, State> {
             <RowView style={[Class.ChoiceInput_Container, this.props.style]}
                 accessibilityLabel={this.props.accessibilityLabel}
             >
+                {this.renderLeftIcon()}
                 <ColumnView style={[{
                     ...Class.ChoiceInput_InputDecorator,
                     ...(this.props.underlineColor && { borderColor: this.props.underlineColor })
@@ -86,7 +89,41 @@ export default class ChoiceInput extends React.Component<Props, State> {
             </RowView>
         );
     }
-    renderText = () => {
+
+    private renderLeftIcon = () => {
+        const { Class, Common, Custom } = this.context;
+        if(this.props.icon) {
+            let type = this.iconType();
+            return(
+                <I
+                    type={type}
+                    {...Custom.AlertIcon}
+                    accessibilityLabel={this.props.accessibilityLabel ? type + this.props.accessibilityLabel : type}
+                ></I>
+            )    
+        } else {
+            return (
+                <View
+                    style={[Class.StandardIconContainer, Common.TransparentBackground]}
+                ></View>
+            )
+        }
+    }
+
+    private iconType = (): "mandatory" | "attention" => {
+        switch(this.props.icon) {
+            case "mandatory": {
+                return "mandatory"
+            } break;
+            case "attention": {
+                return "attention"
+            } break;
+        }
+
+        return "attention";
+    }
+
+    private renderText = () => {
         const { Class, Common, Custom } = this.context;
         if (this.props.value) {
             return (
