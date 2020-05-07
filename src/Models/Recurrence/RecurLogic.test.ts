@@ -13,8 +13,6 @@ import MyDate from "src/common/Date";
 import { RecurLogic } from "src/Models/Recurrence/RecurQuery";
 import TaskQuery from "../Task/TaskQuery";
 import { TaskParentTypes } from "../Task/Task";
-import { GlobalLogic } from "../Global/GlobalQuery";
-
 
 describe("Recurring task recurs despite being very far in past", () => {
     beforeEach(async () => {

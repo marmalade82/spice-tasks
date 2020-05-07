@@ -28,6 +28,7 @@ interface Task {
     active: boolean;
     time: Date;
     state: "open" | "in_progress" | "complete" | "cancelled"
+    willRepeat: boolean;
 }
 
 export default class TaskListItem extends Item<Props, State, Task> {
@@ -102,16 +103,6 @@ export default class TaskListItem extends Item<Props, State, Task> {
 
             </ListItem>
         )
-        
-        function spacer() {
-            const format_time = new MyDate(time).format("h:mm A");
-            const length = 6;
-            if(format_time.length === 8) {
-                return " ".repeat(length);
-            } else {
-                return " ".repeat(length + 1);
-            }
-        }
     }
 
     private iconOpts = () => {
@@ -141,7 +132,7 @@ export default class TaskListItem extends Item<Props, State, Task> {
             }
         }
         return {
-            type: "task",
+            type: this.props.item.willRepeat ? "recur" : "task",
             ...Custom.ListItem_Icon2
         } as const;
 

@@ -28,6 +28,7 @@ const AdaptedTaskListItem: React.FunctionComponent<Props> = function(props: Prop
         active: task.active,
         time: task.startTime,
         state: task.state,
+        willRepeat: task.repeat !== "stop" && task.nextRepeatCalculated !== true
     }
 
     return (
