@@ -13,9 +13,9 @@ export interface Props {
     title: string
     data: number
     type: "integer" | "float" | "both"
+    precision?: number
     minimum?: number
     maximum?: number
-    precision?: number
     onDataChange: (n: number) => void
     accessibilityLabel: string;
     style?: StyleProp<ViewStyle>;
@@ -99,4 +99,35 @@ export default class NumberInput extends React.Component<Props, State> {
             </ColumnView>
         );
     }
+}
+
+type NumberProps = {
+    label: string;
+    value: number
+    onChange: (val: number) => void;
+    accessibilityLabel: string;
+    valid: ["ok", string] | ["error", string]
+    readonly: boolean
+    type: "integer" | "float" | "both"
+    precision?: number
+    style?: StyleProp<ViewStyle>;
+}
+
+export const ANumberInput: React.FunctionComponent<NumberProps> = (props: NumberProps) => {
+    const {valid, readonly, label, value, onChange, accessibilityLabel, ...rest } = props;
+    return (
+        <NumberInput
+            title={label}
+            data={value}
+            onDataChange={onChange}
+            accessibilityLabel={accessibilityLabel}
+            success={(() => {
+                return valid[0] === "ok"
+            })()}
+            failure={(() => {
+                return valid[0] === "ok" ? undefined : valid[1]
+            })()}
+            {...rest}
+        ></NumberInput>
+    )
 }

@@ -1,9 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Modal, Button, StyleProp, ViewStyle } from "react-native";
 
-import DateTimePicker from "src/Components/Inputs/DateTimePicker";
-import ModalInput from "src/Components/Inputs/ModalInput";
-import Style from "src/Style/Style";
 import { ColumnView } from "src/Components/Basic/Basic";
 import { Label, DateInput, TimeInput } from "src/Components/Styled/Styled";
 import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleSheets";
@@ -80,4 +77,62 @@ export default class DateTimeInput extends React.Component<Props,State> {
             )
         }
     }
+}
+
+type DateProps = {
+    label: string;
+    value: Date
+    onChange: (val: Date) => void;
+    accessibilityLabel: string;
+    valid: ["ok", string] | ["error", string]
+    readonly: boolean
+}
+
+export const ADateInput: React.FunctionComponent<DateProps> = (props: DateProps) => {
+    const { label, value, onChange, accessibilityLabel, valid, readonly} = props;
+
+    return (
+        <DateTimeInput
+            title={label}
+            data={value}
+            onDataChange={onChange}
+            accessibilityLabel={accessibilityLabel}
+            success={(() => {
+                return valid[0] === "ok";
+            })()}
+            failure={(() => {
+                return valid[0] === "ok" ? undefined : valid[1];
+            })()}
+            type={"date"}
+        ></DateTimeInput>
+    )
+}
+
+
+type TimeProps = {
+    label: string;
+    value: Date
+    onChange: (val: Date) => void;
+    accessibilityLabel: string;
+    valid: ["ok", string] | ["error", string]
+    readonly: boolean
+}
+
+export const ATimeInput: React.FunctionComponent<TimeProps> = (props: TimeProps) => {
+    const { label, value, onChange, accessibilityLabel, valid, readonly} = props;
+    return (
+        <DateTimeInput
+            title={label}
+            data={value}
+            onDataChange={onChange}
+            accessibilityLabel={accessibilityLabel}
+            success={(() => {
+                return valid[0] === "ok";
+            })()}
+            failure={(() => {
+                return valid[0] === "ok" ? undefined : valid[1];
+            })()}
+            type={"time"}
+        ></DateTimeInput>
+    )
 }

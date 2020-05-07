@@ -59,3 +59,38 @@ export default class StringInput extends Input<Props, State> {
     }
 
 }
+
+
+
+type StringProps = {
+    label: string;
+    value: string
+    onChange: (val: string) => void;
+    accessibilityLabel: string;
+    valid: ["ok", string] | ["error", string]
+    readonly: boolean
+
+    placeholder: string;
+    style?: StyleProp<ViewStyle>;
+}
+
+export const AStringInput: React.FunctionComponent<StringProps> = (props: StringProps) => {
+    const { label, value, onChange, accessibilityLabel, valid, readonly, ...rest } = props;
+
+
+    return (
+        <StringInput
+            title={label}
+            data={value}
+            onDataChange={onChange}
+            accessibilityLabel={accessibilityLabel}
+            success={(() => {
+                return valid[0] === "ok";
+            })()}
+            failure={(() => {
+                return valid[0] === "ok" ? undefined : valid[1]
+            })()}
+            {...rest}
+        ></StringInput>
+    )
+}
