@@ -24,9 +24,9 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^10.0.6",
+    "@marmalade82/ts-react-forms": "^0.1.5",
     "@nozbe/watermelondb": "^0.15.0",
     "@nozbe/with-observables": "^1.0.5",
-    "@marmalade82/ts-react-forms": "^0.1.5",
     "d3": "^5.15.0",
     "expo": "~36.0.0",
     "expo-sqlite": "~8.0.0",

@@ -644,7 +644,7 @@ export class TaskLogic {
     }
 }
 
-type RepeatTaskData = {
+export type RepeatTaskData = {
     name: string,
     description: string,
     starts: Date,

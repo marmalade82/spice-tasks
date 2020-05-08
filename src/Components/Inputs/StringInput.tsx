@@ -94,3 +94,24 @@ export const AStringInput: React.FunctionComponent<StringProps> = (props: String
         ></StringInput>
     )
 }
+
+export const AMultiStringInput: React.FunctionComponent<StringProps> = (props: StringProps) => {
+    const { label, value, onChange, accessibilityLabel, valid, readonly, ...rest } = props;
+
+    return (
+        <StringInput
+            title={label}
+            data={value}
+            multiline={true}
+            onDataChange={onChange}
+            accessibilityLabel={accessibilityLabel}
+            success={(() => {
+                return valid[0] === "ok";
+            })()}
+            failure={(() => {
+                return valid[0] === "ok" ? undefined : valid[1]
+            })()}
+            {...rest}
+        ></StringInput>
+    )
+}

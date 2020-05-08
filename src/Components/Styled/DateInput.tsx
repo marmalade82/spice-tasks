@@ -58,7 +58,7 @@ export default class DateInput extends React.Component<Props, State> {
 
     private onPressDateAndroid = async() => {
         const dateOpts = await DatePickerAndroid.open({
-            date: this.props.value,
+            date: isNaN(this.props.value.valueOf()) ? new Date() : this.props.value,
             mode: 'default',
         });
 
@@ -174,6 +174,9 @@ export default class DateInput extends React.Component<Props, State> {
     }
 
     private renderDate = () => {
+        if(isNaN(this.props.value.valueOf())) {
+            return "";
+        }
         const date = new MyDate(this.props.value)
         switch(this.props.format) {
             case "january 1st, 2020": {

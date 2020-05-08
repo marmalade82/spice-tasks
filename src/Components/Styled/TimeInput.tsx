@@ -58,9 +58,10 @@ export default class TimeInput extends React.Component<Props, State> {
     }
 
     private onPressTimeAndroid = async() => {
+        const m = isNaN(this.props.value.valueOf()) ? moment() : moment(this.props.value);
         const dateOpts = await TimePickerAndroid.open({
-            hour: moment(this.props.value).hour(),
-            minute: moment(this.props.value).minute(),
+            hour: m.hour(),
+            minute: m.minute(),
             mode: 'default',
         });
 
@@ -185,6 +186,9 @@ export default class TimeInput extends React.Component<Props, State> {
     }
 
     private renderTime = () => {
+        if(!moment(this.props.value).isValid()) {
+            return "";
+        }
         const date = new MyDate(this.props.value)
         switch(this.props.format) {
             case "12:00 AM": {

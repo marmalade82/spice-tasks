@@ -14,8 +14,15 @@ import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleShee
  *      Have invariants that are checked every time you run that part of the program
  *      Have properties that are verified by tests
  *          Downside is that writing lots of tests is expensive without necessarily yielding a lot of value.
+ *      Runtime typechecking - verify that data isn't getting corrupted. Try to do it as close to the source of the 
+ *          data as possible to easily identify the source of the error. This is often Schema Validation, at least 
+ *          in JavaScript.
+ *      DSLs - Write in domain specific languages so that your code is more declarative, making the intent clearer.
+ *       
  * 
  * Compile-time checks:
+ *      Compile-time proofs -- it would be great to be able to prove that a run-time type check will always
+ *          pass. But if this were possible, would a runt-time type check even be needed?
  *      Types verify that you are performing operations on the correct values.
  *      Types can also limit the size of the input domain -- the smaller the input domain you have, the 
  *          easier it is to verify correctness. That's what makes Ada's subtypes interesting -- you can choose to work
@@ -27,7 +34,7 @@ import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleShee
  *          Or, you could force restart of the user experience (like Windows does), 
  *          which hopefully restores the user experience (much easier if startup validates everything to have the correct types).
  *          Which one you choose is up to you.
- *      Abstract data types - control the input that people can feed your module by abstracting the underlying representation
+ *      Abstract data types (ADTs) - control the input that people can feed your module by abstracting the underlying representation
  *          This means that if your module works, users *must* use it correctly, since they only have the inputs
  *              you provided them.
  *      Usage analysis - annotate code with how it should be used, and enforce that usage by callers to ensure caller 
@@ -49,7 +56,7 @@ import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleShee
  *          Allows the called module to determine what the correct result is. Means that the called module ultimately
  *              controls what happens, like in a client-server relationship. This is a good way to put the responsibility
  *              for logic in the correct place, which contributes to low coupling and high cohesion.
- *      Work with interfaces instead of concrete implementations (similar to above). Enforces an architecture with 
+ *      Work with interfaces (Partial Abstract Data Types) instead of concrete implementations (similar to above). Enforces an architecture with 
  *          dependency injection (caller determines implementation) or Abstract Data Types that may have lower coupling.
  *          However, dependency injection often makes code harder to understand, since the code reader doesn't know what 
  *          implementation is being used at runtime -- perhaps that needs to be a runtime tag?
