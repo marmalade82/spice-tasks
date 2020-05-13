@@ -1,274 +1,242 @@
 
-import React from "react";
-import {
-    StringInput,
-    DateTimeInput,
-    ChoiceInput,
+import { makeForm, thread, required, wrap, startsWithinRange, flatSchema } from "./common/Form";
+import { ValidationResult, CheckValid, CheckReadonly, CheckHide } from "@marmalade82/ts-react-forms";
+import GoalQuery from "src/Models/Goal/GoalQuery";
+import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
+import TaskQuery from "src/Models/Task/TaskQuery";
 
-} from "src/Components/Inputs";
-import { Props as StringInputProps } from "src/Components/Inputs/StringInput";
-import { View, StyleSheet, StyleProp, ViewStyle, ScrollView } from "react-native";
-import DataComponent from "src/Components/base/DataComponent";
-import { ColumnView } from "../Basic/Basic";
-import { Validate } from "src/Components/Inputs/Validate";
-import { Observable } from "rxjs";
-import { mapTo } from "rxjs/operators";
-import MyDate from "src/common/Date";
-import { EventDispatcher, IEventDispatcher, fromEvent } from "src/common/EventDispatcher";
-import { Props as DateProps } from "src/Components/inputs/DateTimeInput";
-import FootSpacer from "../Basic/FootSpacer";
-import { dueDate, startDate } from "./common/utils";
-import { LocalState } from "src/Screens/common/StateProvider";
-import { DateInput } from "../Styled/Styled";
+const remindChoices = [
+    {label: "No", value: "no", key: "no"},
+    {label: "Yes", value: "yes", key: "yes"},
+]
 
-interface Props {
-    data: State | false
-    onDataChange: (d: State) => void;
-    style: StyleProp<ViewStyle>;
-    dateRange?: [Date, Date]
+const repeatChoices = [
+    {label: "Daily", value: "daily", key: "daily"},
+    {label: "Weekly", value: "weekly", key: "weekly"},
+    {label: "Monthly", value: "monthly", key: "monthly"},
+    {label: "Don't Repeat", value: "stop", key: "stop"},
+]
+
+const placeholderProps = {
+    name: { placeholder: "Name of this task"},
+    description: { placeholder: "Description of this task"},
 }
 
-interface State {
-    name: string
-    description: string
-    start_date: Date,
-    time: Date,
-    remindMe: boolean,
+const basicValidation: Record<string, CheckValid<FullData>> = {
+    name: async (data: any) => thread(data, required("name", "Name")),
+    ["start-date"]: async (data: any) => thread(data, required("start-date", "Start Date")),
+    ["start-time"]: async (data: any) => thread(data, required("start-time", "Time"))
 }
 
-function Default(): State {
-    return {
-        name: "",
-        description: "",
-        start_date: startDate(MyDate.Now().toDate()),
-        time: MyDate.Zero().asStartDate().toDate(),
-        remindMe: false,
-    };
+const taskBase = [
+    { label: "Name", name: "name", type: "text"},
+    { label: "Description", name: "description", type: "multi_text"},
+    { label: "Start Date", name: "start-date", type: "date"},
+    { label: "Time", name: "start-time", type: "time"},
+] as const;
+
+const remind = [
+    { label: "Remind me?", name: "reminder", type: "choice", default: "no"}
+] as const;
+
+export enum Mode {
+    CREATE_NO_PARENT,
+    EDIT_NO_PARENT,
+    
+    CREATE_GOAL_PARENT,
+    EDIT_GOAL_PARENT, 
+
+    CREATE_CYCLE_PARENT,
+    EDIT_CYCLE_PARENT,
+
+    CREATE_TASK_PARENT,
+    EDIT_TASK_PARENT,
+
+    UNDETERMINED,
 }
 
-const DUE_DATE_CHANGE = 'due_date_change';
-
-export function ValidateTaskForm(form: AddTaskForm) {
-    const state = form.data();
-    const nameMessage = form.validateName(state.name);
-    if(nameMessage !== undefined) {
-        return nameMessage;
-    }
-
-    const startDateMessage = form.validateStartDate(state.start_date);
-    if(startDateMessage !== undefined) {
-        return startDateMessage;
-    }
-
-    return undefined;
+export type FullData = {
+    ["id"]: string,
+    ["parent_id"]: string,
+    ["name"]: string,
+    ["description"]: string,
+    ["start-date"]: Date,
+    ["start-time"]: Date,
+    ["repeats"]: string,
+    ["reminder"]: string,
 }
 
-export default class AddTaskForm extends DataComponent<Props, State, State> {
-    SummaryInput = Validate<string, StringInputProps>(
-                        StringInput,
-                        (s: string) => this.validateName(s),
-                        (s: string) => this.validateName(s)
-                   )
-    StartDateInput = Validate<Date, DateProps>(
-                        DateTimeInput,
-                        (d: Date) => this.validateStartDate(d) ,
-                        (d: Date) => this.validateStartDate(d) ,
-                    );
-    dispatcher: IEventDispatcher;
-    startDateRefresh : Observable<boolean>;
-    constructor(props: Props) {
-        super(props);
+const FullSchema = {
+    id: [""],
+    parent_id: [""],
+    name: [""],
+    description: [""],
+    ["start-date"]: [new Date()],
+    ["start-time"]: [new Date()],
+    ["repeats"]: [""],
+    ["reminder"]: [""],
+}
 
-        this.state = Default();
-        this.dispatcher = new EventDispatcher();
-        this.startDateRefresh = fromEvent(this.dispatcher, DUE_DATE_CHANGE).pipe(mapTo(true));
-    }
+const FullValidate = (data: any) => flatSchema<FullData>(data, FullSchema);
 
-    /***********************
-     * Validation
-     */
-    validateName = (summary : string) => {
-        return summary.length > 0 ? undefined : "Please provide a name";
-    }
+const FullForm = makeForm<FullData>([
+    { label: "ID", name: "id", type: "text"},
+    { label: "Parent ID", name: "parent_id", type: "text"},
+    { label: "Name", name: "name", type: "text"},
+    { label: "Description", name: "description", type: "multi_text"},
+    { label: "Start Date", name: "start-date", type: "date"},
+    { label: "Time", name: "start-time", type: "time"},
+    { label: "Repeat", name: "repeats", type: "choice", default: "daily"},
+    { label: "Remind me?", name: "reminder", type: "choice", default: "no"}
+])
 
-    validateStartDate = (start: Date) => {
-        if(this.props.dateRange ) {
-            const startMin = this.props.dateRange[0];
-            if(start < startMin) {
-                return "Start date cannot be before " + new MyDate(startMin).format("MM/DD");
-            }
+const FullLogic = {
+    choices: (_mode: Mode) => { return {
+        reminder: remindChoices,
+        repeat: repeatChoices,
+    }},
+    props: (_mode: Mode) => { return {
+        ...placeholderProps
+    }},
+    validate: (mode: Mode) => GenValidateLogic(mode),
+    readonly: (mode: Mode) => GenReadonlyLogic(mode),
+    hide: (mode: Mode) => GenHideLogic(mode),
+}
 
-            const startMax = this.props.dateRange[1];
-            if(start > startMax) {
-                return "Start date cannot be after " + new MyDate(startMax).format("MM/DD")
-            }
+export const FullTaskForm = {
+    Validate: FullValidate,
+    Form: FullForm,
+    Logic: FullLogic,
+}
+
+type ValidCheckers = Record<string, CheckValid<FullData>>;
+
+function GenValidateLogic(mode: Mode): ValidCheckers {
+
+    switch(mode) {
+        case Mode.UNDETERMINED: {
+            return {}
         }
-
-        if(start < MyDate.Now().asStartDate().toDate()) {
-            return "Start date cannot be in past";
-        }
-
-        return undefined;
-    }
-
-    /**********************
-     *  Event handling
-     */
-    private onChangeName = (name: string) => {
-        this.setData({
-            name: name
-        });
-    }
-
-    private onChangeDescription = (desc: string) => {
-        this.setData({
-            description: desc
-        });
-    }
-
-    private onChangeStart = (date: Date) => {
-        this.setData({
-            start_date: startDate(date),
-        });
-    }
-
-    private onChangeTime = (date: Date) => {
-        this.setData({
-            time: date,
-        })
-    }
-
-    private onChangeReminder = (data: string) => {
-        this.setData({
-            remindMe: data === "yes" ? true : false,
-        })
-    }
-
-    render = () => {
-        const SummaryInput = this.SummaryInput;
-        const StartDateInput = this.StartDateInput;
-        return (
-            <ColumnView style={[{
-                backgroundColor: "transparent",
-            },this.props.style]}>
-
-                <ScrollView>
-                    <SummaryInput
-                        title={"Name"} 
-                        data={this.data().name}
-                        placeholder={"Name of this task"}
-                        onValidDataChange={this.onChangeName}
-                        onInvalidDataChange={this.onChangeName}
-                        accessibilityLabel={"task-name"}
-                    ></SummaryInput>
-
-                    <StringInput
-                        title={"Description"}
-                        data={this.data().description}
-                        placeholder={"Description of this task"}
-                        onDataChange={this.onChangeDescription}
-                        accessibilityLabel={"task-description"}
-                    />
-
-                    <StartDateInput
-                        title={this.title()}
-                        type={"date"}
-                        data={this.data().start_date}
-                        onValidDataChange={this.onChangeStart}
-                        onInvalidDataChange={this.onChangeStart}
-                        accessibilityLabel={"task-start-date"}
-                        revalidate={this.startDateRefresh}
-                        readonly={this.inherited()}
-                    ></StartDateInput>
-
-                    <DateTimeInput
-                        title={"Time"}
-                        type={"time"}
-                        data={this.data().time}
-                        onDataChange={this.onChangeTime}
-                        accessibilityLabel={"task-start-time"}
-                    ></DateTimeInput>
-
-                    <ChoiceInput
-                        title={"Remind me?"}
-                        data={this.data().remindMe ? "yes" : "no"}
-                        choices={[
-                            {label: "No", value: "no", key: "no"},
-                            {label: "Yes", value: "yes", key: "yes"},
-                        ]}
-                        onDataChange={this.onChangeReminder}
-                        accessibilityLabel={"task-reminder"}
-                    ></ChoiceInput>
-
-                    <FootSpacer></FootSpacer>
-                </ScrollView>
-            </ColumnView>
-        );
-    }
-
-    private inherited = () => {
-        if(this.props.dateRange) {
-            const start = new MyDate(this.props.dateRange[0]);
-            const end = new MyDate(this.props.dateRange[1]);
-            if(start.sameDayAs(end)) {
-                return true;
+        case Mode.CREATE_NO_PARENT: {
+            return {
+                ...basicValidation
             }
         }
+        case Mode.EDIT_NO_PARENT: {
+            return GenValidateLogic(Mode.CREATE_NO_PARENT);
+        }
+        case Mode.CREATE_TASK_PARENT: {
+            // If task is parent, we will hide date/time fields, so no need to validate those against parent.
+            return {
+                ...basicValidation
+            }
+        }
+        case Mode.EDIT_TASK_PARENT: {
+            return GenValidateLogic(Mode.CREATE_TASK_PARENT);
+        }
+        case Mode.CREATE_GOAL_PARENT: {
+            return {
+                name: basicValidation.name,
+                ["start-date"]: async (data) => {
+                    const goal = await new GoalQuery().get(data.parent_id);
+                    if(goal) {
+                        const res = thread(data, startsWithinRange(goal.startDate, goal.dueDate, "start-date", "Start Date"));
+                        return await wrap(basicValidation.name)(res);
+                    }
 
-        return false;
-    }
+                    return ["error", "No goal parent found"]
+                },
+                ["start-time"]: basicValidation["start-time"]
+            };
+        }
+        case Mode.EDIT_GOAL_PARENT: {
+            return GenValidateLogic(Mode.CREATE_GOAL_PARENT);
+        }
+        case Mode.CREATE_CYCLE_PARENT: {
+            return {
+                name: basicValidation.name,
+                ["start-date"]: async (data) => {
+                    const cycle = await new StreakCycleQuery().get(data.parent_id);
+                    if(cycle) {
+                        const res = thread(data, startsWithinRange(cycle.startDate, cycle.endDate, "start-date", "Start Date"));
+                        return await wrap(basicValidation.name)(res);
+                    }
 
-    private title = () => {
-        return (
-            `Date${this.inherited() ? " (Inherited)" : this.dateRange()}`
-        )
-    }
-
-    private dateRange = () => {
-        if(this.props.dateRange) {
-            return ` (${new MyDate(this.props.dateRange[0]).format("MM/DD") + " - " + new MyDate(this.props.dateRange[1]).format("MM/DD")})`
-        } else {
-            return "";
+                    return ["error", "No cycle parent found"]
+                },
+                ["start-time"]: basicValidation["start-time"]
+            }
+        }
+        case Mode.EDIT_CYCLE_PARENT: {
+            return GenValidateLogic(Mode.CREATE_CYCLE_PARENT);
+        }
+        default: {
+            return {};
         }
     }
 }
 
-export {
-    AddTaskForm,
-    State as AddTaskData,
-    Default as AddTaskDefault,
-}
-
-export const makeFormState = () => {
-    return new LocalState({
-        name: "",
-        description: "",
-        ["start-date"]: MyDate.Now().toDate(),
-    } )
-}
-
-export const newTaskValidators = {
-    required: (val: string, _dirty: boolean) => {
-        if(val.length > 0) {
-            return ["ok", ""];
-        } else {
-            return ["error", "Field is required"]
+function GenReadonlyLogic(mode: Mode): Record<string, CheckReadonly<FullData>> {
+    switch(mode) {
+        default: {
+            return {};
         }
     }
 }
 
-export const makeFormValidState = () => {
-    return new LocalState({
-        name: ["ok", ""],
-        description: ["ok", ""],
-        ["start-date"]: ["ok", ""],
-    })
-}
 
-export const makeShowState = () => {
-    return new LocalState({
-        name: "always",
-        description: "always",
-        ["start-date"]: "always",
-    });
+function GenHideLogic(mode: Mode): Record<string, CheckHide<FullData>> {
+    switch(mode) {
+        // Generally, if something has a parent, we don't allow the user to specify repeating or reminders on it.
+        // Also, validation SHOULD NOT RUN on a hidden field. That just makes sense.
+        case Mode.UNDETERMINED: {
+            return {};
+        }
+        case Mode.CREATE_NO_PARENT: {
+            return {}; // With no parent, we can view all fields
+        }
+        case Mode.EDIT_NO_PARENT: {
+            return {
+                repeat: async (data) => {
+                    const self = await new TaskQuery().get(data.id);
+                    if(self) {
+                        return self.nextRepeatCalculated === true
+                    } 
+
+                    throw new Error("No task found while editing")
+                }
+            } // We cannot see the repeat field if it's already been repeated.
+        }
+        case Mode.CREATE_TASK_PARENT: {
+            return {
+                ["start-date"]: async () => true,
+                ["start-time"]: async () => true,
+                ["reminder"]: async () => true,
+                ["repeat"]: async () => true
+            }
+        }
+        case Mode.EDIT_TASK_PARENT: {
+            return GenHideLogic(Mode.CREATE_TASK_PARENT);
+        }
+        case Mode.CREATE_GOAL_PARENT: {
+            // Can't repeat within a goal. If you want to, it should be in a habit.
+            return {
+                ["repeat"]: async () => true
+            }
+        }
+        case Mode.EDIT_GOAL_PARENT: {
+            return GenHideLogic(Mode.CREATE_GOAL_PARENT);
+        }
+        case Mode.CREATE_CYCLE_PARENT: {
+            return {
+                repeat: async () => true
+            }
+        }
+        case Mode.EDIT_CYCLE_PARENT: {
+            return GenHideLogic(Mode.CREATE_CYCLE_PARENT);
+        }
+        default: {
+            return {};
+        }
+    }
 }

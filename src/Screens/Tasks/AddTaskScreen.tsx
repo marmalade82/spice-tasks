@@ -1,8 +1,9 @@
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { View, ScrollView, SafeAreaView, Button } from "react-native";
-import { AddTaskForm, AddTaskData, AddTaskDefault, 
-    ValidateTaskForm, makeFormState, newTaskValidators,
-    makeFormValidState, makeShowState,
+import { 
+    Mode,
+    FullTaskForm,
+    FullData,
  } from "src/Components/Forms/AddTaskForm";
 import { TaskQuery, Task, TaskLogic } from "src/Models/Task/TaskQuery";
 import { DocumentView, ScreenHeader, Toast, IconButton } from "src/Components/Styled/Styled";
@@ -12,10 +13,9 @@ import { EventDispatcher } from "src/common/EventDispatcher";
 import { HeaderSaveButton } from "src/Components/Basic/HeaderButtons";
 import { getKey } from "../common/screenUtils";
 import { MainNavigator, ScreenNavigation } from "src/common/Navigator";
-import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
-import { GoalType } from "src/Models/Goal/GoalLogic";
 
-import Form from "@marmalade82/ts-react-forms";  
+import { FormHandle } from "@marmalade82/ts-react-forms";  
+import MyDate from "src/common/Date";
 import GlobalQuery from "src/Models/Global/GlobalQuery";
 
 interface Props {
@@ -23,11 +23,11 @@ interface Props {
 }
 
 interface State { 
-    data: AddTaskData;
     task?: Task;
     showToast: boolean;
     toast: string;
     dateRange?: [Date, Date];
+    mode: Mode,
 }
 
 const dispatcher = new EventDispatcher();
@@ -49,148 +49,218 @@ export default class AddTaskScreen extends React.Component<Props, State> {
         }
     }
 
+    handle: React.MutableRefObject<FormHandle<FullData> | null> = React.useRef(null)
     navigation: MainNavigator<"AddTask">
-    taskFormRef: React.RefObject<AddTaskForm>
+    markFormRendered = () => {};
+    renderForm: () => JSX.Element | null;
     constructor(props: Props) {
         super(props);
         this.state = {
-            data: AddTaskDefault(),
             showToast: false,
             toast: "",
+            mode: Mode.UNDETERMINED,
         }
-        this.taskFormRef = React.createRef()
         this.navigation = new ScreenNavigation(props);
+        this.renderForm = () => null;
     }
 
     componentDidMount = async () => {
-        const id = this.navigation.getParam('id', '');
-        const task = await new TaskQuery().get(id); 
-        let data = AddTaskDefault();
-        if(task) {
-            data = {
-                name: task.title,
-                start_date: task.startDate,
-                description: task.instructions,
-                time: task.startTime,
-                remindMe: task.remindMe,
-            }
-        } 
+        // Once the mode is determined and the form is rendered BASED ON A KNOWN mode, we run code to load the data
+        const formRendered = new Promise((resolve, reject) => {
+            this.markFormRendered = resolve;
+        }) 
 
-        if(!task) {
-            const global = await new GlobalQuery().current();
-            data.remindMe = global.remindMe;
-        }
-
-        const parentType = task && task.parent ? task.parent.type : this.navigation.getParam('parent_type', TaskParentTypes.NONE);
-        const parentId = task && task.parent ? task.parent.id : this.navigation.getParam('parent_id', '');
-        switch(parentType) {
-            case TaskParentTypes.TASK: {
-                const parent = await new TaskQuery().get(parentId);
-                if(parent) {
-                    this.setState({
-                        dateRange: [ parent.startDate, parent.dueDate ]
-                    })
-
-                    if(!task) {
-                        data.start_date = parent.startDate;
-                    }
-                }
-            } break;
-            case TaskParentTypes.CYCLE: {
-                const parent = await new StreakCycleQuery().get(parentId);
-                if(parent) {
-                    this.setState({
-                        dateRange: [ parent.startDate, parent.endDate ]
-                    })
-
-                    if(!task) {
-                        data.start_date = parent.startDate;
-                    }
-                }
-            } break;
-            case TaskParentTypes.GOAL: {
-                const parent = await new GoalQuery().get(parentId);
-                if(parent) {
-                    let parentStart:Date = new Date();
-                    if(parent.goalType === GoalType.NORMAL) {
-                        this.setState({
-                            dateRange: [ parent.startDate, parent.dueDate]
-                        })
-                        parentStart = parent.startDate;
-                    } else {
-                        this.setState({
-                            dateRange: [ parent.currentCycleStart(), parent.currentCycleEnd() ]
-                        });
-                        parentStart = parent.currentCycleStart();
-                    }
-
-                    if(!task) {
-                        // Default should start the new task where its parent is, whether that's a cycle or not.
-
-                        data.start_date = parentStart
-                    }
-                }
-            } break;
-            case TaskParentTypes.NONE: {
-                // Do nothing
-            } break;
-            default: {
-                // Do nothing
-            }
-        }
+        const mode = await this.determineMode();
+        this.renderForm = this.renderFormByMode(mode);
 
         this.setState({
-            task: task ? task : undefined,
-            data: data,
+            mode: mode
         })
 
+        // Once the form is rendered, we can load data into it
+        await formRendered;
+        const t = await new TaskQuery().get(this.navigation.getParam("id", ""));
+
+        if(t) {
+            const data: FullData = {
+                name: t.title,
+                description: t.instructions,
+                ["start-date"]: t.startDate,
+                ["start-time"]: t.startTime,
+                reminder: t.remindMe ? "yes" : "no",
+                repeats: t.repeat,
+                id: t.id,
+                parent_id: t.parent.id,
+            }
+
+            if(this.handle.current) {
+                this.handle.current.setForm(data);
+            } else {
+                throw new Error("Form ref not initialized");
+            }
+        } else {
+            // If we're creating a form, the default new data may depend on what mode we're in -- the context of 
+            // what we're trying to accomplish.
+            const data: FullData = await this.getTaskDefaults(mode);
+
+            if(this.handle.current) {
+                this.handle.current.setForm(data);
+            } else {
+                throw new Error("Form ref not initialized");
+            }
+        }
 
         dispatcher.addEventListener(getKey(this.navigation), this.onSave);
+    }
 
+    private getTaskDefaults = async (mode: Mode): Promise<FullData> => {
+        const global = await new GlobalQuery().current();
+        let data: FullData = {
+            repeats: "stop",
+            reminder: global.remindMe ? "yes" : "no",
+            name: "",
+            description: "",
+            ["start-date"]: MyDate.Now().toDate(),
+            ["start-time"]: MyDate.Zero().toDate(),
+            id: this.navigation.getParam("id", ""),
+            parent_id: this.navigation.getParam("parent_id", ""),
+        }
+
+        return data;
+    }
+
+    private renderFormByMode = (mode: Mode): () => (JSX.Element | null) => {
+        const { Form, Logic } = FullTaskForm;
+        const validate = Logic.validate(mode);
+        const readonly = Logic.readonly(mode);
+        const hide = Logic.hide(mode);
+        const props = Logic.props(mode);
+        const choices = Logic.choices(mode);
+        return () => {
+            return (
+                <Form
+                    ref={this.handle}
+                    validation={validate}
+                    readonly={readonly}
+                    hide={hide}
+                    props={props}
+                    choices={choices}
+                ></Form>
+            )
+        }
     }
 
     componentWillUnmount = () => {
         dispatcher.removeEventListener(getKey(this.navigation), this.onSave);
     }
 
-    onSave = () => {
-        let message: string | undefined = undefined;
-        if(this.taskFormRef.current) {
-            message = ValidateTaskForm(this.taskFormRef.current);
+    private determineMode = async () => {
+        const task = await new TaskQuery().get(this.navigation.getParam("id", ""));
+
+        if(task){
+            // We're editing an existing task
+            return await this.determineEditMode();
+
+        } else {
+            // We're creating a task
+            return this.determineCreateMode();
+        }
+    }
+
+    private determineCreateMode = () => {
+        const parentType = this.navigation.getParam("parent_type", TaskParentTypes.NONE);
+        switch(parentType) {
+            case TaskParentTypes.CYCLE: {
+                return Mode.CREATE_CYCLE_PARENT;
+            }
+            case TaskParentTypes.GOAL: {
+                return Mode.CREATE_GOAL_PARENT;
+            }
+            case TaskParentTypes.TASK: {
+                return Mode.CREATE_TASK_PARENT;
+            }
+            case TaskParentTypes.NONE: {
+                return Mode.CREATE_NO_PARENT;
+            }
+            default: {
+                return Mode.UNDETERMINED;
+            }
+        }
+    }
+
+    private determineEditMode = async () => {
+        const task = await new TaskQuery().get(this.navigation.getParam("id", ""));
+        if(task) {
+            const parentType = task.parent.type;
+            switch(parentType) {
+                case TaskParentTypes.CYCLE: {
+                    return Mode.EDIT_CYCLE_PARENT;
+                }
+                case TaskParentTypes.GOAL: {
+                    return Mode.EDIT_GOAL_PARENT;
+                }
+                case TaskParentTypes.TASK: {
+                    return Mode.EDIT_TASK_PARENT;
+                }
+                case TaskParentTypes.NONE: {
+                    return Mode.EDIT_NO_PARENT;
+                }
+                default: {
+                    return Mode.UNDETERMINED;
+                }
+            }
+        }
+        return Mode.UNDETERMINED;
+    }
+
+    private onSave = () => {
+        if(!this.handle.current) {
+            throw new Error("Form ref not initialized");
         }
 
-        if(message !== undefined) {
+        let messages = this.handle.current.getErrors();
+        if(messages.length > 0) {
             this.setState({
                 showToast: true,
-                toast: message,
+                toast: messages[0],
             });
-        } else {
-            // Parent id only changes if task does not already exist
-            const parentId = this.state.task ? this.state.task.parent.id : this.navigation.getParam('parent_id', '');
-            const parentType: TaskParentTypes = this.state.task ? this.state.task.parent.type : 
-                                this.navigation.getParam('parent_type', TaskParentTypes.NONE);
-
-            const data = this.state.data;
-            const taskData = {
-                title: data.name,
-                startDate: data.start_date,
-                startTime: data.time,
-                instructions: data.description,
-                parent: {
-                    id: parentId,
-                    type: parentType,
-                },
-                remindMe: data.remindMe,
-            };
-
-            if(this.state.task) {
-                void new TaskLogic(this.state.task.id).update(taskData);
-            } else {
-                void TaskLogic.create(taskData);
-            }
-
-            this.navigation.goBack();
         }
+
+        if(this.state.mode === Mode.UNDETERMINED) {
+            throw new Error("Cannot save in undetermined mode");
+        }
+
+        // Load all known data. Let Application logic decide what to do with it.
+        const { Validate } = FullTaskForm;
+        const data = Validate(this.handle.current.getForm());
+        const taskData = {
+            title: data.name,
+            startDate: data["start-date"],
+            startTime: data["start-time"],
+            instructions: data.description,
+            remindMe: data.reminder === "yes" ? true : false,
+            repeats:    data.repeats === "daily" ? "daily" : 
+                        data.repeats === "weekly" ? "weekly" : 
+                        data.repeats === "monthly" ? "monthly" : 
+                        "daily" as "daily" | "weekly" | "monthly",
+            parent: {
+                id: data.parent_id,
+                type: this.navigation.getParam("parent_type", TaskParentTypes.NONE),
+            },
+            id: data.id,
+        }
+
+        TaskLogic.request(this.state.mode, taskData).then(([code, error]) => {
+            if(code === "error") {
+                this.setState({
+                    showToast: true,
+                    toast: error,
+                });
+            }
+        })
+
+        this.navigation.goBack();
+        return;
     }
 
     render = () => {
@@ -216,19 +286,15 @@ export default class AddTaskScreen extends React.Component<Props, State> {
     }
 
     private renderTaskForm = () => {
-        return (
-                <AddTaskForm
-                    data={this.state.data}
-                    onDataChange={(d: AddTaskData) => {
-                        this.setState({
-                            data: d
-                        });
-                    }}
-                    style={{}}
-                    dateRange={this.state.dateRange}
-                    ref={this.taskFormRef}
-                ></AddTaskForm>
-        );
+        // Rendering logic is a simple render. The complication is determining the correct form, which we can only do on mount.
+
+        if(this.state.mode === Mode.UNDETERMINED) {
+            return null;
+        }
+
+        this.markFormRendered();
+
+        this.renderForm();
     }
 }
 

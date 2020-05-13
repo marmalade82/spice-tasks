@@ -13,6 +13,7 @@ import GoalQuery from "../Goal/GoalQuery";
 import StreakCycle from "../Group/StreakCycle";
 import { Condition } from "@nozbe/watermelondb/QueryDescription";
 import { dueDate } from "src/Components/Forms/common/utils";
+import { Mode, FullData } from "src/Components/Forms/AddTaskForm";
 
 export class TaskQuery extends ModelQuery<Task, ITask> {
     constructor() {
@@ -417,22 +418,169 @@ export {
     ITask,
 }
 
+type RequestData = {
+    title: string,
+    startDate: Date,
+    startTime: Date,
+    instructions: string,
+    remindMe: boolean,
+    repeats: "daily" | "weekly" | "monthly",
+    parent: {
+        id: string,
+        type: TaskParentTypes,
+    },
+    id: string
+}
+
 export class TaskLogic {
     id: string;
     constructor(id: string) {
         this.id = id;
     }
 
+    static request = async (mode: Mode, d: RequestData) => {
+        // We handle the request by mapping to Task based on the situation.
+        const [code, data] = await extractData(mode, d);
+        if(code === "error") {
+            return [code, data] as ["error", string];
+        }
+
+        if(isEditMode(mode)) {
+            // If we're just editing, then all we need to do is update.
+            if(d.id) {
+                await new TaskLogic(d.id).update(data as Partial<ITask>)
+                return ["ok", ""];
+            }
+
+            return ["error", "No task to update"]
+        } else {
+            // Otherwise we must be in create mode
+            await TaskLogic.create(data as Partial<ITask>);
+            return ["ok", ""]
+        }
+
+        async function extractData(mode: Mode, d: RequestData): Promise<["ok", Partial<ITask>] | ["error", string]> {
+            const mapped: Partial<ITask> = {
+                title: d.title,
+                startDate: new MyDate(d.startDate).asStartDate().toDate(),
+                startTime: MyDate.Zero().setTime(new MyDate(d.startTime)).toDate(),
+                instructions: d.instructions,
+                remindMe: d.remindMe,
+                repeat: d.repeats,
+                parent: d.parent,
+            }
+
+            switch(mode) {
+                case Mode.EDIT_NO_PARENT: {
+                    // If there's no parent, then the parent field is pointless
+                    mapped.parent = {
+                        id: "",
+                        type: TaskParentTypes.NONE
+                    };
+                } break;
+                case Mode.CREATE_NO_PARENT: {
+                    return await extractData(Mode.EDIT_NO_PARENT, d);
+                } break;
+                case Mode.EDIT_TASK_PARENT: {
+                    //If there's a task parent, we don't repeat, we don't remind
+                    mapped.repeat = "stop";
+                    mapped.remindMe = false;
+                    mapped.parent = undefined; // we don't update the parent or time information, since
+                                                // children of tasks don't have valid information for that.
+
+                    const self = await new TaskQuery().get(d.id);
+                    if(!self) {
+                        throw new Error("No self");
+                    }
+
+                    const parent = await new TaskQuery().get(self.parent ? self.parent.id : "");
+                    if(!parent) {
+                        throw new Error("No task parent");
+                    }
+
+                    mapped.startDate = parent.startDate;
+                    mapped.startTime = parent.startTime;
+                } break;
+                case Mode.CREATE_TASK_PARENT: {
+                    mapped.repeat = "stop";
+                    mapped.remindMe = false;
+                    mapped.startDate = undefined;
+                    mapped.startTime = undefined;
+                    // we validate that parent information is present:
+                    const parent = await new TaskQuery().get(mapped.parent ? mapped.parent.id : "");
+                    if(!parent) {
+                        throw new Error("No task parent");
+                    }
+                } break;
+                case Mode.EDIT_CYCLE_PARENT: {
+                    //If there's a cycle parent, we don't repeat, but we allow reminding.
+                    mapped.repeat = "stop";
+                    mapped.parent = undefined;
+                } break;
+                case Mode.CREATE_CYCLE_PARENT: {
+                    mapped.repeat = "stop";
+                    const parent = await new StreakCycleQuery().get(mapped.parent ? mapped.parent.id : "");
+                    if(!parent) {
+                        throw new Error("No cycle parent");
+                    }
+                } break;
+                case Mode.EDIT_GOAL_PARENT: {
+                    //If there's a goal parent, we don't repeat, but we allow reminding.
+                    mapped.repeat = "stop";
+                    mapped.parent = undefined;
+                } break;
+                case Mode.CREATE_GOAL_PARENT: {
+                    mapped.repeat = "stop";
+                    const parent = await new GoalQuery().get(mapped.parent ? mapped.parent.id: "");
+                    if(!parent) {
+                        throw new Error("No goal parent");
+                    }
+                }
+            }
+
+
+            return ["ok", mapped];
+        }
+
+        function isEditMode (mode: Mode) {
+            if(     mode === Mode.EDIT_CYCLE_PARENT || 
+                    mode === Mode.EDIT_GOAL_PARENT || 
+                    mode === Mode.EDIT_NO_PARENT || 
+                    mode === Mode.EDIT_TASK_PARENT) {
+                return true
+            }
+
+            return false;
+        }
+    }
+
     static create = async (d: Partial<ITask>) => {
-        const parentId = d.parent ? d.parent.id : ""
-        const parentGoal = await new GoalQuery().get(parentId);
         const tx = await ActiveTransaction.new();
+
+        if(d.repeat !== undefined && d.repeat !== "stop") {
+            RepeatTaskLogic.create({
+                name: d.title ? d.title : "",
+                description: d.instructions ? d.instructions: "",
+                starts: d.startDate ? d.startDate : MyDate.Now().toDate(),
+                time: d.startTime ? d.startTime: MyDate.Zero().toDate(),
+                remindMe: d.remindMe !== undefined ? d.remindMe: false,
+                repeats: d.repeat ?  d.repeat : "stop",
+            })
+        } else {
+
+        }
 
         // Default is that dueDate is calculated from start date where possible.
         if(d.startDate) {
             d.dueDate = dueDate(d.startDate);
+            tx.addCreate(new TaskQuery(), d);
+            tx.commitAndReset();
         }
 
+
+        // TODO: THIS IS STUPID. The current cycle should be created and maintained in the habit. 
+        // TODO: If the habit start/end date changes, then the current cycle's information should change as well.
+        /*
         if(parentGoal && parentGoal.isStreak()) {
             // We need to create a task, and add it to the current cycle
             // We should create the CURRENT cycle if it doesn't exist yet,
@@ -473,13 +621,14 @@ export class TaskLogic {
             tx.addCreate(new TaskQuery(), d);
         }
         tx.commitAndReset();
+        */
     }
 
     update = async (d: Partial<ITask>) => {
         const task = await new TaskQuery().get(this.id);
         const tx = await ActiveTransaction.new();
 
-        // Default is that dueDate is calculated from start date where possible.
+        // Default is that dueDate is calculated from start date, ALWAYS
         if(d.startDate) {
             d.dueDate = dueDate(d.startDate);
         }
@@ -659,14 +808,11 @@ export class RepeatTaskLogic {
         this.id = id;
     }
 
-    // Creates initial repeat record and then runs refresh to create it if it's for today.
     static create = async (data: RepeatTaskData) => {
-        // Create the repeat record.
         const tx = await ActiveTransaction.new();
 
         // Create the task record. The logic will scan for all repeats that haven't been calculated,
         // and check if they should be calculated today.
-        // WE HAVE TO CLONE SUBTASKS TOO
         tx.addCreate(new TaskQuery(), {
             title: data.name,
             instructions: data.description,

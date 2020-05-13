@@ -85,7 +85,6 @@ const NavigatorParams = {
   , Rewards: None
   , AddReward: Child
   , Task: Single
-  , AddRepeatTask: None
   , RewardOptions: None
   , EarnedReward: Single
   , EarnedRewards: {

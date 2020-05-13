@@ -9,7 +9,6 @@ export enum TaskParentTypes {
     GOAL = "goal",
     TASK = "task",
     CYCLE = "cycle",
-    RECUR = "recur",
     NONE = "none",
 }
 

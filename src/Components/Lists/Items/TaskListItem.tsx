@@ -60,6 +60,30 @@ import { Layout, Type, StyleSheetContext } from "src/Components/Styled/StyleShee
  *          dependency injection (caller determines implementation) or Abstract Data Types that may have lower coupling.
  *          However, dependency injection often makes code harder to understand, since the code reader doesn't know what 
  *          implementation is being used at runtime -- perhaps that needs to be a runtime tag?
+ *      Ordering a Product (Sane Assembly Lines, Determinism) - As much as possible, we want our code to generate results
+ *          in a pipeline -- there should be as little branching as possible, and if there is branching, it should all exist in
+ *          one place so that the different possible pipeline branches are clear. This way, non-determinism is restricted
+ *          to the start, and everything that happens is easy to understand (sight-determinism). This makes it easier to
+ *          determine where something is incorrect. This plays into the idea of modes -- it is often the case that each
+ *          function needs to act differently depending on a set of conditions. If you can formalize the conditions,
+ *          check them once, and use them across all of an object's methods -- then you have essentially created
+ *          sight-determinism. This bears a striking resemblance to State Machines, in that once we know what State we're 
+ *          in, we know exactly what to do, and how to respond to input.
+ *      Simplifying logic (one pipeline, pushing branching as late as possible)
+ *          However, it's also true that the earlier you determine a Mode, the sooner you make that Mode the responsibility
+ *              of all downstream code, whether or not it requires it. And earlier branches multiply against further branches
+ *              downstream, increasing the total complexity of the code. So there's actually a case to be made for pushing
+ *              branching *downstream* when possible. Spreading pipelines across multiple object methods is also 
+ *              not a good sign, since this breaks up what was intended to be sequential logic, making it impossible
+ *              to understand a pipeline at a glance, and disconnecting the upstream pipeline from the downstream
+ *              pipeline. It would be better to write one (or several) pipeline methods that can pause and continue
+ *              based on other methods, much like how user input pauses and contineus the user experience. One pipeline with 
+ *              no branches, for as long as possible, is best.
+ *      Separation of Concerns/Responsibilities - What is this important? What does it really mean? I never used to understand that,
+ *          but with my current code I'm beginning to see a bit. TODO : 
+ *      Code that has clear intent (clear modes, clear CONTEXTS). You might think that a context is solely dependent on
+ *          the external state code is operating in, but that isn't true. The meaning of that external state (which may live in 
+ *          a database) may also depend on a situational context from the user (the true variable).
  * 
  * All of these make it easier to say that logic in the module you're changing is not responsible for the correctness of 
  * another module -- it's responsible all on its own for being correct.

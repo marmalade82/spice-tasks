@@ -46,20 +46,6 @@ export class AddModal extends React.Component<Props, State> {
                             }}
                         ></ModalRow>
                         <ModalRow
-                            text={"Repeat Task"}
-                            accessibilityLabel={"add-repeat-task"}
-                            iconType={"recur"}
-                            iconBackground={"white"}
-                            onPress={() => {
-                                this.props.navigation.navigate("AddRepeatTask", {
-                                    id: "",
-                                    parent_id: "",
-                                    parent_type: TaskParentTypes.NONE,
-                                })
-                                this.props.onRequestClose()
-                            }}
-                        ></ModalRow>
-                        <ModalRow
                             text={"Goal"}
                             accessibilityLabel={"add-goal"}
                             iconType={"goal"}
