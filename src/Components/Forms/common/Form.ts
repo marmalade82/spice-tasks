@@ -142,3 +142,28 @@ export function flatSchema<Target>(data: any, example: SchemaExample<Target> ): 
     const errorMessages = errors.join("\n");
     throw new Error("Invalid schema for data " + JSON.stringify(data) + ":\n" + errorMessages);
 }
+
+
+export function unsafeSanitize<Data, K extends keyof Data, L extends Exclude<keyof Data, K>>(data: Data, required: K[], permitted: L[]):
+    { [P in K]-?: Exclude<Data[P], undefined>;
+    } & 
+    { [Q in L]: Data[Q]
+    }
+{
+    const sanitized = {};
+
+    required.forEach((req) => {
+        if(data[req] === undefined) {
+            throw new Error(req.toString() + " was required");
+        } else {
+            sanitized[req as any] = data[req];
+        }
+    })
+
+    permitted.forEach((permit) => {
+        sanitized[permit as any] = data[permit];
+    })
+
+    return sanitized as any;
+
+}

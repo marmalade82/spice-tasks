@@ -14,6 +14,7 @@ import StreakCycle from "../Group/StreakCycle";
 import { Condition } from "@nozbe/watermelondb/QueryDescription";
 import { dueDate } from "src/Components/Forms/common/utils";
 import { Mode, FullData } from "src/Components/Forms/AddTaskForm";
+import { unsafeSanitize } from "src/Components/Forms/common/Form";
 
 export class TaskQuery extends ModelQuery<Task, ITask> {
     constructor() {
@@ -460,7 +461,7 @@ export class TaskLogic {
         }
 
         async function extractData(mode: Mode, d: RequestData): Promise<["ok", Partial<ITask>] | ["error", string]> {
-            const mapped: Partial<ITask> = {
+            let mapped: Partial<ITask> = {
                 title: d.title,
                 startDate: new MyDate(d.startDate).asStartDate().toDate(),
                 startTime: MyDate.Zero().setTime(new MyDate(d.startTime)).toDate(),
@@ -470,72 +471,65 @@ export class TaskLogic {
                 parent: d.parent,
             }
 
-            switch(mode) {
-                case Mode.EDIT_NO_PARENT: {
-                    // If there's no parent, then the parent field is pointless
-                    mapped.parent = {
-                        id: "",
-                        type: TaskParentTypes.NONE
-                    };
-                } break;
-                case Mode.CREATE_NO_PARENT: {
-                    return await extractData(Mode.EDIT_NO_PARENT, d);
-                } break;
-                case Mode.EDIT_TASK_PARENT: {
-                    //If there's a task parent, we don't repeat, we don't remind
-                    mapped.repeat = "stop";
-                    mapped.remindMe = false;
-                    mapped.parent = undefined; // we don't update the parent or time information, since
-                                                // children of tasks don't have valid information for that.
+            try {
+                switch(mode) {
+                    case Mode.EDIT_NO_PARENT:{ 
+                        mapped = unsafeSanitize(mapped, ["title", "startDate", "startTime", "instructions", "repeat", "remindMe"], [])
+                    } break;
+                    case Mode.EDIT_TASK_PARENT: {
+                        const self = await new TaskQuery().get(d.id);
+                        if(!self) {
+                            throw new Error("No self");
+                        }
 
-                    const self = await new TaskQuery().get(d.id);
-                    if(!self) {
-                        throw new Error("No self");
-                    }
+                        const parent = await new TaskQuery().get(self.parent ? self.parent.id : "");
+                        if(!parent) {
+                            throw new Error("No task parent");
+                        }
+                        mapped.startDate = parent.startDate;
+                        mapped.startTime = parent.startTime;
 
-                    const parent = await new TaskQuery().get(self.parent ? self.parent.id : "");
-                    if(!parent) {
-                        throw new Error("No task parent");
-                    }
+                        mapped = unsafeSanitize(mapped, ["title", "startDate", "startTime", "instructions"], ["remindMe"])
+                        //If there's a task parent, we don't repeat, we don't remind, and the parent determines the times
+                    } break;
+                    case Mode.EDIT_CYCLE_PARENT: {
+                        //If there's a cycle parent, we don't repeat, but we allow reminding.
+                        mapped = unsafeSanitize(mapped, ["title", "instructions", "startDate", "startTime"], ["remindMe"])
+                    } break;
+                    case Mode.EDIT_GOAL_PARENT: {
+                        mapped = unsafeSanitize(mapped, ["title", "instructions", "startDate", "startTime"], ["remindMe"])
+                    } break;
+                    case Mode.CREATE_NO_PARENT: {
+                        return await extractData(Mode.EDIT_NO_PARENT, d);
+                    } break;
+                    case Mode.CREATE_TASK_PARENT: {
+                        // we validate that parent information is present, and add the parent time info
+                        const parent = await new TaskQuery().get(mapped.parent ? mapped.parent.id : "");
+                        if(!parent) {
+                            throw new Error("No task parent");
+                        }
 
-                    mapped.startDate = parent.startDate;
-                    mapped.startTime = parent.startTime;
-                } break;
-                case Mode.CREATE_TASK_PARENT: {
-                    mapped.repeat = "stop";
-                    mapped.remindMe = false;
-                    mapped.startDate = undefined;
-                    mapped.startTime = undefined;
-                    // we validate that parent information is present:
-                    const parent = await new TaskQuery().get(mapped.parent ? mapped.parent.id : "");
-                    if(!parent) {
-                        throw new Error("No task parent");
-                    }
-                } break;
-                case Mode.EDIT_CYCLE_PARENT: {
-                    //If there's a cycle parent, we don't repeat, but we allow reminding.
-                    mapped.repeat = "stop";
-                    mapped.parent = undefined;
-                } break;
-                case Mode.CREATE_CYCLE_PARENT: {
-                    mapped.repeat = "stop";
-                    const parent = await new StreakCycleQuery().get(mapped.parent ? mapped.parent.id : "");
-                    if(!parent) {
-                        throw new Error("No cycle parent");
-                    }
-                } break;
-                case Mode.EDIT_GOAL_PARENT: {
-                    //If there's a goal parent, we don't repeat, but we allow reminding.
-                    mapped.repeat = "stop";
-                    mapped.parent = undefined;
-                } break;
-                case Mode.CREATE_GOAL_PARENT: {
-                    mapped.repeat = "stop";
-                    const parent = await new GoalQuery().get(mapped.parent ? mapped.parent.id: "");
-                    if(!parent) {
-                        throw new Error("No goal parent");
+                        mapped.startDate = parent.startDate;
+                        mapped.startTime = parent.startTime;
+                        mapped = unsafeSanitize(mapped, ["title", "instructions", "parent", "startDate", "startTime"], ["remindMe"])
+                    } break;
+                    case Mode.CREATE_CYCLE_PARENT: {
+                        const parent = await new StreakCycleQuery().get(mapped.parent ? mapped.parent.id : "");
+                        if(!parent) {
+                            throw new Error("No cycle parent");
+                        }
+                        mapped = unsafeSanitize(mapped, ["title", "instructions", "parent", "startDate", "startTime"], ["remindMe"])
+                    } break;
+                    case Mode.CREATE_GOAL_PARENT: {
+                        const parent = await new GoalQuery().get(mapped.parent ? mapped.parent.id: "");
+                        if(!parent) {
+                            throw new Error("No goal parent");
+                        }
+                        mapped = unsafeSanitize(mapped, ["title", "instructions", "parent", "startDate", "startTime"], ["remindMe"])
                     }
                 }
+            } catch (e) {
+                return ["error", e.message ? e.message : e.toString ? e.toString(): e];
             }
 
 
