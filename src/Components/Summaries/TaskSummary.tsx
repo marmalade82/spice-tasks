@@ -87,7 +87,7 @@ export default class TaskSummary extends React.Component<Props, State> {
                                         <ModalRow
                                             text={"Edit"}
                                             iconType={"edit"}
-                                            onPress={() => {
+                                            onPress={async () => {
                                                 this.props.navigation.push(
                                                     "AddTask", {
                                                         id: id,

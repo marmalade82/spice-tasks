@@ -1,6 +1,6 @@
 
 import { makeForm, thread, required, wrap, startsWithinRange, flatSchema } from "./common/Form";
-import { ValidationResult, CheckValid, CheckReadonly, CheckHide } from "@marmalade82/ts-react-forms";
+import { ValidationResult, CheckValid, CheckReadonly, CheckHide, HideMap, ReadonlyMap, ValidationMap } from "@marmalade82/ts-react-forms";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
 import TaskQuery from "src/Models/Task/TaskQuery";
@@ -22,22 +22,11 @@ const placeholderProps = {
     description: { placeholder: "Description of this task"},
 }
 
-const basicValidation: Record<string, CheckValid<FullData>> = {
+const basicValidation = {
     name: async (data: any) => thread(data, required("name", "Name")),
     ["start-date"]: async (data: any) => thread(data, required("start-date", "Start Date")),
     ["start-time"]: async (data: any) => thread(data, required("start-time", "Time"))
 }
-
-const taskBase = [
-    { label: "Name", name: "name", type: "text"},
-    { label: "Description", name: "description", type: "multi_text"},
-    { label: "Start Date", name: "start-date", type: "date"},
-    { label: "Time", name: "start-time", type: "time"},
-] as const;
-
-const remind = [
-    { label: "Remind me?", name: "reminder", type: "choice", default: "no"}
-] as const;
 
 export enum Mode {
     CREATE_NO_PARENT,
@@ -109,9 +98,8 @@ export const FullTaskForm = {
     Logic: FullLogic,
 }
 
-type ValidCheckers = Record<string, CheckValid<FullData>>;
 
-function GenValidateLogic(mode: Mode): ValidCheckers {
+function GenValidateLogic(mode: Mode): ValidationMap<FullData> {
 
     switch(mode) {
         case Mode.UNDETERMINED: {
@@ -119,7 +107,7 @@ function GenValidateLogic(mode: Mode): ValidCheckers {
         }
         case Mode.CREATE_NO_PARENT: {
             return {
-                ...basicValidation
+                name: async (data) => ["ok", ""]
             }
         }
         case Mode.EDIT_NO_PARENT: {
@@ -176,7 +164,7 @@ function GenValidateLogic(mode: Mode): ValidCheckers {
     }
 }
 
-function GenReadonlyLogic(mode: Mode): Record<string, CheckReadonly<FullData>> {
+function GenReadonlyLogic(mode: Mode): ReadonlyMap<FullData> {
     switch(mode) {
         default: {
             return {};
@@ -184,59 +172,72 @@ function GenReadonlyLogic(mode: Mode): Record<string, CheckReadonly<FullData>> {
     }
 }
 
+const alwaysHide = {
+    id: async () => true,
+    apple: async () => true,
+}
 
-function GenHideLogic(mode: Mode): Record<string, CheckHide<FullData>> {
+
+function GenHideLogic(mode: Mode): HideMap<FullData> {
+    let hide = {} as HideMap<FullData> 
     switch(mode) {
         // Generally, if something has a parent, we don't allow the user to specify repeating or reminders on it.
         // Also, validation SHOULD NOT RUN on a hidden field. That just makes sense.
         case Mode.UNDETERMINED: {
-            return {};
+            hide = {
+            };
         }
         case Mode.CREATE_NO_PARENT: {
-            return {}; // With no parent, we can view all fields
+            hide = {
+            }; // With no parent, we can view all fields
         }
         case Mode.EDIT_NO_PARENT: {
-            return {
-                repeat: async (data) => {
+            hide = {
+                repeats: async (data) => {
                     const self = await new TaskQuery().get(data.id);
                     if(self) {
                         return self.nextRepeatCalculated === true
                     } 
 
                     throw new Error("No task found while editing")
-                }
+                },
             } // We cannot see the repeat field if it's already been repeated.
         }
         case Mode.CREATE_TASK_PARENT: {
-            return {
+            hide = {
                 ["start-date"]: async () => true,
                 ["start-time"]: async () => true,
                 ["reminder"]: async () => true,
-                ["repeat"]: async () => true
+                ["repeats"]: async () => true,
             }
         }
         case Mode.EDIT_TASK_PARENT: {
-            return GenHideLogic(Mode.CREATE_TASK_PARENT);
+            hide = GenHideLogic(Mode.CREATE_TASK_PARENT);
         }
         case Mode.CREATE_GOAL_PARENT: {
             // Can't repeat within a goal. If you want to, it should be in a habit.
-            return {
-                ["repeat"]: async () => true
+            hide = {
+                ["repeats"]: async () => true
             }
         }
         case Mode.EDIT_GOAL_PARENT: {
-            return GenHideLogic(Mode.CREATE_GOAL_PARENT);
+            hide = GenHideLogic(Mode.CREATE_GOAL_PARENT);
         }
         case Mode.CREATE_CYCLE_PARENT: {
-            return {
-                repeat: async () => true
+            hide = {
+                repeats: async () => true
             }
         }
         case Mode.EDIT_CYCLE_PARENT: {
-            return GenHideLogic(Mode.CREATE_CYCLE_PARENT);
+            hide = GenHideLogic(Mode.CREATE_CYCLE_PARENT);
         }
         default: {
-            return {};
+            hide = {};
         }
+    }
+
+    return {
+        ...hide,
+        ...alwaysHide,
     }
 }

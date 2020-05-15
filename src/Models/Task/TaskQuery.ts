@@ -572,50 +572,6 @@ export class TaskLogic {
         }
 
 
-        // TODO: THIS IS STUPID. The current cycle should be created and maintained in the habit. 
-        // TODO: If the habit start/end date changes, then the current cycle's information should change as well.
-        /*
-        if(parentGoal && parentGoal.isStreak()) {
-            // We need to create a task, and add it to the current cycle
-            // We should create the CURRENT cycle if it doesn't exist yet,
-            // but we won't mark it as the LATEST cycle because this isn't generated through
-            // the automatic processing.
-            //
-            // We won't have transaction conflicts, because only one transaction is allowed to be 
-            // active at a time.
-
-            let currentCycle = await new ChildStreakCycleQuery(parentGoal.id).inCurrentCycle();
-            let finalCurrentCycle: StreakCycle;
-            if(!currentCycle) {
-                finalCurrentCycle = tx.addCreate(new StreakCycleQuery(), {
-                    parentGoalId: parentGoal.id,
-                    startDate: parentGoal.currentCycleStart(),
-                    endDate: parentGoal.currentCycleEnd(),
-                })
-            } else {
-                finalCurrentCycle = currentCycle; 
-                d.parent = { // reassign the parent field to the cycle where it belongs.
-                    id: finalCurrentCycle.id,
-                    type: TaskParentTypes.CYCLE
-                }
-            }
-
-
-            tx.addCreate(new TaskQuery(), d);
-        } else {
-            //If the parent is a task instead, we inherit start and due dates from the parent. ALWAYS.
-            const parentTask = await new TaskQuery().get(parentId);
-            if(parentTask) {
-                d.startDate = parentTask.startDate;
-                d.dueDate = parentTask.dueDate;
-            }
-
-            // We need to create a normal single task based on the data.
-            // So we don't need to do anything here.
-            tx.addCreate(new TaskQuery(), d);
-        }
-        tx.commitAndReset();
-        */
     }
 
     update = async (d: Partial<ITask>) => {

@@ -256,6 +256,28 @@ export class GoalLogic {
         this.id = id;
     }
 
+    generateCurrentCycle = async () => {
+        const goal = await new GoalQuery().get(this.id);
+        if(goal && goal.isStreak()) {
+
+            const cycle = await new ChildStreakCycleQuery(goal.id).inCurrentCycle();
+            if(cycle) {
+                return cycle;
+            } else {
+                await GoalLogic.process([goal]);
+                const cycle = await new ChildStreakCycleQuery(goal.id).inCurrentCycle();
+                if(cycle) {
+                    return cycle;
+                } else {
+                    throw new Error("Current cycle could not be created")
+                }
+            }
+        } else {
+            throw new Error("Tried to generate cycle for an invalid goal");
+        }
+
+    }
+
     static processStreaks = async () => {
         await GoalLogic.processSomeStreaks();
     }
@@ -448,6 +470,10 @@ export class GoalLogic {
         return newGoal;
     }
 
+    // TODO: THIS IS STUPID. The current cycle should be created and maintained in the habit. 
+    // TODO: If the habit start/end date changes, then the current cycle's information should change as well.
+    // TODO: We should create the CURRENT cycle if it doesn't exist yet,
+    // TODO: which might happen if the job that generates the current cycle hasn't yet run out.
     update = async (goalData: Partial<IGoal>) => {
         // no reason to touch the latest cycle concept here.
         //goalData.latestCycleId = new MyDate(goalData.startDate).prevMidnight().toDate();
