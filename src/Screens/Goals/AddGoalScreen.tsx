@@ -152,7 +152,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 }
             } else {
                 // If a goal was created, we show the goal
-                const createdGoal = await GoalLogic.create(goalData, data.repeats)
+                const createdGoal = await GoalLogic.create(goalData)
 
                 this.navigation.replace("Goal", {
                     id: createdGoal.id,

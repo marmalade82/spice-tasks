@@ -514,7 +514,7 @@ export class GoalLogic {
         }
     }
 
-    static create = async (goalData: Partial<IGoal>, repeats: "never" | "daily" | "weekly" | "monthly") => {
+    static create = async (goalData: Partial<IGoal>) => {
 
         const tx = await ActiveTransaction.new();
         const goal = tx.addCreate(new GoalQuery(), goalData);

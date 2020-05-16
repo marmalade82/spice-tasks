@@ -20,7 +20,7 @@ import { Props as DynamicChoiceProps } from "src/Components/Inputs/DynamicChoice
 import { Props as SummaryProps } from "src/Components/Inputs/StringInput";
 import { Props as DateProps } from "src/Components/inputs/DateTimeInput";
 import { Props as NumberInputProps } from "src/Components/inputs/NumberInput";
-import { StreakForm, StreakDefault, StreakData }from "src/Components/Forms/AddGoalForm/StreakForm";
+import { StreakForm, StreakDefault, StreakData, streak_choices }from "src/Components/Forms/AddGoalForm/StreakForm";
 import { ColumnView } from "../Basic/Basic";
 import { RewardChoices, RewardType, RewardTypes } from "src/Models/Reward/RewardLogic";
 import { GoalChoices, GoalType } from "src/Models/Goal/GoalLogic";
@@ -33,6 +33,8 @@ import FootSpacer from "../Basic/FootSpacer";
 import { startDate, dueDate } from "./common/utils";
 import { FullNavigation } from "src/common/Navigator";
 import MyDate from "src/common/Date";
+import { makeForm, thread, required } from "./common/Form";
+import { HideMap, ReadonlyMap, ValidationMap } from "@marmalade82/ts-react-forms";
 
 interface Props {
     navigation: FullNavigation
@@ -527,4 +529,157 @@ function cyclesFromDueDate(start_date, due_date: Date, type: "daily" | "weekly" 
     let date = new MyDate(due_date).add(1, unit).asStartDate();
 
     return Math.round(date.diff(start_date, unit))
+}
+
+
+export enum Mode {
+    CREATE_HABIT,
+    EDIT_HABIT,
+    CREATE_GOAL,
+    EDIT_GOAL,
+}
+
+export type FullData = {
+    id: string,
+    title: string,
+    details: string
+    streakType: "daily" | "weekly" | "monthly",
+    repeatCount: number,
+    startDate: Date,
+    dueDate: Date,
+    rewardId: string,
+    penaltyId: string,
+}
+
+const FullForm = makeForm<FullData>([
+    { label: "ID", name: "id", type: "text"},
+    { label: "Title", name: "title", type: "text" },
+    { label: "Details", name: "details", type: "multi_text"},
+    { label: "Repeat Total", name: "repeatCount", type: "number"},
+    { label: "Start Date", name: "startDate", type: "date"},
+    { label: "Due Date", name: "dueDate", type: "date"},
+    { label: "Type", name: "streakType", type: "choice"},
+    { label: "Reward", name: "rewardId", type: "choice"},
+    { label: "Penalty", name: "penaltyId", type: "choice"}
+])
+
+const FullLogic = {
+    choices: {
+        "streakType": streak_choices,
+    }, 
+    props: {
+        title: {
+            placeholder: "What do you want to achieve?"
+        },
+        details: {
+            placeholder: "Explain what this goal is all about"
+        }
+    }
+
+}
+
+export const FullGoalForm = {
+    Form: FullForm,
+    Logic: FullLogic,
+    validate: (mode: Mode) => GenValidate(mode),
+    readonly: (mode: Mode) => GenReadonly(mode),
+    hide: (mode: Mode) => GenHide(mode),
+}
+
+const GenValidate = (mode: Mode): ValidationMap<FullData> => {
+    switch(mode) {
+        case Mode.CREATE_GOAL: {
+            return {
+                title: async (data) => thread(data, required("title", "Title")) as any,
+                startDate: async (data) => thread(data, required("startDate", "Start Date")) as any,
+                dueDate: async (data) => thread(data, required("dueDate", "Due Date")) as any,
+            }
+        }
+        case Mode.EDIT_GOAL: {
+
+        }
+        case Mode.CREATE_HABIT: {
+            return {
+                title: async (data) => thread(data, required("title", "Title")) as any,
+                repeatCount: async (data) => {
+                    if(data.repeatCount > 2) {
+                        return ["ok", ""]
+                    } else {
+                        return ["error", "Repeat Total must be greater than 2"]
+                    }
+                }
+            }
+        }
+        case Mode.EDIT_HABIT: {
+            return {
+                title: async (data) => thread(data, required("title", "Title")) as any,
+                repeatCount: async (data) => {
+                    if(data.repeatCount > 2) {
+                        return ["ok", ""]
+                    } else {
+                        return ["error", "Repeat Total must be greater than 2"]
+                    }
+                },
+                startDate: async (data) => {
+                    // We would like to prevent the user from changing the start date to something that invalidates existing
+                    // tasks
+                    const invalid = await invalidatesExistingTasks(data.id);
+                    return invalid ? ["error", "Start Date cannot be after existing tasks"] : ["ok", ""]
+            }
+
+        }
+    }
+}
+
+const GenReadonly = (mode: Mode): ReadonlyMap<FullData> => {
+    switch(mode) {
+        case Mode.EDIT_HABIT: {
+            return {
+                // We disallow editing start dates for habits that have already begun
+                // TODO: Instead, we need to allow them to shift the current or next cycle by a number of days,
+                // TODO: Along with children
+                // TODO: Why give a habit a start date. It starts with the earliest task that exists in it!
+                startDate: async (data) => true,
+            }
+        } break;
+        case Mode.EDIT_GOAL: {
+            return {
+                // We disallow editing start dates for goals that have already begun
+                // TODO: Instead, we need to allow them to shift 
+                // Why allow goals to have a start and due date? Goals start when the tasks start! Goals
+                // are due when the last task is due! In other words, this start/due thing complicates it
+                // unnecessarily without bringing any benefit.
+                startDate: async (data) => true,
+            }
+        }
+
+
+        default: {
+            return { }
+        }
+    }
+}
+
+const GenHide = (mode: Mode): HideMap<FullData> => {
+    switch(mode) {
+        case Mode.CREATE_GOAL: {
+            return {
+                repeatCount: async () => true,
+                streakType: async () => true,
+                id: async () => true,
+            }
+        }
+        case Mode.EDIT_GOAL: {
+            return GenHide(Mode.CREATE_GOAL);
+        }
+        case Mode.CREATE_HABIT: {
+            return {
+                dueDate: async () => true,
+                id: async () => true,
+            }
+        }
+        case Mode.EDIT_HABIT: {
+            return GenHide(Mode.CREATE_HABIT);
+        }
+    }
 }
