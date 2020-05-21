@@ -10,9 +10,10 @@ import {
 import Task from "src/Models/Task/Task";
 import withObservables from "@nozbe/with-observables";
 import { Navigation, ScreenParams } from "src/common/Navigator";
+import { TaskContext } from "src/Models/Task/TaskQuery";
 
 interface Props {
-    task: Task
+    task: TaskContext;
     navigation: Navigation<ScreenParams>
     onTaskAction: OnTaskAction;
     iconIndicates?: "completion"
@@ -20,6 +21,7 @@ interface Props {
 
 const AdaptedTaskListItem: React.FunctionComponent<Props> = function(props: Props) {
     const task = props.task;
+
     const mappedTask: ITask = {
         id: task.id,
         due_date: task.dueDate,
@@ -48,7 +50,7 @@ interface InputProps extends Props {
 
 const enhance = withObservables(['task'], (props: InputProps) => {
     return {
-        goal: props.task
+        task: props.task.observe()
     }
 });
 

@@ -22,16 +22,17 @@ import StreakCycleQuery, { ChildStreakCycleQuery } from "src/Models/Group/Streak
 import { switchMap } from "rxjs/operators";
 import { Navigation, ScreenParams } from "src/common/Navigator";
 import GoalQuery from "src/Models/Goal/GoalQuery";
-import { Observable} from "rxjs";
+import { Observable, from} from "rxjs";
 import { merge } from "rxjs/operators";
 import { GoalType } from "src/Models/Goal/GoalLogic";
 import MyDate from "src/common/Date";
 import { FilterBarProps, getProviderData, Range, Direction, FilterData, makeFilterState, compare } from "../common/types";
 import { IReadLocalState, LocalState } from "src/Screens/common/StateProvider";
+import { TaskContext } from "src/Models/Task/TaskQuery";
 
 
 interface SwipedProps extends Props {
-    item: Task
+    item: TaskContext
 }
 
 const SwipedItem: React.FunctionComponent<SwipedProps> = (props: SwipedProps) => {
@@ -77,7 +78,7 @@ export interface LocalState {
 }
 
 interface Props {
-    tasks: Task[];
+    tasks: TaskContext[];
     navigation: Navigation<ScreenParams>;
     paginate?: number;
     onSwipeRight?: (id: string) => void;
@@ -129,9 +130,9 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
         }
     }, [])
 
-    let items: Task[] = filterAndSort(props.tasks, range, filter, sorter, direction);
+    let items: TaskContext[] = filterAndSort(props.tasks, range, filter, sorter, direction);
 
-    const renderTask = (item: Task) => {
+    const renderTask = (item: TaskContext) => {
         if(item.active && props.onSwipeRight) {
             return (
                 <SwipedItem
@@ -201,6 +202,19 @@ const AdaptedTaskList: React.FunctionComponent<Props> = (props: Props) => {
     }
 }
 
+function toContext(obs: Observable<Task[]>) {
+    return obs.pipe(switchMap((tasks) => {
+        const mapped = tasks.map(async (task) => {
+            const context = new TaskContext(task.id);
+            await context.initialize();
+            return context;
+        })
+        const promise = Promise.all(mapped);
+
+        return from(promise);
+    }))
+}
+
 
 interface InputProps extends Omit<Props, "tasks"> {
 }
@@ -208,57 +222,56 @@ interface InputProps extends Omit<Props, "tasks"> {
 /**
  * This function ensures that the component is connected to the database
  */
-
 const enhance = withObservables(['type'], (props: InputProps) => {
     switch(props.type) {
         case "parent": {
             return {
-                tasks: new ChildTaskQuery(props.parentId).queryAll().observe()
+                tasks: toContext(new ChildTaskQuery(props.parentId).queryAll().observe())
             }
         } break;
         case "active": {
             return {
-                tasks: new ActiveTaskQuery().queryAll().observe()
+                tasks: toContext(new ActiveTaskQuery().queryAll().observe())
             }
         } break;
         case "parent-active": {
             return {
-                tasks: new ActiveTaskQuery().queryHasParent(props.parentId).observe(),
+                tasks: toContext(new ActiveTaskQuery().queryHasParent(props.parentId).observe())
             }
         } break;
         case "parent-inactive": {
             return {
-                tasks: new ChildTaskQuery(props.parentId).queryInactive().observe(),
+                tasks: toContext(new ChildTaskQuery(props.parentId).queryInactive().observe())
             }
         } break;
         case "active-due-soon-today": {
             return {
-                tasks: new ActiveTaskQuery().queryDueSoonToday().observe()
+                tasks: toContext(new ActiveTaskQuery().queryDueSoonToday().observe())
             }
         } break;
         case "completed-today" : {
             return {
-                tasks: new TaskQuery().queryCompletedToday().observe()
+                tasks: toContext(new TaskQuery().queryCompletedToday().observe())
             }
         } break;
         case "in-progress-but-not-due-today": {
             return {
-                tasks: observableWithRefreshTimer(() => new ActiveTaskQuery().queryStartedButNotDue().observe()),
+                tasks: observableWithRefreshTimer(() => toContext(new ActiveTaskQuery().queryStartedButNotDue().observe())),
             }
         } break;
         case "in-progress": {
             return {
-                tasks: observableWithRefreshTimer(() => new TaskQuery().queryInProgress().observe() )
+                tasks: observableWithRefreshTimer(() => toContext(new TaskQuery().queryInProgress().observe()) )
             }
         } break;
         case "due-today": {
             return {
-                tasks: observableWithRefreshTimer( () => new ActiveTaskQuery().queryDueToday().observe() )
+                tasks: observableWithRefreshTimer( () => toContext(new ActiveTaskQuery().queryDueToday().observe()) )
             }
         } break;
         case "overdue": {
             return {
-                tasks: observableWithRefreshTimer( () => new ActiveTaskQuery().queryOverdue().observe())
+                tasks: observableWithRefreshTimer( () => toContext(new ActiveTaskQuery().queryOverdue().observe()) )
             }
         } break;
         case "overdue-in-goal": {
@@ -272,19 +285,19 @@ const enhance = withObservables(['type'], (props: InputProps) => {
             return {
                 tasks: observableWithRefreshTimer( () => {
                     return (
-                        directChildTasks.pipe(merge(streakChildTasks))
+                        toContext(directChildTasks.pipe(merge(streakChildTasks)))
                     )
                 })
             };
         } break;
         case "remaining-today": {
             return {
-                tasks: observableWithRefreshTimer( () => new ActiveTaskQuery().queryRemainingToday().observe()),
+                tasks: observableWithRefreshTimer( () => toContext(new ActiveTaskQuery().queryRemainingToday().observe())),
             }
         } break;
         case "single": {
             return {
-                tasks: new TaskQuery().queryId(props.id ? props.id : "").observe()
+                tasks: toContext(new TaskQuery().queryId(props.id ? props.id : "").observe())
             }
         } break;
         case "today-as-cycle": {
@@ -294,11 +307,11 @@ const enhance = withObservables(['type'], (props: InputProps) => {
                     if(goal && goal.goalType === GoalType.STREAK) {
                         const thisStart: Date = MyDate.Now().thisCycleStart(goal.streakType, goal.startDate).toDate()
                         const thisEnd: Date = MyDate.Now().thisCycleEnd(goal.streakType, goal.startDate).toDate()
-                        return new TaskQuery().queryStartsBetweenInclusive(thisStart, thisEnd).observe()
+                        return toContext(new TaskQuery().queryStartsBetweenInclusive(thisStart, thisEnd).observe())
                     } else {
-                        return new Observable<Task[]>((subscriber) => {
+                        return toContext(new Observable<Task[]>((subscriber) => {
                             subscriber.next([])
-                        });
+                        }));
                     }
                 }))
             }
@@ -306,19 +319,19 @@ const enhance = withObservables(['type'], (props: InputProps) => {
         case "current-cycle": {
             return {
                 // This should provide a list of the tasks that are in the latest streak cycle
-                tasks: new ChildStreakCycleQuery(props.parentId).queryAll().observe().pipe(switchMap(( cycles ) => {
+                tasks: toContext(new ChildStreakCycleQuery(props.parentId).queryAll().observe().pipe(switchMap(( cycles ) => {
                     const sorted = cycles.sort((a, b) => {
                         return b.startDate.valueOf() - a.startDate.valueOf()
                     })
 
                     const latest = sorted[0];
                     return new ActiveTaskQuery().queryInSCycle(latest ? latest.id : "").observe()
-                }))
+                })))
             }
         } break;
         default: {
             return {
-                tasks: new TaskQuery().queryAll().observe(),
+                tasks: toContext(new TaskQuery().queryAll().observe()),
             }
         }
     }
@@ -327,7 +340,7 @@ const enhance = withObservables(['type'], (props: InputProps) => {
 export const ConnectedTaskList = enhance(AdaptedTaskList);
 
 
-function filterAndSort(items: Task[], range: [Date, Date] | undefined, filter: TaskFilter, sorter: TaskSorter, direction: "up" | "down") {
+function filterAndSort(items: TaskContext[], range: [Date, Date] | undefined, filter: TaskFilter, sorter: TaskSorter, direction: "up" | "down") {
         const now = MyDate.Now().toDate();
         return items.filter((task) => {
             if(range === undefined) {

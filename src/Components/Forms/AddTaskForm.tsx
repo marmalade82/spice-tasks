@@ -4,6 +4,7 @@ import { ValidationResult, CheckValid, CheckReadonly, CheckHide, HideMap, Readon
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import StreakCycleQuery from "src/Models/Group/StreakCycleQuery";
 import TaskQuery from "src/Models/Task/TaskQuery";
+import { async } from "rxjs/internal/scheduler/async";
 
 const remindChoices = [
     {label: "No", value: "no", key: "no"},
@@ -82,7 +83,7 @@ const FullForm = makeForm<FullData>([
 const FullLogic = {
     choices: (_mode: Mode) => { return {
         reminder: remindChoices,
-        repeat: repeatChoices,
+        repeats: repeatChoices,
     }},
     props: (_mode: Mode) => { return {
         ...placeholderProps
@@ -107,7 +108,7 @@ function GenValidateLogic(mode: Mode): ValidationMap<FullData> {
         }
         case Mode.CREATE_NO_PARENT: {
             return {
-                name: async (data) => ["ok", ""]
+                ...basicValidation
             }
         }
         case Mode.EDIT_NO_PARENT: {
@@ -174,7 +175,7 @@ function GenReadonlyLogic(mode: Mode): ReadonlyMap<FullData> {
 
 const alwaysHide = {
     id: async () => true,
-    apple: async () => true,
+    parent_id: async() => true,
 }
 
 
@@ -186,11 +187,11 @@ function GenHideLogic(mode: Mode): HideMap<FullData> {
         case Mode.UNDETERMINED: {
             hide = {
             };
-        }
+        } break;
         case Mode.CREATE_NO_PARENT: {
             hide = {
             }; // With no parent, we can view all fields
-        }
+        } break;
         case Mode.EDIT_NO_PARENT: {
             hide = {
                 repeats: async (data) => {
@@ -202,7 +203,7 @@ function GenHideLogic(mode: Mode): HideMap<FullData> {
                     throw new Error("No task found while editing")
                 },
             } // We cannot see the repeat field if it's already been repeated.
-        }
+        } break;
         case Mode.CREATE_TASK_PARENT: {
             hide = {
                 ["start-date"]: async () => true,
@@ -210,27 +211,27 @@ function GenHideLogic(mode: Mode): HideMap<FullData> {
                 ["reminder"]: async () => true,
                 ["repeats"]: async () => true,
             }
-        }
+        } break;
         case Mode.EDIT_TASK_PARENT: {
             hide = GenHideLogic(Mode.CREATE_TASK_PARENT);
-        }
+        } break;
         case Mode.CREATE_GOAL_PARENT: {
             // Can't repeat within a goal. If you want to, it should be in a habit.
             hide = {
                 ["repeats"]: async () => true
             }
-        }
+        } break;
         case Mode.EDIT_GOAL_PARENT: {
             hide = GenHideLogic(Mode.CREATE_GOAL_PARENT);
-        }
+        } break;
         case Mode.CREATE_CYCLE_PARENT: {
             hide = {
                 repeats: async () => true
             }
-        }
+        } break;
         case Mode.EDIT_CYCLE_PARENT: {
             hide = GenHideLogic(Mode.CREATE_CYCLE_PARENT);
-        }
+        } break;
         default: {
             hide = {};
         }

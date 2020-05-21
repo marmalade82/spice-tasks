@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^10.0.6",
-    "@marmalade82/ts-react-forms": "^0.1.11",
+    "@marmalade82/ts-react-forms": "^0.1.12",
     "@nozbe/watermelondb": "^0.15.0",
     "@nozbe/with-observables": "^1.0.5",
     "d3": "^5.15.0",

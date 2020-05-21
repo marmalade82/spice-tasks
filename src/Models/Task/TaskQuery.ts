@@ -15,10 +15,18 @@ import { Condition } from "@nozbe/watermelondb/QueryDescription";
 import { dueDate } from "src/Components/Forms/common/utils";
 import { Mode, FullData } from "src/Components/Forms/AddTaskForm";
 import { unsafeSanitize } from "src/Components/Forms/common/Form";
+import { Context, fieldFrom } from "../common/Contexts";
+import { map } from "rxjs/operators";
 
-export class TaskQuery extends ModelQuery<Task, ITask> {
+export class TaskQuery extends ModelQuery<TaskContext, Task, ITask> {
     constructor() {
         super(TaskSchema.table);
+    }
+
+    toContext = async (t: Task) => {
+        const context = new TaskContext(t.id);
+        await context.initialize();
+        return context;
     }
 
     queries = () => {
@@ -69,7 +77,7 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     createdBetween = async (left: Date, right: Date) => {
-        return (await this.queryCreatedBetween(left, right).fetch()) as Task[];
+        return (await this.queryCreatedBetween(left, right).fetch()) ;
     }
 
     queryCreatedBefore = (d: Date) => {
@@ -79,7 +87,7 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     createdBefore = async (d: Date) => {
-        return (await this.queryCreatedBefore(d).fetch()) as Task[];
+        return (await this.queryCreatedBefore(d).fetch()) ;
     }
 
     queryCreatedAfter = (d: Date) => {
@@ -89,7 +97,7 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     createdAfter = async (d:Date) => {
-        return (await this.queryCreatedAfter(d).fetch()) as Task[];
+        return (await this.queryCreatedAfter(d).fetch()) ;
     }
 
     queryCompletedToday = () => {
@@ -120,7 +128,7 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     failedTasks = async () => {
-        return await this.queryFailed().fetch() as Task[];
+        return await this.queryFailed().fetch() ;
     }
 
 
@@ -138,7 +146,7 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     completedTasks = async() => {
-        return (await this.queryCompletedTasks().fetch()) as Task[];
+        return (await this.queryCompletedTasks().fetch()) ;
     }
 
     queryInStreakCycle = (cycleId: string) => {
@@ -146,7 +154,7 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
     }
 
     inStreakCycle = async (cycleId: string) => {
-        return await this.queryInStreakCycle(cycleId).fetch() as Task[];
+        return await this.queryInStreakCycle(cycleId).fetch() ;
     }
 
     queryLastDays = (count: number) => {
@@ -234,10 +242,17 @@ export class TaskQuery extends ModelQuery<Task, ITask> {
 
 export default TaskQuery;
 
-export class ActiveTaskQuery extends ModelQuery<Task, ITask> {
+export class ActiveTaskQuery extends ModelQuery<TaskContext, Task, ITask> {
     constructor() {
         super(TaskSchema.table);
     }
+
+    toContext = async (t: Task) => {
+        const context = new TaskContext(t.id);
+        await context.initialize();
+        return context;
+    }
+
     default = () => {
         let def = new TaskQuery().default();
         def.active = true;
@@ -329,11 +344,17 @@ export class ActiveTaskQuery extends ModelQuery<Task, ITask> {
 
 }
 
-export class ChildTaskQuery extends ModelQuery<Task, ITask> { 
+export class ChildTaskQuery extends ModelQuery<TaskContext, Task, ITask> { 
     parent: string;
     constructor(parent: string) {
         super(TaskSchema.table);
         this.parent = parent;
+    }
+
+    toContext = async (t: Task) => {
+        const context = new TaskContext(t.id);
+        await context.initialize();
+        return context;
     }
 
     default = () => {
@@ -374,11 +395,18 @@ export class ChildTaskQuery extends ModelQuery<Task, ITask> {
     }
 }
 
-export class ChildOfTaskQuery extends ModelQuery<Task, ITask> { 
+export class ChildOfTaskQuery extends ModelQuery<TaskContext, Task, ITask> { 
     parents: string[];
     constructor(parents: string[]) {
         super(TaskSchema.table);
         this.parents = parents;
+    }
+
+
+    toContext = async (t: Task) => {
+        const context = new TaskContext(t.id);
+        await context.initialize();
+        return context;
     }
 
     default = () => {
@@ -782,5 +810,85 @@ export class RepeatTaskLogic {
 
 
         tx.commitAndReset();
+    }
+}
+
+type OmitFromTask = "completedDate" | "createdAt"
+export class TaskContext extends Context<ITask> implements Omit<ITask, OmitFromTask> {
+    id: string;
+    updates: ITask = { } as ITask;
+    task!: Task;
+    children!: Task[];
+
+    constructor (id: string) {
+        super();
+        this.id = id;
+    }
+
+    initialize = async () => {
+        const task = await new TaskQuery().get(this.id);
+
+        if(!task){
+            return this.initFailed();
+        }
+
+
+        (() => {
+            // We want to make sure that whatever values that this goal has are kept updated in the context
+            this.task = task;
+            const sub = task.observe().subscribe((task) => {
+                this.task = task;
+                this.notify();
+            })
+            this.addUnsubscribe(() => sub.unsubscribe());
+        })();
+
+        let r = () => {}
+        const loading = new Promise((resolve, reject) => {
+            r = resolve;
+        });
+
+
+        (() => {
+            // We want to load all tasks immediately
+            const sub = new ChildTaskQuery(task.id).queryAll().observe().pipe(map((tasks) => {
+                return tasks;
+            })).subscribe((tasks) => {
+                this.children = tasks;
+
+                this.notify();
+
+                if(!this.isInitialized) {
+                    r();
+                }
+            })
+
+            this.addUnsubscribe(() => sub.unsubscribe());
+        })();
+
+        await loading;
+        this.markInitialized();
+    }
+    
+    protected val = <K extends keyof ITask>(field: K): ITask[K] => {
+        return (this.updates[field] !== undefined ? this.updates[field] : this.task[field]);
+    }
+
+    @fieldFrom() title!: ITask["title"];
+    @fieldFrom() instructions!: ITask["instructions"];
+    @fieldFrom() state!: ITask["state"];
+    @fieldFrom() active!: ITask["active"];
+    @fieldFrom() parent!: ITask["parent"];
+    @fieldFrom() startTime!: ITask["startTime"];
+    @fieldFrom() remindMe!: ITask["remindMe"];
+    @fieldFrom() reminded!: ITask["reminded"];
+    @fieldFrom() repeat!: ITask["repeat"];
+    @fieldFrom() nextRepeatCalculated!: ITask["nextRepeatCalculated"];
+    @fieldFrom() lastRefresh!: ITask["lastRefresh"];
+    @fieldFrom() startDate!: ITask["startDate"];
+    @fieldFrom() dueDate!: ITask["dueDate"];
+
+    getTask = () => {
+        return this.task;
     }
 }

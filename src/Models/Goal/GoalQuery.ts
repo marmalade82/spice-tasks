@@ -10,7 +10,7 @@ import { GoalType } from "src/Models/Goal/GoalLogic";
 import { RewardTypes } from "src/Models/Reward/RewardLogic";
 import EarnedRewardQuery from "../Reward/EarnedRewardQuery";
 import MyDate from "src/common/Date";
-import TaskQuery, { TaskLogic, ActiveTaskQuery, ChildTaskQuery } from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic, ActiveTaskQuery, ChildTaskQuery, TaskContext } from "src/Models/Task/TaskQuery";
 import { take } from "src/Models/common/logicUtils";
 import EarnedRewardLogic from "../Reward/EarnedRewardLogic";
 import { PenaltyTypes } from "../Penalty/PenaltyLogic";
@@ -23,10 +23,12 @@ import { Condition } from "@nozbe/watermelondb/QueryDescription";
 import { assignAll } from "src/common/types";
 import * as R from "ramda";
 
-export class GoalQuery extends ModelQuery<Goal, IGoal>{
+export class GoalQuery extends ModelQuery<Goal, Goal, IGoal>{
     constructor() {
         super(GoalSchema.table);
     }
+
+    toContext = async (goal: Goal) => goal
 
     assign = (target: Goal, source: IGoal) => {
         return assignAll(['parent'], target, source) as Goal;
@@ -129,10 +131,12 @@ export class GoalQuery extends ModelQuery<Goal, IGoal>{
 
 export default GoalQuery;
 
-export class ActiveGoalQuery extends ModelQuery<Goal, IGoal>{ 
+export class ActiveGoalQuery extends ModelQuery<Goal, Goal, IGoal>{ 
     constructor() {
         super(GoalSchema.table);
     }
+
+    toContext = async (goal: Goal) => goal
 
     assign = (target: Goal, source: IGoal) => {
         return assignAll([], target, source) as Goal;
@@ -220,10 +224,12 @@ export class ActiveGoalQuery extends ModelQuery<Goal, IGoal>{
 
 }
 
-export class CompleteGoalQuery extends ModelQuery<Goal, IGoal>{ 
+export class CompleteGoalQuery extends ModelQuery<Goal, Goal, IGoal>{ 
     constructor() {
         super(GoalSchema.table);
     }
+
+    toContext = async (goal: Goal) => goal
 
     assign = (target: Goal, source: IGoal) => {
         return assignAll([], target, source) as Goal;
@@ -382,7 +388,7 @@ export class GoalLogic {
     private _generateNextStreakTasks = async (latestCycle: StreakCycle, goalId: string, 
                                 unit: "days" | "weeks" | "months",
                                 currentCycleStart: Date): Promise<{ latestCycleId: string, newTx: InactiveTransaction }> => {
-        const latestTasks: Task[] = await new TaskQuery().inStreakCycle(latestCycle.id);
+        const latestTasks: TaskContext[] = await new TaskQuery().inStreakCycle(latestCycle.id);
         const latestCycleStart: Date = latestCycle.startDate;
         // If there was no cycle created after the latest known generated cycle, 
         // we keep generating cycles until we've also generated the current cycle.

@@ -13,6 +13,7 @@
     "baseUrl": ".",
     "target":"ES6",
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "paths": {
       "src/*": ["src/*"]
     },

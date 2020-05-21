@@ -49,7 +49,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
         }
     }
 
-    handle: React.MutableRefObject<FormHandle<FullData> | null> = React.useRef(null)
+    handle: React.RefObject<FormHandle<FullData>> = React.createRef();
     navigation: MainNavigator<"AddTask">
     markFormRendered = () => {};
     renderForm: () => JSX.Element | null;
@@ -71,6 +71,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
         }) 
 
         const mode = await this.determineMode();
+        console.log("MODE IS " + mode.toString())
         this.renderForm = this.renderFormByMode(mode);
 
         this.setState({
@@ -93,7 +94,13 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                 parent_id: t.parent.id,
             }
 
+            await new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, 5000)
+            })
             if(this.handle.current) {
+
                 this.handle.current.setForm(data);
             } else {
                 throw new Error("Form ref not initialized");
@@ -102,6 +109,11 @@ export default class AddTaskScreen extends React.Component<Props, State> {
             // If we're creating a form, the default new data may depend on what mode we're in -- the context of 
             // what we're trying to accomplish.
             const data: FullData = await this.getTaskDefaults(mode);
+            await new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, 5000)
+            })
 
             if(this.handle.current) {
                 this.handle.current.setForm(data);
@@ -136,6 +148,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
         const hide = Logic.hide(mode);
         const props = Logic.props(mode);
         const choices = Logic.choices(mode);
+
         return () => {
             return (
                 <Form
@@ -183,6 +196,7 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                 return Mode.CREATE_NO_PARENT;
             }
             default: {
+                console.log("undetermined")
                 return Mode.UNDETERMINED;
             }
         }
@@ -294,7 +308,6 @@ export default class AddTaskScreen extends React.Component<Props, State> {
 
         this.markFormRendered();
 
-        this.renderForm();
+        return this.renderForm();
     }
 }
-

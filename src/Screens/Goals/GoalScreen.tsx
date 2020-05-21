@@ -367,11 +367,6 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 provider={this.activeTaskFilterState}
                                 id={undefined}
                             ></ConnectedTaskList>
-
-                            <BackgroundTitle title={`Inactive`}
-                                style={{
-                                }}
-                            ></BackgroundTitle>
                             <SidescrollPicker
                                 label={`Inactive`}
                                 filters={makeChoices(inactiveFilters)}

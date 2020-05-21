@@ -49,8 +49,6 @@ interface State {
     title: string;
     details: string;
     type: GoalType;
-    start_date: Date;
-    due_date: Date;
     reward: RewardType;
     rewardId: string;
     penalty: PenaltyTypes;
@@ -73,8 +71,6 @@ function Default(): State {
     return {
         title: "",
         type: GoalType.NORMAL,
-        start_date: startDate(MyDate.Now().toDate()),
-        due_date: dueDate(MyDate.Now().toDate()),
         reward: RewardTypes.NONE,
         rewardId: "",
         penalty: PenaltyTypes.NONE,
@@ -93,16 +89,6 @@ export function ValidateGoalForm(form: AddGoalForm): string | undefined {
         return titleMessage;
     }
 
-    const startDateMessage = form.validateStartDate(state.start_date);
-    if(startDateMessage !== undefined) {
-        return startDateMessage;
-    }
-
-    const cycleMessage = form.validateCycleCount(cyclesFromDueDate(state.start_date, state.due_date, state.streakData.type))
-    if(cycleMessage !== undefined) {
-        return cycleMessage;
-    }
-
     const specificRewardMessage = form.validateSpecificReward(state.rewardId);
     if(specificRewardMessage !== undefined) {
         return specificRewardMessage;
@@ -117,7 +103,6 @@ export function ValidateGoalForm(form: AddGoalForm): string | undefined {
 };
 
 const DUE_DATE_CHANGE = 'due_date_change';
-const START_DATE_CHANGE = 'start_date_change';
 const EXTERNAL_CHANGE = 'external_change';
 
 export default class AddGoalForm extends DataComponent<Props, State, State> {
@@ -126,11 +111,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         (d: string) => this.validateTitle(d) ,
                         (d: string) => this.validateTitle(d),
                    )
-    StartDateInput = Validate<Date, DateProps>(
-                        DateTimeInput,
-                        (d: Date) => this.validateStartDate(d) ,
-                        (d: Date) => this.validateStartDate(d) ,
-                    );
     SpecificRewardInput = Validate<string, DynamicChoiceProps>(
                             DynamicChoiceInput,
                             (s: string) => this.validateSpecificReward(s),
@@ -148,16 +128,12 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         );
 
     dispatcher: IEventDispatcher;
-    startDateRefresh : Observable<boolean>;
 
     constructor(props: Props) {
         super(props);
 
         this.state = Default();
         this.dispatcher = new EventDispatcher();
-
-        const startDateChange: Observable<boolean> = fromEvent(this.dispatcher, DUE_DATE_CHANGE).pipe(mapTo(true));
-        this.startDateRefresh = startDateChange
     }
     
     /*******************************************
@@ -171,21 +147,9 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         return title.length > 0 ? undefined : "Please provide a summary";
     }
 
-    validateStartDate = (start: Date) => {
-        if (start > this.data().due_date) {
-            return "Start date cannot be after due date";
-        }
-
-        if(start < MyDate.Now().asStartDate().toDate()) {
-            return "Start date cannot be in past";
-        }
-
-        return undefined;
-    }
-
     validateCycleCount = (cycles: number) => {
         if(this.data().type === GoalType.STREAK) {
-            return cycles < 2 ? "Number of cycles must be at least 2" : undefined
+            return cycles < 1 ? "Number of cycles must be at least 1" : undefined
         }
         return undefined
     }
@@ -228,22 +192,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
         });
     }
 
-    private onChangeStartDate = (date: Date) => {
-        this.setData({
-            start_date: startDate(date)
-        });
-
-        this.dispatcher.fireEvent(START_DATE_CHANGE);
-    }
-
-    private onChangeDueDate = (date: Date) => {
-        this.setData({
-            due_date: dueDate(date),
-        });
-
-        // Put this lower so that setData goes on the event queue first.
-        this.dispatcher.fireEvent(DUE_DATE_CHANGE);
-    }
 
     private onChangeDetails = (dets: string) => {
         this.setData({
@@ -260,29 +208,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
     private onChangeSpecificPenalty = (penaltyId: string) => {
         this.setData({
             penaltyId: penaltyId
-        })
-    }
-
-    private onChangeCycles = (n : number) => {
-        // Calculates the due date from the number of cycles
-        let calcDueDate = new MyDate(this.data().start_date);
-        let unit: "days" | "weeks" | "months" = "days";
-        switch(this.data().streakData.type) {
-            case "daily": {
-                unit = "days";
-            } break;
-            case "weekly": {
-                unit = "weeks";
-            };
-            case "monthly": {
-                unit = "months";
-            }
-        }
-
-        calcDueDate.add(n, unit);
-
-        this.setData({
-            due_date: calcDueDate.subtract(1, unit).asDueDate().toDate(),
         })
     }
 
@@ -323,9 +248,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
                     { this.renderIfNormalGoal() }
 
-
-                    { this.renderRepeats() }
-
                     <ChoiceInput
                         title={"Reward"}
                         data={this.data().reward.toString()}
@@ -359,7 +281,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
 
     private renderIfStreakGoal = () => {
         if(this.data().type === "streak") {
-            const StartDateInput = this.StartDateInput;
             const CycleInput = this.CycleInput;
             return (
                 <View
@@ -373,64 +294,21 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
                         containerStyle={{
                         }}
                     />
-                    <CycleInput
-                        title={`Number of ${getCycleType(this.data().streakData.type)}`}
-                        data={cyclesFromDueDate(this.data().start_date, this.data().due_date, this.data().streakData.type)}
-                        type={"integer"}
-                        accessibilityLabel={"goal-number-cycles"}
-                        onValidDataChange={this.onChangeCycles}
-                        onInvalidDataChange={this.onChangeCycles}
-                    ></CycleInput>
-                    <StartDateInput
-                        title={"Starts on"}
-                        type={"date"}
-                        data={ this.data().start_date }
-                        onValidDataChange={ this.onChangeStartDate }
-                        onInvalidDataChange={ this.onChangeStartDate }
-                        accessibilityLabel={ "goal-start-date" }
-                        revalidate={this.startDateRefresh}
-                    ></StartDateInput>
                 </View>
             );
         }
         return null
-
-        function getCycleType(type: "daily" | "weekly" | "monthly") {
-            switch(type) {
-                case "daily": return "days"
-                case "weekly": return "weeks"
-                case "monthly": return "months"
-            }
-        }
     };
 
 
     private renderIfNormalGoal = () => {
         if(this.data().type === "normal") {
-            const StartDateInput = this.StartDateInput;
             return (
                 <View
                     style={{
                         flex: 0
                     }}
                 >
-                    <StartDateInput
-                        title={"Starts on"}
-                        type={"date"}
-                        data={ this.data().start_date }
-                        onValidDataChange={ this.onChangeStartDate }
-                        onInvalidDataChange={ this.onChangeStartDate }
-                        accessibilityLabel={ "goal-start-date" }
-                        revalidate={this.startDateRefresh}
-                    ></StartDateInput>
-
-                    <DateTimeInput
-                        title={"Due on"} 
-                        type={"date"}
-                        data={ this.data().due_date }
-                        onDataChange={ this.onChangeDueDate }
-                        accessibilityLabel = { "goal-due-date" }
-                    ></DateTimeInput>
                 </View>
             )
         }
@@ -483,26 +361,6 @@ export default class AddGoalForm extends DataComponent<Props, State, State> {
             )
         }
     }
-
-    private renderRepeats = () => {
-        if(this.props.formType !== "update") {
-            return (
-                    <ChoiceInput
-                        title={"Goal Will Repeat"}
-                        data={this.data().repeats.toString()}
-                        onDataChange={(itemValue, itemIndex) => {
-                            this.setData({
-                                repeats: itemValue as "never" | "daily" | "weekly" | "monthly"
-                            })
-                        }}
-                        choices={RecurTypeChoices}
-                        accessibilityLabel={"goal-repeat"}
-                    ></ChoiceInput>
-            );
-        }
-
-        return null;
-    }
 }
 
 export {
@@ -511,25 +369,6 @@ export {
     State as AddGoalData,
 }
 
-
-function cyclesFromDueDate(start_date, due_date: Date, type: "daily" | "weekly" | "monthly") {
-    let unit: "days" | "weeks" | "months" = "days";
-    switch(type) {
-        case "daily": {
-            unit = "days";
-        } break;
-        case "weekly": {
-            unit = "weeks";
-        };
-        case "monthly": {
-            unit = "months";
-        }
-    }
-
-    let date = new MyDate(due_date).add(1, unit).asStartDate();
-
-    return Math.round(date.diff(start_date, unit))
-}
 
 
 export enum Mode {
@@ -545,8 +384,6 @@ export type FullData = {
     details: string
     streakType: "daily" | "weekly" | "monthly",
     repeatCount: number,
-    startDate: Date,
-    dueDate: Date,
     rewardId: string,
     penaltyId: string,
 }
@@ -556,8 +393,6 @@ const FullForm = makeForm<FullData>([
     { label: "Title", name: "title", type: "text" },
     { label: "Details", name: "details", type: "multi_text"},
     { label: "Repeat Total", name: "repeatCount", type: "number"},
-    { label: "Start Date", name: "startDate", type: "date"},
-    { label: "Due Date", name: "dueDate", type: "date"},
     { label: "Type", name: "streakType", type: "choice"},
     { label: "Reward", name: "rewardId", type: "choice"},
     { label: "Penalty", name: "penaltyId", type: "choice"}
@@ -591,8 +426,6 @@ const GenValidate = (mode: Mode): ValidationMap<FullData> => {
         case Mode.CREATE_GOAL: {
             return {
                 title: async (data) => thread(data, required("title", "Title")) as any,
-                startDate: async (data) => thread(data, required("startDate", "Start Date")) as any,
-                dueDate: async (data) => thread(data, required("dueDate", "Due Date")) as any,
             }
         }
         case Mode.EDIT_GOAL: {
@@ -620,11 +453,6 @@ const GenValidate = (mode: Mode): ValidationMap<FullData> => {
                         return ["error", "Repeat Total must be greater than 2"]
                     }
                 },
-                startDate: async (data) => {
-                    // We would like to prevent the user from changing the start date to something that invalidates existing
-                    // tasks
-                    const invalid = await invalidatesExistingTasks(data.id);
-                    return invalid ? ["error", "Start Date cannot be after existing tasks"] : ["ok", ""]
             }
 
         }
@@ -635,23 +463,11 @@ const GenReadonly = (mode: Mode): ReadonlyMap<FullData> => {
     switch(mode) {
         case Mode.EDIT_HABIT: {
             return {
-                // We disallow editing start dates for habits that have already begun
-                // TODO: Instead, we need to allow them to shift the current or next cycle by a number of days,
-                // TODO: Along with children
-                // TODO: Why give a habit a start date. It starts with the earliest task that exists in it!
-                startDate: async (data) => true,
             }
         } break;
         case Mode.EDIT_GOAL: {
-            return {
-                // We disallow editing start dates for goals that have already begun
-                // TODO: Instead, we need to allow them to shift 
-                // Why allow goals to have a start and due date? Goals start when the tasks start! Goals
-                // are due when the last task is due! In other words, this start/due thing complicates it
-                // unnecessarily without bringing any benefit.
-                startDate: async (data) => true,
-            }
-        }
+            return {}
+        }; break;
 
 
         default: {
@@ -674,7 +490,6 @@ const GenHide = (mode: Mode): HideMap<FullData> => {
         }
         case Mode.CREATE_HABIT: {
             return {
-                dueDate: async () => true,
                 id: async () => true,
             }
         }
