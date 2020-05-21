@@ -46,7 +46,7 @@ describe("Recurring task recurs despite being very far in past", () => {
                 await createTasks({
                     parent: {
                         id: opts.taskId,
-                        type: TaskParentTypes.NONE,
+                        type: TaskParentTypes.RECUR,
                     },
                     title: "Older",
                     active: true,
@@ -61,7 +61,7 @@ describe("Recurring task recurs despite being very far in past", () => {
                 await createTasks({
                     parent: {
                         id: opts.taskId,
-                        type: TaskParentTypes.NONE,
+                        type: TaskParentTypes.RECUR,
                     },
                     title: "Latest",
                     active: true,
@@ -75,7 +75,7 @@ describe("Recurring task recurs despite being very far in past", () => {
                 await createTasks({
                     parent: {
                         id: opts.taskId,
-                        type: TaskParentTypes.NONE,
+                        type: TaskParentTypes.RECUR,
                     },
                     title: "Oldest",
                     active: true,
@@ -123,7 +123,7 @@ describe("Recurring task recurs despite being very far in past", () => {
                 await createTasks({
                     parent: {
                         id: opts.taskId,
-                        type: TaskParentTypes.NONE,
+                        type: TaskParentTypes.RECUR,
                     },
                     title: "Older",
                     active: true,
@@ -138,7 +138,7 @@ describe("Recurring task recurs despite being very far in past", () => {
                 await createTasks({
                     parent: {
                         id: opts.taskId,
-                        type: TaskParentTypes.NONE,
+                        type: TaskParentTypes.RECUR,
                     },
                     title: "Latest",
                     active: true,
@@ -152,7 +152,7 @@ describe("Recurring task recurs despite being very far in past", () => {
                 await createTasks({
                     parent: {
                         id: opts.taskId,
-                        type: TaskParentTypes.NONE,
+                        type: TaskParentTypes.RECUR,
                     },
                     title: "Oldest",
                     active: true,
@@ -201,7 +201,7 @@ describe("Recurring task recurs despite being very far in past", () => {
                 await createTasks({
                     parent: {
                         id: opts.taskId,
-                        type: TaskParentTypes.NONE,
+                        type: TaskParentTypes.RECUR,
                     },
                     title: "Older",
                     active: true,
@@ -216,7 +216,7 @@ describe("Recurring task recurs despite being very far in past", () => {
                 await createTasks({
                     parent: {
                         id: opts.taskId,
-                        type: TaskParentTypes.NONE,
+                        type: TaskParentTypes.RECUR,
                     },
                     title: "Latest",
                     active: true,
@@ -230,7 +230,7 @@ describe("Recurring task recurs despite being very far in past", () => {
                 await createTasks({
                     parent: {
                         id: opts.taskId,
-                        type: TaskParentTypes.NONE,
+                        type: TaskParentTypes.RECUR,
                     },
                     title: "Oldest",
                     active: true,

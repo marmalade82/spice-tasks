@@ -10,7 +10,7 @@ import { GoalType } from "src/Models/Goal/GoalLogic";
 import { RewardTypes } from "src/Models/Reward/RewardLogic";
 import EarnedRewardQuery from "../Reward/EarnedRewardQuery";
 import MyDate from "src/common/Date";
-import TaskQuery, { TaskLogic, ActiveTaskQuery, ChildTaskQuery, TaskContext } from "src/Models/Task/TaskQuery";
+import TaskQuery, { TaskLogic, ActiveTaskQuery, ChildTaskQuery } from "src/Models/Task/TaskQuery";
 import { take } from "src/Models/common/logicUtils";
 import EarnedRewardLogic from "../Reward/EarnedRewardLogic";
 import { PenaltyTypes } from "../Penalty/PenaltyLogic";
@@ -23,12 +23,10 @@ import { Condition } from "@nozbe/watermelondb/QueryDescription";
 import { assignAll } from "src/common/types";
 import * as R from "ramda";
 
-export class GoalQuery extends ModelQuery<Goal, Goal, IGoal>{
+export class GoalQuery extends ModelQuery<Goal, IGoal>{
     constructor() {
         super(GoalSchema.table);
     }
-
-    toContext = async (goal: Goal) => goal
 
     assign = (target: Goal, source: IGoal) => {
         return assignAll(['parent'], target, source) as Goal;
@@ -131,12 +129,10 @@ export class GoalQuery extends ModelQuery<Goal, Goal, IGoal>{
 
 export default GoalQuery;
 
-export class ActiveGoalQuery extends ModelQuery<Goal, Goal, IGoal>{ 
+export class ActiveGoalQuery extends ModelQuery<Goal, IGoal>{ 
     constructor() {
         super(GoalSchema.table);
     }
-
-    toContext = async (goal: Goal) => goal
 
     assign = (target: Goal, source: IGoal) => {
         return assignAll([], target, source) as Goal;
@@ -224,12 +220,10 @@ export class ActiveGoalQuery extends ModelQuery<Goal, Goal, IGoal>{
 
 }
 
-export class CompleteGoalQuery extends ModelQuery<Goal, Goal, IGoal>{ 
+export class CompleteGoalQuery extends ModelQuery<Goal, IGoal>{ 
     constructor() {
         super(GoalSchema.table);
     }
-
-    toContext = async (goal: Goal) => goal
 
     assign = (target: Goal, source: IGoal) => {
         return assignAll([], target, source) as Goal;
@@ -260,28 +254,6 @@ export class GoalLogic {
     constructor(id: string) {
         this.valid = true;
         this.id = id;
-    }
-
-    generateCurrentCycle = async () => {
-        const goal = await new GoalQuery().get(this.id);
-        if(goal && goal.isStreak()) {
-
-            const cycle = await new ChildStreakCycleQuery(goal.id).inCurrentCycle();
-            if(cycle) {
-                return cycle;
-            } else {
-                await GoalLogic.process([goal]);
-                const cycle = await new ChildStreakCycleQuery(goal.id).inCurrentCycle();
-                if(cycle) {
-                    return cycle;
-                } else {
-                    throw new Error("Current cycle could not be created")
-                }
-            }
-        } else {
-            throw new Error("Tried to generate cycle for an invalid goal");
-        }
-
     }
 
     static processStreaks = async () => {
@@ -388,7 +360,7 @@ export class GoalLogic {
     private _generateNextStreakTasks = async (latestCycle: StreakCycle, goalId: string, 
                                 unit: "days" | "weeks" | "months",
                                 currentCycleStart: Date): Promise<{ latestCycleId: string, newTx: InactiveTransaction }> => {
-        const latestTasks: TaskContext[] = await new TaskQuery().inStreakCycle(latestCycle.id);
+        const latestTasks: Task[] = await new TaskQuery().inStreakCycle(latestCycle.id);
         const latestCycleStart: Date = latestCycle.startDate;
         // If there was no cycle created after the latest known generated cycle, 
         // we keep generating cycles until we've also generated the current cycle.
@@ -476,10 +448,6 @@ export class GoalLogic {
         return newGoal;
     }
 
-    // TODO: THIS IS STUPID. The current cycle should be created and maintained in the habit. 
-    // TODO: If the habit start/end date changes, then the current cycle's information should change as well.
-    // TODO: We should create the CURRENT cycle if it doesn't exist yet,
-    // TODO: which might happen if the job that generates the current cycle hasn't yet run out.
     update = async (goalData: Partial<IGoal>) => {
         // no reason to touch the latest cycle concept here.
         //goalData.latestCycleId = new MyDate(goalData.startDate).prevMidnight().toDate();
@@ -520,7 +488,7 @@ export class GoalLogic {
         }
     }
 
-    static create = async (goalData: Partial<IGoal>) => {
+    static create = async (goalData: Partial<IGoal>, repeats: "never" | "daily" | "weekly" | "monthly") => {
 
         const tx = await ActiveTransaction.new();
         const goal = tx.addCreate(new GoalQuery(), goalData);

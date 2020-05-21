@@ -62,27 +62,3 @@ export default class ChoiceInput extends Input<Props, State> {
     }
 
 }
-
-interface ChoiceProps {
-    label: string;
-    value: string;
-    choices: LabelValue[]
-    onChange: (itemValue: string) => void
-    accessibilityLabel: string;
-    style?: StyleProp<ViewStyle>;
-}
-
-export const AChoiceInput: React.FunctionComponent<ChoiceProps> = (props: ChoiceProps) => {
-    const { label, value, choices, onChange, accessibilityLabel, style} = props;
-
-    return (
-        <ChoiceInput
-            title={label}
-            data={value}
-            choices={choices}
-            onDataChange={onChange}
-            accessibilityLabel={accessibilityLabel}
-            style={style}
-        ></ChoiceInput>
-    )
-}

@@ -23,8 +23,6 @@ import MyDate from "src/common/Date";
 import { combineLatest, Observable } from "rxjs";
 import SidescrollPicker, { makeChoices } from "src/Components/Styled/SidescrollPicker";
 import { LocalState } from "../common/StateProvider";
-import CycleScreen from "./CycleScreen";
-import StreakCycle from "src/Models/Group/StreakCycle";
 
 
 interface Props {
@@ -199,28 +197,15 @@ export default class GoalScreen extends React.Component<Props, State> {
                             text={"Task"}
                             iconType={"task"}
                             iconBackground={"white"}
-                            onPress={async () => {
-                                const goal = await new GoalQuery().get(this.navigation.getParam("id", ""));
-                                if(goal) {
-                                    if(goal.isStreak()) {
-                                        const cycle: StreakCycle = await new GoalLogic(this.navigation.getParam("id", "")).generateCurrentCycle()
-                                        this.navigation.push("AddTask", {
-                                            id: "",
-                                            parent_id: cycle.id,
-                                            parent_type: TaskParentTypes.CYCLE,
-                                        })
-                                    } else {
-                                        this.navigation.push("AddTask", {
-                                            id: "",
-                                            parent_id: this.navigation.getParam("id", ""),
-                                            parent_type: TaskParentTypes.GOAL,
-                                        })
-                                        this.setState({
-                                            showAdd: false,
-                                        })
-                                    }
-                                }
-
+                            onPress={() => {
+                                this.navigation.push("AddTask", {
+                                    id: "",
+                                    parent_id: this.navigation.getParam("id", ""),
+                                    parent_type: TaskParentTypes.GOAL,
+                                })
+                                this.setState({
+                                    showAdd: false,
+                                })
                             }}
                             accessibilityLabel={"add-goal-button"}
                             key={"add"}
@@ -367,6 +352,11 @@ export default class GoalScreen extends React.Component<Props, State> {
                                 provider={this.activeTaskFilterState}
                                 id={undefined}
                             ></ConnectedTaskList>
+
+                            <BackgroundTitle title={`Inactive`}
+                                style={{
+                                }}
+                            ></BackgroundTitle>
                             <SidescrollPicker
                                 label={`Inactive`}
                                 filters={makeChoices(inactiveFilters)}

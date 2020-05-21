@@ -73,6 +73,8 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 title : goal.title,
                 details: goal.details,
                 type : goal.goalType,
+                start_date : goal.startDate,
+                due_date : goal.dueDate,
                 reward: goal.rewardType,
                 penalty: goal.penaltyType,
                 streakData: {
@@ -125,6 +127,8 @@ export default class AddGoalScreen extends React.Component<Props, State> {
             const goalData: Partial<IGoal> = {
                 title: data.title,
                 goalType: data.type,
+                startDate: data.start_date,
+                dueDate: data.due_date,
                 streakMinimum: streak.minimum,
                 streakType: streak.type,
                 rewardType: data.reward,
@@ -148,7 +152,7 @@ export default class AddGoalScreen extends React.Component<Props, State> {
                 }
             } else {
                 // If a goal was created, we show the goal
-                const createdGoal = await GoalLogic.create(goalData)
+                const createdGoal = await GoalLogic.create(goalData, data.repeats)
 
                 this.navigation.replace("Goal", {
                     id: createdGoal.id,

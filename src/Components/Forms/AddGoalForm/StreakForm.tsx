@@ -72,7 +72,7 @@ export default class StreakForm extends DataComponent<Props, State, State> {
     }
 }
 
-export const streak_choices = [
+const streak_choices = [
     {   label: "Daily",
         value: "daily",
         key: "0"

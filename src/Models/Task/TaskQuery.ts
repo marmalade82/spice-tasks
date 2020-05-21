@@ -13,20 +13,10 @@ import GoalQuery from "../Goal/GoalQuery";
 import StreakCycle from "../Group/StreakCycle";
 import { Condition } from "@nozbe/watermelondb/QueryDescription";
 import { dueDate } from "src/Components/Forms/common/utils";
-import { Mode, FullData } from "src/Components/Forms/AddTaskForm";
-import { unsafeSanitize } from "src/Components/Forms/common/Form";
-import { Context, fieldFrom } from "../common/Contexts";
-import { map } from "rxjs/operators";
 
-export class TaskQuery extends ModelQuery<TaskContext, Task, ITask> {
+export class TaskQuery extends ModelQuery<Task, ITask> {
     constructor() {
         super(TaskSchema.table);
-    }
-
-    toContext = async (t: Task) => {
-        const context = new TaskContext(t.id);
-        await context.initialize();
-        return context;
     }
 
     queries = () => {
@@ -77,7 +67,7 @@ export class TaskQuery extends ModelQuery<TaskContext, Task, ITask> {
     }
 
     createdBetween = async (left: Date, right: Date) => {
-        return (await this.queryCreatedBetween(left, right).fetch()) ;
+        return (await this.queryCreatedBetween(left, right).fetch()) as Task[];
     }
 
     queryCreatedBefore = (d: Date) => {
@@ -87,7 +77,7 @@ export class TaskQuery extends ModelQuery<TaskContext, Task, ITask> {
     }
 
     createdBefore = async (d: Date) => {
-        return (await this.queryCreatedBefore(d).fetch()) ;
+        return (await this.queryCreatedBefore(d).fetch()) as Task[];
     }
 
     queryCreatedAfter = (d: Date) => {
@@ -97,7 +87,7 @@ export class TaskQuery extends ModelQuery<TaskContext, Task, ITask> {
     }
 
     createdAfter = async (d:Date) => {
-        return (await this.queryCreatedAfter(d).fetch()) ;
+        return (await this.queryCreatedAfter(d).fetch()) as Task[];
     }
 
     queryCompletedToday = () => {
@@ -128,7 +118,7 @@ export class TaskQuery extends ModelQuery<TaskContext, Task, ITask> {
     }
 
     failedTasks = async () => {
-        return await this.queryFailed().fetch() ;
+        return await this.queryFailed().fetch() as Task[];
     }
 
 
@@ -146,7 +136,7 @@ export class TaskQuery extends ModelQuery<TaskContext, Task, ITask> {
     }
 
     completedTasks = async() => {
-        return (await this.queryCompletedTasks().fetch()) ;
+        return (await this.queryCompletedTasks().fetch()) as Task[];
     }
 
     queryInStreakCycle = (cycleId: string) => {
@@ -154,7 +144,7 @@ export class TaskQuery extends ModelQuery<TaskContext, Task, ITask> {
     }
 
     inStreakCycle = async (cycleId: string) => {
-        return await this.queryInStreakCycle(cycleId).fetch() ;
+        return await this.queryInStreakCycle(cycleId).fetch() as Task[];
     }
 
     queryLastDays = (count: number) => {
@@ -242,17 +232,10 @@ export class TaskQuery extends ModelQuery<TaskContext, Task, ITask> {
 
 export default TaskQuery;
 
-export class ActiveTaskQuery extends ModelQuery<TaskContext, Task, ITask> {
+export class ActiveTaskQuery extends ModelQuery<Task, ITask> {
     constructor() {
         super(TaskSchema.table);
     }
-
-    toContext = async (t: Task) => {
-        const context = new TaskContext(t.id);
-        await context.initialize();
-        return context;
-    }
-
     default = () => {
         let def = new TaskQuery().default();
         def.active = true;
@@ -344,17 +327,11 @@ export class ActiveTaskQuery extends ModelQuery<TaskContext, Task, ITask> {
 
 }
 
-export class ChildTaskQuery extends ModelQuery<TaskContext, Task, ITask> { 
+export class ChildTaskQuery extends ModelQuery<Task, ITask> { 
     parent: string;
     constructor(parent: string) {
         super(TaskSchema.table);
         this.parent = parent;
-    }
-
-    toContext = async (t: Task) => {
-        const context = new TaskContext(t.id);
-        await context.initialize();
-        return context;
     }
 
     default = () => {
@@ -395,18 +372,11 @@ export class ChildTaskQuery extends ModelQuery<TaskContext, Task, ITask> {
     }
 }
 
-export class ChildOfTaskQuery extends ModelQuery<TaskContext, Task, ITask> { 
+export class ChildOfTaskQuery extends ModelQuery<Task, ITask> { 
     parents: string[];
     constructor(parents: string[]) {
         super(TaskSchema.table);
         this.parents = parents;
-    }
-
-
-    toContext = async (t: Task) => {
-        const context = new TaskContext(t.id);
-        await context.initialize();
-        return context;
     }
 
     default = () => {
@@ -447,166 +417,69 @@ export {
     ITask,
 }
 
-type RequestData = {
-    title: string,
-    startDate: Date,
-    startTime: Date,
-    instructions: string,
-    remindMe: boolean,
-    repeats: "daily" | "weekly" | "monthly",
-    parent: {
-        id: string,
-        type: TaskParentTypes,
-    },
-    id: string
-}
-
 export class TaskLogic {
     id: string;
     constructor(id: string) {
         this.id = id;
     }
 
-    static request = async (mode: Mode, d: RequestData) => {
-        // We handle the request by mapping to Task based on the situation.
-        const [code, data] = await extractData(mode, d);
-        if(code === "error") {
-            return [code, data] as ["error", string];
-        }
-
-        if(isEditMode(mode)) {
-            // If we're just editing, then all we need to do is update.
-            if(d.id) {
-                await new TaskLogic(d.id).update(data as Partial<ITask>)
-                return ["ok", ""];
-            }
-
-            return ["error", "No task to update"]
-        } else {
-            // Otherwise we must be in create mode
-            await TaskLogic.create(data as Partial<ITask>);
-            return ["ok", ""]
-        }
-
-        async function extractData(mode: Mode, d: RequestData): Promise<["ok", Partial<ITask>] | ["error", string]> {
-            let mapped: Partial<ITask> = {
-                title: d.title,
-                startDate: new MyDate(d.startDate).asStartDate().toDate(),
-                startTime: MyDate.Zero().setTime(new MyDate(d.startTime)).toDate(),
-                instructions: d.instructions,
-                remindMe: d.remindMe,
-                repeat: d.repeats,
-                parent: d.parent,
-            }
-
-            try {
-                switch(mode) {
-                    case Mode.EDIT_NO_PARENT:{ 
-                        mapped = unsafeSanitize(mapped, ["title", "startDate", "startTime", "instructions", "repeat", "remindMe"], [])
-                    } break;
-                    case Mode.EDIT_TASK_PARENT: {
-                        const self = await new TaskQuery().get(d.id);
-                        if(!self) {
-                            throw new Error("No self");
-                        }
-
-                        const parent = await new TaskQuery().get(self.parent ? self.parent.id : "");
-                        if(!parent) {
-                            throw new Error("No task parent");
-                        }
-                        mapped.startDate = parent.startDate;
-                        mapped.startTime = parent.startTime;
-
-                        mapped = unsafeSanitize(mapped, ["title", "startDate", "startTime", "instructions"], ["remindMe"])
-                        //If there's a task parent, we don't repeat, we don't remind, and the parent determines the times
-                    } break;
-                    case Mode.EDIT_CYCLE_PARENT: {
-                        //If there's a cycle parent, we don't repeat, but we allow reminding.
-                        mapped = unsafeSanitize(mapped, ["title", "instructions", "startDate", "startTime"], ["remindMe"])
-                    } break;
-                    case Mode.EDIT_GOAL_PARENT: {
-                        mapped = unsafeSanitize(mapped, ["title", "instructions", "startDate", "startTime"], ["remindMe"])
-                    } break;
-                    case Mode.CREATE_NO_PARENT: {
-                        return await extractData(Mode.EDIT_NO_PARENT, d);
-                    } break;
-                    case Mode.CREATE_TASK_PARENT: {
-                        // we validate that parent information is present, and add the parent time info
-                        const parent = await new TaskQuery().get(mapped.parent ? mapped.parent.id : "");
-                        if(!parent) {
-                            throw new Error("No task parent");
-                        }
-
-                        mapped.startDate = parent.startDate;
-                        mapped.startTime = parent.startTime;
-                        mapped = unsafeSanitize(mapped, ["title", "instructions", "parent", "startDate", "startTime"], ["remindMe"])
-                    } break;
-                    case Mode.CREATE_CYCLE_PARENT: {
-                        const parent = await new StreakCycleQuery().get(mapped.parent ? mapped.parent.id : "");
-                        if(!parent) {
-                            throw new Error("No cycle parent");
-                        }
-                        mapped = unsafeSanitize(mapped, ["title", "instructions", "parent", "startDate", "startTime"], ["remindMe"])
-                    } break;
-                    case Mode.CREATE_GOAL_PARENT: {
-                        const parent = await new GoalQuery().get(mapped.parent ? mapped.parent.id: "");
-                        if(!parent) {
-                            throw new Error("No goal parent");
-                        }
-                        mapped = unsafeSanitize(mapped, ["title", "instructions", "parent", "startDate", "startTime"], ["remindMe"])
-                    }
-                }
-            } catch (e) {
-                return ["error", e.message ? e.message : e.toString ? e.toString(): e];
-            }
-
-
-            return ["ok", mapped];
-        }
-
-        function isEditMode (mode: Mode) {
-            if(     mode === Mode.EDIT_CYCLE_PARENT || 
-                    mode === Mode.EDIT_GOAL_PARENT || 
-                    mode === Mode.EDIT_NO_PARENT || 
-                    mode === Mode.EDIT_TASK_PARENT) {
-                return true
-            }
-
-            return false;
-        }
-    }
-
     static create = async (d: Partial<ITask>) => {
+        const parentId = d.parent ? d.parent.id : ""
+        const parentGoal = await new GoalQuery().get(parentId);
         const tx = await ActiveTransaction.new();
-
-        if(d.repeat !== undefined && d.repeat !== "stop") {
-            RepeatTaskLogic.create({
-                name: d.title ? d.title : "",
-                description: d.instructions ? d.instructions: "",
-                starts: d.startDate ? d.startDate : MyDate.Now().toDate(),
-                time: d.startTime ? d.startTime: MyDate.Zero().toDate(),
-                remindMe: d.remindMe !== undefined ? d.remindMe: false,
-                repeats: d.repeat ?  d.repeat : "stop",
-            })
-        } else {
-
-        }
 
         // Default is that dueDate is calculated from start date where possible.
         if(d.startDate) {
             d.dueDate = dueDate(d.startDate);
-            tx.addCreate(new TaskQuery(), d);
-            tx.commitAndReset();
         }
 
+        if(parentGoal && parentGoal.isStreak()) {
+            // We need to create a task, and add it to the current cycle
+            // We should create the CURRENT cycle if it doesn't exist yet,
+            // but we won't mark it as the LATEST cycle because this isn't generated through
+            // the automatic processing.
+            //
+            // We won't have transaction conflicts, because only one transaction is allowed to be 
+            // active at a time.
 
+            let currentCycle = await new ChildStreakCycleQuery(parentGoal.id).inCurrentCycle();
+            let finalCurrentCycle: StreakCycle;
+            if(!currentCycle) {
+                finalCurrentCycle = tx.addCreate(new StreakCycleQuery(), {
+                    parentGoalId: parentGoal.id,
+                    startDate: parentGoal.currentCycleStart(),
+                    endDate: parentGoal.currentCycleEnd(),
+                })
+            } else {
+                finalCurrentCycle = currentCycle; 
+                d.parent = { // reassign the parent field to the cycle where it belongs.
+                    id: finalCurrentCycle.id,
+                    type: TaskParentTypes.CYCLE
+                }
+            }
+
+
+            tx.addCreate(new TaskQuery(), d);
+        } else {
+            //If the parent is a task instead, we inherit start and due dates from the parent. ALWAYS.
+            const parentTask = await new TaskQuery().get(parentId);
+            if(parentTask) {
+                d.startDate = parentTask.startDate;
+                d.dueDate = parentTask.dueDate;
+            }
+
+            // We need to create a normal single task based on the data.
+            // So we don't need to do anything here.
+            tx.addCreate(new TaskQuery(), d);
+        }
+        tx.commitAndReset();
     }
 
     update = async (d: Partial<ITask>) => {
         const task = await new TaskQuery().get(this.id);
         const tx = await ActiveTransaction.new();
 
-        // Default is that dueDate is calculated from start date, ALWAYS
+        // Default is that dueDate is calculated from start date where possible.
         if(d.startDate) {
             d.dueDate = dueDate(d.startDate);
         }
@@ -771,7 +644,7 @@ export class TaskLogic {
     }
 }
 
-export type RepeatTaskData = {
+type RepeatTaskData = {
     name: string,
     description: string,
     starts: Date,
@@ -786,11 +659,14 @@ export class RepeatTaskLogic {
         this.id = id;
     }
 
+    // Creates initial repeat record and then runs refresh to create it if it's for today.
     static create = async (data: RepeatTaskData) => {
+        // Create the repeat record.
         const tx = await ActiveTransaction.new();
 
         // Create the task record. The logic will scan for all repeats that haven't been calculated,
         // and check if they should be calculated today.
+        // WE HAVE TO CLONE SUBTASKS TOO
         tx.addCreate(new TaskQuery(), {
             title: data.name,
             instructions: data.description,
@@ -810,85 +686,5 @@ export class RepeatTaskLogic {
 
 
         tx.commitAndReset();
-    }
-}
-
-type OmitFromTask = "completedDate" | "createdAt"
-export class TaskContext extends Context<ITask> implements Omit<ITask, OmitFromTask> {
-    id: string;
-    updates: ITask = { } as ITask;
-    task!: Task;
-    children!: Task[];
-
-    constructor (id: string) {
-        super();
-        this.id = id;
-    }
-
-    initialize = async () => {
-        const task = await new TaskQuery().get(this.id);
-
-        if(!task){
-            return this.initFailed();
-        }
-
-
-        (() => {
-            // We want to make sure that whatever values that this goal has are kept updated in the context
-            this.task = task;
-            const sub = task.observe().subscribe((task) => {
-                this.task = task;
-                this.notify();
-            })
-            this.addUnsubscribe(() => sub.unsubscribe());
-        })();
-
-        let r = () => {}
-        const loading = new Promise((resolve, reject) => {
-            r = resolve;
-        });
-
-
-        (() => {
-            // We want to load all tasks immediately
-            const sub = new ChildTaskQuery(task.id).queryAll().observe().pipe(map((tasks) => {
-                return tasks;
-            })).subscribe((tasks) => {
-                this.children = tasks;
-
-                this.notify();
-
-                if(!this.isInitialized) {
-                    r();
-                }
-            })
-
-            this.addUnsubscribe(() => sub.unsubscribe());
-        })();
-
-        await loading;
-        this.markInitialized();
-    }
-    
-    protected val = <K extends keyof ITask>(field: K): ITask[K] => {
-        return (this.updates[field] !== undefined ? this.updates[field] : this.task[field]);
-    }
-
-    @fieldFrom() title!: ITask["title"];
-    @fieldFrom() instructions!: ITask["instructions"];
-    @fieldFrom() state!: ITask["state"];
-    @fieldFrom() active!: ITask["active"];
-    @fieldFrom() parent!: ITask["parent"];
-    @fieldFrom() startTime!: ITask["startTime"];
-    @fieldFrom() remindMe!: ITask["remindMe"];
-    @fieldFrom() reminded!: ITask["reminded"];
-    @fieldFrom() repeat!: ITask["repeat"];
-    @fieldFrom() nextRepeatCalculated!: ITask["nextRepeatCalculated"];
-    @fieldFrom() lastRefresh!: ITask["lastRefresh"];
-    @fieldFrom() startDate!: ITask["startDate"];
-    @fieldFrom() dueDate!: ITask["dueDate"];
-
-    getTask = () => {
-        return this.task;
     }
 }

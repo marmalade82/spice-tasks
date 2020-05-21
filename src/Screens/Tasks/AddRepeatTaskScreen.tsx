@@ -1,10 +1,8 @@
 import React from "react";
 import { View, ScrollView, SafeAreaView, Button } from "react-native";
 import { AddTaskForm, AddTaskData, AddTaskDefault, 
-    ValidateTaskForm, makeFormState, newTaskValidators,
-    makeFormValidState, makeShowState,
  } from "src/Components/Forms/AddTaskForm";
-import { TaskQuery, Task, TaskLogic } from "src/Models/Task/TaskQuery";
+import { TaskQuery, Task, TaskLogic, RepeatTaskLogic } from "src/Models/Task/TaskQuery";
 import { DocumentView, ScreenHeader, Toast, IconButton } from "src/Components/Styled/Styled";
 import GoalQuery from "src/Models/Goal/GoalQuery";
 import { TaskParentTypes } from "src/Models/Task/Task";
@@ -17,25 +15,39 @@ import { GoalType } from "src/Models/Goal/GoalLogic";
 
 import Form from "@marmalade82/ts-react-forms";  
 import GlobalQuery from "src/Models/Global/GlobalQuery";
+import {
+    StringInput,
+    DateTimeInput,
+    ChoiceInput,
+
+} from "src/Components/Inputs";
+import { string } from "prop-types";
+import MyDate from "src/common/Date";
 
 interface Props {
     navigation: object;
 }
 
 interface State { 
-    data: AddTaskData;
     task?: Task;
     showToast: boolean;
     toast: string;
     dateRange?: [Date, Date];
+
+    name: string;
+    description: string;
+    starts: Date;
+    time: Date;
+    remindMe: string;
+    repeats: string;
 }
 
 const dispatcher = new EventDispatcher();
 
-export default class AddTaskScreen extends React.Component<Props, State> {
+export default class AddRepeatTaskScreen extends React.Component<Props, State> {
     static navigationOptions = ({navigation}) => {
         return {
-            title: 'Task',
+            title: 'Repeat Task',
             right: [
                 () => {
                     return (
@@ -50,15 +62,18 @@ export default class AddTaskScreen extends React.Component<Props, State> {
     }
 
     navigation: MainNavigator<"AddTask">
-    taskFormRef: React.RefObject<AddTaskForm>
     constructor(props: Props) {
         super(props);
         this.state = {
-            data: AddTaskDefault(),
             showToast: false,
             toast: "",
+            name: "",
+            description: "",
+            starts: MyDate.Now().toDate(),
+            time: MyDate.Zero().toDate(),
+            remindMe: "no",
+            repeats: "daily",
         }
-        this.taskFormRef = React.createRef()
         this.navigation = new ScreenNavigation(props);
     }
 
@@ -141,7 +156,6 @@ export default class AddTaskScreen extends React.Component<Props, State> {
 
         this.setState({
             task: task ? task : undefined,
-            data: data,
         })
 
 
@@ -155,9 +169,6 @@ export default class AddTaskScreen extends React.Component<Props, State> {
 
     onSave = () => {
         let message: string | undefined = undefined;
-        if(this.taskFormRef.current) {
-            message = ValidateTaskForm(this.taskFormRef.current);
-        }
 
         if(message !== undefined) {
             this.setState({
@@ -165,29 +176,20 @@ export default class AddTaskScreen extends React.Component<Props, State> {
                 toast: message,
             });
         } else {
-            // Parent id only changes if task does not already exist
-            const parentId = this.state.task ? this.state.task.parent.id : this.navigation.getParam('parent_id', '');
-            const parentType: TaskParentTypes = this.state.task ? this.state.task.parent.type : 
-                                this.navigation.getParam('parent_type', TaskParentTypes.NONE);
-
-            const data = this.state.data;
-            const taskData = {
-                title: data.name,
-                startDate: data.start_date,
-                startTime: data.time,
-                instructions: data.description,
-                parent: {
-                    id: parentId,
-                    type: parentType,
-                },
-                remindMe: data.remindMe,
+            const data = this.state;
+            const formData = {
+                name: data.name,
+                description: data.description,
+                starts: data.starts,
+                time: data.time,
+                remindMe: data.remindMe === "yes" ? true : false,
+                repeats:    data.repeats === "daily" ? "daily" : 
+                            data.repeats === "weekly" ? "weekly" : 
+                            data.repeats === "monthly" ? "monthly" : 
+                            "daily" as "daily" | "weekly" | "monthly"
             };
 
-            if(this.state.task) {
-                void new TaskLogic(this.state.task.id).update(taskData);
-            } else {
-                void TaskLogic.create(taskData);
-            }
+            void RepeatTaskLogic.create(formData);
 
             this.navigation.goBack();
         }
@@ -217,17 +219,86 @@ export default class AddTaskScreen extends React.Component<Props, State> {
 
     private renderTaskForm = () => {
         return (
-                <AddTaskForm
-                    data={this.state.data}
-                    onDataChange={(d: AddTaskData) => {
+            <React.Fragment>
+                <StringInput
+                    title={"Name"}
+                    data={this.state.name}
+                    placeholder={"Name of this task"}
+                    onDataChange={(val) => {
                         this.setState({
-                            data: d
+                            name: val
+                        })
+                    }}
+                    accessibilityLabel={"task-name"}
+                ></StringInput>
+                <StringInput
+                    title={"Description"}
+                    data={this.state.description}
+                    placeholder={"Description of this task"}
+                    onDataChange={(val) => {
+                        this.setState({
+                            description: val
+                        })
+                    }}
+                    accessibilityLabel={"task-description"}
+                />
+
+                <DateTimeInput
+                    title={"Start Date"}
+                    type={"date"}
+                    data={this.state.starts}
+                    onDataChange={(val) => {
+                        this.setState({
+                            starts: val
                         });
                     }}
-                    style={{}}
-                    dateRange={this.state.dateRange}
-                    ref={this.taskFormRef}
-                ></AddTaskForm>
+                    accessibilityLabel={"task-start-date"}
+                ></DateTimeInput>
+
+                <DateTimeInput
+                    title={"Time"}
+                    type={"time"}
+                    data={this.state.time}
+                    onDataChange={(val) => {
+                        this.setState({
+                            time: val
+                        })
+                    }}
+                    accessibilityLabel={"task-start-time"}
+                ></DateTimeInput>
+
+                <ChoiceInput
+                    title={"Repeat"}
+                    data={this.state.repeats}
+                    choices={[
+                        {label: "Daily", value: "daily", key: "daily"},
+                        {label: "Weekly", value: "weekly", key: "weekly"},
+                        {label: "Monthly", value: "monthly", key: "monthly"},
+                        {label: "Don't Repeat", value: "stop", key: "stop"},
+                    ]}
+                    onDataChange={(val) => {
+                        this.setState({
+                            repeats: val
+                        })
+                    }}
+                    accessibilityLabel={"task-reminder"}
+                ></ChoiceInput>
+
+                <ChoiceInput
+                    title={"Remind me?"}
+                    data={this.state.remindMe}
+                    choices={[
+                        {label: "No", value: "no", key: "no"},
+                        {label: "Yes", value: "yes", key: "yes"},
+                    ]}
+                    onDataChange={(val) => {
+                        this.setState({
+                            remindMe: val
+                        })
+                    }}
+                    accessibilityLabel={"task-reminder"}
+                ></ChoiceInput>
+            </React.Fragment>
         );
     }
 }
